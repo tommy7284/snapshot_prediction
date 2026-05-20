@@ -1,0 +1,83 @@
+{
+    "id": 6782503,
+    "name": "jxnblk/mdx-deck",
+    "isFork": false,
+    "commits": 1512,
+    "branches": 42,
+    "releases": 0,
+    "forks": 664,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://mdx-deck.jxnblk.com",
+    "watchers": 81,
+    "stargazers": 11022,
+    "contributors": 62,
+    "size": 10442,
+    "createdAt": "2018-07-28T10:36:10",
+    "pushedAt": "2023-01-04T01:58:59",
+    "updatedAt": "2023-01-20T08:28:49",
+    "totalIssues": 323,
+    "openIssues": 96,
+    "totalPullRequests": 505,
+    "openPullRequests": 49,
+    "blankLines": 1229,
+    "codeLines": 5680,
+    "commentLines": 126,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 834,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1522
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 13,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 388,
+            "language": "JavaScript",
+            "commentLines": 113,
+            "codeLines": 3661
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 476
+        }
+    ],
+    "lastCommit": "2021-08-03T07:58:29",
+    "lastCommitSHA": "a4779fc0555e26bc241afd8176661d41fd6981ac",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 83306
+    },
+    "labels": [
+        "2.0",
+        "3.0",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "question",
+        "security",
+        "wontfix"
+    ],
+    "topics": []
+}

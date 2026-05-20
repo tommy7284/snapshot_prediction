@@ -1,0 +1,89 @@
+{
+    "id": 94792316,
+    "name": "atlassian/pragmatic-drag-and-drop",
+    "isFork": false,
+    "commits": 44,
+    "branches": 2,
+    "releases": 0,
+    "forks": 115,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": "https://atlassian.design/components/pragmatic-drag-and-drop",
+    "watchers": 67,
+    "stargazers": 7196,
+    "contributors": 1,
+    "size": 5554,
+    "createdAt": "2024-02-04T09:51:59",
+    "pushedAt": "2024-05-10T11:40:02",
+    "updatedAt": "2024-05-10T03:15:22",
+    "totalIssues": 39,
+    "openIssues": 18,
+    "totalPullRequests": 6,
+    "openPullRequests": 0,
+    "blankLines": 13560,
+    "codeLines": 73800,
+    "commentLines": 6796,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 6779,
+            "codeLines": 64623,
+            "blankLines": 10591
+        },
+        {
+            "language": "Diff",
+            "commentLines": 9,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 8,
+            "codeLines": 6887,
+            "blankLines": 2969
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 528,
+            "blankLines": 0
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1754,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-10T11:40:01",
+    "lastCommitSHA": "6944b41eb4d4253bd14731b2a2d6174909e38117",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 2190021,
+        "MDX": 253769
+    },
+    "labels": [
+        "browser / device support",
+        "browser bug",
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "waiting on response",
+        "wontfix"
+    ],
+    "topics": [
+        "dnd",
+        "drag-and-drop",
+        "dropzone",
+        "sortable"
+    ]
+}

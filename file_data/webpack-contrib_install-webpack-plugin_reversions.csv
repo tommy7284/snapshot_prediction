@@ -1,0 +1,2553 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+194,0ddefa17947161ac480d1c45bbb200264dd8c57d,ec364fa9c4f5e3ef158662b28c773f15553340cb,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feat
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+add Schema
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `npm` option is now boolean.
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add schema
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index 545f69e..c92ff05 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -25,7 +25,7 @@ describe('plugin', () => {
+       peerDependencies: true,
+       quiet: false,
+       prompt: true,
+-      npm: 'npm',
++      npm: true,
+     };
+ 
+     this.plugin = new Plugin(this.options);
+",0,
+194,0ddefa17947161ac480d1c45bbb200264dd8c57d,bdc0f93ab5539d6479b6a7a33e83b6fc48f8d4d8,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feat
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+add Schema
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `npm` option is now boolean.
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","test: validate options
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..b081388
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,76 @@
++const InstallPlugin = require('../src/plugin');
++
++describe('validation', () => {
++  const cases = {
++    dev: {
++      success: [true, false, () => {}],
++      failure: ['foo', 10],
++    },
++    npm: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    peerDependencies: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    prompt: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    quiet: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    yarn: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++  };
++
++  function stringifyValue(value) {
++    if (
++      Array.isArray(value) ||
++      (value && typeof value === 'object' && value.constructor === Object)
++    ) {
++      return JSON.stringify(value);
++    }
++
++    return value;
++  }
++
++  async function createTestCase(key, value, type) {
++    it(`should ${
++      type === 'success' ? 'successfully validate' : 'throw an error on'
++    } the ""${key}"" option with ""${stringifyValue(value)}"" value`, async () => {
++      let error;
++
++      try {
++        // eslint-disable-next-line no-new
++        new InstallPlugin({ [key]: value });
++      } catch (errorFromPlugin) {
++        if (errorFromPlugin.name !== 'ValidationError') {
++          throw errorFromPlugin;
++        }
++
++        error = errorFromPlugin;
++      } finally {
++        if (type === 'success') {
++          expect(error).toBeUndefined();
++        } else if (type === 'failure') {
++          expect(() => {
++            throw error;
++          }).toThrowErrorMatchingSnapshot();
++        }
++      }
++    });
++  }
++
++  for (const [key, values] of Object.entries(cases)) {
++    for (const type of Object.keys(values)) {
++      for (const value of values[type]) {
++        createTestCase(key, value, type);
++      }
++    }
++  }
++});
+",0,
+194,0ddefa17947161ac480d1c45bbb200264dd8c57d,ec364fa9c4f5e3ef158662b28c773f15553340cb,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feat
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+add Schema
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `npm` option is now boolean.
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add schema
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index 545f69e..c92ff05 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -25,7 +25,7 @@ describe('plugin', () => {
+       peerDependencies: true,
+       quiet: false,
+       prompt: true,
+-      npm: 'npm',
++      npm: true,
+     };
+ 
+     this.plugin = new Plugin(this.options);
+",0,
+194,0ddefa17947161ac480d1c45bbb200264dd8c57d,bdc0f93ab5539d6479b6a7a33e83b6fc48f8d4d8,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feat
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+add Schema
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `npm` option is now boolean.
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","test: validate options
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..b081388
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,76 @@
++const InstallPlugin = require('../src/plugin');
++
++describe('validation', () => {
++  const cases = {
++    dev: {
++      success: [true, false, () => {}],
++      failure: ['foo', 10],
++    },
++    npm: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    peerDependencies: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    prompt: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    quiet: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++    yarn: {
++      success: [true, false],
++      failure: ['bar', 10],
++    },
++  };
++
++  function stringifyValue(value) {
++    if (
++      Array.isArray(value) ||
++      (value && typeof value === 'object' && value.constructor === Object)
++    ) {
++      return JSON.stringify(value);
++    }
++
++    return value;
++  }
++
++  async function createTestCase(key, value, type) {
++    it(`should ${
++      type === 'success' ? 'successfully validate' : 'throw an error on'
++    } the ""${key}"" option with ""${stringifyValue(value)}"" value`, async () => {
++      let error;
++
++      try {
++        // eslint-disable-next-line no-new
++        new InstallPlugin({ [key]: value });
++      } catch (errorFromPlugin) {
++        if (errorFromPlugin.name !== 'ValidationError') {
++          throw errorFromPlugin;
++        }
++
++        error = errorFromPlugin;
++      } finally {
++        if (type === 'success') {
++          expect(error).toBeUndefined();
++        } else if (type === 'failure') {
++          expect(() => {
++            throw error;
++          }).toThrowErrorMatchingSnapshot();
++        }
++      }
++    });
++  }
++
++  for (const [key, values] of Object.entries(cases)) {
++    for (const type of Object.keys(values)) {
++      for (const value of values[type]) {
++        createTestCase(key, value, type);
++      }
++    }
++  }
++});
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index bdec67a..93ed4f0 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -12,12 +12,12 @@ const logger = logging.getLogger('install-webpack-plugin');
+ describe('installer', () => {
+   jest.spyOn(installer, 'prompt').mockImplementation(() => true);
+   describe('.defaultOptions', () => {
+-    it('should default dev to false', () => {
+-      expect(installer.defaultOptions.dev).toEqual(false);
++    it('should default dependencies.dev to false', () => {
++      expect(installer.defaultOptions.dependencies.dev).toEqual(false);
+     });
+ 
+-    it('should default peerDependencies to true', () => {
+-      expect(installer.defaultOptions.peerDependencies).toEqual(true);
++    it('should default dependencies.peer to true', () => {
++      expect(installer.defaultOptions.dependencies.peer).toEqual(true);
+     });
+ 
+     it('should default quiet to false', () => {
+@@ -233,7 +233,9 @@ describe('installer', () => {
+             await installer.install(
+               'foo',
+               {
+-                dev: true,
++                dependencies: {
++                  dev: true,
++                },
+                 yarn: true,
+               },
+               logger
+@@ -345,17 +347,15 @@ describe('installer', () => {
+               await installer.install(
+                 'redbox-react',
+                 {
+-                  peerDependencies: false,
++                  dependencies: {
++                    peer: false,
++                  },
+                   yarn: true,
+                 },
+                 logger
+               );
+ 
+-              expect(this.sync.mock.calls.length).toEqual(1);
+-              expect(this.sync.mock.calls[0][1]).toEqual([
+-                'add',
+-                'redbox-react',
+-              ]);
++              expect(this.sync.mock.calls).toMatchSnapshot();
+             });
+           });
+         });
+@@ -395,7 +395,9 @@ describe('installer', () => {
+             await installer.install(
+               'foo',
+               {
+-                dev: true,
++                dependencies: {
++                  dev: true,
++                },
+               },
+               logger
+             );
+@@ -496,22 +498,19 @@ describe('installer', () => {
+             });
+           });
+ 
+-          describe('given peerDependencies set to false', () => {
++          describe('given dependencies.peer set to false', () => {
+             it('should not install peerDependencies', async () => {
+               await installer.install(
+                 'redbox-react',
+                 {
+-                  peerDependencies: false,
++                  dependencies: {
++                    peer: false,
++                  },
+                 },
+                 logger
+               );
+ 
+-              expect(this.sync.mock.calls.length).toEqual(1);
+-              expect(this.sync.mock.calls[0][1]).toEqual([
+-                'install',
+-                'redbox-react',
+-                '--save',
+-              ]);
++              expect(this.sync.mock.calls).toMatchSnapshot();
+             });
+           });
+         });
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index c92ff05..e0b13d2 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -21,8 +21,10 @@ describe('plugin', () => {
+     this.next = jest.fn();
+ 
+     this.options = {
+-      dev: false,
+-      peerDependencies: true,
++      dependencies: {
++        dev: false,
++        peer: true,
++      },
+       quiet: false,
+       prompt: true,
+       npm: true,
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index b081388..b30d370 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -2,18 +2,24 @@ const InstallPlugin = require('../src/plugin');
+ 
+ describe('validation', () => {
+   const cases = {
+-    dev: {
+-      success: [true, false, () => {}],
+-      failure: ['foo', 10],
++    dependencies: {
++      success: [
++        { dev: true },
++        { dev: () => {} },
++        { peerDependencies: true },
++        { dev: true, peerDependencies: true },
++      ],
++      failure: [
++        { dev: 'foo' },
++        { dev: 10 },
++        { peerDependencies: 'bar' },
++        { dev: 'test', peerDependencies: true },
++      ],
+     },
+     npm: {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    peerDependencies: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+     prompt: {
+       success: [true, false],
+       failure: ['bar', 10],
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index bdec67a..93ed4f0 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -12,12 +12,12 @@ const logger = logging.getLogger('install-webpack-plugin');
+ describe('installer', () => {
+   jest.spyOn(installer, 'prompt').mockImplementation(() => true);
+   describe('.defaultOptions', () => {
+-    it('should default dev to false', () => {
+-      expect(installer.defaultOptions.dev).toEqual(false);
++    it('should default dependencies.dev to false', () => {
++      expect(installer.defaultOptions.dependencies.dev).toEqual(false);
+     });
+ 
+-    it('should default peerDependencies to true', () => {
+-      expect(installer.defaultOptions.peerDependencies).toEqual(true);
++    it('should default dependencies.peer to true', () => {
++      expect(installer.defaultOptions.dependencies.peer).toEqual(true);
+     });
+ 
+     it('should default quiet to false', () => {
+@@ -233,7 +233,9 @@ describe('installer', () => {
+             await installer.install(
+               'foo',
+               {
+-                dev: true,
++                dependencies: {
++                  dev: true,
++                },
+                 yarn: true,
+               },
+               logger
+@@ -345,17 +347,15 @@ describe('installer', () => {
+               await installer.install(
+                 'redbox-react',
+                 {
+-                  peerDependencies: false,
++                  dependencies: {
++                    peer: false,
++                  },
+                   yarn: true,
+                 },
+                 logger
+               );
+ 
+-              expect(this.sync.mock.calls.length).toEqual(1);
+-              expect(this.sync.mock.calls[0][1]).toEqual([
+-                'add',
+-                'redbox-react',
+-              ]);
++              expect(this.sync.mock.calls).toMatchSnapshot();
+             });
+           });
+         });
+@@ -395,7 +395,9 @@ describe('installer', () => {
+             await installer.install(
+               'foo',
+               {
+-                dev: true,
++                dependencies: {
++                  dev: true,
++                },
+               },
+               logger
+             );
+@@ -496,22 +498,19 @@ describe('installer', () => {
+             });
+           });
+ 
+-          describe('given peerDependencies set to false', () => {
++          describe('given dependencies.peer set to false', () => {
+             it('should not install peerDependencies', async () => {
+               await installer.install(
+                 'redbox-react',
+                 {
+-                  peerDependencies: false,
++                  dependencies: {
++                    peer: false,
++                  },
+                 },
+                 logger
+               );
+ 
+-              expect(this.sync.mock.calls.length).toEqual(1);
+-              expect(this.sync.mock.calls[0][1]).toEqual([
+-                'install',
+-                'redbox-react',
+-                '--save',
+-              ]);
++              expect(this.sync.mock.calls).toMatchSnapshot();
+             });
+           });
+         });
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index c92ff05..e0b13d2 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -21,8 +21,10 @@ describe('plugin', () => {
+     this.next = jest.fn();
+ 
+     this.options = {
+-      dev: false,
+-      peerDependencies: true,
++      dependencies: {
++        dev: false,
++        peer: true,
++      },
+       quiet: false,
+       prompt: true,
+       npm: true,
+",0,
+195,c25253ba3fe83162f0650f435d795cc8b077e5f4,0f4a79fe836c6026b85f28468c4d77dcab286285,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+Not yet, will update docs after all refactor.
+**Summary**
+refactor schema, move `dev` and `peerDependencies` to `dependencies` option.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `dev` and `peerDependencies` were removed in favor of `dependencies.dev` and `dependencies.peer`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: add `dependencies` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index b081388..b30d370 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -2,18 +2,24 @@ const InstallPlugin = require('../src/plugin');
+ 
+ describe('validation', () => {
+   const cases = {
+-    dev: {
+-      success: [true, false, () => {}],
+-      failure: ['foo', 10],
++    dependencies: {
++      success: [
++        { dev: true },
++        { dev: () => {} },
++        { peerDependencies: true },
++        { dev: true, peerDependencies: true },
++      ],
++      failure: [
++        { dev: 'foo' },
++        { dev: 10 },
++        { peerDependencies: 'bar' },
++        { dev: 'test', peerDependencies: true },
++      ],
+     },
+     npm: {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    peerDependencies: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+     prompt: {
+       success: [true, false],
+       failure: ['bar', 10],
+",0,
+196,d043f7d984843afbf21623ce07876645992e3934,d043f7d984843afbf21623ce07876645992e3934,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+
+add `packageManager` option.
+
+`packageManager: 'npm' | 'yarn' | { type: 'npm' | 'yarn' , options: { dev: boolean } } | (request, path) => { type: 'npm' | 'yarn', options: { dev: boolean }
+`
+
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+`pnpm` is not yet supported.","refactor: add `packageManager` option
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index f5c6bb0..764ec2d 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -24,12 +24,9 @@ describe('plugin', () => {
+       dependencies: {
+         peer: true,
+       },
+-      packageManagerOptions: {
+-        dev: false,
+-      },
++      packageManager: 'npm',
+       quiet: false,
+       prompt: true,
+-      npm: true,
+     };
+ 
+     this.plugin = new Plugin(this.options);
+@@ -68,9 +65,12 @@ describe('plugin', () => {
+         'install-webpack-plugin'
+       );
+ 
+-      this.options.packageManagerOptions = (request, path) => {
++      this.options.packageManager = (request, path) => {
+         return {
+-          dev: request === 'babel-loader' && path === '/',
++          type: 'npm',
++          options: {
++            dev: request === 'babel-loader' && path === '/',
++          },
+         };
+       };
+ 
+",0,
+196,d043f7d984843afbf21623ce07876645992e3934,d043f7d984843afbf21623ce07876645992e3934,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+
+add `packageManager` option.
+
+`packageManager: 'npm' | 'yarn' | { type: 'npm' | 'yarn' , options: { dev: boolean } } | (request, path) => { type: 'npm' | 'yarn', options: { dev: boolean }
+`
+
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+`pnpm` is not yet supported.","refactor: add `packageManager` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 6c54833..fea8519 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -10,9 +10,29 @@ describe('validation', () => {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    packageManagerOptions: {
+-      success: [{ dev: true }, () => {}],
+-      failure: [{ dev: 10 }, { dev: 'yes' }],
++    packageManager: {
++      success: [
++        'npm',
++        'yarn',
++        {
++          type: 'npm',
++          options: {
++            dev: true,
++          },
++        },
++        {
++          type: 'yarn',
++          options: {
++            dev: true,
++          },
++        },
++        () => {},
++      ],
++      failure: [
++        'foo',
++        { type: 'foo' },
++        { type: 'npm', options: { dev: 'foo' } },
++      ],
+     },
+     prompt: {
+       success: [true, false],
+",0,
+196,d043f7d984843afbf21623ce07876645992e3934,d043f7d984843afbf21623ce07876645992e3934,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+
+add `packageManager` option.
+
+`packageManager: 'npm' | 'yarn' | { type: 'npm' | 'yarn' , options: { dev: boolean } } | (request, path) => { type: 'npm' | 'yarn', options: { dev: boolean }
+`
+
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+`pnpm` is not yet supported.","refactor: add `packageManager` option
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index f5c6bb0..764ec2d 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -24,12 +24,9 @@ describe('plugin', () => {
+       dependencies: {
+         peer: true,
+       },
+-      packageManagerOptions: {
+-        dev: false,
+-      },
++      packageManager: 'npm',
+       quiet: false,
+       prompt: true,
+-      npm: true,
+     };
+ 
+     this.plugin = new Plugin(this.options);
+@@ -68,9 +65,12 @@ describe('plugin', () => {
+         'install-webpack-plugin'
+       );
+ 
+-      this.options.packageManagerOptions = (request, path) => {
++      this.options.packageManager = (request, path) => {
+         return {
+-          dev: request === 'babel-loader' && path === '/',
++          type: 'npm',
++          options: {
++            dev: request === 'babel-loader' && path === '/',
++          },
+         };
+       };
+ 
+",0,
+196,d043f7d984843afbf21623ce07876645992e3934,d043f7d984843afbf21623ce07876645992e3934,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+
+add `packageManager` option.
+
+`packageManager: 'npm' | 'yarn' | { type: 'npm' | 'yarn' , options: { dev: boolean } } | (request, path) => { type: 'npm' | 'yarn', options: { dev: boolean }
+`
+
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+`pnpm` is not yet supported.","refactor: add `packageManager` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 6c54833..fea8519 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -10,9 +10,29 @@ describe('validation', () => {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    packageManagerOptions: {
+-      success: [{ dev: true }, () => {}],
+-      failure: [{ dev: 10 }, { dev: 'yes' }],
++    packageManager: {
++      success: [
++        'npm',
++        'yarn',
++        {
++          type: 'npm',
++          options: {
++            dev: true,
++          },
++        },
++        {
++          type: 'yarn',
++          options: {
++            dev: true,
++          },
++        },
++        () => {},
++      ],
++      failure: [
++        'foo',
++        { type: 'foo' },
++        { type: 'npm', options: { dev: 'foo' } },
++      ],
+     },
+     prompt: {
+       success: [true, false],
+",0,
+197,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+no
+**Summary**
+
+Add `pnpm` support for installing deps.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+No
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add pnpm support
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index 5ca589f..211955b 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -364,6 +364,162 @@ describe('installer', () => {
+       });
+     });
+ 
++    describe('when using pnpm', () => {
++      beforeEach(() => {
++        this.sync = jest.spyOn(spawn, 'sync').mockImplementation(() => {
++          return { stdout: null };
++        });
++      });
++
++      afterEach(() => {
++        jest.clearAllMocks();
++      });
++
++      describe('given a dependency', () => {
++        describe('with no options', () => {
++          it('should install it with --save', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: 'pnpm',
++              },
++              logger
++            );
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++          });
++        });
++
++        describe('with dev set to true', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => true);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install it with --save-dev', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual([
++              'add',
++              'foo',
++              '--save-dev',
++            ]);
++          });
++        });
++
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without options', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: 'pnpm',
++              },
++              logger
++            );
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++          });
++        });
++
++        describe('with missing peerDependencies', () => {
++          beforeEach(() => {
++            this.sync.mockImplementation((bin, args) => {
++              // eslint-disable-next-line
++              const dep = args[1];
++
++              if (dep === 'redbox-react') {
++                return {
++                  stdout: new Buffer(
++                    [
++                      '/test',
++                      '├── redbox-react@1.2.3',
++                      '└── UNMET PEER DEPENDENCY react@>=0.13.2 || ^0.14.0-rc1 || ^15.0.0-rc',
++                    ].join('\n')
++                  ),
++                };
++              }
++
++              return { stdout: null };
++            });
++          });
++
++          describe('given no options', () => {
++            it('should install peerDependencies', async () => {
++              await installer.install(
++                'redbox-react',
++                {
++                  packageManager: 'pnpm',
++                },
++                logger
++              );
++
++              expect(this.sync.mock.calls.length).toEqual(2);
++              expect(this.sync.mock.calls[0][1]).toEqual([
++                'add',
++                'redbox-react',
++              ]);
++
++              // Ignore ranges, let NPM pick
++              expect(this.sync.mock.calls[1][1]).toEqual([
++                'add',
++                'UNMET PEER DEPENDENCY react@>=0.13.2 || ^0.14.0-rc1 || ^15.0.0-rc@react',
++              ]);
++            });
++          });
++
++          describe('given peerDependencies set to false', () => {
++            it('should not install peerDependencies', async () => {
++              await installer.install(
++                'redbox-react',
++                {
++                  dependencies: {
++                    peer: false,
++                  },
++                  packageManager: 'pnpm',
++                },
++                logger
++              );
++
++              expect(this.sync.mock.calls).toMatchSnapshot();
++            });
++          });
++        });
++      });
++    });
++
+     describe('when using npm', () => {
+       beforeEach(() => {
+         this.sync = jest.spyOn(spawn, 'sync').mockImplementation(() => {
+",0,
+197,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+no
+**Summary**
+
+Add `pnpm` support for installing deps.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+No
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add pnpm support
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index fea8519..4ef88a7 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -13,6 +13,7 @@ describe('validation', () => {
+     packageManager: {
+       success: [
+         'npm',
++        'pnpm',
+         'yarn',
+         {
+           type: 'npm',
+@@ -21,6 +22,12 @@ describe('validation', () => {
+           },
+         },
+         {
++          type: 'pnpm',
++          options: {
++            dev: true,
++          },
++        },
++        {
+           type: 'yarn',
+           options: {
+             dev: true,
+",0,
+197,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+no
+**Summary**
+
+Add `pnpm` support for installing deps.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+No
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add pnpm support
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index 5ca589f..211955b 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -364,6 +364,162 @@ describe('installer', () => {
+       });
+     });
+ 
++    describe('when using pnpm', () => {
++      beforeEach(() => {
++        this.sync = jest.spyOn(spawn, 'sync').mockImplementation(() => {
++          return { stdout: null };
++        });
++      });
++
++      afterEach(() => {
++        jest.clearAllMocks();
++      });
++
++      describe('given a dependency', () => {
++        describe('with no options', () => {
++          it('should install it with --save', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: 'pnpm',
++              },
++              logger
++            );
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++          });
++        });
++
++        describe('with dev set to true', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => true);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install it with --save-dev', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual([
++              'add',
++              'foo',
++              '--save-dev',
++            ]);
++          });
++        });
++
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without options', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: 'pnpm',
++              },
++              logger
++            );
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++          });
++        });
++
++        describe('with missing peerDependencies', () => {
++          beforeEach(() => {
++            this.sync.mockImplementation((bin, args) => {
++              // eslint-disable-next-line
++              const dep = args[1];
++
++              if (dep === 'redbox-react') {
++                return {
++                  stdout: new Buffer(
++                    [
++                      '/test',
++                      '├── redbox-react@1.2.3',
++                      '└── UNMET PEER DEPENDENCY react@>=0.13.2 || ^0.14.0-rc1 || ^15.0.0-rc',
++                    ].join('\n')
++                  ),
++                };
++              }
++
++              return { stdout: null };
++            });
++          });
++
++          describe('given no options', () => {
++            it('should install peerDependencies', async () => {
++              await installer.install(
++                'redbox-react',
++                {
++                  packageManager: 'pnpm',
++                },
++                logger
++              );
++
++              expect(this.sync.mock.calls.length).toEqual(2);
++              expect(this.sync.mock.calls[0][1]).toEqual([
++                'add',
++                'redbox-react',
++              ]);
++
++              // Ignore ranges, let NPM pick
++              expect(this.sync.mock.calls[1][1]).toEqual([
++                'add',
++                'UNMET PEER DEPENDENCY react@>=0.13.2 || ^0.14.0-rc1 || ^15.0.0-rc@react',
++              ]);
++            });
++          });
++
++          describe('given peerDependencies set to false', () => {
++            it('should not install peerDependencies', async () => {
++              await installer.install(
++                'redbox-react',
++                {
++                  dependencies: {
++                    peer: false,
++                  },
++                  packageManager: 'pnpm',
++                },
++                logger
++              );
++
++              expect(this.sync.mock.calls).toMatchSnapshot();
++            });
++          });
++        });
++      });
++    });
++
+     describe('when using npm', () => {
+       beforeEach(() => {
+         this.sync = jest.spyOn(spawn, 'sync').mockImplementation(() => {
+",0,
+197,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,e7dcd246b2d430ee49bc4dac2be3449bd13bd825,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+yes
+**If relevant, did you update the documentation?**
+no
+**Summary**
+
+Add `pnpm` support for installing deps.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+No
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add pnpm support
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index fea8519..4ef88a7 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -13,6 +13,7 @@ describe('validation', () => {
+     packageManager: {
+       success: [
+         'npm',
++        'pnpm',
+         'yarn',
+         {
+           type: 'npm',
+@@ -21,6 +22,12 @@ describe('validation', () => {
+           },
+         },
+         {
++          type: 'pnpm',
++          options: {
++            dev: true,
++          },
++        },
++        {
+           type: 'yarn',
+           options: {
+             dev: true,
+",0,
+200,3ab91041d25fe36579f665d2933e0addffca32aa,3ab91041d25fe36579f665d2933e0addffca32aa,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+No
+**If relevant, did you update the documentation?**
+No
+**Summary**
+update schema removes stale properties.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: remove stale properties from schema
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 4ef88a7..fe8fae6 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -6,10 +6,6 @@ describe('validation', () => {
+       success: [{ peer: true }, { peer: false }],
+       failure: [{ peer: 'bar' }, { peer: 10 }],
+     },
+-    npm: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+     packageManager: {
+       success: [
+         'npm',
+@@ -49,10 +45,6 @@ describe('validation', () => {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    yarn: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+   };
+ 
+   function stringifyValue(value) {
+",0,
+200,3ab91041d25fe36579f665d2933e0addffca32aa,3ab91041d25fe36579f665d2933e0addffca32aa,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+refactor
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+No
+**If relevant, did you update the documentation?**
+No
+**Summary**
+update schema removes stale properties.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+yes
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","refactor: remove stale properties from schema
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 4ef88a7..fe8fae6 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -6,10 +6,6 @@ describe('validation', () => {
+       success: [{ peer: true }, { peer: false }],
+       failure: [{ peer: 'bar' }, { peer: 10 }],
+     },
+-    npm: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+     packageManager: {
+       success: [
+         'npm',
+@@ -49,10 +45,6 @@ describe('validation', () => {
+       success: [true, false],
+       failure: ['bar', 10],
+     },
+-    yarn: {
+-      success: [true, false],
+-      failure: ['bar', 10],
+-    },
+   };
+ 
+   function stringifyValue(value) {
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,2aba13acd6e6f5c0bfff14fe085a0cc77d73422c,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: allow to set custom arguments for package manager
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index 764ec2d..91f6109 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -25,7 +25,6 @@ describe('plugin', () => {
+         peer: true,
+       },
+       packageManager: 'npm',
+-      quiet: false,
+       prompt: true,
+     };
+ 
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,2aba13acd6e6f5c0bfff14fe085a0cc77d73422c,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: allow to set custom arguments for package manager
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index fe8fae6..3a268a1 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -29,12 +29,21 @@ describe('validation', () => {
+             dev: true,
+           },
+         },
++        {
++          type: 'npm',
++          options: {
++            dev: true,
++            arguments: ['--quiet'],
++          },
++        },
+         () => {},
+       ],
+       failure: [
+         'foo',
+         { type: 'foo' },
+         { type: 'npm', options: { dev: 'foo' } },
++        { type: 'npm', options: { arguments: '10' } },
++        { type: 'npm', options: { arguments: [] } },
+       ],
+     },
+     prompt: {
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,c0cede7aa829fded1befda6bb2573fa8c9cf5096,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add packageManager.options.quiet
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index d47c0d1..15876a6 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -18,6 +18,18 @@ describe('installer', () => {
+       expect(installer.defaultOptions.packageManager.type).toEqual('npm');
+     });
+ 
++    it(`should default packageManager.options.dev to false`, () => {
++      expect(installer.defaultOptions.packageManager.options.dev).toEqual(
++        false
++      );
++    });
++
++    it(`should default packageManager.options.quiet to false`, () => {
++      expect(installer.defaultOptions.packageManager.options.quiet).toEqual(
++        false
++      );
++    });
++
+     it('should default dependencies.peer to true', () => {
+       expect(installer.defaultOptions.dependencies.peer).toEqual(true);
+     });
+@@ -327,63 +339,69 @@ describe('installer', () => {
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
+-          it('should install it with --dev', async () => {
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without options', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: {
+-                  type: 'yarn',
+-                  options: {
+-                    dev: true,
+-                  },
+-                },
++                packageManager: 'yarn',
+               },
+               logger
+             );
+-
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo', '--dev']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+-        describe('without a package.json present', () => {
++        describe('with package manager options', () => {
+           beforeEach(() => {
+             jest
+               .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
++              .mockImplementation(() => true);
+           });
+ 
+           afterEach(() => {
+             jest.clearAllMocks();
+           });
+ 
+-          it('should install without options', async () => {
++          it('should install it with --dev', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: 'yarn',
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    dev: true,
++                  },
++                },
+               },
+               logger
+             );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('with package manager arguments', () => {
+-          it('should install it with --silent', async () => {
++          it('should install it with --silent when quiet is true', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'yarn',
+                   options: {
+-                    arguments: ['--silent'],
++                    quiet: true,
+                   },
+                 },
+               },
+@@ -392,12 +410,47 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'add',
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
++          });
++
++          it('should install it with --ignore-scripts', async () => {
++            await installer.install(
+               'foo',
+-              '--silent',
+-            ]);
++              {
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
++          });
++
++          it('should install it with all arguments', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+@@ -480,7 +533,7 @@ describe('installer', () => {
+ 
+       describe('given a dependency', () => {
+         describe('with no options', () => {
+-          it('should install it with --save', async () => {
++          it('should install it without addition arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+@@ -490,12 +543,11 @@ describe('installer', () => {
+             );
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
++        describe('with package manager options', () => {
+           beforeEach(() => {
+             jest
+               .spyOn(installer, 'packageExists')
+@@ -506,14 +558,14 @@ describe('installer', () => {
+             jest.clearAllMocks();
+           });
+ 
+-          it('should install it with --save-dev', async () => {
++          it('should install it with --ignore-workspace-root-check', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'pnpm',
+                   options: {
+-                    dev: true,
++                    arguments: ['--ignore-workspace-root-check'],
+                   },
+                 },
+               },
+@@ -522,38 +574,47 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'add',
+-              'foo',
+-              '--save-dev',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('without a package.json present', () => {
+-          beforeEach(() => {
+-            jest
+-              .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
+-          });
++          it('should install it with --save-dev', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                  },
++                },
++              },
++              logger
++            );
+ 
+-          afterEach(() => {
+-            jest.clearAllMocks();
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+ 
+-          it('should install without options', async () => {
++          it('should install it with all arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: 'pnpm',
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-workspace-root-check'],
++                  },
++                },
+               },
+               logger
+             );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+@@ -651,7 +712,37 @@ describe('installer', () => {
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without --save', async () => {
++            await installer.install('foo', {}, logger);
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('npm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['install', 'foo']);
++          });
++        });
++
++        describe('with package manager options', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => true);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
+           it('should install it with --save-dev', async () => {
+             await installer.install(
+               'foo',
+@@ -668,44 +759,57 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'install',
+-              'foo',
+-              '--save-dev',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('without a package.json present', () => {
+-          beforeEach(() => {
+-            jest
+-              .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
+-          });
++          it('should install it with --silent when quiet is true', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'npm',
++                  options: {
++                    quiet: true,
++                  },
++                },
++              },
++              logger
++            );
+ 
+-          afterEach(() => {
+-            jest.clearAllMocks();
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+ 
+-          it('should install without --save', async () => {
+-            await installer.install('foo', {}, logger);
++          it('should install it with --ignore-scripts', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'npm',
++                  options: {
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['install', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('with package manager arguments', () => {
+-          it('should install it with --silent --no-progress arguments', async () => {
++          it('should install it with all arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'npm',
+                   options: {
+-                    arguments: ['--silent', '--no-progress'],
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-scripts'],
+                   },
+                 },
+               },
+@@ -714,14 +818,7 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'install',
+-              'foo',
+-              '--save',
+-              '--silent',
+-              '--no-progress',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,2aba13acd6e6f5c0bfff14fe085a0cc77d73422c,test/__snapshots__/plugin.test.js.snap,test/plugin.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: allow to set custom arguments for package manager
+","diff --git a/test/plugin.test.js b/test/plugin.test.js
+index 764ec2d..91f6109 100644
+--- a/test/plugin.test.js
++++ b/test/plugin.test.js
+@@ -25,7 +25,6 @@ describe('plugin', () => {
+         peer: true,
+       },
+       packageManager: 'npm',
+-      quiet: false,
+       prompt: true,
+     };
+ 
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,2aba13acd6e6f5c0bfff14fe085a0cc77d73422c,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: allow to set custom arguments for package manager
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index fe8fae6..3a268a1 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -29,12 +29,21 @@ describe('validation', () => {
+             dev: true,
+           },
+         },
++        {
++          type: 'npm',
++          options: {
++            dev: true,
++            arguments: ['--quiet'],
++          },
++        },
+         () => {},
+       ],
+       failure: [
+         'foo',
+         { type: 'foo' },
+         { type: 'npm', options: { dev: 'foo' } },
++        { type: 'npm', options: { arguments: '10' } },
++        { type: 'npm', options: { arguments: [] } },
+       ],
+     },
+     prompt: {
+",0,
+201,bdaf5609031fa0e072846fe0d21058422eea8923,c0cede7aa829fded1befda6bb2573fa8c9cf5096,test/__snapshots__/installer.test.js.snap,test/installer.test.js,"<!-- Thanks for submitting a pull request! Please provide enough information so that others can review your pull request. -->
+
+**What kind of change does this PR introduce?**
+feature
+<!-- E.g. a bugfix, feature, refactoring, build related change, etc… -->
+
+**Did you add tests for your changes?**
+Yes
+**If relevant, did you update the documentation?**
+No
+**Summary**
+Allow passing more arguments to the package manager.
+<!-- Explain the **motivation** for making this change. What existing problem does the pull request solve? -->
+<!-- Try to link to an open issue for more information. -->
+
+**Does this PR introduce a breaking change?**
+Yes, `options.quiet` was removed in favor of `packageManager.options.quiet`
+<!-- If this PR introduces a breaking change, please describe the impact and a migration path for existing applications. -->
+
+**Other information**
+No","feat: add packageManager.options.quiet
+","diff --git a/test/installer.test.js b/test/installer.test.js
+index d47c0d1..15876a6 100644
+--- a/test/installer.test.js
++++ b/test/installer.test.js
+@@ -18,6 +18,18 @@ describe('installer', () => {
+       expect(installer.defaultOptions.packageManager.type).toEqual('npm');
+     });
+ 
++    it(`should default packageManager.options.dev to false`, () => {
++      expect(installer.defaultOptions.packageManager.options.dev).toEqual(
++        false
++      );
++    });
++
++    it(`should default packageManager.options.quiet to false`, () => {
++      expect(installer.defaultOptions.packageManager.options.quiet).toEqual(
++        false
++      );
++    });
++
+     it('should default dependencies.peer to true', () => {
+       expect(installer.defaultOptions.dependencies.peer).toEqual(true);
+     });
+@@ -327,63 +339,69 @@ describe('installer', () => {
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
+-          it('should install it with --dev', async () => {
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without options', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: {
+-                  type: 'yarn',
+-                  options: {
+-                    dev: true,
+-                  },
+-                },
++                packageManager: 'yarn',
+               },
+               logger
+             );
+-
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo', '--dev']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+-        describe('without a package.json present', () => {
++        describe('with package manager options', () => {
+           beforeEach(() => {
+             jest
+               .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
++              .mockImplementation(() => true);
+           });
+ 
+           afterEach(() => {
+             jest.clearAllMocks();
+           });
+ 
+-          it('should install without options', async () => {
++          it('should install it with --dev', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: 'yarn',
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    dev: true,
++                  },
++                },
+               },
+               logger
+             );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('with package manager arguments', () => {
+-          it('should install it with --silent', async () => {
++          it('should install it with --silent when quiet is true', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'yarn',
+                   options: {
+-                    arguments: ['--silent'],
++                    quiet: true,
+                   },
+                 },
+               },
+@@ -392,12 +410,47 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('yarn');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'add',
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
++          });
++
++          it('should install it with --ignore-scripts', async () => {
++            await installer.install(
+               'foo',
+-              '--silent',
+-            ]);
++              {
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
++          });
++
++          it('should install it with all arguments', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'yarn',
++                  options: {
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+@@ -480,7 +533,7 @@ describe('installer', () => {
+ 
+       describe('given a dependency', () => {
+         describe('with no options', () => {
+-          it('should install it with --save', async () => {
++          it('should install it without addition arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+@@ -490,12 +543,11 @@ describe('installer', () => {
+             );
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
++        describe('with package manager options', () => {
+           beforeEach(() => {
+             jest
+               .spyOn(installer, 'packageExists')
+@@ -506,14 +558,14 @@ describe('installer', () => {
+             jest.clearAllMocks();
+           });
+ 
+-          it('should install it with --save-dev', async () => {
++          it('should install it with --ignore-workspace-root-check', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'pnpm',
+                   options: {
+-                    dev: true,
++                    arguments: ['--ignore-workspace-root-check'],
+                   },
+                 },
+               },
+@@ -522,38 +574,47 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'add',
+-              'foo',
+-              '--save-dev',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('without a package.json present', () => {
+-          beforeEach(() => {
+-            jest
+-              .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
+-          });
++          it('should install it with --save-dev', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                  },
++                },
++              },
++              logger
++            );
+ 
+-          afterEach(() => {
+-            jest.clearAllMocks();
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+ 
+-          it('should install without options', async () => {
++          it('should install it with all arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+-                packageManager: 'pnpm',
++                packageManager: {
++                  type: 'pnpm',
++                  options: {
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-workspace-root-check'],
++                  },
++                },
+               },
+               logger
+             );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('pnpm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['add', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+@@ -651,7 +712,37 @@ describe('installer', () => {
+           });
+         });
+ 
+-        describe('with dev set to true', () => {
++        describe('without a package.json present', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => false);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
++          it('should install without --save', async () => {
++            await installer.install('foo', {}, logger);
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0][0]).toEqual('npm');
++            expect(this.sync.mock.calls[0][1]).toEqual(['install', 'foo']);
++          });
++        });
++
++        describe('with package manager options', () => {
++          beforeEach(() => {
++            jest
++              .spyOn(installer, 'packageExists')
++              .mockImplementation(() => true);
++          });
++
++          afterEach(() => {
++            jest.clearAllMocks();
++          });
++
+           it('should install it with --save-dev', async () => {
+             await installer.install(
+               'foo',
+@@ -668,44 +759,57 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'install',
+-              'foo',
+-              '--save-dev',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('without a package.json present', () => {
+-          beforeEach(() => {
+-            jest
+-              .spyOn(installer, 'packageExists')
+-              .mockImplementation(() => false);
+-          });
++          it('should install it with --silent when quiet is true', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'npm',
++                  options: {
++                    quiet: true,
++                  },
++                },
++              },
++              logger
++            );
+ 
+-          afterEach(() => {
+-            jest.clearAllMocks();
++            expect(this.sync).toHaveBeenCalled();
++            expect(this.sync.mock.calls.length).toEqual(1);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+ 
+-          it('should install without --save', async () => {
+-            await installer.install('foo', {}, logger);
++          it('should install it with --ignore-scripts', async () => {
++            await installer.install(
++              'foo',
++              {
++                packageManager: {
++                  type: 'npm',
++                  options: {
++                    arguments: ['--ignore-scripts'],
++                  },
++                },
++              },
++              logger
++            );
++
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual(['install', 'foo']);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+-        });
+ 
+-        describe('with package manager arguments', () => {
+-          it('should install it with --silent --no-progress arguments', async () => {
++          it('should install it with all arguments', async () => {
+             await installer.install(
+               'foo',
+               {
+                 packageManager: {
+                   type: 'npm',
+                   options: {
+-                    arguments: ['--silent', '--no-progress'],
++                    dev: true,
++                    quiet: true,
++                    arguments: ['--ignore-scripts'],
+                   },
+                 },
+               },
+@@ -714,14 +818,7 @@ describe('installer', () => {
+ 
+             expect(this.sync).toHaveBeenCalled();
+             expect(this.sync.mock.calls.length).toEqual(1);
+-            expect(this.sync.mock.calls[0][0]).toEqual('npm');
+-            expect(this.sync.mock.calls[0][1]).toEqual([
+-              'install',
+-              'foo',
+-              '--save',
+-              '--silent',
+-              '--no-progress',
+-            ]);
++            expect(this.sync.mock.calls[0]).toMatchSnapshot();
+           });
+         });
+ 
+",0,

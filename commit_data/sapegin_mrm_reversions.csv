@@ -1,0 +1,659 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+113,63fc3c8726313a36094da48fd9a4b0ac509a6c62,63fc3c8726313a36094da48fd9a4b0ac509a6c62,Implements #112,"Implement #112
+","diff --git a/packages/mrm-core/src/formats/__tests__/yaml.spec.js b/packages/mrm-core/src/formats/__tests__/yaml.spec.js
+index 45c087b..62eec72 100644
+--- a/packages/mrm-core/src/formats/__tests__/yaml.spec.js
++++ b/packages/mrm-core/src/formats/__tests__/yaml.spec.js
+@@ -51,6 +51,16 @@ describe('yaml()', () => {
+ 			.get();
+ 		expect(result).toEqual({ a: 1 });
+ 	});
++
++	it('can specify YAML version', () => {
++		vol.fromJSON({
++			'/test.yml': 'bool: yes',
++		});
++		const file = yaml(filename, {}, { version: '1.1' });
++		expect(file.get('bool')).toBe(true);
++		file.set('string', 'yes').save();
++		expect(vol.toJSON()).toMatchSnapshot();
++	});
+ });
+ 
+ describe('exists()', () => {
+",0,,4,32,1,1,4,32
+123,849f0204f7e33f71458679bb7e2afaaa5c20766c,af35d1568c3ae65517beb1d7cbc1decf4e8d4ba5,"I didn't know if you might want `smpltmpl` exposed from `mrm-core`, so added as a direct dependency for now (also whether you'd like a `cross-spawn` utility in core as I think might be useful to expose).
+
+Thanks!","Additional tests
+","diff --git a/packages/mrm-task-readme/index.spec.js b/packages/mrm-task-readme/index.spec.js
+index cedf012..e49041a 100644
+--- a/packages/mrm-task-readme/index.spec.js
++++ b/packages/mrm-task-readme/index.spec.js
+@@ -65,3 +65,54 @@ it('should add a readme with custom file name', async () => {
+ 		'[LICENSE-MIT.md](LICENSE-MIT.md)'
+ 	);
+ });
++
++it('should add a readme without contributing', async () => {
++	vol.fromJSON({
++		[`${__dirname}/templates/Readme.md`]: fs
++			.readFileSync(path.join(__dirname, 'templates/Readme.md'))
++			.toString(),
++		'/package.json': stringify({
++			name: 'unicorn',
++			repository: 'gandalf/unicorn',
++		}),
++	});
++
++	task(
++		await getTaskOptions(task, false, {
++			name: 'Gandalf',
++			url: 'https://middleearth.com',
++			includeContributing: false,
++		})
++	);
++
++	expect(
++		omitBy(vol.toJSON(), (v, k) => k.startsWith(__dirname))
++	).toMatchSnapshot();
++});
++
++it('should add a readme with custom contributing', async () => {
++	vol.fromJSON({
++		[`${__dirname}/templates/Readme.md`]: fs
++			.readFileSync(path.join(__dirname, 'templates/Readme.md'))
++			.toString(),
++		[`${__dirname}/templates/Contributing.md`]: fs
++			.readFileSync(path.join(__dirname, 'templates/Contributing.md'))
++			.toString(),
++		'/package.json': stringify({
++			name: 'unicorn',
++			repository: 'gandalf/unicorn',
++		}),
++	});
++
++	task(
++		await getTaskOptions(task, false, {
++			name: 'Gandalf',
++			url: 'https://middleearth.com',
++			contributingFile: 'CONTRIBUTIONS.md',
++		})
++	);
++
++	expect(
++		omitBy(vol.toJSON(), (v, k) => k.startsWith(__dirname))
++	).toMatchSnapshot();
++});
+",0,,3,106,1,6,9,165
+124,56c0b20ae7013cbea4ebf0662af05ecdc7c7de0d,fdff30331e267d77fa086575c5fb20244649c634,"This allows `licenseFile` to be template-based with a dynamic `${license}` portion, and adds the same to the `readme` task for parity. Will only be used if user uses template with `${license}`. Allow for preserving a file name style, e.g., `LICENSE-MIT.md` without hard-coding the license in, and allowing the license to more easily be swapped out so as to impact the name also.
+
+And as with #123, let me know if you want `smpltmpl` reexported from mrm-core.","add `license` to `readme` for parity
+","diff --git a/packages/mrm-task-readme/index.spec.js b/packages/mrm-task-readme/index.spec.js
+index cb4365b..c913ae8 100644
+--- a/packages/mrm-task-readme/index.spec.js
++++ b/packages/mrm-task-readme/index.spec.js
+@@ -37,3 +37,28 @@ it('should add a readme', async () => {
+ 		omitBy(vol.toJSON(), (v, k) => k.startsWith(__dirname))
+ 	).toMatchSnapshot();
+ });
++
++it('should add a readme with custom file name', async () => {
++	vol.fromJSON({
++		[`${__dirname}/templates/Readme.md`]: fs
++			.readFileSync(path.join(__dirname, 'templates/Readme.md'))
++			.toString(),
++		'/package.json': stringify({
++			name: 'unicorn',
++			repository: 'gandalf/unicorn',
++		}),
++	});
++
++	task(
++		await getTaskOptions(task, false, {
++			name: 'Gandalf',
++			url: 'https://middleearth.com',
++			license: 'MIT',
++			licenseFile: ""${('license-' + license).toUpperCase()}.md"",
++		})
++	);
++
++	expect(
++		omitBy(vol.toJSON(), (v, k) => k.startsWith(__dirname))
++	).toMatchSnapshot();
++});
+",1,OID=OID,5,74,1,3,8,78
+143,02dfd842aff4fbc6cf7cb5d77e6b53dcb9ae537e,5df525dd564d2c44aa8aef40d51f1e95a2256113,"feat(install/uninstall): add pnpm support (option or auto-detect)
+
+This fixes the part of #114 which brings pnpm into parity with existing Yarn/YarnBerry support.","Support pnpm-lock.yaml addition/removal in gitignore;
+","diff --git a/packages/mrm-task-gitignore/index.spec.js b/packages/mrm-task-gitignore/index.spec.js
+index 3204483..e77037c 100644
+--- a/packages/mrm-task-gitignore/index.spec.js
++++ b/packages/mrm-task-gitignore/index.spec.js
+@@ -17,7 +17,7 @@ it('should add .gitignore', async () => {
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ });
+ 
+-it('should add package-lock.json, if yarn.lock exists', async () => {
++it('should add package-lock.json and pnpm-lock.yaml, if yarn.lock exists', async () => {
+ 	vol.fromJSON({
+ 		'/yarn.lock': '',
+ 	});
+@@ -27,7 +27,7 @@ it('should add package-lock.json, if yarn.lock exists', async () => {
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ });
+ 
+-it('should add yarn.lock, if package-lock.json exists', async () => {
++it('should add yarn.lock and pnpm-lock.yaml, if package-lock.json exists', async () => {
+ 	vol.fromJSON({
+ 		'/package-lock.json': '',
+ 	});
+@@ -36,3 +36,13 @@ it('should add yarn.lock, if package-lock.json exists', async () => {
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ });
++
++it('should add package-lock.json and yarn.lock, if pnpm-lock.yaml exists', async () => {
++	vol.fromJSON({
++		'/pnpm-lock.yaml': '',
++	});
++
++	task(await getTaskOptions(task, false, {}));
++
++	expect(vol.toJSON()).toMatchSnapshot();
++});
+",0,,3,53,1,7,9,294
+149,b5a25beaa0a472fbca9c4ed1a608a309adeba1ed,b512e1fd039d5831d1f033f01c17325c67081a53,"[`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks) is a git hook manager.
+
+This migration will bring these benefits to users:
+* `simple-git-hooks` has 0 dependencies and took 10 KB of `node_modules` space compared to 1 MB of husky 4.
+* `simple-git-hooks` doesn’t read config on every `pre-commit` hook call which increases the performance. It uses the husky 5 model when you need explicitly to call a script on config changes. But it is a good trade-off for `lint-staged` case. It should give around a 0.5 second performance boost for `pre-commit`.
+
+Comparison with husky 5:
+1. We can start having all husky 5 benefits (performance, small size) without waiting for MIT license for husky 5.
+2. `simple-git-hooks` is smaller than husky 5.
+3. husky 5 [requires](https://github.com/typicode/husky/issues/868) extra scripts in `package.json`.
+4. husky 5 [requires](https://typicode.github.io/husky/#/?id=yarn-v2) an extra `pinst` dependency for Yarn 2. `simple-git-hooks` has [out-of-the box](https://github.com/toplenboren/simple-git-hooks/issues/30) Yarn 2 support.
+
+I already tested `simple-git-hooks` on Autoprefixer, PostCSS, Browserslist, and my commercial projects (with a big team). Everything works great. Other people [reported](https://twitter.com/smithua/status/1372490975029911559) about successful migration too. @toplenboren `simple-git-hooks` maintainer is always open for the changes and answers quickly.","Replace husky 4 to simple-git-hooks
+","diff --git a/packages/mrm-task-lint-staged/index.spec.js b/packages/mrm-task-lint-staged/index.spec.js
+index e98a19e..759177d 100644
+--- a/packages/mrm-task-lint-staged/index.spec.js
++++ b/packages/mrm-task-lint-staged/index.spec.js
+@@ -56,7 +56,10 @@ it('should add Prettier if project depends on it', async () => {
+ 	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should add Prettier and ESLint', async () => {
+@@ -128,7 +131,10 @@ it('should add ESLint if project depends on it', async () => {
+ 	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should use default JS extension if eslint command has no --ext key', async () => {
+@@ -238,7 +244,10 @@ it('should add stylelint if project depends on it', async () => {
+ 	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should use a custom stylelint extension', async () => {
+@@ -277,7 +286,10 @@ it('should add a custom rule', async () => {
+ 	);
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should update an existing rule', async () => {
+@@ -297,7 +309,10 @@ it('should update an existing rule', async () => {
+ 	task(await getTaskOptions(task, false));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should merge rules with the same pattern', async () => {
+@@ -325,7 +340,10 @@ it('should merge rules with the same pattern', async () => {
+ 	);
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith({ 'lint-staged': '>=10', husky: '=4' });
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'simple-git-hooks': '>=2.0.3',
++	});
+ });
+ 
+ it('should remove husky 0.14 config from package.json', async () => {
+@@ -345,3 +363,23 @@ it('should remove husky 0.14 config from package.json', async () => {
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ });
++
++it('should remove husky 4 config from package.json', async () => {
++	vol.fromJSON({
++		'/package.json': stringify({
++			name: 'unicorn',
++			husky: {
++				hooks: {
++					'pre-commit': 'lint-staged',
++				},
++			},
++			devDependencies: {
++				eslint: '*',
++			},
++		}),
++	});
++
++	task(await getTaskOptions(task));
++
++	expect(vol.toJSON()).toMatchSnapshot();
++});
+",0,,3,167,1,2,3,184
+152,063b0f88b85f3438fc2f0f7067f59209d8e4d8e0,02d62c94ecb33f6187cd13e695f12935faf736b0,"Husky 6 has been released and is MIT. It's only 6 kB now with the same main features as husky 4.
+Fixes #150","feat: use husky 6
+","diff --git a/packages/mrm-task-lint-staged/index.spec.js b/packages/mrm-task-lint-staged/index.spec.js
+index 3812f2b..84d4d67 100644
+--- a/packages/mrm-task-lint-staged/index.spec.js
++++ b/packages/mrm-task-lint-staged/index.spec.js
+@@ -3,9 +3,14 @@ jest.mock('mrm-core/src/npm', () => ({
+ 	uninstall: jest.fn(),
+ 	install: jest.fn(),
+ }));
++jest.mock('husky', () => ({
++  install: jest.fn(),
++  add: jest.fn(),
++}))
+ 
+ const { install, uninstall } = require('mrm-core');
+ const { getTaskOptions } = require('mrm');
++const husky = require('husky')
+ const vol = require('memfs').vol;
+ const task = require('./index');
+ 
+@@ -28,6 +33,8 @@ afterEach(() => {
+ 	vol.reset();
+ 	install.mockClear();
+ 	uninstall.mockClear();
++	husky.install.mockClear();
++	husky.add.mockClear();
+ 	console.log = console$log;
+ });
+ 
+@@ -58,11 +65,13 @@ it('should add Prettier if project depends on it', async () => {
+ 	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(uninstall).toBeCalledWith('husky');
++	expect(uninstall).toBeCalledWith('simple-git-hooks');
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
++	expect(husky.install).toHaveBeenCalled()
++	expect(husky.add).toBeCalledWith('.husky/pre-commit', 'npx lint-staged')
+ });
+ 
+ it('should add Prettier and ESLint', async () => {
+@@ -134,10 +143,10 @@ it('should add ESLint if project depends on it', async () => {
+ 	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(uninstall).toBeCalledWith('husky');
++	expect(uninstall).toBeCalledWith('simple-git-hooks');
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
+ });
+ 
+@@ -250,7 +259,7 @@ it('should add stylelint if project depends on it', async () => {
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
+ });
+ 
+@@ -290,10 +299,10 @@ it('should add a custom rule', async () => {
+ 	);
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(uninstall).toBeCalledWith('husky');
++	expect(uninstall).toBeCalledWith('simple-git-hooks');
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
+ });
+ 
+@@ -314,10 +323,10 @@ it('should update an existing rule', async () => {
+ 	task(await getTaskOptions(task, false));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(uninstall).toBeCalledWith('husky');
++	expect(uninstall).toBeCalledWith('simple-git-hooks');
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
+ });
+ 
+@@ -346,10 +355,10 @@ it('should merge rules with the same pattern', async () => {
+ 	);
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(uninstall).toBeCalledWith('husky');
++	expect(uninstall).toBeCalledWith('simple-git-hooks');
+ 	expect(install).toBeCalledWith({
+ 		'lint-staged': '>=10',
+-		'simple-git-hooks': '>=2.0.3',
++		'husky': '>=6',
+ 	});
+ });
+ 
+@@ -390,3 +399,51 @@ it('should remove husky 4 config from package.json', async () => {
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+ });
++
++it('should use Yarn 2 specific lifecycle', async() => {
++	vol.fromJSON({
++		'/package.json': stringify({
++			private: true,
++			name: 'unicorn',
++			devDependencies: {
++				eslint: '*',
++			},
++		}),
++	});
++
++	task(
++		await getTaskOptions(task, false, {
++			isYarn2: true
++		})
++	);
++
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'husky': '>=6',
++	})
++	expect(vol.toJSON()).toMatchSnapshot();
++})
++
++it('should use Yarn 2 specific lifecycle (public)', async() => {
++	vol.fromJSON({
++		'/package.json': stringify({
++			name: 'unicorn',
++			devDependencies: {
++				eslint: '*',
++			},
++		}),
++	});
++
++	task(
++		await getTaskOptions(task, false, {
++			isYarn2: true
++		})
++	);
++
++	expect(install).toBeCalledWith({
++		'lint-staged': '>=10',
++		'husky': '>=6',
++		'pinst': '>=2'
++	});
++	expect(vol.toJSON()).toMatchSnapshot();
++})
+",0,,5,353,1,2,6,345
+71,8557275f2a5d6539177d9a6256ee34253b9aab18,8557275f2a5d6539177d9a6256ee34253b9aab18,"* Install / upgrade Prettier 2.0.
+* Use dependencies (ESLint, Stylelint and TypeScript) to gather extensions to run Prettier, change the default value for `prettierPattern` to autodetection instead of fixed `js,css,md`.
+* Support the new interactive mode.
+
+BREAKING CHANGE:
+
+* Prettier will be upgraded to 2.0, you may need to tweak your config since they changed defaults for some options.","feat(Prettier): Prettier 2.0, smarter defaults, interactive mode
+
+* Install / upgrade Prettier 2.0.
+* Use dependencies (ESLint, Stylelint and TypeScript) to gather extensions to run Prettier, change the default value for `prettierPattern` to autodetection instead of fixed `js,css,md`.
+* Support the new interactive mode.
+
+BREAKING CHANGE:
+
+* Prettier will be upgraded to 2.0, you may need to tweak your config since they changed defaults for some options.
+","diff --git a/packages/mrm-task-prettier/index.spec.js b/packages/mrm-task-prettier/index.spec.js
+index cc1df97..21efcfc 100644
+--- a/packages/mrm-task-prettier/index.spec.js
++++ b/packages/mrm-task-prettier/index.spec.js
+@@ -7,7 +7,7 @@ jest.mock('mrm-core/src/npm', () => ({
+ }));
+ 
+ const { install } = require('mrm-core');
+-const { getConfigGetter } = require('mrm');
++const { getTaskOptions } = require('mrm');
+ const vol = require('memfs').vol;
+ const task = require('./index');
+ 
+@@ -25,44 +25,58 @@ afterEach(() => {
+ 	install.mockClear();
+ });
+ 
+-it('should add Prettier', () => {
++it('should add Prettier', async () => {
+ 	vol.fromJSON({
+ 		'/package.json': packageJson,
+ 	});
+ 
+-	task(getConfigGetter({}));
++	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()).toMatchSnapshot();
+-	expect(install).toBeCalledWith(['prettier']);
++	expect(install).toBeCalledWith({ prettier: '>=2' });
+ });
+ 
+-it('should use a custom indent', () => {
++it('should use a custom indent', async () => {
+ 	vol.fromJSON({
+ 		'/package.json': packageJson,
+ 	});
+ 
+-	task(getConfigGetter({ indent: 'tab' }));
++	task(await getTaskOptions(task, false, { indent: 'tab' }));
+ 
+ 	expect(vol.toJSON()['/.prettierrc']).toMatchSnapshot();
+ });
+ 
+-it('should use a custom options', () => {
++it('should use a custom options', async () => {
+ 	vol.fromJSON({
+ 		'/package.json': packageJson,
+ 	});
+ 
+-	task(getConfigGetter({ prettierOptions: { printWidth: 333 } }));
++	task(
++		await getTaskOptions(task, false, { prettierOptions: { printWidth: 333 } })
++	);
+ 
+ 	expect(vol.toJSON()['/.prettierrc']).toMatchSnapshot();
+ });
+ 
+-it('should use custom overrides', () => {
++it('should use a custom pattern', async () => {
++	vol.fromJSON({
++		'/package.json': packageJson,
++	});
++
++	task(
++		await getTaskOptions(task, false, { prettierPattern: '**/*.{xxx,yyy}' })
++	);
++
++	expect(vol.toJSON()['/package.json']).toMatchSnapshot();
++});
++
++it('should use custom overrides', async () => {
+ 	vol.fromJSON({
+ 		'/package.json': packageJson,
+ 	});
+ 
+ 	task(
+-		getConfigGetter({
++		await getTaskOptions(task, false, {
+ 			prettierOverrides: [
+ 				{
+ 					files: '*.css',
+@@ -77,18 +91,18 @@ it('should use custom overrides', () => {
+ 	expect(vol.toJSON()['/.prettierrc']).toMatchSnapshot();
+ });
+ 
+-it('should infer options from EditorConfig', () => {
++it('should infer options from EditorConfig', async () => {
+ 	vol.fromJSON({
+ 		'/.editorconfig': '[*]\nindent_style = space\nindent_size = 2',
+ 		'/package.json': packageJson,
+ 	});
+ 
+-	task(getConfigGetter());
++	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()['/.prettierrc']).toMatchSnapshot();
+ });
+ 
+-it('should keep a custom pattern defined in a package.json script', () => {
++it('should extend a custom pattern defined in a package.json script', async () => {
+ 	vol.fromJSON({
+ 		'/package.json': stringify({
+ 			name: 'unicorn',
+@@ -99,7 +113,7 @@ it('should keep a custom pattern defined in a package.json script', () => {
+ 		}),
+ 	});
+ 
+-	task(getConfigGetter({}));
++	task(await getTaskOptions(task));
+ 
+ 	expect(vol.toJSON()['/package.json']).toMatchSnapshot();
+ });
+",0,,6,514,1,1,6,514
+94,7157d05d38200f3bc4524d53283b714d343ed938,7157d05d38200f3bc4524d53283b714d343ed938,"Hi!
+Base on npm documentation: https://docs.npmjs.com/files/package.json#people-fields-author-contributors, author field can be an object on an string. In this PR try to add this behavior to mrm task license","update getAuthorName method and tests in task license
+","diff --git a/packages/mrm-task-license/index.spec.js b/packages/mrm-task-license/index.spec.js
+index 0e411f6..c6f01b2 100644
+--- a/packages/mrm-task-license/index.spec.js
++++ b/packages/mrm-task-license/index.spec.js
+@@ -42,7 +42,7 @@ it('should add EditorConfig', () => {
+ 	expect(vol.toJSON()['/License.md']).toMatchSnapshot();
+ });
+ 
+-it('should read lincese name from package.json', () => {
++it('should read license name from package.json', () => {
+ 	vol.fromJSON({
+ 		[`${__dirname}/templates/Apache-2.0.md`]: fs
+ 			.readFileSync(path.join(__dirname, 'templates/Apache-2.0.md'))
+@@ -99,19 +99,22 @@ it('adds license to package.json if not set', () => {
+ });
+ 
+ it.each([
+-	['Barney Rubble <example@name.com> (http://example.com/)', 'Barney Rubble'],
+-	['Barney Rubble (http://example.com/)', 'Barney Rubble'],
+-	['Barney Rubble <example@name.com>', 'Barney Rubble'],
+-	['Barney Rubble ', 'Barney Rubble'],
+-	[{ name: 'Barney Rubble' }, 'Barney Rubble'],
++	[
++		{ author: 'Barney Rubble <example@name.com> (http://example.com/)' },
++		'Barney Rubble',
++	],
++	[{ author: 'Barney Rubble (http://example.com/)' }, 'Barney Rubble'],
++	[{ author: 'Barney Rubble <example@name.com>' }, 'Barney Rubble'],
++	[{ author: 'Barney Rubble ' }, 'Barney Rubble'],
++	[{ author: { name: 'Barney Rubble' } }, 'Barney Rubble'],
++	[{ author: undefined }, undefined],
++	[undefined, undefined],
+ ])('Should get author name form package.json', (field, expected) => {
+ 	vol.fromJSON({
+-		'/package.json': stringify({
+-			author: field,
+-		}),
++		'/package.json': stringify(Object.assign({}, field)),
+ 	});
+ 
+-	const authorName = getAuthorName();
++	const authorName = getAuthorName(json('/package.json'));
+ 
+ 	expect(authorName).toBe(expected);
+ });
+",0,,3,30,1,2,3,46
+96,7826fbfcd87f743f4d7cc349c03d6d80afea4dc5,8d5b50c5f59632ee71e7af41a9b22ea6316928dd,"This change expands the set of eslint preset names accepted by the eslint task to be closer to [what is accepted by eslint for the `extends` configuration option](https://eslint.org/docs/developer-guide/shareable-configs) including scoped packages and intra-package configs (e.g. `eslint-config-airbnb/whitespace`). This change does not include support for presets specified by a file path.
+
+It's worth noting that the [`@eslint/eslintrc`](https://github.com/eslint/eslintrc) package exports a `normalizePackageName` function, but there are a couple issues with that:
+1. The package is explicitly marked as not for external use
+2. The function does not handle intra-package configs 
+
+
+
+","Add tests for alternate preset representations
+","diff --git a/packages/mrm-task-eslint/index.spec.js b/packages/mrm-task-eslint/index.spec.js
+index bad6372..8e21c64 100644
+--- a/packages/mrm-task-eslint/index.spec.js
++++ b/packages/mrm-task-eslint/index.spec.js
+@@ -41,15 +41,27 @@ it('should add ESLint', async () => {
+ 	expect(install).toBeCalledWith(['eslint']);
+ });
+ 
+-it('should use a custom preset', async () => {
++it.each([
++	['airbnb', 'eslint-config-airbnb'],
++	['airbnb/whitespace', 'eslint-config-airbnb'],
++	['eslint-config-airbnb', 'eslint-config-airbnb'],
++	['eslint-config-airbnb/whitespace', 'eslint-config-airbnb'],
++	['@scoped', '@scoped/eslint-config'],
++	['@scoped/eslint-config', '@scoped/eslint-config'],
++	['@scoped/eslint-config/variant', '@scoped/eslint-config'],
++	['@scoped/custom-config-name', '@scoped/custom-config-name'],
++	['@scoped/eslint-config-alt', '@scoped/eslint-config-alt'],
++	['@scoped/eslint-config-alt/variant', '@scoped/eslint-config-alt'],
++	['@scoped/custom-config-name/variant', '@scoped/custom-config-name'],
++])('should use custom preset `%s`', async (presetName, packageName) => {
+ 	vol.fromJSON({
+ 		'/package.json': packageJson,
+ 	});
+ 
+-	task(await getTaskOptions(task, false, { eslintPreset: 'airbnb' }));
++	task(await getTaskOptions(task, false, { eslintPreset: presetName }));
+ 
+ 	expect(vol.toJSON()[configFile]).toMatchSnapshot();
+-	expect(install).toBeCalledWith(['eslint', 'eslint-config-airbnb']);
++	expect(install).toBeCalledWith(['eslint', packageName]);
+ });
+ 
+ it('should not add a custom preset if it’s already there', async () => {
+",0,,2,80,1,6,4,120

@@ -1,0 +1,4410 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1014,907b97c93f733c0e713ea1a38d041535c2e384e9,538e6753666c0b67285a74766fce7c8d521ef581,Fixes #1013 ,"Failing test
+","diff --git a/test/transpile/plugins/plugins.spec.ts b/test/transpile/plugins/plugins.spec.ts
+index 46988da..721c9d3 100644
+--- a/test/transpile/plugins/plugins.spec.ts
++++ b/test/transpile/plugins/plugins.spec.ts
+@@ -40,3 +40,16 @@ test(""statement comments"", () => {
+         .setOptions({ luaPlugins: [{ name: path.join(__dirname, ""add-comments.ts"") }] })
+         .expectLuaToMatchSnapshot();
+ });
++
++test(""namespace with TS transformer plugin"", () => {
++    util.testModule`
++        export namespace ns {
++            export function returnsBool() {
++                return false;
++            }
++        }
++    `
++        .setOptions({ plugins: [{ transform: path.join(__dirname, ""transformer-plugin.js"") }] })
++        .expectNoExecutionError()
++        .expectLuaToMatchSnapshot();
++});
+",1,OID=OID,3,38,1,4,3,37
+1016,5e9cbffbc724c5410878be82b98b9a75bdc7a058,8baab7784547579734c0327818624df736d4fb60,Fixes #967 ,"Made switch default case always last
+","diff --git a/test/unit/switch.spec.ts b/test/unit/switch.spec.ts
+new file mode 100644
+index 0000000..366b78a
+--- /dev/null
++++ b/test/unit/switch.spec.ts
+@@ -0,0 +1,350 @@
++import * as tstl from ""../../src"";
++import { unsupportedForTarget } from ""../../src/transformation/utils/diagnostics"";
++import * as util from ""../util"";
++
++test.each([0, 1, 2, 3])(""switch (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0:
++                result = 0;
++                break;
++            case 1:
++                result = 1;
++                break;
++            case 2:
++                result = 2;
++                break;
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""switchdefault (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0:
++                result = 0;
++                break;
++            case 1:
++                result = 1;
++                break;
++            case 2:
++                result = 2;
++                break;
++            default:
++                result = -2;
++                break;
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 0, 2, 3, 4, 5, 7])(""switchfallthrough (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0:
++                result = 0;
++            case 1:
++                result = 1;
++                break;
++            case 2:
++                result = 2;
++            case 3:
++            case 4:
++                result = 4;
++                break;
++            case 5:
++                result = 5;
++            case 6:
++                result += 10;
++                break;
++            case 7:
++                result = 7;
++            default:
++                result = -2;
++                break;
++        }
++
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""nestedSwitch (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (${inp} as number) {
++            case 0:
++                result = 0;
++                break;
++            case 1:
++                switch(${inp} as number) {
++                    case 0:
++                        result = 0;
++                        break;
++                    case 1:
++                        result = 1;
++                        break;
++                    default:
++                        result = -3;
++                        break;
++                }
++                break;
++            case 2:
++                result = 2;
++                break;
++            default:
++                result = -2;
++                break;
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test(""switch cases scope"", () => {
++    util.testFunction`
++        switch (0 as number) {
++            case 0:
++                let foo: number | undefined = 1;
++            case 1:
++                foo = 2;
++            case 2:
++                return foo;
++        }
++    `.expectToMatchJsResult();
++});
++
++test(""variable in nested scope does not interfere with case scope"", () => {
++    util.testFunction`
++        let foo: number = 0;
++        switch (foo) {
++            case 0: {
++                let foo = 1;
++            }
++
++            case 1:
++                return foo;
++        }
++    `.expectToMatchJsResult();
++});
++
++test(""switch using variable re-declared in cases"", () => {
++    util.testFunction`
++        let foo: number = 0;
++        switch (foo) {
++            case 0:
++                let foo = true;
++            case 1:
++                return foo;
++        }
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2])(""switch with block statement scope (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0: {
++                let x = 0;
++                result = 0;
++                break;
++            }
++            case 1: {
++                let x = 1;
++                result = x;
++            }
++            case 2: {
++                let x = 2;
++                result = x;
++                break;
++            }
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""switchReturn (%p)"", inp => {
++    util.testFunction`
++        switch (<number>${inp}) {
++            case 0:
++                return 0;
++                break;
++            case 1:
++                return 1;
++            case 2:
++                return 2;
++                break;
++        }
++
++        return -1;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""switchWithBrackets (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0: {
++                result = 0;
++                break;
++            }
++            case 1: {
++                result = 1;
++                break;
++            }
++            case 2: {
++                result = 2;
++                break;
++            }
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""switchWithBracketsBreakInConditional (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (<number>${inp}) {
++            case 0: {
++                result = 0;
++                break;
++            }
++            case 1: {
++                result = 1;
++
++                if (result == 1) break;
++            }
++            case 2: {
++                result = 2;
++                break;
++            }
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([0, 1, 2, 3])(""switchWithBracketsBreakInInternalLoop (%p)"", inp => {
++    util.testFunction`
++        let result: number = -1;
++
++        switch (${inp} as number) {
++            case 0: {
++                result = 0;
++
++                for (let i = 0; i < 5; i++) {
++                    result++;
++
++                    if (i >= 2) {
++                        break;
++                    }
++                }
++            }
++            case 1: {
++                result++;
++                break;
++            }
++            case 2: {
++                result = 2;
++                break;
++            }
++        }
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test(""switch uses elseif"", () => {
++    test(""array"", () => {
++        util.testFunction`
++            let result: number = -1;
++
++            switch (2 as number) {
++                case 0: {
++                    result = 200;
++                    break;
++                }
++
++                case 1: {
++                    result = 100;
++                    break;
++                }
++
++                case 2: {
++                    result = 1;
++                    break;
++                }
++            }
++
++            return result;
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
++});
++
++test(""switch not allowed in 5.1"", () => {
++    util.testFunction`
++        switch (""abc"") {}
++    `
++        .setOptions({ luaTarget: tstl.LuaTarget.Lua51 })
++        .expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]);
++});
++
++// https://github.com/TypeScriptToLua/TypeScriptToLua/issues/967
++test(""switch default case not last - first"", () => {
++    util.testFunction`
++        switch (3 as number) {
++            default:
++                return ""wrong"";
++            case 3:
++                return ""right"";
++        }
++    `.expectToMatchJsResult();
++});
++
++test(""switch default case not last - second"", () => {
++    util.testFunction`
++        switch (3 as number) {
++            case 4:
++                return ""also wrong"";
++            default:
++                return ""wrong"";
++            case 3:
++                return ""right"";
++        }
++    `.expectToMatchJsResult();
++});
++
++test(""switch fallthrough enters default"", () => {
++    util.testFunction`
++        const out = [];
++        switch (3 as number) {
++            case 3:
++                out.push(""3"");
++            default:
++                out.push(""default"");
++        }
++        return out;
++    `.expectToMatchJsResult();
++});
++
++test(""switch fallthrough does not enter earlier"", () => {
++    util.testFunction`
++        const out = [];
++        switch (3 as number) {
++            default:
++                out.push(""default"");
++            case 3:
++                out.push(""3"");
++        }
++        return out;
++    `.debug().expectToMatchJsResult();
++});
+",0,,4,720,1,3,4,669
+1030,8cf6d496068dd7d26f0f4b2a2902664ca120a894,754ed5af11052d739ca7a93ec1ae0605f8501862,"LuaTableHas translates `table.has(key)` to `table[key] ~= nil`.
+
+LuaTableDelete translates `table.delete(key)` to `table[key] = nil`
+
+Closes #1021 and closes #1020","Implement LuaTable has
+","diff --git a/test/unit/language-extensions/table.spec.ts b/test/unit/language-extensions/table.spec.ts
+index b8b4b47..97576fe 100644
+--- a/test/unit/language-extensions/table.spec.ts
++++ b/test/unit/language-extensions/table.spec.ts
+@@ -97,6 +97,17 @@ describe(""LuaTableHas extension"", () => {
+             .expectToEqual({ hasFoo: true, hasBaz: false });
+     });
+ 
++    test(""LuaTableHas nested expression"", () => {
++        util.testModule`
++            declare const tableHas: LuaTableHas<{}, string>;
++            const table = { foo: ""bar"" };
++
++            export const result = \`table has foo: \${tableHas(table, ""foo"")}\`;
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual({ result: ""table has foo: true"" });
++    });
++
+     test(""LuaTableHas namespace function"", () => {
+         util.testModule`
+             declare namespace Table {
+@@ -114,7 +125,7 @@ describe(""LuaTableHas extension"", () => {
+     test(""LuaTableHasMethod method"", () => {
+         util.testModule`
+             interface TableWithHas {
+-                has: LuaTableHas<string>;
++                has: LuaTableHasMethod<string>;
+                 set: LuaTableSetMethod<string, number>;
+             }
+             const table = {} as TableWithHas;
+@@ -150,7 +161,7 @@ describe(""LuaTableHas extension"", () => {
+     test.each([
+         ""const foo: unknown = tableHas;"",
+         ""const foo = `${tableHas}`;"",
+-        ""declare function foo(tableHas: LuaTableGet<{}, string, number>): void; foo(tableHas);"",
++        ""declare function foo(tableHas: LuaTableHas<{}, string>): void; foo(tableHas);"",
+         ""const foo = (tableHas as any)(1, 2);"",
+         ""const foo = [tableHas];"",
+     ])(""invalid use (%p)"", statement => {
+",0,,5,88,1,4,8,405
+1034,d98eba8cb8d2eb243d476d549935b964f56c1957,36bf55b40e83e9460dd40bc5c1634429aa7bb26d,Fixes #1033 ,"Fixed another mistake in language extensions where luatable keys were accidentally required to be tables
+","diff --git a/test/unit/language-extensions/table.spec.ts b/test/unit/language-extensions/table.spec.ts
+index 8d0437f..e6d485a 100644
+--- a/test/unit/language-extensions/table.spec.ts
++++ b/test/unit/language-extensions/table.spec.ts
+@@ -254,6 +254,29 @@ describe(""LuaTable extension interface"", () => {
+             .expectToEqual(3);
+     });
+ 
++    // Test to catch issue from https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1033
++    test(""typed table in type declaration"", () => {
++        util.testFunction`
++            function fill(tbl: LuaTable<string, number>) {
++                tbl.set(""foo"", 3);
++                return tbl;
++            }
++            return fill(new LuaTable()).get(""foo"");
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual(3);
++    });
++
++    test.each([[""null""], [""undefined""], [""number | undefined""], [""string | null""], [""unknown""]])(
++        ""LuaTable in strict mode does not accept key type that could be nil (%p)"",
++        keyType => {
++            util.testExpression`new LuaTable<${keyType}, unknown>()`
++                .setOptions({ ...tableProjectOptions, strict: true })
++                .expectToHaveDiagnostics()
++                .expectDiagnosticsToMatchSnapshot();
++        }
++    );
++
+     test(""object keyed table"", () => {
+         util.testFunction`
+             interface Key { keyStr: string }
+",0,,3,71,1,2,3,71
+1042,65885006ac55aeecf7cffcb49141cdc599307c9e,65885006ac55aeecf7cffcb49141cdc599307c9e,,"optimizing varargs on functions passed as parameters
+","diff --git a/test/unit/spread.spec.ts b/test/unit/spread.spec.ts
+index a395ef2..e65ee7e 100644
+--- a/test/unit/spread.spec.ts
++++ b/test/unit/spread.spec.ts
+@@ -230,6 +230,17 @@ describe(""vararg spread optimization"", () => {
+             .expectLuaToMatchSnapshot()
+             .expectToEqual(""b"");
+     });
++
++    test(""curry"", () => {
++        util.testFunction`
++            function test<A extends any[]>(fn: (...args: A) => void, ...args: A) {
++                return fn(...args);
++            }
++            return test((arg: string) => arg, ""foobar"");
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
+ });
+ 
+ describe(""vararg spread de-optimization"", () => {
+",0,,3,30,1,1,3,30
+1043,f8667b9c3150ccd5a973ec976b20da21e974f262,c310f986634086fc6f6f63e2c63ed5e710991f74,"No longer allows bundling files with buildmode: library.
+
+Also added tstlVerbose option with some extra information to hopefully help diagnose problems.","Disallow bundling with buildmode library
+","diff --git a/test/unit/bundle.spec.ts b/test/unit/bundle.spec.ts
+index f961ddd..ddc678f 100644
+--- a/test/unit/bundle.spec.ts
++++ b/test/unit/bundle.spec.ts
+@@ -1,4 +1,4 @@
+-import { LuaLibImportKind } from ""../../src"";
++import { BuildMode, LuaLibImportKind } from ""../../src"";
+ import * as diagnosticFactories from ""../../src/transpilation/diagnostics"";
+ import * as util from ""../util"";
+ 
+@@ -120,3 +120,9 @@ test(""luaEntry doesn't exist"", () => {
+         .setEntryPoint(""entry.ts"")
+         .expectDiagnosticsToMatchSnapshot([diagnosticFactories.couldNotFindBundleEntryPoint.code], true);
+ });
++
++test(""bundling not allowed for buildmode library"", () => {
++    util.testBundle``
++        .setOptions({ buildMode: BuildMode.Library })
++        .expectDiagnosticsToMatchSnapshot([diagnosticFactories.cannotBundleLibrary.code], true);
++});
+",0,,5,38,1,3,19,279
+1046,4fe75376a0714852a2802b2c55f21f8692d88a43,4fe75376a0714852a2802b2c55f21f8692d88a43,"The core flaw in how this was working is that any function types defined inside the scope would be flagged as ""hoistable"" and trigger deoptimization. But this would include things like parameters or local variable types.
+
+I've changed this logic to explicitly only include actual hoistable functions (ex. `function foo() {}`) which seems to address all cases properly now. We should keep our eye out for other edge cases here, though.
+
+Closes #1047 
+","fixed vararg optimization logic
+","diff --git a/test/unit/spread.spec.ts b/test/unit/spread.spec.ts
+index e65ee7e..5d7ed93 100644
+--- a/test/unit/spread.spec.ts
++++ b/test/unit/spread.spec.ts
+@@ -241,6 +241,30 @@ describe(""vararg spread optimization"", () => {
+             .expectLuaToMatchSnapshot()
+             .expectToMatchJsResult();
+     });
++
++    test(""curry with indirect type"", () => {
++        util.testFunction`
++            function test<A extends any[]>(obj: {fn: (...args: A) => void}, ...args: A) {
++                const fn = obj.fn;
++                return fn(...args);
++            }
++            return test({fn: (arg: string) => arg}, ""foobar"");
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
++
++    test(""function type declared inside scope"", () => {
++        util.testFunction`
++            function test<A extends any[]>(...args: A) {
++                const fn: (...args: A) => A[0] = (...args) => args[0];
++                return fn(...args);
++            }
++            test(""foobar"");
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
+ });
+ 
+ describe(""vararg spread de-optimization"", () => {
+",0,,3,63,1,1,3,63
+1090,19fc3caa489e40edfeb02d6424558ccfc7a62b24,0936ac9c2db38f8c8dcb2d5d7c472e85e5a0db95,"As a side effect of removing `isInTupleReturn`, this also fixes #1058 ","Remove tupleReturn annotation
+","diff --git a/test/unit/annotations/deprecated.spec.ts b/test/unit/annotations/deprecated.spec.ts
+index 2f0edb1..d68d5ea 100644
+--- a/test/unit/annotations/deprecated.spec.ts
++++ b/test/unit/annotations/deprecated.spec.ts
+@@ -60,6 +60,14 @@ test(""luaiterator removed"", () => {
+     `.expectDiagnosticsToMatchSnapshot([annotationRemoved.code]);
+ });
+ 
++test(""tuplereturn removed"", () => {
++    util.testFunction`
++        /** @tupleReturn */
++        function tuple(): [number, number, number] { return [3, 5, 1]; }
++        return tuple()[2];
++    `.expectDiagnosticsToMatchSnapshot([annotationRemoved.code]);
++});
++
+ const tableLibClass = `
+ /** @luaTable */
+ declare class Table<K extends {} = {}, V = any> {
+",0,,8,569,1,2,9,623
+1097,92e9e607d0a6458d6b82ab2183c743d08dae0a96,92e9e607d0a6458d6b82ab2183c743d08dae0a96,,"actually fixed test this time
+",,0,,1,26,1,3,4,22969
+1098,a39026bd50ac8e5506031e297e2ee021bab196e3,da0de8bf0375d2a8c82a82dd7f1ed05134975a4e,"Resolves #194 (or rather brings support for Lua 5.1 and universal).
+
+Implemented using `repeat...until true`, `if`, and some conditional `or` chaining. Relies on switch fallthrough amalgamation / unrolling for default case fallthrough.
+
+```ts
+switch (0 as number) {
+    case 0:
+    case 1:
+    case 2:
+        out.push(""0,1,2"");
+    default:
+        out.push(""default"");
+    case 3:
+        out.push(""3"");
+}
+```
+
+```lua
+repeat
+    local ____switch3 = 0
+    local ____cond3 = ((____switch3 == 0) or (____switch3 == 1)) or (____switch3 == 2)
+    if ____cond3 then
+        __TS__ArrayPush(out, \\""0,1,2\\"")
+    end
+    if ____cond3 then
+        __TS__ArrayPush(out, \\""default\\"")
+    end
+    ____cond3 = ____cond3 or (____switch3 == 3)
+    if ____cond3 then
+        __TS__ArrayPush(out, \\""3\\"")
+    end
+    if not ____cond3 then
+        __TS__ArrayPush(out, \\""default\\"")
+        __TS__ArrayPush(out, \\""3\\"")
+    end
+until true
+```
+
+## Update:
+
+The final approach was to `or` together the conditions into a variable and check that condition in the if statement to ensure that we do not add any additional comparisons that would trigger undesired side effects.
+
+In order to handle the default case, we must still amalgamate the fallthrough cases that a default would fall into, and provide that as the final `or` clause, by checking that no previous condition had passed.
+
+I am making my best attempt to ensure that any redundant or useless cases are removed, and empty cases coalesced.
+
+Unforeseen bonus, the generated code is a bit easier to reason about!
+
+### Orignal:
+
+The approach I took is to gather the fall-through bodies based on the defined order in the switch statement and amalgamate them until I hit a break statement that would break the control flow of the switch case. I then move the resulting default block to a new else statement. It is crucial to handle the code generation for the default case before moving it into the else block, as the rules of fall through would dictate that the case directly after the default would execute.
+
+Took lots of testing until it clicked in my head that this method is indeed conformant with how a switch statement executes. `switchWithBracketsBreakInInternalLoop` was the real kicker, and made me realize handling break statements in their proper scope was missing. By skipping the child tree of any loop or switch the code will not pick up unnecessary breaks of switch control flow.
+
+Performance would be the only open question, although I would not expect this method to be any slower than jumping with goto, as it is really just an unrolled switch statement.
+
+Also send me your code clarity, clean-up, cognitive load lightening, and readability suggestions, please!","feat: switch statements for lua 5.1
+","diff --git a/test/unit/switch.spec.ts b/test/unit/switch.spec.ts
+index c264850..de48d7e 100644
+--- a/test/unit/switch.spec.ts
++++ b/test/unit/switch.spec.ts
+@@ -1,5 +1,3 @@
+-import * as tstl from ""../../src"";
+-import { unsupportedForTarget } from ""../../src/transformation/utils/diagnostics"";
+ import * as util from ""../util"";
+ 
+ test.each([0, 1, 2, 3])(""switch (%p)"", inp => {
+@@ -288,14 +286,6 @@ test(""switch uses elseif"", () => {
+         .expectToMatchJsResult();
+ });
+ 
+-test(""switch not allowed in 5.1"", () => {
+-    util.testFunction`
+-        switch (""abc"") {}
+-    `
+-        .setOptions({ luaTarget: tstl.LuaTarget.Lua51 })
+-        .expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]);
+-});
+-
+ // https://github.com/TypeScriptToLua/TypeScriptToLua/issues/967
+ test(""switch default case not last - first"", () => {
+     util.testFunction`
+",0,,4,146,1,24,4,485
+1136,3fd76615160a046042f98c580f5f2564709d37af,6068e042672ec15725c01e9315657b1397ec3cd6,"Adds correct validation for cases where a function is being indirectly assigned to a type defined as an object literal method.
+
+Example:
+```ts
+function out(this: void, val: string) {
+  print(val);
+}
+
+function bug(input: { consumer: (val: string) => void }) {
+    input.consumer(""test"");
+}
+
+bug({ consumer: out }); // Should fail function assignment validation
+```
+[Playground](https://typescripttolua.github.io/play/#code/GYVwdgxgLglg9mABHEUAUUAWMDOAuRANzhgBMAaIgQwBsCcoAnGMAcwEpEBvAKEUQAOzMOkK12Abh4BfHj1CRYCRACMQrNCwGoCXRBAQ4QAWwCmjAmjF1EDYR0QBeAHxESpRNM69+-LagA6AzAjM0Y0ACIoUwYIyRk5NQ09YNDzAhQoT0lEAHpcxABlTBQaD2AqGBpEBWh4JCocHBhWMDMRahoyKiUwHiA)
+","validating assignment of functions to object literal method types
+","diff --git a/test/unit/functions/validation/invalidFunctionAssignments.spec.ts b/test/unit/functions/validation/invalidFunctionAssignments.spec.ts
+index cd12b4b..783cb77 100644
+--- a/test/unit/functions/validation/invalidFunctionAssignments.spec.ts
++++ b/test/unit/functions/validation/invalidFunctionAssignments.spec.ts
+@@ -4,7 +4,11 @@ import {
+     unsupportedSelfFunctionConversion,
+ } from ""../../../../src/transformation/utils/diagnostics"";
+ import * as util from ""../../../util"";
+-import { invalidTestFunctionAssignments, invalidTestFunctionCasts } from ""./functionPermutations"";
++import {
++    invalidTestFunctionAssignments,
++    invalidTestFunctionCasts,
++    invalidTestMethodAssignments,
++} from ""./functionPermutations"";
+ 
+ test.each(invalidTestFunctionAssignments)(
+     ""Invalid function variable declaration (%p)"",
+@@ -19,6 +23,19 @@ test.each(invalidTestFunctionAssignments)(
+     }
+ );
+ 
++test.each(invalidTestMethodAssignments)(
++    ""Invalid object with method variable declaration (%p, %p)"",
++    (testFunction, functionType, isSelfConversion) => {
++        util.testModule`
++            ${testFunction.definition ?? """"}
++            const obj: { fn: ${functionType} } = {fn: ${testFunction.value}};
++        `.expectDiagnosticsToMatchSnapshot(
++            [isSelfConversion ? unsupportedSelfFunctionConversion.code : unsupportedNoSelfFunctionConversion.code],
++            true
++        );
++    }
++);
++
+ test.each(invalidTestFunctionAssignments)(
+     ""Invalid function assignment (%p)"",
+     (testFunction, functionType, isSelfConversion) => {
+@@ -33,6 +50,20 @@ test.each(invalidTestFunctionAssignments)(
+     }
+ );
+ 
++test.each(invalidTestMethodAssignments)(
++    ""Invalid object with method assignment (%p, %p, %p)"",
++    (testFunction, functionType, isSelfConversion) => {
++        util.testModule`
++            ${testFunction.definition ?? """"}
++            let obj: { fn: ${functionType} };
++            obj = {fn: ${testFunction.value}};
++        `.expectDiagnosticsToMatchSnapshot(
++            [isSelfConversion ? unsupportedSelfFunctionConversion.code : unsupportedNoSelfFunctionConversion.code],
++            true
++        );
++    }
++);
++
+ test.each(invalidTestFunctionCasts)(""Invalid function assignment with cast (%p)"", (testFunction, castedFunction) => {
+     util.testModule`
+         ${testFunction.definition ?? """"}
+@@ -44,6 +75,22 @@ test.each(invalidTestFunctionCasts)(""Invalid function assignment with cast (%p)""
+     );
+ });
+ 
++test.each(invalidTestFunctionCasts)(
++    ""Invalid object with method assignment with cast (%p, %p, %p)"",
++    (testFunction, castedFunction, isSelfConversion) => {
++        util.testModule`
++        ${testFunction.definition ?? """"}
++        let obj: { fn: typeof ${testFunction.value} };
++        obj = {fn: ${castedFunction}};
++    `.expectDiagnosticsToMatchSnapshot(
++            isSelfConversion
++                ? [unsupportedSelfFunctionConversion.code, unsupportedNoSelfFunctionConversion.code]
++                : [unsupportedNoSelfFunctionConversion.code, unsupportedSelfFunctionConversion.code],
++            true
++        );
++    }
++);
++
+ test.each(invalidTestFunctionAssignments)(
+     ""Invalid function argument (%p)"",
+     (testFunction, functionType, isSelfConversion) => {
+@@ -58,6 +105,20 @@ test.each(invalidTestFunctionAssignments)(
+     }
+ );
+ 
++test.each(invalidTestMethodAssignments)(
++    ""Invalid object with method argument (%p, %p, %p)"",
++    (testFunction, functionType, isSelfConversion) => {
++        util.testModule`
++            ${testFunction.definition ?? """"}
++            declare function takesObjectWithMethod(obj: { fn: ${functionType} });
++            takesObjectWithMethod({fn: ${testFunction.value}});
++        `.expectDiagnosticsToMatchSnapshot(
++            [isSelfConversion ? unsupportedSelfFunctionConversion.code : unsupportedNoSelfFunctionConversion.code],
++            true
++        );
++    }
++);
++
+ test(""Invalid lua lib function argument"", () => {
+     util.testModule`
+         declare function foo(this: void, value: string): void;
+",0,,5,1356,1,2,5,1356
+1138,f3bbf044c128ec7083fc9cc22864dbab07472fcf,5a0421e56562cb870e58d14a8c9fcbb18082a1b8,,"Upgrade TypeScript to 4.4
+",,0,,9,1015,1,5,10,1016
+1171,bc674d94e6f392253c4c05f8c7c2a36868f7e072,e6f579f9b75c83d4750079236fd6611f12f66d92,"This implements optional chaining using preceding statements. It also fixes a number of problem with optional chaining interacting with other language features, e.g. #1162. This also supports delete expressions.
+
+This implementation is roughly based on Typescript's transformES2020, with changes to integrate with existing TSTL logic.
+Some implementation choices were made with compatibility with existing TSTL features in mind.
+
+
+### Implementation overview
+Given a chain (a)?.b.c.d, where (a) is any expression (possibly another optional chain), the result is transformed roughly into
+```lua
+local temp = (a)
+if temp ~= nil then
+    temp = temp.b.c.d
+end
+return temp
+```
+This ensures proper short-circuiting behavior.
+The same temp variable is used for both the left-hand side and result to reduce the number of temps.
+The chain is built as _typescript_ nodes first before transforming, to maximize compatibility with existing transformations. `ts.setOriginalNode` is used to retain type information and source-map position.
+
+### Capturing this-value
+
+If the optional chain is a contextual call, e.g `a.b?.(c)`, then the `this` parameter may need to be captured to be passed in the call, e.g `temp=a.b; result = temp(a, c)`. The need to capture `this` is detected by marking the leftmost `temp` in the chain, and having `transformCallExpression` mark it when it results in a contextual call -- see `OptionalContinuation`.
+The this-value is captured by functions that return `ExpressionWithThisValue`. (This is analogous to `SyntheticExpression` in typescript's implementation, except that SyntheticExpression is an internal AST node).
+The this-value is captured if first expression on the left-hand side is an appropriate property-access or element-access expression.
+
+### Builtins
+This implementation disallows optional calls on built-ins, e.g. `array?.forEach()` is allowed, but `array.forEach?.()`, `console?.log()`, `Number?.()` is not allowed. It might be possible to detect these situations and treat them as non-optional calls. However, the detection logic will be complicated and these optional calls almost never make sense, so we report a diagnostic on them instead.
+
+`Enum?.member` also reports a diagnostic if the enum is marked with @compileMembersOnly.","Add more tests and fixes for optional chaining
+","diff --git a/test/unit/optionalChaining.spec.ts b/test/unit/optionalChaining.spec.ts
+index 656ff43..2a1b63f 100644
+--- a/test/unit/optionalChaining.spec.ts
++++ b/test/unit/optionalChaining.spec.ts
+@@ -175,4 +175,82 @@ describe(""optional chaining function calls"", () => {
+             obj?.foo();
+         `.expectToEqual(new util.ExecutionError(""attempt to call a nil value (method 'foo')""));
+     });
++
++    describe(""builtins"", () => {
++        test.each([
++            [""undefined"", undefined],
++            [""{foo: 0}"", true],
++        ])(""LuaTable: %p"", (expr, value) => {
++            util.testFunction`
++            const table: LuaTable = ${expr} as any
++            const bar = table?.has(""foo"")
++            return bar
++        `
++                .withLanguageExtensions()
++                .expectToEqual(value);
++        });
++
++        test.each([""undefined"", ""foo""])(""Function call: %p"", e => {
++            util.testFunction`
++            const result = []
++            function foo(this: unknown, arg: unknown) {
++                return [this, arg]
++            }
++            const bar = ${e} as typeof foo | undefined
++            return bar?.call(1, 2)
++        `.expectToMatchJsResult();
++        });
++
++        test.each([undefined, ""[1, 2, 3, 4]""])(""Array: %p"", expr => {
++            util.testFunction`
++            const value: any[] | undefined = ${expr}
++            return value?.map(x=>x+1)
++        `.expectToMatchJsResult();
++        });
++    });
++});
++
++describe(""Unsupported optional chains"", () => {
++    test(""Language extensions"", () => {
++        util.testModule`
++                new LuaTable().has?.(3)
++            `
++            .withLanguageExtensions()
++            .expectDiagnosticsToMatchSnapshot();
++    });
++
++    test(""Builtin prototype method"", () => {
++        util.testModule`
++                [1,2,3,4].forEach?.(()=>{})
++            `.expectDiagnosticsToMatchSnapshot();
++    });
++
++    test(""Builtin global method"", () => {
++        util.testModule`
++                Number?.(""3"")
++            `.expectDiagnosticsToMatchSnapshot();
++    });
++    test(""Builtin global property"", () => {
++        util.testModule`
++                console?.log(""3"")
++            `
++            .setOptions({
++                lib: [""lib.esnext.d.ts"", ""lib.dom.d.ts""],
++            })
++            .expectDiagnosticsToMatchSnapshot();
++    });
++
++    test(""Compile members only"", () => {
++        util.testFunction`
++                /** @compileMembersOnly */
++                enum TestEnum {
++                    A = 0,
++                    B = 2,
++                    C,
++                    D = ""D"",
++                }
++
++                TestEnum?.B
++            `.expectDiagnosticsToMatchSnapshot();
++    });
+ });
+",0,,11,360,1,13,17,801
+1176,c88a3a82a53def4aa8ee9b99d4546b24da6cd735,c88a3a82a53def4aa8ee9b99d4546b24da6cd735,"This adds the LuaPairsIterable extension type which indicates that a type can be iterated when passed to Lua's pairs function. 
+
+LuaTable now extends this type so it can be iterated using for...of.
+
+This is the 2nd suggested implementation of #1023
+
+Closes #1023 ","added LuaPairsIterable extension
+","diff --git a/test/unit/language-extensions/pairsIterable.spec.ts b/test/unit/language-extensions/pairsIterable.spec.ts
+new file mode 100644
+index 0000000..3fd2e0d
+--- /dev/null
++++ b/test/unit/language-extensions/pairsIterable.spec.ts
+@@ -0,0 +1,120 @@
++import * as util from ""../../util"";
++import { invalidPairsIterableWithoutDestructuring } from ""../../../src/transformation/utils/diagnostics"";
++import { LuaTarget } from ""../../../src"";
++
++const testIterable = `
++const testIterable = {a1: ""a2"", b1: ""b2"", c1: ""c2""} as unknown as LuaPairsIterable<string, string>;
++`;
++
++const testResults = {
++    a1: ""a2"",
++    b1: ""b2"",
++    c1: ""c2"",
++};
++
++test(""pairs iterable"", () => {
++    util.testFunction`
++        ${testIterable}
++        const results: Record<string, string> = {};
++        for (const [k, v] of testIterable) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .expectToEqual(testResults);
++});
++
++test(""pairs iterable with external control variable"", () => {
++    util.testFunction`
++        ${testIterable}
++        const results: Record<string, string> = {};
++        let k: string, v: string;
++        for ([k, v] of testIterable) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .expectToEqual(testResults);
++});
++
++test(""pairs iterable function forward"", () => {
++    util.testFunction`
++        ${testIterable}
++        function forward() { return testIterable; }
++        const results: Record<string, string> = {};
++        for (const [k, v] of forward()) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .expectToEqual(testResults);
++});
++
++test(""pairs iterable function indirect forward"", () => {
++    util.testFunction`
++        ${testIterable}
++        function forward() { const iter = testIterable; return iter; }
++        const results: Record<string, string> = {};
++        for (const [k, v] of forward()) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .expectToEqual(testResults);
++});
++
++test(""pairs iterable arrow function forward"", () => {
++    util.testFunction`
++        ${testIterable}
++        const forward = () => testIterable;
++        const results: Record<string, string> = {};
++        for (const [k, v] of forward()) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .expectToEqual(testResults);
++});
++
++test(""pairs iterable with __pairs metamethod"", () => {
++    util.testFunction`
++        class PairsTest  {
++            __pairs() {
++                const kvp = [ [""a1"", ""a2""], [""b1"", ""b2""], [""c1"", ""c2""] ];
++                let i = 0;
++                return () => {
++                    if (i < kvp.length) {
++                        const [k, v] = kvp[i++];
++                        return $multi(k, v);
++                    }
++                };
++            }
++        }
++        const tester = new PairsTest() as PairsTest & LuaPairsIterable<string, string>;
++        const results: Record<string, string> = {};
++        for (const [k, v] of tester) {
++            results[k] = v;
++        }
++        return results;
++    `
++        .withLanguageExtensions()
++        .setOptions({ luaTarget: LuaTarget.Lua53 })
++        .expectToEqual(testResults);
++});
++
++test.each([""for (const s of testIterable) {}"", ""let s; for (s of testIterable) {}""])(
++    ""invalid LuaPairsIterable without destructuring (%p)"",
++    statement => {
++        util.testFunction`
++        ${testIterable}
++        ${statement}
++    `
++            .withLanguageExtensions()
++            .expectDiagnosticsToMatchSnapshot([invalidPairsIterableWithoutDestructuring.code]);
++    }
++);
+",0,,8,246,1,1,8,246
+1187,9942e0653334ab42761a82f20fbaf87cd4f164a9,9942e0653334ab42761a82f20fbaf87cd4f164a9,implements #1117,"Support for unicode identifiers when targetting LuaJIT
+implements #1117
+","diff --git a/test/unit/identifiers.spec.ts b/test/unit/identifiers.spec.ts
+index 9f72ad6..7c07229 100644
+--- a/test/unit/identifiers.spec.ts
++++ b/test/unit/identifiers.spec.ts
+@@ -1,3 +1,4 @@
++import { LuaTarget } from ""../../src"";
+ import { invalidAmbientIdentifierName } from ""../../src/transformation/utils/diagnostics"";
+ import { luaKeywords } from ""../../src/transformation/utils/safe-names"";
+ import * as util from ""../util"";
+@@ -222,6 +223,68 @@ test.each(validTsInvalidLuaNames)(""exported decorated class with invalid lua nam
+         .expectToMatchJsResult();
+ });
+ 
++describe(""unicode identifiers in supporting environments (luajit)"", () => {
++    const unicodeNames = [""𝛼𝛽𝚫"", ""ɥɣɎɌͼƛಠ"", ""_̀ः٠‿""];
++
++    test.each(unicodeNames)(""identifier name (%p)"", name => {
++        util.testFunction`
++            const ${name} = ""foobar"";
++            return ${name};
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++
++    test.each(unicodeNames)(""property name (%p)"", name => {
++        util.testFunction`
++            const x = { ${name}: ""foobar"" };
++            return x.${name};
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++
++    test.each(unicodeNames)(""destructuring property name (%p)"", name => {
++        util.testFunction`
++            const { foo: ${name} } = { foo: ""foobar"" };
++            return ${name};
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++
++    test.each(unicodeNames)(""destructuring shorthand (%p)"", name => {
++        util.testFunction`
++            const { ${name} } = { ${name}: ""foobar"" };
++            return ${name};
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++
++    test.each(unicodeNames)(""function (%p)"", name => {
++        util.testFunction`
++            function ${name}(arg: string) {
++                return ""foo"" + arg;
++            }
++            return ${name}(""bar"");
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++
++    test.each(unicodeNames)(""method (%p)"", name => {
++        util.testFunction`
++            const foo = {
++                ${name}(arg: string) { return ""foo"" + arg; }
++            };
++            return foo.${name}(""bar"");
++        `
++            .setOptions({ luaTarget: LuaTarget.LuaJIT })
++            .expectLuaToMatchSnapshot();
++    });
++});
++
+ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     test(""variable (nil)"", () => {
+         util.testFunction`
+",0,,7,278,1,1,7,278
+1193,511161d91be5d713f9174def4d84f48615577057,511161d91be5d713f9174def4d84f48615577057,"Fixes #1143.
+
+Also fixes for other outer expressions.","Fix optimized vararg spread with casts
+
+Also fixes for other outer expressions.
+","diff --git a/test/unit/spread.spec.ts b/test/unit/spread.spec.ts
+index 6b29d0c..c3fe72b 100644
+--- a/test/unit/spread.spec.ts
++++ b/test/unit/spread.spec.ts
+@@ -265,6 +265,18 @@ describe(""vararg spread optimization"", () => {
+             .expectLuaToMatchSnapshot()
+             .expectToMatchJsResult();
+     });
++
++    test(""With cast"", () => {
++        util.testFunction`
++            function pick(...args: any[]) { return args[1]; }
++            function test<F extends (...args: any)=>any>(...args: Parameters<F>) {
++                return pick(...(args as any[]));
++            }
++            return test<(...args: string[])=>void>(""a"", ""b"", ""c"");
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
+ });
+ 
+ describe(""vararg spread de-optimization"", () => {
+",0,,4,61,1,1,4,61
+1201,ed5211ee9e37a2d8efe414c87adba610a65bea74,23bd0401962693d42e48850bcd2ef7c1d86595e7,"These changes go together:
+
+With preceding statements, table function language extensions (`TableGet`, `TableSet`, etc.) can now be used as expressions.
+`TableDelete` functions are typed to return `boolean`, but previously the return value could never be used; these now return `true` to be similar to delete expressions. Other methods return `nil`.
+Additionally, I fixed table function extensions that use preceding statements or spread arguments. This required some refactoring; The result is based on `transformBuiltinCallExpression`. This additionally avoids unnecessary calls to `getTableExtensionKindForCall` and fixes some other minor bugs that I found.
+
+transformExpressionStatement now omits the statement entirely if the inner expression result is ""synthetic"" with no side effects (a temp variable, or a literal without a source map position). This removes unnecessary `local ____ = ...` in several cases (e.g. `a?.b()`). This also decouples transformExpressionStatement from other language features: now table call language extensions can be transformed as an expression, and its return value (`nil` or `true`) is omitted when in an expression statement (not used).
+- `void` expressions now also share some of this logic to omit unecessary `local ____ = ...`.
+
+","Improve expression statement handling and language extensions calls as expression.
+","diff --git a/test/unit/language-extensions/table.spec.ts b/test/unit/language-extensions/table.spec.ts
+index eeba4b9..835f651 100644
+--- a/test/unit/language-extensions/table.spec.ts
++++ b/test/unit/language-extensions/table.spec.ts
+@@ -1,9 +1,5 @@
+ import * as util from ""../../util"";
+-import {
+-    invalidTableDeleteExpression,
+-    invalidTableExtensionUse,
+-    invalidTableSetExpression,
+-} from ""../../../src/transformation/utils/diagnostics"";
++import { invalidTableExtensionUse } from ""../../../src/transformation/utils/diagnostics"";
+ 
+ describe(""LuaTableGet & LuaTableSet extensions"", () => {
+     test(""stand-alone function"", () => {
+@@ -20,6 +16,24 @@ describe(""LuaTableGet & LuaTableSet extensions"", () => {
+             .expectToEqual(3);
+     });
+ 
++    test(""stand-alone function with preceding statements"", () => {
++        util.testModule`
++            declare const setTable: LuaTableSet<{}, string, string>;
++            const values: any[] = []
++            const tbl: any = {};
++            const get = (value: any) => {
++                values.push(value)
++                return value
++            }
++            let x = ""a""
++            setTable(tbl, x += ""b"", x += ""c"")
++            export const result = tbl.ab
++        `
++            .withLanguageExtensions()
++            .setReturnExport(""result"")
++            .expectToEqual(""abc"");
++    });
++
+     test(""namespace function"", () => {
+         util.testModule`
+             declare namespace Table {
+@@ -66,20 +80,6 @@ describe(""LuaTableGet & LuaTableSet extensions"", () => {
+             .withLanguageExtensions()
+             .expectDiagnosticsToMatchSnapshot([invalidTableExtensionUse.code]);
+     });
+-
+-    test.each([
+-        'const foo = setTable({}, ""foo"", 3);',
+-        'const foo = `${setTable({}, ""foo"", 3)}`;',
+-        'declare function foo(arg: any): void; foo(setTable({}, ""foo"", 3));',
+-        'const foo = [setTable({}, ""foo"", 3)];',
+-    ])(""LuaTableSet invalid use as expression (%p)"", expression => {
+-        util.testModule`
+-            declare const setTable: LuaTableSet<{}, string, number>;
+-            ${expression}
+-        `
+-            .withLanguageExtensions()
+-            .expectDiagnosticsToMatchSnapshot([invalidTableSetExpression.code]);
+-    });
+ });
+ 
+ describe(""LuaTableHas extension"", () => {
+@@ -212,18 +212,14 @@ describe(""LuaTableDelete extension"", () => {
+             .expectToEqual({ table: { bar: 12 } });
+     });
+ 
+-    test.each([
+-        'const foo = tableDelete({}, ""foo"");',
+-        'const foo = `${tableDelete({}, ""foo"")}`;',
+-        'declare function foo(arg: any): void; foo(tableDelete({}, ""foo""));',
+-        'const foo = [tableDelete({}, ""foo"")];',
+-    ])(""LuaTableDelete invalid use as expression (%p)"", expression => {
++    test(""LUaTableDelete use as expression"", () => {
+         util.testModule`
+             declare const tableDelete: LuaTableDelete<{}, string>;
+-            ${expression}
++            export const result = tableDelete({}, ""foo"")
+         `
+             .withLanguageExtensions()
+-            .expectDiagnosticsToMatchSnapshot([invalidTableDeleteExpression.code]);
++            .setReturnExport(""result"")
++            .expectToEqual(true);
+     });
+ });
+ 
+",0,,12,471,2,3,12,498
+1206,5b52de7481ac38802928decfdb443168cadb4933,89a7187fed1be25aa47bcb6c7575b45bc68bc727,Also improved math tests a bit.,"Added Math.sign
+
+Also improved math tests a bit.
+","diff --git a/test/unit/builtins/math.spec.ts b/test/unit/builtins/math.spec.ts
+index dd928c6..f3bec8c 100644
+--- a/test/unit/builtins/math.spec.ts
++++ b/test/unit/builtins/math.spec.ts
+@@ -1,28 +1,75 @@
+ import * as tstl from ""../../../src"";
+ import * as util from ""../../util"";
+ 
++// These test are kept to a minimum,
++// because we just want to confirm translation is correct
++// and not test Lua's built in math functions.
++// Differences in math implementations between JS & Lua cause inaccuracies
++// therefore test input numbers are ""carefully"" selected to always match accuratly.
++// Lualib implementations are tested seperatly.
+ test.each([
+-    ""Math.cos()"",
+-    ""Math.sin()"",
+-    ""Math.min()"",
+-    ""Math.log2(3)"",
+-    ""Math.log10(3)"",
+-    ""const x = Math.log2(3)"",
+-    ""const x = Math.log10(3)"",
+-    ""Math.log1p(3)"",
+-    ""Math.round(3.3)"",
++    // log
++    ""Math.log(42)"",
++    ""Math.log10(10)"",
++    ""Math.log2(42)"",
++    ""Math.log1p(42)"",
++    // round
++    ""Math.round(0.1)"",
++    ""Math.round(0.9)"",
++    ""Math.round(0.5)"",
++    // abs
++    ""Math.abs(-42)"",
++    ""Math.abs(42)"",
++    // trigometric
++    ""Math.acos(0.42)"",
++    ""Math.asin(0.42)"",
++    ""Math.atan(0.42)"",
++    ""Math.cos(42)"",
++    ""Math.sin(42)"",
++    ""Math.tan(42)"",
+     ""Math.PI"",
++    // ceil & floor
++    ""Math.ceil(42.42)"",
++    ""Math.floor(42.42)"",
++    // exp
++    ""Math.exp(42)"",
++    // max & min
++    ""Math.max(-42, 42)"",
++    ""Math.max(42, -42)"",
++    ""Math.max(42, 42)"",
++    ""Math.max(-42, -42)"",
++    ""Math.min(42, -42)"",
++    ""Math.min(-42, 42)"",
++    ""Math.min(42, 42)"",
++    ""Math.min(-42, -42)"",
++    // pow
++    ""Math.pow(4.2, 4.2)"",
++    ""Math.pow(4.2, -4.2)"",
++    ""Math.pow(-4.2, -4.2)"",
++    // random
++    // ""Math.random()"",
++    // sqrt
++    ""Math.sqrt(2)"",
++    ""Math.sqrt(-2)"",
+ ])(""%s"", code => {
+-    // TODO: Remove?
+-    util.testFunction(code).disableSemanticCheck().expectLuaToMatchSnapshot();
++    util.testExpression(code).expectToMatchJsResult();
+ });
+ 
++// Hard to test properly
++util.testExpression(""Math.random()"").expectNoExecutionError();
++
+ test.each([""E"", ""LN10"", ""LN2"", ""LOG10E"", ""LOG2E"", ""SQRT1_2"", ""SQRT2""])(""Math.%s"", constant => {
+     util.testExpression`Math.${constant}`.tap(builder => {
+         expect(builder.getLuaExecutionResult()).toBeCloseTo(builder.getJsExecutionResult());
+     });
+ });
+ 
++// LuaLib MathSign
++test.each([""Math.sign(-42)"", ""Math.sign(42)"", ""Math.sign(-4.2)"", ""Math.sign(4.2)"", ""Math.sign(0)""])(""%s"", code => {
++    util.testExpression(code).expectToMatchJsResult();
++});
++
++// LuaLib Atan2
+ const expectMathAtan2: util.TapCallback = builder => expect(builder.getMainLuaCodeChunk()).toContain(""math.atan2("");
+ const expectMathAtan: util.TapCallback = builder => expect(builder.getMainLuaCodeChunk()).toContain(""math.atan("");
+ const expectLualibMathAtan2: util.TapCallback = builder =>
+",0,,5,164,1,2,5,164
+1239,2ab7c78152fbe57eb3624c568a7145971587e71b,2ab7c78152fbe57eb3624c568a7145971587e71b,Closes #1236 ,"Updated verbose log snapshot
+",,0,,2,4,1,2,9,135
+1270,c08414423fa0cb4de863643a8db649c7c65405bd,abd51f6fea1c55244e37ab209c48763a4d89140a,"Fixes #815, sort-of-but-not-really.
+
+According to [this StackOverlow page](https://stackoverflow.com/questions/47429792/is-it-possible-to-get-comments-as-nodes-in-the-ast-using-the-typescript-compiler), it is not possible to get single-line comments in the AST. However, it is possible to extract JSDoc comments that are specifically attached to functions and variables.
+
+So, for this PR, I simply extract JSDoc where I can, and then stick it on the ""leadingComments"" property that Perry added in 0fba69b06767811f554f21fa8f3d20cb51d5b25c.
+
+This works, and seems good for a first iteration of the feature.
+
+A better solution would be to:
+1) Wait for the Lua to be finished generating.
+2) Grab every possible comment in the entire TS source file via the method described in the StackOverflow post.
+3) Then, massage the comments into the already-generated-Lua.
+
+However, how do we find the correct spot in the generated Lua that corresponds with this spot in the source code? Is that possible?","adding snapshots
+","diff --git a/test/unit/comments.spec.ts b/test/unit/comments.spec.ts
+index 2c0c1e3..ac3a02e 100644
+--- a/test/unit/comments.spec.ts
++++ b/test/unit/comments.spec.ts
+@@ -7,7 +7,7 @@ test(""JSDoc is copied on a function"", () => {
+          * It has multiple lines.
+          */
+         function foo() {}
+-    `.expectToHaveNoDiagnostics();
++    `.expectToHaveNoDiagnostics().expectDiagnosticsToMatchSnapshot();
+ 
+     const transpiledFile = builder.getLuaResult().transpiledFiles[0];
+     expect(transpiledFile).toBeDefined();
+@@ -23,7 +23,7 @@ test(""JSDoc is copied on a variable"", () => {
+          * It has multiple lines.
+          */
+         const foo = 123;
+-    `.expectToHaveNoDiagnostics();
++    `.expectToHaveNoDiagnostics().expectDiagnosticsToMatchSnapshot();
+ 
+     const transpiledFile = builder.getLuaResult().transpiledFiles[0];
+     expect(transpiledFile).toBeDefined();
+",0,,2,22,1,13,7,268
+1318,240acc51cd531f213b3df7efcc028b0834b4a2b2,240acc51cd531f213b3df7efcc028b0834b4a2b2,,"Fix tests
+","diff --git a/test/unit/language-extensions/iterable.spec.ts b/test/unit/language-extensions/iterable.spec.ts
+index 0105456..30e602f 100644
+--- a/test/unit/language-extensions/iterable.spec.ts
++++ b/test/unit/language-extensions/iterable.spec.ts
+@@ -239,7 +239,7 @@ describe(""LuaIterable with array value type"", () => {
+     test(""basic destructuring"", () => {
+         util.testFunction`
+             ${testIterable}
+-            const results: Array<string[]> = [];
++            const results = [];
+             for (const [x, y] of testIterable()) {
+                 results.push([x, y]);
+             }
+@@ -252,7 +252,7 @@ describe(""LuaIterable with array value type"", () => {
+     test(""destructure with external control variable"", () => {
+         util.testFunction`
+             ${testIterable}
+-            const results: Array<string[]> = [];
++            const results = []
+             let x: string, y: string;
+             for ([x, y] of testIterable()) {
+                 results.push([x, y]);
+@@ -360,7 +360,7 @@ describe(""LuaIterable with LuaMultiReturn value type"", () => {
+         util.testFunction`
+             ${testIterable}
+             const results = [];
+-            let x: string, y: string;
++            let x: string, y: any;
+             for ([x, y] of testIterable()) {
+                 results.push([x, y]);
+             }
+",0,,2,10,1,2,3,52
+1319,34b2b9b1a7c7b1a103b71ee8a7ff0d8d04b3c850,34b2b9b1a7c7b1a103b71ee8a7ff0d8d04b3c850,Closes #1304 and #694,"paths support
+","diff --git a/test/transpile/module-resolution.spec.ts b/test/transpile/module-resolution.spec.ts
+index d9c2fc2..348b502 100644
+--- a/test/transpile/module-resolution.spec.ts
++++ b/test/transpile/module-resolution.spec.ts
+@@ -2,7 +2,8 @@ import * as path from ""path"";
+ import * as tstl from ""../../src"";
+ import * as util from ""../util"";
+ import * as ts from ""typescript"";
+-import { BuildMode, transpileProject } from ""../../src"";
++import { BuildMode } from ""../../src"";
++import { normalizeSlashes } from ""../../src/utils"";
+ 
+ describe(""basic module resolution"", () => {
+     const projectPath = path.resolve(__dirname, ""module-resolution"", ""project-with-node-modules"");
+@@ -236,8 +237,8 @@ describe(""module resolution project with dependencies built by tstl library mode
+     const projectPath = path.resolve(__dirname, ""module-resolution"", ""project-with-tstl-library-modules"");
+ 
+     // First compile dependencies into node_modules. NOTE: Actually writing to disk, very slow
+-    transpileProject(path.join(projectPath, ""dependency1-ts"", ""tsconfig.json""));
+-    transpileProject(path.join(projectPath, ""dependency2-ts"", ""tsconfig.json""));
++    tstl.transpileProject(path.join(projectPath, ""dependency1-ts"", ""tsconfig.json""));
++    tstl.transpileProject(path.join(projectPath, ""dependency2-ts"", ""tsconfig.json""));
+ 
+     const expectedResult = {
+         dependency1IndexResult: ""function in dependency 1 index: dependency1OtherFileFunc in dependency1/d1otherfile"",
+@@ -539,7 +540,7 @@ test(""lualib_module with parent directory import (#1307)"", () => {
+     });
+ });
+ 
+-test.only(""supports paths configuration"", () => {
++test(""supports paths configuration"", () => {
+     // Package root
+     const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""monorepo-with-paths"");
+     // myprogram package
+@@ -547,10 +548,22 @@ test.only(""supports paths configuration"", () => {
+     const projectTsConfig = path.join(projectPath, ""tsconfig.json"");
+     const mainFile = path.join(projectPath, ""main.ts"");
+ 
+-    util.testProject(projectTsConfig).setMainFileName(mainFile).expectToHaveNoDiagnostics().expectToEqual({ foo: 314, bar: 271 });
++    const luaResult = util
++        .testProject(projectTsConfig)
++        .setMainFileName(mainFile)
++        .expectToHaveNoDiagnostics()
++        .getLuaResult();
++
++    expect(snapshotPaths(luaResult.transpiledFiles)).toMatchSnapshot();
++
++    // Bundle to have all files required to execute and check result
++    util.testProject(projectTsConfig)
++        .setMainFileName(mainFile)
++        .setOptions({ luaBundle: ""bundle.lua"", luaBundleEntry: mainFile })
++        .expectToEqual({ foo: 314, bar: 271 });
+ });
+ 
+-test.only(""supports complicated paths configuration"", () => {
++test(""supports complicated paths configuration"", () => {
+     // Package root
+     const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""monorepo-complicated"");
+     // myprogram package
+@@ -558,5 +571,22 @@ test.only(""supports complicated paths configuration"", () => {
+     const projectTsConfig = path.join(projectPath, ""tsconfig.json"");
+     const mainFile = path.join(projectPath, ""src"", ""main.ts"");
+ 
+-    util.testProject(projectTsConfig).setMainFileName(mainFile).expectToHaveNoDiagnostics().expectToEqual({ foo: 314, bar: 271 });
++    const luaResult = util
++        .testProject(projectTsConfig)
++        .setMainFileName(mainFile)
++        .expectToHaveNoDiagnostics()
++        .getLuaResult();
++
++    expect(snapshotPaths(luaResult.transpiledFiles)).toMatchSnapshot();
++
++    // Bundle to have all files required to execute
++    util.testProject(projectTsConfig)
++        .setMainFileName(mainFile)
++        .setOptions({ luaBundle: ""bundle.lua"", luaBundleEntry: mainFile })
++        .debug()
++        .expectToEqual({ foo: 314, bar: 271 });
+ });
++
++function snapshotPaths(files: tstl.TranspiledFile[]) {
++    return files.map(f => normalizeSlashes(f.outPath).split(""module-resolution"")[1]).sort();
++}
+",0,,14,172,1,2,14,173
+1324,19ce4d83ba78b837fe50fdbe1176104929b81771,14bafdc84efc0cf518b3bf0a7298eb7a14dcc23e,,"Improve paths tests and add baseUrl requiring check when specifying paths
+","diff --git a/test/transpile/module-resolution.spec.ts b/test/transpile/module-resolution.spec.ts
+index d78114e..4e8f3d4 100644
+--- a/test/transpile/module-resolution.spec.ts
++++ b/test/transpile/module-resolution.spec.ts
+@@ -4,6 +4,7 @@ import * as util from ""../util"";
+ import * as ts from ""typescript"";
+ import { BuildMode } from ""../../src"";
+ import { normalizeSlashes } from ""../../src/utils"";
++import { pathsWithoutBaseUrl } from ""../../src/transpilation/diagnostics"";
+ 
+ describe(""basic module resolution"", () => {
+     const projectPath = path.resolve(__dirname, ""module-resolution"", ""project-with-node-modules"");
+@@ -542,7 +543,7 @@ test(""lualib_module with parent directory import (#1307)"", () => {
+ 
+ test(""supports paths configuration"", () => {
+     // Package root
+-    const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""monorepo-with-paths"");
++    const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""paths-simple"");
+     // myprogram package
+     const projectPath = path.join(baseProjectPath, ""myprogram"");
+     const projectTsConfig = path.join(projectPath, ""tsconfig.json"");
+@@ -565,7 +566,7 @@ test(""supports paths configuration"", () => {
+ 
+ test(""supports complicated paths configuration"", () => {
+     // Package root
+-    const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""monorepo-complicated"");
++    const baseProjectPath = path.resolve(__dirname, ""module-resolution"", ""paths-base-tsconfig"");
+     // myprogram package
+     const projectPath = path.join(baseProjectPath, ""packages"", ""myprogram"");
+     const projectTsConfig = path.join(projectPath, ""tsconfig.json"");
+@@ -586,6 +587,10 @@ test(""supports complicated paths configuration"", () => {
+         .expectToEqual({ foo: 314, bar: 271 });
+ });
+ 
++test(""paths without baseUrl is error"", () => {
++    util.testFunction``.setOptions({ paths: {} }).expectToHaveDiagnostics([pathsWithoutBaseUrl.code]);
++});
++
+ function snapshotPaths(files: tstl.TranspiledFile[]) {
+     return files.map(f => normalizeSlashes(f.outPath).split(""module-resolution"")[1]).sort();
+ }
+",0,,27,125,1,2,18,60
+1334,0a8f4c1acdd1e527b620be6bc70719e966dfbd1a,a59323567af990893fac380a1c9d24aeba015ec1,,"Fix broken diagnostic when trying to directly use call extensions
+","diff --git a/test/unit/language-extensions/table.spec.ts b/test/unit/language-extensions/table.spec.ts
+index 8f21dc8..e7164e6 100644
+--- a/test/unit/language-extensions/table.spec.ts
++++ b/test/unit/language-extensions/table.spec.ts
+@@ -170,6 +170,24 @@ describe(""LuaTableHas extension"", () => {
+             .withLanguageExtensions()
+             .expectDiagnosticsToMatchSnapshot([invalidCallExtensionUse.code]);
+     });
++
++    test.each([""LuaTable<string, number>"", ""LuaMap<string, number>"", ""LuaSet<string>""])(""invalid use method assignment (%p)"", type => {
++        util.testModule`
++            const table = new ${type}();
++            const has = table.has;
++        `
++            .withLanguageExtensions()
++            .expectDiagnosticsToMatchSnapshot([invalidCallExtensionUse.code]);
++    });
++
++    test.each([""LuaTable<string, number>"", ""LuaMap<string, number>"", ""LuaSet<string>""])(""invalid use method expression (%p)"", type => {
++        util.testModule`
++            const table = new ${type}();
++            [""a"", ""b"", ""c""].map(table.has);
++        `
++            .withLanguageExtensions()
++            .expectDiagnosticsToMatchSnapshot([invalidCallExtensionUse.code]);
++    });
+ });
+ 
+ describe(""LuaTableDelete extension"", () => {
+",0,,5,86,1,4,5,101
+1368,b714e2aa9cf5b16b610089b16de3bb01c368441f,2528103c52fff6f071e9c429e19b5fd9d4dbcdbe,"Default classes turned out to have an extra unnecessary assignment to ____exports.default, which also failed when unsafe unicode names were being used. This removes that.
+
+Fixes #1358 ","Fix unsafe name default export
+","diff --git a/test/unit/identifiers.spec.ts b/test/unit/identifiers.spec.ts
+index b5b627b..c690e68 100644
+--- a/test/unit/identifiers.spec.ts
++++ b/test/unit/identifiers.spec.ts
+@@ -285,6 +285,18 @@ describe(""unicode identifiers in supporting environments (luajit)"", () => {
+     });
+ });
+ 
++test(""unicode export class"", () => {
++    util.testModule`
++        export class 你好 {}
++    `.expectLuaToMatchSnapshot();
++});
++
++test(""unicode export default class"", () => {
++    util.testModule`
++        export default class 你好 {}
++    `.expectLuaToMatchSnapshot();
++});
++
+ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     test(""variable (nil)"", () => {
+         util.testFunction`
+",1,OID=OID,3,42,1,3,2,42
+1381,8b21955d988ef2253cdc1d3a9f26fa654966f618,eefc944adb21be73d40aacdff47afc01bfd90152,"This PR simplifies/reduces the lua output of optional chains, in the most common cases.
+
+- Uses an `and` statement (`a and a.b`) instead of an if statement where possible.
+- Reuses identifiers on the left expression when possible","Simplify optional chaining expressions where possible
+","diff --git a/test/unit/optionalChaining.spec.ts b/test/unit/optionalChaining.spec.ts
+index 675fc59..a35446c 100644
+--- a/test/unit/optionalChaining.spec.ts
++++ b/test/unit/optionalChaining.spec.ts
+@@ -72,6 +72,49 @@ test(""optional element function calls"", () => {
+     `.expectToMatchJsResult();
+ });
+ 
++test(""unused expression"", () => {
++    util.testFunction`
++        const obj = { foo: ""bar"" };
++        obj?.foo;
++    `
++        .expectToHaveNoDiagnostics()
++        .expectNoExecutionError();
++});
++
++test(""unused call"", () => {
++    util.testFunction`
++        let result
++        const obj = {
++            foo() {
++                result = ""bar""
++            }
++        };
++        obj?.foo();
++        return result;
++    `.expectToMatchJsResult();
++});
++
++test.each([""undefined"", ""{ foo: v=>v }""])(""with preceding statements on right side"", value => {
++    util.testFunction`
++        let i = 0
++        const obj: any = ${value};
++        return {result: obj?.foo(i++), i};
++    `.expectToMatchJsResult();
++});
++
++// unused, with preceding statements on right side
++test.each([""undefined"", ""{ foo(val) {return val} }""])(
++    ""unused result with preceding statements on right side"",
++    value => {
++        util.testFunction`
++        let i = 0
++        const obj = ${value};
++        obj?.foo(i++);
++        return i
++    `.expectToHaveNoDiagnostics();
++    }
++);
++
+ describe(""optional access method calls"", () => {
+     test(""element access call"", () => {
+         util.testFunction`
+",0,,7,237,1,7,9,505
+1383,72310077ba931999c2610aebbca4132f77b1f8a2,8d902a349d1ccd5d36278183b3c8f9497c63fc2d,"This adds the option ""require-minimal"" to luaLibImport.
+With this, the emitted `lualib_bundle.lua` only contains used features.
+
+This does a text search on all resolved (lua) files to determine which lualib features were used, so that projects which import lua libraries using lualib features still work.
+
+","Update snapshot
+",,0,,1,2,1,6,8,202
+1424,25a0e6778042d7c5479f9f5e237b8640c1a52692,9bb4c40633c6bdf131b53e0a8d1ad48db09d9a54,"Closes #1422
+Also fixes #1423
+","Don't output initializer if default value is nil
+","diff --git a/test/unit/functions/functions.spec.ts b/test/unit/functions/functions.spec.ts
+index 7bd224f..0ac23f9 100644
+--- a/test/unit/functions/functions.spec.ts
++++ b/test/unit/functions/functions.spec.ts
+@@ -107,6 +107,21 @@ test(""Function default binding parameter maintains order"", () => {
+     `.expectToMatchJsResult();
+ });
+ 
++test.each([""undefined"", ""null""])(""Function default parameter with %p"", defaultValue => {
++    util.testFunction`
++        function foo(x = ${defaultValue}) {
++            return x;
++        }
++        return foo();
++    `
++        .expectToMatchJsResult()
++        .tap(builder => {
++            const lua = builder.getMainLuaCodeChunk();
++            expect(lua).not.toMatch(""if x == nil then"");
++        })
++        .expectLuaToMatchSnapshot();
++});
++
+ test(""Class method call"", () => {
+     util.testFunction`
+         class TestClass {
+",0,,3,66,1,4,3,100
+1449,ea94d24fa220af4a5ff821e79e9c58be990a96a3,b8e76ad7f5cd712a6c6cba5e4783b0f85672b9ab,"Added support for new TS5.0 decorators.
+
+Field decorators are only partially supported for now, the value initializers are currently ignored. If you try to use a value initializer, a warning will be shown.","Tests for new decorators
+","diff --git a/test/unit/classes/decorators.spec.ts b/test/unit/classes/decorators.spec.ts
+index abc4b94..ae54b2a 100644
+--- a/test/unit/classes/decorators.spec.ts
++++ b/test/unit/classes/decorators.spec.ts
+@@ -3,25 +3,29 @@ import * as util from ""../../util"";
+ 
+ test(""Class decorator with no parameters"", () => {
+     util.testFunction`
+-        function setBool<T extends new (...args: any[]) => {}>(constructor: T) {
++        let classDecoratorContext;
++
++        function classDecorator<T extends new (...args: any[]) => {}>(constructor: T, context: ClassDecoratorContext) {
++            classDecoratorContext = context;
++
+             return class extends constructor {
+                 decoratorBool = true;
+             }
+         }
+ 
+-        @setBool
++        @classDecorator
+         class TestClass {
+             public decoratorBool = false;
+         }
+ 
+-        return new TestClass();
++        return { decoratedClass: new TestClass(), classDecoratorContext };
+     `.expectToMatchJsResult();
+ });
+ 
+ test(""Class decorator with parameters"", () => {
+     util.testFunction`
+         function setNum(numArg: number) {
+-            return <T extends new (...args: any[]) => {}>(constructor: T) => {
++            return <T extends new (...args: any[]) => {}>(constructor: T, context: ClassDecoratorContext) => {
+                 return class extends constructor {
+                     decoratorNum = numArg;
+                 };
+@@ -39,13 +43,13 @@ test(""Class decorator with parameters"", () => {
+ 
+ test(""Multiple class decorators"", () => {
+     util.testFunction`
+-        function setTen<T extends new (...args: any[]) => {}>(constructor: T) {
++        function setTen<T extends new (...args: any[]) => {}>(constructor: T, context: ClassDecoratorContext) {
+             return class extends constructor {
+                 decoratorTen = 10;
+             }
+         }
+ 
+-        function setNum<T extends new (...args: any[]) => {}>(constructor: T) {
++        function setNum<T extends new (...args: any[]) => {}>(constructor: T, context: ClassDecoratorContext) {
+             return class extends constructor {
+                 decoratorNum = 410;
+             }
+@@ -64,7 +68,7 @@ test(""Multiple class decorators"", () => {
+ 
+ test(""Class decorator with inheritance"", () => {
+     util.testFunction`
+-        function setTen<T extends new (...args: any[]) => {}>(constructor: T) {
++        function setTen<T extends new (...args: any[]) => {}>(constructor: T, context: ClassDecoratorContext) {
+             return class extends constructor {
+                 decoratorTen = 10;
+             }
+@@ -89,7 +93,7 @@ test(""Class decorators are applied in order and executed in reverse order"", () =
+ 
+         function pushOrder(index: number) {
+             order.push(""eval "" + index);
+-            return (constructor: new (...args: any[]) => {}) => {
++            return (constructor: new (...args: any[]) => {}, context: ClassDecoratorContext) => {
+                 order.push(""execute "" + index);
+             };
+         }
+@@ -105,7 +109,7 @@ test(""Class decorators are applied in order and executed in reverse order"", () =
+ 
+ test(""Throws error if decorator function has void context"", () => {
+     util.testFunction`
+-        function decorator(this: void, constructor: new (...args: any[]) => {}) {}
++        function decorator(this: void, constructor: new (...args: any[]) => {}, context: ClassDecoratorContext) {}
+ 
+         @decorator
+         class TestClass {}
+@@ -114,7 +118,7 @@ test(""Throws error if decorator function has void context"", () => {
+ 
+ test(""Exported class decorator"", () => {
+     util.testModule`
+-        function decorator<T extends new (...args: any[]) => any>(Class: T): T {
++        function decorator<T extends new (...args: any[]) => any>(Class: T, context: ClassDecoratorContext): T {
+             return class extends Class {
+                 public bar = ""foobar"";
+             };
+@@ -127,65 +131,6 @@ test(""Exported class decorator"", () => {
+         .expectToMatchJsResult();
+ });
+ 
+-test.each([
+-    [""@decorator method() {}""],
+-    [""@decorator property;""],
+-    [""@decorator propertyWithInitializer = () => {};""],
+-    [""@decorator ['evaluated property'];""],
+-    [""@decorator get getter() { return 5 }""],
+-    [""@decorator set setter(value) {}""],
+-    [""@decorator static method() {}""],
+-    [""@decorator static property;""],
+-    [""@decorator static propertyWithInitializer = () => {}""],
+-    [""@decorator static get getter() { return 5 }""],
+-    [""@decorator static set setter(value) {}""],
+-    [""@decorator static ['evaluated property'];""],
+-    [""method(@decorator a) {}""],
+-    [""static method(@decorator a) {}""],
+-    [""constructor(@decorator a) {}""],
+-])(""Decorate class member (%p)"", classMember => {
+-    util.testFunction`
+-        let decoratorParameters: any;
+-
+-        const decorator = (target, key, index?) => {
+-            const targetKind = target === Foo ? ""Foo"" : target === Foo.prototype ? ""Foo.prototype"" : ""unknown"";
+-            decoratorParameters = { targetKind, key, index: typeof index };
+-        };
+-
+-        class Foo {
+-            ${classMember}
+-        }
+-
+-        return decoratorParameters;
+-    `.expectToMatchJsResult();
+-});
+-
+-describe(""Decorators /w descriptors"", () => {
+-    test.each([
+-        [""return { writable: true }"", ""return { configurable: true }""],
+-        [""desc.writable = true"", ""return { configurable: true }""],
+-    ])(""Combine decorators (%p + %p)"", (decorateA, decorateB) => {
+-        util.testFunction`
+-            const A = (target, key, desc): any => { ${decorateA} };
+-            const B = (target, key, desc): any => { ${decorateB} };
+-            class Foo { @A @B static method() {} }
+-            const { value, ...rest } = Object.getOwnPropertyDescriptor(Foo, ""method"");
+-            return rest;
+-        `.expectToMatchJsResult();
+-    });
+-
+-    test.each([""return { value: true }"", ""desc.value = true""])(
+-        ""Use decorator to override method value"",
+-        overrideStatement => {
+-            util.testFunction`
+-                const decorator = (target, key, desc): any => { ${overrideStatement} };
+-                class Foo { @decorator static method() {} }
+-                return Foo.method;
+-            `.expectToMatchJsResult();
+-        }
+-    );
+-});
+-
+ // https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1149
+ test(""exported class with decorator"", () => {
+     util.testModule`
+@@ -195,7 +140,7 @@ test(""exported class with decorator"", () => {
+     `
+         .addExtraFile(
+             ""other.ts"",
+-            `function myDecorator(target: {new(): any}) {
++            `function myDecorator(target: {new(): any}, context: ClassDecoratorContext) {
+                 return class extends target {
+                     foo() {
+                         return ""overridden"";
+@@ -221,7 +166,7 @@ test(""default exported class with decorator"", () => {
+     `
+         .addExtraFile(
+             ""other.ts"",
+-            `function myDecorator(target: {new(): any}) {
++            `function myDecorator(target: {new(): any}, context: ClassDecoratorContext) {
+                 return class extends target {
+                     foo() {
+                         return ""overridden"";
+@@ -238,3 +183,352 @@ test(""default exported class with decorator"", () => {
+         )
+         .expectToEqual({ result: ""overridden"" });
+ });
++
++test(""Class method decorator"", () => {
++    util.testFunction`
++        let methodDecoratorContext;
++
++        function methodDecorator(method: (v: number) => number, context: ClassMethodDecoratorContext) {
++            methodDecoratorContext = context;
++
++            return (v: number) => {
++                return method(v) + 10;
++            };
++        }
++
++        class TestClass {
++            @methodDecorator
++            public myMethod(x: number) {
++                return x * 23;
++            }
++        }
++
++        return { result: new TestClass().myMethod(3), methodDecoratorContext };
++    `.expectToMatchJsResult();
++});
++
++test(""class getter decorator"", () => {
++    util.testFunction`
++        let getterDecoratorContext;
++
++        function getterDecorator(getter: () => number, context: ClassGetterDecoratorContext) {
++            getterDecoratorContext = context;
++
++            return () => {
++                return getter() + 10;
++            };
++        }
++
++        class TestClass {
++            @getterDecorator
++            get getterValue() { return 10; }
++        }
++
++        return { result: new TestClass().getterValue, getterDecoratorContext };
++    `.expectToMatchJsResult();
++});
++
++test(""class setter decorator"", () => {
++    util.testFunction`
++        let setterDecoratorContext;
++
++        function setterDecorator(setter: (v: number) => void, context: ClassSetterDecoratorContext) {
++            setterDecoratorContext = context;
++
++            return (v: number) => {
++                setter(v + 15);
++            };
++        }
++
++        class TestClass {
++            public value: number;
++
++            @setterDecorator
++            set valueSetter(v: number) { this.value = v; }
++        }
++
++        const instance = new TestClass();
++        instance.valueSetter = 23;
++        return { result: instance.value, setterDecoratorContext };
++    `.expectToMatchJsResult();
++});
++
++test(""class field decorator"", () => {
++    util.testFunction`
++    let fieldDecoratorContext;
++
++    function fieldDecorator(initialValue: number, context: ClassFieldDecoratorContext) {
++        fieldDecoratorContext = context;
++
++        return initialValue => initialValue * 12;
++    }
++
++    class TestClass {
++        @fieldDecorator
++        public value: number = 22;
++    }
++
++    return { result: new TestClass(), fieldDecoratorContext };
++`.expectToMatchJsResult();
++});
++
++describe(""legacy experimentalDecorators"", () => {
++    test(""Class decorator with no parameters"", () => {
++        util.testFunction`
++            function setBool<T extends new (...args: any[]) => {}>(constructor: T) {
++                return class extends constructor {
++                    decoratorBool = true;
++                }
++            }
++
++            @setBool
++            class TestClass {
++                public decoratorBool = false;
++            }
++
++            return new TestClass();
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test(""Class decorator with parameters"", () => {
++        util.testFunction`
++            function setNum(numArg: number) {
++                return <T extends new (...args: any[]) => {}>(constructor: T) => {
++                    return class extends constructor {
++                        decoratorNum = numArg;
++                    };
++                };
++            }
++
++            @setNum(420)
++            class TestClass {
++                public decoratorNum;
++            }
++
++            return new TestClass();
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test(""Multiple class decorators"", () => {
++        util.testFunction`
++            function setTen<T extends new (...args: any[]) => {}>(constructor: T) {
++                return class extends constructor {
++                    decoratorTen = 10;
++                }
++            }
++
++            function setNum<T extends new (...args: any[]) => {}>(constructor: T) {
++                return class extends constructor {
++                    decoratorNum = 410;
++                }
++            }
++
++            @setTen
++            @setNum
++            class TestClass {
++                public decoratorTen;
++                public decoratorNum;
++            }
++
++            return new TestClass();
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test(""Class decorator with inheritance"", () => {
++        util.testFunction`
++            function setTen<T extends new (...args: any[]) => {}>(constructor: T) {
++                return class extends constructor {
++                    decoratorTen = 10;
++                }
++            }
++
++            class TestClass {
++                public decoratorTen = 0;
++            }
++
++            @setTen
++            class SubTestClass extends TestClass {
++                public decoratorTen = 5;
++            }
++
++            return new SubTestClass();
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test(""Class decorators are applied in order and executed in reverse order"", () => {
++        util.testFunction`
++            const order = [];
++
++            function pushOrder(index: number) {
++                order.push(""eval "" + index);
++                return (constructor: new (...args: any[]) => {}) => {
++                    order.push(""execute "" + index);
++                };
++            }
++
++            @pushOrder(1)
++            @pushOrder(2)
++            @pushOrder(3)
++            class TestClass {}
++
++            return order;
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test(""Throws error if decorator function has void context"", () => {
++        util.testFunction`
++            function decorator(this: void, constructor: new (...args: any[]) => {}) {}
++
++            @decorator
++            class TestClass {}
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectDiagnosticsToMatchSnapshot([decoratorInvalidContext.code]);
++    });
++
++    test(""Exported class decorator"", () => {
++        util.testModule`
++            function decorator<T extends new (...args: any[]) => any>(Class: T): T {
++                return class extends Class {
++                    public bar = ""foobar"";
++                };
++            }
++
++            @decorator
++            export class Foo {}
++        `
++            .setReturnExport(""Foo"", ""bar"")
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    test.each([
++        [""@decorator method() {}""],
++        [""@decorator property;""],
++        [""@decorator propertyWithInitializer = () => {};""],
++        [""@decorator ['evaluated property'];""],
++        [""@decorator get getter() { return 5 }""],
++        [""@decorator set setter(value) {}""],
++        [""@decorator static method() {}""],
++        [""@decorator static property;""],
++        [""@decorator static propertyWithInitializer = () => {}""],
++        [""@decorator static get getter() { return 5 }""],
++        [""@decorator static set setter(value) {}""],
++        [""@decorator static ['evaluated property'];""],
++        [""method(@decorator a) {}""],
++        [""static method(@decorator a) {}""],
++        [""constructor(@decorator a) {}""],
++    ])(""Decorate class member (%p)"", classMember => {
++        util.testFunction`
++            let decoratorParameters: any;
++
++            const decorator = (target, key, index?) => {
++                const targetKind = target === Foo ? ""Foo"" : target === Foo.prototype ? ""Foo.prototype"" : ""unknown"";
++                decoratorParameters = { targetKind, key, index: typeof index };
++            };
++
++            class Foo {
++                ${classMember}
++            }
++
++            return decoratorParameters;
++        `
++            .setOptions({ experimentalDecorators: true })
++            .expectToMatchJsResult();
++    });
++
++    describe(""Decorators /w descriptors"", () => {
++        test.each([
++            [""return { writable: true }"", ""return { configurable: true }""],
++            [""desc.writable = true"", ""return { configurable: true }""],
++        ])(""Combine decorators (%p + %p)"", (decorateA, decorateB) => {
++            util.testFunction`
++                const A = (target, key, desc): any => { ${decorateA} };
++                const B = (target, key, desc): any => { ${decorateB} };
++                class Foo { @A @B static method() {} }
++                const { value, ...rest } = Object.getOwnPropertyDescriptor(Foo, ""method"");
++                return rest;
++            `
++                .setOptions({ experimentalDecorators: true })
++                .expectToMatchJsResult();
++        });
++
++        test.each([""return { value: true }"", ""desc.value = true""])(
++            ""Use decorator to override method value"",
++            overrideStatement => {
++                util.testFunction`
++                    const decorator = (target, key, desc): any => { ${overrideStatement} };
++                    class Foo { @decorator static method() {} }
++                    return Foo.method;
++                `
++                    .setOptions({ experimentalDecorators: true })
++                    .expectToMatchJsResult();
++            }
++        );
++    });
++
++    // https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1149
++    test(""exported class with decorator"", () => {
++        util.testModule`
++            import { MyClass } from ""./other"";
++            const inst = new MyClass();
++            export const result = inst.foo();
++        `
++            .addExtraFile(
++                ""other.ts"",
++                `function myDecorator(target: {new(): any}) {
++                    return class extends target {
++                        foo() {
++                            return ""overridden"";
++                        }
++                    }
++                }
++
++                @myDecorator
++                export class MyClass {
++                    foo() {
++                        return ""foo"";
++                    }
++                }`
++            )
++            .setOptions({ experimentalDecorators: true })
++            .expectToEqual({ result: ""overridden"" });
++    });
++
++    test(""default exported class with decorator"", () => {
++        util.testModule`
++            import MyClass from ""./other"";
++            const inst = new MyClass();
++            export const result = inst.foo();
++        `
++            .addExtraFile(
++                ""other.ts"",
++                `function myDecorator(target: {new(): any}) {
++                    return class extends target {
++                        foo() {
++                            return ""overridden"";
++                        }
++                    }
++                }
++
++                @myDecorator
++                export default class {
++                    foo() {
++                        return ""foo"";
++                    }
++                }`
++            )
++            .setOptions({ experimentalDecorators: true })
++            .expectToEqual({ result: ""overridden"" });
++    });
++});
+",0,,3,458,1,7,17,1101
+1459,bf32660ba6a134c9a9c4ea06bad5b69289668f4c,bf32660ba6a134c9a9c4ea06bad5b69289668f4c,Fixes #1426 ,"Update test snapshot
+",,0,,1,6,1,2,4,43
+1500,1745beae4ce0c6b2193a26a2ec6ea1c767012ffb,506b68b656a12c5ab2bece239a2054cd04ea26ce,"Reinstates support for the `continue` statement using the original method proposed in #112, which is compatible with Lua versions that don't support `goto`.
+
+Retains the `goto` method for 5.2+ since it is cleaner.
+
+Transpiles from
+```typescript
+for (let i = 1; i <= 100; i++) {
+    if (i < 25) {
+        continue;
+    }
+    print(i);
+}
+```
+to
+```lua
+do
+    i = 1
+    while i <= 100 do
+        do
+            local __continue2
+            repeat
+                if i < 25 then
+                    __continue2 = true
+                    break
+                end
+                print(i)
+                __continue2 = true
+            until true
+            if not __continue2 then
+                break
+            end
+        end
+        i = i + 1
+    end
+end
+```","feat: support loop continue for 5.0, 5.1, and universal targets
+","diff --git a/test/unit/loops.spec.ts b/test/unit/loops.spec.ts
+index 0fff55d..4afb4da 100644
+--- a/test/unit/loops.spec.ts
++++ b/test/unit/loops.spec.ts
+@@ -1,5 +1,5 @@
+ import * as tstl from ""../../src"";
+-import { forbiddenForIn, unsupportedForTarget } from ""../../src/transformation/utils/diagnostics"";
++import { forbiddenForIn } from ""../../src/transformation/utils/diagnostics"";
+ import * as util from ""../util"";
+ 
+ test(""while"", () => {
+@@ -515,13 +515,16 @@ for (const testCase of [
+     ""for (const a in {}) { continue; }"",
+     ""for (const a of []) { continue; }"",
+ ]) {
++    const expectContinueVariable: util.TapCallback = builder =>
++        expect(builder.getMainLuaCodeChunk()).toMatch(""local __continue2"");
++
+     const expectContinueGotoLabel: util.TapCallback = builder =>
+         expect(builder.getMainLuaCodeChunk()).toMatch(""::__continue2::"");
+ 
+     util.testEachVersion(`loop continue (${testCase})`, () => util.testModule(testCase), {
+-        [tstl.LuaTarget.Universal]: builder => builder.expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]),
+-        [tstl.LuaTarget.Lua50]: builder => builder.expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]),
+-        [tstl.LuaTarget.Lua51]: builder => builder.expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]),
++        [tstl.LuaTarget.Universal]: expectContinueVariable,
++        [tstl.LuaTarget.Lua50]: expectContinueVariable,
++        [tstl.LuaTarget.Lua51]: expectContinueVariable,
+         [tstl.LuaTarget.Lua52]: expectContinueGotoLabel,
+         [tstl.LuaTarget.Lua53]: expectContinueGotoLabel,
+         [tstl.LuaTarget.Lua54]: expectContinueGotoLabel,
+",0,,5,255,1,2,5,315
+1581,715086fe2b200e2dcdc08a4bb3d3843d2c6f038e,a9a45bfae947e09d932aa43a4d449daf37b9b8c6,Closes #1580 ,"Upgrade to TypeScript 5.6
+",,0,,10,164,1,3,11,181
+1608,a749047c801d312413fb7318c57586721c39066f,1ca468bb12d0f33c9a22a36680619ebdc96c7cc8,"[`Luau`](https://luau.org) is a variant of Lua semi-recently becoming popular due to its open-sourcing and use by Roblox. It has a mix of features from 5.1-5.4 that make it not really fit into any traditional Lua version.
+
+## Why
+
+There's [roblox-ts](https://github.com/roblox-ts/roblox-ts) but that's another project and not everyone is using Luau for Roblox. We're using it for our own game engine - and I'm aware of other projects making use of Luau (the popular [mlua](https://github.com/mlua-rs/mlua) rust library supports it, despite being a ""lua"" library)
+
+`Luau` does include a type system, but it's not yet capable enough for my usecases. Plus, that's ignoring all the other benefits that Typescript brings.
+
+## Changes
+
+This PR:
+* Adds a `Luau` `luaTarget`
+* Adds a `continue` statement used solely by Luau.
+* Adds the `if <COND> then <X> else <Y>` ternary operator used solely by Luau.
+
+There are other Luau-only features like type hints and compound assignment operators - but they could be done later on and aren't as pertinent
+
+Please let me know how I should incorporate test cases - couldn't figure out how to do so myself, although I tested these features in a local project.","Add support for luau specific transformation fixtures
+
+Also fixed not providing Luau to the `expectEachVersionExceptJit` function. It seems to work properly in the test suite but I need to make sure that this is intended or if the function should be renamed to something else (like `expectOnlyPUC`) and exclude Luau as well.
+","diff --git a/test/translation/transformation.spec.ts b/test/translation/transformation.spec.ts
+index 42a4b43..146aaaa 100644
+--- a/test/translation/transformation.spec.ts
++++ b/test/translation/transformation.spec.ts
+@@ -12,9 +12,12 @@ const fixtures = fs
+     .sort()
+     .map(f => [path.parse(f).name, fs.readFileSync(path.join(fixturesPath, f), ""utf8"")]);
+ 
+-test.each(fixtures)(""Transformation (%s)"", (_name, content) => {
++test.each(fixtures)(""Transformation (%s)"", (name, content) => {
+     util.testModule(content)
+-        .setOptions({ luaLibImport: tstl.LuaLibImportKind.Require })
++        .setOptions({
++            luaLibImport: tstl.LuaLibImportKind.Require,
++            luaTarget: name.includes(""luau"") ? tstl.LuaTarget.Luau : undefined,
++        })
+         .ignoreDiagnostics([annotationDeprecated.code, couldNotResolveRequire.code])
+         .disableSemanticCheck()
+         .expectLuaToMatchSnapshot();
+",0,,4,29,1,5,16,155
+1648,ebd6af6046a2e07b3404294e858fcf067a3b4330,ebd6af6046a2e07b3404294e858fcf067a3b4330,,"test: add test
+","diff --git a/test/unit/functions/noSelfAnnotation.spec.ts b/test/unit/functions/noSelfAnnotation.spec.ts
+index b25742a..f8418fa 100644
+--- a/test/unit/functions/noSelfAnnotation.spec.ts
++++ b/test/unit/functions/noSelfAnnotation.spec.ts
+@@ -52,6 +52,19 @@ test(""@noSelf on parent namespace declaration removes context argument"", () => {
+     `.expectLuaToMatchSnapshot();
+ });
+ 
++test(""@noSelf on static class methods with string key access"", () => {
++    util.testModule`
++        /** @noSelf */
++        declare class TestClass {
++            static [key: string]: () => void;
++            static myMethod(): void;
++        }
++
++        TestClass.myMethod();
++        TestClass.myKey();
++    `.expectLuaToMatchSnapshot();
++});
++
+ // additional coverage for https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1292
+ test(""explicit this parameter respected over @noSelf"", () => {
+     util.testModule`
+",0,,2,18,1,2,3,21
+1649,6ba229f4041e1a7a28d25afea42844afcd257f04,6ba229f4041e1a7a28d25afea42844afcd257f04,Fixes #1645 ,"fix issue with unicode classnames and static initializer blocks
+","diff --git a/test/unit/identifiers.spec.ts b/test/unit/identifiers.spec.ts
+index 4ef550c..4156e83 100644
+--- a/test/unit/identifiers.spec.ts
++++ b/test/unit/identifiers.spec.ts
+@@ -317,6 +317,17 @@ test(""unicode export default class"", () => {
+         .expectToEqual({ result: ""你好"" });
+ });
+ 
++// https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1645
++test(""unicode static initialization block (#1645)"", () => {
++    util.testModule`
++        export default class 自定义异能 {
++            static {
++                let a = 1;
++            }
++        }
++    `.expectLuaToMatchSnapshot();
++});
++
+ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     test(""variable (nil)"", () => {
+         util.testFunction`
+",0,,3,30,1,1,3,30
+1680,6441f93916a324b0fd978616a7654c85a6708a7a,15ea8d1a0af87516c6843c57b5e5ee80947fc1e8,"Added a new Lua 5.5 target, it should do the same as Lua 5.4 (for now).
+
+TODO: Create and use lua-types/5.5","Add lua 5.5 target
+","diff --git a/test/unit/expressions.spec.ts b/test/unit/expressions.spec.ts
+index 46ca2f7..ee0eab5 100644
+--- a/test/unit/expressions.spec.ts
++++ b/test/unit/expressions.spec.ts
+@@ -96,6 +96,13 @@ test.each(supportedInAll)(""Bitop [5.4] (%p)"", input => {
+         .expectLuaToMatchSnapshot();
+ });
+ 
++test.each(supportedInAll)(""Bitop [5.5] (%p)"", input => {
++    util.testExpression(input)
++        .setOptions({ luaTarget: tstl.LuaTarget.Lua55, luaLibImport: tstl.LuaLibImportKind.None })
++        .disableSemanticCheck()
++        .expectLuaToMatchSnapshot();
++});
++
+ test.each(unsupportedIn53And54)(""Unsupported bitop 5.3 (%p)"", input => {
+     util.testExpression(input)
+         .setOptions({ luaTarget: tstl.LuaTarget.Lua53, luaLibImport: tstl.LuaLibImportKind.None })
+",0,,9,104,1,3,12,108
+1682,246e76cc7b0a03dbeca288e80a7a0a15c56d659f,246e76cc7b0a03dbeca288e80a7a0a15c56d659f,"fixes https://github.com/TypeScriptToLua/TypeScriptToLua/issues/1677
+second approach, this time with 100% more separate branches (sorry) and snapshot test","use snapshot to test
+","diff --git a/test/unit/enum.spec.ts b/test/unit/enum.spec.ts
+index 98f186f..3ff4ce3 100644
+--- a/test/unit/enum.spec.ts
++++ b/test/unit/enum.spec.ts
+@@ -208,14 +208,9 @@ test(""enum nested in namespace"", () => {
+     util.testModule`
+         namespace A {
+             export enum TestEnum {
+-                C,
+-                D
++                B,
++                C
+             }
+         }
+-    `.tap(builder => {
+-        const lua = builder.getMainLuaCodeChunk();
+-        expect(lua).toMatch(
+-            'A = A or ({})\ndo\n    A.TestEnum = A.TestEnum or ({})\n    A.TestEnum.C = 0\n    A.TestEnum[A.TestEnum.C] = ""C""\n    A.TestEnum.D = 1\n    A.TestEnum[A.TestEnum.D] = ""D""\nend'
+-        );
+-    });
++    `.expectLuaToMatchSnapshot();
+ });
+",0,,2,23,1,2,3,27
+1703,83ba540f6e85e28694cc84ee99a2cceb4796d144,6de84d3a2068fbf6526d1aaa561e5460d8eb898b,"https://typescripttolua.github.io/play/#code/5.4/MYewdgzgLgBGMF4YFoCsBuGXs93-BhRxJpZ+AUKJCADYCmAdLSAOYAU8AfDzAAwBKTFgD0ImABYATAE4JMgGwB2WQEZyGzVu2Eq4CHSYsO6nl35DsYmOp137DjXpoNmbdslO9Bw69LmKKjKoQA
+
+TS >>> is a logical right shift (zero-fills from the left), but TSTL was mapping it to Lua's >> which is arithmetic (sign-extends). This gave wrong results for negative numbers: e.g. -1 >>> 0 should be 4294967295 but produced -1.
+
+Fix by masking to unsigned 32-bit first: (left & 0xFFFFFFFF) >> right. The Lua 5.2 (bit32.rshift) and LuaJIT (bit.rshift) paths were already correct.
+
+```typescript
+const n = -5;                                                                                                                
+console.log(n >>> 0);   // 4294967291                                                                                              
+console.log(1 >>> 0);   // 1                                                                                                       
+console.log(-1 >>> 0);  // 4294967295
+```","fix >>> (unsigned right shift) producing wrong results on Lua 5.3+
+
+TS >>> is a logical right shift (zero-fills from the left), but TSTL
+was mapping it to Lua's >> which is arithmetic (sign-extends). This
+gave wrong results for negative numbers: e.g. -1 >>> 0 should be
+4294967295 but produced -1.
+
+Fix by masking to unsigned 32-bit first: (left & 0xFFFFFFFF) >> right.
+The Lua 5.2 (bit32.rshift) and LuaJIT (bit.rshift) paths were already
+correct.
+","diff --git a/test/unit/expressions.spec.ts b/test/unit/expressions.spec.ts
+index ee0eab5..51d630e 100644
+--- a/test/unit/expressions.spec.ts
++++ b/test/unit/expressions.spec.ts
+@@ -117,6 +117,46 @@ test.each(unsupportedIn53And54)(""Unsupported bitop 5.4 (%p)"", input => {
+         .expectDiagnosticsToMatchSnapshot([unsupportedRightShiftOperator.code]);
+ });
+ 
++// Execution tests: verify >>> produces correct results matching JS semantics
++for (const expression of [""-5 >>> 0"", ""-1 >>> 0"", ""1 >>> 0"", ""-1 >>> 16"", ""255 >>> 4""]) {
++    util.testEachVersion(
++        `Unsigned right shift execution (${expression})`,
++        () => util.testExpression(expression),
++        {
++            [tstl.LuaTarget.Universal]: false,
++            [tstl.LuaTarget.Lua50]: false, // No bit library in WASM runtime
++            [tstl.LuaTarget.Lua51]: false, // No bit library in WASM runtime
++            [tstl.LuaTarget.Lua52]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua53]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua54]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua55]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.LuaJIT]: false, // Can't execute LuaJIT in tests
++            [tstl.LuaTarget.Luau]: false,
++        }
++    );
++}
++
++for (const code of [
++    ""let a = -5; a >>>= 0; return a;"",
++    ""let a = -1; a >>>= 16; return a;"",
++]) {
++    util.testEachVersion(
++        `Unsigned right shift assignment execution (${code})`,
++        () => util.testFunction(code),
++        {
++            [tstl.LuaTarget.Universal]: false,
++            [tstl.LuaTarget.Lua50]: false, // No bit library in WASM runtime
++            [tstl.LuaTarget.Lua51]: false, // No bit library in WASM runtime
++            [tstl.LuaTarget.Lua52]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua53]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua54]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.Lua55]: builder => builder.expectToMatchJsResult(),
++            [tstl.LuaTarget.LuaJIT]: false, // Can't execute LuaJIT in tests
++            [tstl.LuaTarget.Luau]: false,
++        }
++    );
++}
++
+ test.each([""1+1"", ""-1+1"", ""1*30+4"", ""1*(3+4)"", ""1*(3+4*2)"", ""10-(4+5)""])(
+     ""Binary expressions ordering parentheses (%p)"",
+     input => {
+",0,,3,68,1,2,3,57
+766,7a3ef213a9c35f003794a16fcfa56c809489cbe1,d3cc722e014b564e8e4632b4cfb70cfc8484e5e3,,"Transpile console.error to regular print like console.log
+","diff --git a/test/unit/builtins/console.spec.ts b/test/unit/builtins/console.spec.ts
+index 7e7f68e..8c8f196 100644
+--- a/test/unit/builtins/console.spec.ts
++++ b/test/unit/builtins/console.spec.ts
+@@ -15,6 +15,18 @@ test.each([
+ });
+ 
+ test.each([
++    ""console.error()"",
++    'console.error(""Hello"")',
++    'console.error(""Hello %s"", ""there"")',
++    'console.error(""Hello %%s"", ""there"")',
++    'console.error(""Hello"", ""There"")',
++])(""console.error (%p)"", code => {
++    util.testFunction(code)
++        .setOptions(compilerOptions)
++        .expectLuaToMatchSnapshot();
++});
++
++test.each([
+     ""console.trace()"",
+     'console.trace(""message"")',
+     'console.trace(""Hello %s"", ""there"")',
+",0,,3,57,1,2,3,171
+791,0e171c5616ee02d1378c69993a6b00296a58314c,8971c76d85dcdc2f501fd57dc3f2dee3c4ce6099,"elseif instead of multiple if
+Fixed 82 tests being skipped in conditionals.spec.ts","Switch case goto chain is now transpiled to an elseif chain instead of multiple ifs
+","diff --git a/test/unit/conditionals.spec.ts b/test/unit/conditionals.spec.ts
+index 54534e9..51b8dca 100644
+--- a/test/unit/conditionals.spec.ts
++++ b/test/unit/conditionals.spec.ts
+@@ -184,7 +184,7 @@ test(""variable in nested scope does not interfere with case scope"", () => {
+     `.expectToMatchJsResult();
+ });
+ 
+-test.only(""switch using variable re-declared in cases"", () => {
++test(""switch using variable re-declared in cases"", () => {
+     util.testFunction`
+         let foo: number = 0;
+         switch (foo) {
+@@ -311,6 +311,33 @@ test.each([0, 1, 2, 3])(""switchWithBracketsBreakInInternalLoop (%p)"", inp => {
+     `.expectToMatchJsResult();
+ });
+ 
++test(""switch uses elseif"", () => {
++    test(""array"", () => {
++        util.testFunction`
++            let result: number = -1;
++
++            switch (2 as number) {
++                case 0: {
++                    break;
++                }
++
++                case 1: {
++                    break;
++                }
++
++                case 2: {
++                    result = 1;
++                    break;
++                }
++            }
++
++            return result;
++        `
++            .expectLuaToMatchSnapshot()
++            .expectToMatchJsResult();
++    });
++});
++
+ test(""switch not allowed in 5.1"", () => {
+     util.testFunction`
+         switch (""abc"") {}
+",0,,3,85,1,2,3,83
+842,ff2dd78134684f82714f8875df7b6b30769e4dfe,b47975f6bc563f911a773748ba95bf1b88b170f9,,"Refactor some tests
+","diff --git a/test/unit/assignments.spec.ts b/test/unit/assignments.spec.ts
+index 1a86654..178d72b 100644
+--- a/test/unit/assignments.spec.ts
++++ b/test/unit/assignments.spec.ts
+@@ -7,46 +7,56 @@ test.each([""const"", ""let""])(""%s declaration not top-level is not global"", declar
+             ${declarationKind} foo = true;
+         }
+         // @ts-ignore
+-        return (globalThis as any).foo;
+-    `.expectToEqual(undefined);
++        return ""foo"" in globalThis;
++    `.expectToEqual(false);
+ });
+ 
+-test.each([""const"", ""let""])(""%s declaration top-level is global"", declarationKind => {
+-    util.testModule`
+-        ${declarationKind} foo = true;
++test.each([""const"", ""let""])(""top-level %s declaration is global"", declarationKind => {
++    // TODO [typescript@>=3.9]: Remove `@ts-ignore` comments before module imports
++    util.testBundle`
+         // @ts-ignore
+-        return (globalThis as any).foo;
+-    `.expectToEqual(true);
++        import './a';
++        export const result = foo;
++    `
++        .addExtraFile(""a.ts"", `${declarationKind} foo = true;`)
++        .expectToEqual({ result: true });
+ });
+ 
+-test(""var declaration is disallowed"", () => {
+-    util.testFunction`
+-        var foo = true;
+-    `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
+-});
++describe(""var is disallowed"", () => {
++    test(""var declaration"", () => {
++        util.testFunction`
++            var foo = true;
++        `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
++    });
+ 
+-test(""var declaration in for loop is disallowed"", () => {
+-    util.testFunction`
+-        for (var foo = 0;;) {}
+-    `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
+-});
++    test(""for loop"", () => {
++        util.testFunction`
++            for (var foo = 0;;) {}
++        `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
++    });
+ 
+-test(""var declaration in for...in loop is disallowed"", () => {
+-    util.testFunction`
+-        for (var foo in {}) {}
+-    `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
+-});
++    test(""for...in loop"", () => {
++        util.testFunction`
++            for (var foo in {}) {}
++        `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
++    });
+ 
+-test(""var declaration in for...of loop is disallowed"", () => {
+-    util.testFunction`
+-        for (var foo of []) {}
+-    `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
++    test(""for...of loop"", () => {
++        util.testFunction`
++            for (var foo of []) {}
++        `.expectDiagnosticsToMatchSnapshot([unsupportedVarDeclaration.code]);
++    });
+ });
+ 
+-test.each([""let myvar;"", ""const myvar = null;"", ""const myvar = undefined;""])(""Null assignments (%p)"", declaration => {
+-    const result = util.transpileAndExecute(declaration + "" return myvar;"");
+-    expect(result).toBe(undefined);
+-});
++test.each([""let result;"", ""const result = null;"", ""const result = undefined;""])(
++    ""Null assignments (%p)"",
++    declaration => {
++        util.testFunction`
++            ${declaration}
++            return result;
++        `.expectToEqual(undefined);
++    }
++);
+ 
+ test.each([""x = y"", ""x += y""])(""Assignment expressions (%p)"", expression => {
+     util.testFunction`
+",0,,6,170,1,7,37,652
+858,1a36236a57c40ff74b48a4a43efa4daccf1d80fc,996008f37b18194af7894deafcd4242f017f3cdd,Closes #853 ,"Allow @noSelf on any function declaration
+","diff --git a/test/unit/annotations/noSelf.spec.ts b/test/unit/annotations/noSelf.spec.ts
+new file mode 100644
+index 0000000..80c7743
+--- /dev/null
++++ b/test/unit/annotations/noSelf.spec.ts
+@@ -0,0 +1,53 @@
++import * as util from ""../../util"";
++
++const methodHolders = [""class"", ""interface""];
++
++test(""@noSelf on declared function removes context argument"", () => {
++    util.testModule`
++    /** @noSelf */
++    declare function myFunction(): void;
++    myFunction();
++`.expectLuaToMatchSnapshot();
++});
++
++test.each(methodHolders)(""@noSelf on method inside %s declaration removes context argument"", holderType => {
++    util.testModule`
++        declare ${holderType} MethodHolder {
++            /** @noSelf */
++            myMethod(): void;
++        }
++        declare const holder: MethodHolder;
++        holder.myMethod();
++    `.expectLuaToMatchSnapshot();
++});
++
++test.each(methodHolders)(""@noSelf on parent %s declaration removes context argument"", holderType => {
++    util.testModule`
++        /** @noSelf */
++        declare ${holderType} MethodHolder {
++            myMethod(): void;
++        }
++        declare const holder: MethodHolder;
++        holder.myMethod();
++    `.expectLuaToMatchSnapshot();
++});
++
++test(""@noSelf on method inside namespace declaration removes context argument"", () => {
++    util.testModule`
++        declare namespace MyNamespace {
++            /** @noSelf */
++            export function myMethod(): void;
++        }
++        MyNamespace.myMethod();
++    `.expectLuaToMatchSnapshot();
++});
++
++test(""@noSelf on parent namespace declaration removes context argument"", () => {
++    util.testModule`
++        /** @noSelf */
++        declare namespace MyNamespace {
++            export function myMethod(): void;
++        }
++        MyNamespace.myMethod();
++    `.expectLuaToMatchSnapshot();
++});
+",1,None=None,5,277,2,3,5,277
+885,f5eebf7eda03e155e2a15f839fd145ce118897c1,d32256d093600e901e51d4574ea14bdd05437dd8,"That's a preparation for #432 and #653. The outline of changes done:
+- Added a `Transpiler` class, which should be used instead of `transpile`. The reason for making it a class is that it also would take care of the emitted files state. That would be useful since with #432 we don't want to emit all referenced .lua files every single cycle.
+- Unlike `transpile`, `Transpiler` takes care of both transpiling and emitting. This is needed, because some emitted files may have no known sources (we actually already have that with bundle files), so a concept of `TranspiledFile` doesn't work here.
+- Since we can't use a structured `TranspiledFile` concept there, we'll either have to return a list of generic `{ fileName, text }` objects or take `writeFile` callback. I have chosen the second approach to be symmetric with `program.emit`.
+
+Changelog:
+- In preparation for some new features, few public APIs have been changed:
+  - High-level APIs that read input files from the file system (`transpileFiles` and `transpileProject`) now write transpiled files by default. This behavior can be changed by providing a `writeFile` callback, similarly to TypeScript's `program.emit`.
+  - `transpile` and `emitTranspiledFiles` functions have been replaced with the `Transpiler` class. See [documentation](https://typescripttolua.github.io/docs/api/overview#low-level-api) for usage examples.
+- Fixed `declarationDir` option not being respected.","Fix transpile tests
+","diff --git a/test/transpile/project.spec.ts b/test/transpile/project.spec.ts
+index a8afc42..6f262da 100644
+--- a/test/transpile/project.spec.ts
++++ b/test/transpile/project.spec.ts
+@@ -1,18 +1,8 @@
+ import * as path from ""path"";
+-import { transpileProject } from ""../../src"";
+-
+-const projectDir = path.join(__dirname, ""project"");
+-const inputProject = path.join(projectDir, ""tsconfig.json"");
++import { transpileProjectResult } from ""./run"";
+ 
+ test(""should transpile"", () => {
+-    const transpileResult = transpileProject(inputProject);
+-
+-    expect(transpileResult.diagnostics).not.toHaveDiagnostics();
+-
+-    // Check output paths relative to projectDir
+-    const relativeResult = transpileResult.emitResult.map(({ name, text }) => ({
+-        name: path.relative(projectDir, name),
+-        text,
+-    }));
+-    expect(relativeResult).toMatchSnapshot();
++    const { diagnostics, emittedFiles } = transpileProjectResult(path.join(__dirname, ""project"", ""tsconfig.json""));
++    expect(diagnostics).not.toHaveDiagnostics();
++    expect(emittedFiles).toMatchSnapshot();
+ });
+",0,,7,92,1,8,21,738
+889,6801f1b38baba97984fadb026541b64fee7507ba,822ffb957cb181cde795922da86528d3ab794412,Resolves #820.,"Add diagnostic on Lua 5.1 target
+","diff --git a/test/unit/functions/functions.spec.ts b/test/unit/functions/functions.spec.ts
+index f5fc96e..20f76e2 100644
+--- a/test/unit/functions/functions.spec.ts
++++ b/test/unit/functions/functions.spec.ts
+@@ -1,4 +1,6 @@
++import * as tstl from ""../../../src"";
+ import * as util from ""../../util"";
++import { unsupportedForTarget } from ""../../../src/transformation/utils/diagnostics"";
+ 
+ test(""Arrow Function Expression"", () => {
+     util.testFunction`
+@@ -201,6 +203,15 @@ test.each([
+     `.expectToMatchJsResult();
+ });
+ 
++test.each([tstl.LuaTarget.Lua51, tstl.LuaTarget.Universal])(""function.length unsupported (%p)"", luaTarget => {
++    util.testFunction`
++        function fn() {}
++        return fn.length;
++    `
++        .setOptions({ luaTarget })
++        .expectDiagnosticsToMatchSnapshot([unsupportedForTarget.code]);
++});
++
+ test(""Recursive function definition"", () => {
+     util.testFunction`
+         function f() { return typeof f; };
+",0,,3,66,1,4,5,93
+924,3a019b940b0628fb3785431aaca129afeb830a40,3a019b940b0628fb3785431aaca129afeb830a40,,"Shebang support
+","diff --git a/test/unit/file.spec.ts b/test/unit/file.spec.ts
+new file mode 100644
+index 0000000..3a810dc
+--- /dev/null
++++ b/test/unit/file.spec.ts
+@@ -0,0 +1,27 @@
++import * as util from ""../util"";
++
++describe(""JSON"", () => {
++    test.each([0, """", [], [1, ""2"", []], { a: ""b"" }, { a: { b: ""c"" } }])(""JSON (%p)"", json => {
++        util.testModule(JSON.stringify(json)).setMainFileName(""main.json"").expectToEqual(json);
++    });
++
++    test(""empty file throws runtime error"", () => {
++        util.testModule("""")
++            .setMainFileName(""main.json"")
++            .expectToEqual(new util.ExecutionError(""Unexpected end of JSON input""));
++    });
++});
++
++describe(""shebang"", () => {
++    test(""LF"", () => {
++        util.testModule`#!/usr/bin/env lua\n
++            const foo = true;
++        `.expectLuaToMatchSnapshot();
++    });
++
++    test(""CRLF"", () => {
++        util.testModule`#!/usr/bin/env lua\r\n
++            const foo = true;
++        `.expectLuaToMatchSnapshot();
++    });
++});
+",0,,10,147,1,1,10,147
+949,c5e919b6d0046207044f5feab10fb37fd0ef7e80,03ae920c7fa1b61353e08d783aabefd67d863e55,"I tried to keep the deprecation warnings seperate from existing code/tests, so they can be easily removed once we delete the the deprecated annotations.
+
+Fixes #652","Deprecate phantom, metaExtension, extension, pureAbstract
+
+I tried to keep the deprecation warnings seperate from existing code/tests, so they can be easily removed once we delete the the deprecated annotations.
+
+Fixes #652
+","diff --git a/test/unit/annotations/deprecated.spec.ts b/test/unit/annotations/deprecated.spec.ts
+new file mode 100644
+index 0000000..488b66a
+--- /dev/null
++++ b/test/unit/annotations/deprecated.spec.ts
+@@ -0,0 +1,27 @@
++import { annotationDeprecated } from ""../../../src/transformation/utils/diagnostics"";
++import * as util from ""../../util"";
++
++test.each([""extension"", ""metaExtension""])(""extension deprecation"", extensionType => {
++    util.testModule`
++        declare class A {}
++        /** @${extensionType} **/
++        class B extends A {}
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++});
++
++test(""phantom deprecation"", () => {
++    util.testModule`
++        /** @phantom **/
++        namespace A {
++            function nsMember() {}
++        }
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++});
++
++test(""pureAbstract deprecation"", () => {
++    util.testModule`
++        /** @pureAbstract */
++        declare class ClassA {}
++        class ClassB extends ClassA {}    
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++});
+
+diff --git a/test/unit/annotations/extension.spec.ts b/test/unit/annotations/extension.spec.ts
+index c8da1b8..2709380 100644
+--- a/test/unit/annotations/extension.spec.ts
++++ b/test/unit/annotations/extension.spec.ts
+@@ -1,4 +1,5 @@
+ import {
++    annotationDeprecated,
+     extensionCannotConstruct,
+     extensionCannotExtend,
+     extensionInvalidInstanceOf,
+@@ -11,7 +12,7 @@ test.each([""extension"", ""metaExtension""])(""Class extends extension (%p)"", extens
+         /** @${extensionType} **/
+         class B extends A {}
+         class C extends B {}
+-    `.expectDiagnosticsToMatchSnapshot([extensionCannotExtend.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotExtend.code]);
+ });
+ 
+ test.each([""extension"", ""metaExtension""])(""Class construct extension (%p)"", extensionType => {
+@@ -20,7 +21,7 @@ test.each([""extension"", ""metaExtension""])(""Class construct extension (%p)"", exte
+         /** @${extensionType} **/
+         class B extends A {}
+         const b = new B();
+-    `.expectDiagnosticsToMatchSnapshot([extensionCannotConstruct.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotConstruct.code]);
+ });
+ 
+ test.each([""extension"", ""metaExtension""])(""instanceof extension (%p)"", extensionType => {
+@@ -30,5 +31,5 @@ test.each([""extension"", ""metaExtension""])(""instanceof extension (%p)"", extension
+         class B extends A {}
+         declare const foo: any;
+         const result = foo instanceof B;
+-    `.expectDiagnosticsToMatchSnapshot([extensionInvalidInstanceOf.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionInvalidInstanceOf.code]);
+ });
+
+diff --git a/test/unit/annotations/metaExtension.spec.ts b/test/unit/annotations/metaExtension.spec.ts
+index 405eeee..aec48f4 100644
+--- a/test/unit/annotations/metaExtension.spec.ts
++++ b/test/unit/annotations/metaExtension.spec.ts
+@@ -1,4 +1,8 @@
+-import { extensionCannotConstruct, metaExtensionMissingExtends } from ""../../../src/transformation/utils/diagnostics"";
++import {
++    annotationDeprecated,
++    extensionCannotConstruct,
++    metaExtensionMissingExtends,
++} from ""../../../src/transformation/utils/diagnostics"";
+ import * as util from ""../../util"";
+ 
+ test(""MetaExtension"", () => {
+@@ -19,7 +23,8 @@ test(""MetaExtension"", () => {
+         'return debug.getregistry()[""_LOADED""].test();',
+         undefined,
+         undefined,
+-        tsHeader
++        tsHeader,
++        true
+     );
+ 
+     expect(result).toBe(5);
+@@ -33,7 +38,7 @@ test(""IncorrectUsage"", () => {
+                 return 5;
+             }
+         }
+-    `.expectDiagnosticsToMatchSnapshot([metaExtensionMissingExtends.code]);
++    `.expectDiagnosticsToMatchSnapshot([metaExtensionMissingExtends.code, annotationDeprecated.code]);
+ });
+ 
+ test(""DontAllowInstantiation"", () => {
+@@ -42,5 +47,5 @@ test(""DontAllowInstantiation"", () => {
+         /** @metaExtension */
+         class Ext extends _LOADED {}
+         const e = new Ext();
+-    `.expectDiagnosticsToMatchSnapshot([extensionCannotConstruct.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotConstruct.code]);
+ });
+",0,,14,225,3,3,14,228
+957,985f3dc5ea543097c7687fee1bcba9b20ea3d646,6adaa69a177f8f19091c7216ccf3eec77496b571,"Removed legacy test utils and replaced all remaining usages with `TestBuilder`. I tried to use `expectJSResult()` whenever possible.
+
+Also improved support for multi file tests `TestBuilder.addExtraFile` now works for all the different factories (testBundle, testModule, testFunction, testExpression ...):
+
+- In Lua this is achieved by loading extra files into `packages.loaded` via the Lua API.
+This mechanism is now also used to inject our test dependencies (lualib & JSON.Stringify).
+
+- In JS a custom require in conjunction with node's `vm` module is used. The JS setup is a bit hacky at the moment (global support is basic and import hoisting does not work). This can be approved significantly once https://nodejs.org/api/vm.html#vm_class_vm_module becomes stable.
+
+
+Needs very thorough review, because this could potentially break tests.","Updated some test suites to use new testbuilder
+","diff --git a/test/unit/identifiers.spec.ts b/test/unit/identifiers.spec.ts
+index ba2bcd8..798763c 100644
+--- a/test/unit/identifiers.spec.ts
++++ b/test/unit/identifiers.spec.ts
+@@ -139,13 +139,13 @@ test.each(validTsInvalidLuaNames)(""exported values with invalid lua identifier n
+ });
+ 
+ test(""exported identifiers referenced in namespace (%p)"", () => {
+-    const code = `
++    util.testModule`
+         export const foo = ""foobar"";
+         namespace NS {
+             export const bar = foo;
+         }
+-        export const baz = NS.bar;`;
+-    expect(util.transpileExecuteAndReturnExport(code, ""baz"")).toBe(""foobar"");
++        export const baz = NS.bar;
++    `.expectToMatchJsResult();
+ });
+ 
+ test(""exported namespace identifiers referenced in different namespace (%p)"", () => {
+@@ -157,31 +157,31 @@ test(""exported namespace identifiers referenced in different namespace (%p)"", ()
+             }
+             export const baz = B.bar;
+         }`;
+-    expect(util.transpileAndExecute(""return A.baz"", undefined, undefined, tsHeader)).toBe(""foobar"");
++    util.testModule(""return A.baz"").setTsHeader(tsHeader).expectToMatchJsResult();
+ });
+ 
+ test(""exported identifiers referenced in nested scope (%p)"", () => {
+-    const code = `
++    util.testModule`
+         export const foo = ""foobar"";
+         namespace A {
+             export namespace B {
+                 export const bar = foo;
+             }
+         }
+-        export const baz = A.B.bar;`;
+-    expect(util.transpileExecuteAndReturnExport(code, ""baz"")).toBe(""foobar"");
++        export const baz = A.B.bar;
++    `.expectToMatchJsResult();
+ });
+ 
+ test.each(validTsInvalidLuaNames)(
+     ""exported values with invalid lua identifier names referenced in different scope (%p)"",
+     name => {
+-        const code = `
+-        export const ${name} = ""foobar"";
+-        namespace NS {
+-            export const foo = ${name};
+-        }
+-        export const bar = NS.foo;`;
+-        expect(util.transpileExecuteAndReturnExport(code, ""bar"")).toBe(""foobar"");
++        util.testModule`
++            export const ${name} = ""foobar"";
++            namespace NS {
++                export const foo = ${name};
++            }
++            export const bar = NS.foo;
++        `.expectToMatchJsResult();
+     }
+ );
+ 
+@@ -223,103 +223,92 @@ test.each(validTsInvalidLuaNames)(""exported decorated class with invalid lua nam
+ 
+ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     test(""variable (nil)"", () => {
+-        const code = `
++        util.testFunction`
+             const nil = ""foobar"";
+-            return \`\${undefined}|\${nil}\``;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""nil|foobar"");
++            return \`\${undefined}|\${nil}\`
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (and)"", () => {
+-        const code = `
++        util.testFunction`
+             const and = ""foobar"";
+-            return true && and;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return true && and;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (elseif)"", () => {
+-        const code = `
++        util.testFunction`
+             const elseif = ""foobar"";
+             if (false) {
+             } else if (elseif) {
+                 return elseif;
+-            }`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            }
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (end)"", () => {
+-        const code = `
++        util.testFunction`
+             const end = ""foobar"";
+             {
+                 return end;
+-            }`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            }
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (local)"", () => {
+-        const code = `
++        util.testFunction`
+             const local = ""foobar"";
+-            return local;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return local;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (not)"", () => {
+-        const code = `
++        util.testFunction`
+             const not = ""foobar"";
+-            return (!false) && not;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return (!false) && not;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (or)"", () => {
+-        const code = `
++        util.testFunction`
+             const or = ""foobar"";
+-            return false || or;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return false || or;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (repeat)"", () => {
+-        const code = `
++        util.testFunction`
+             const repeat = ""foobar"";
+             do {} while (false);
+-            return repeat;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return repeat;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (then)"", () => {
+-        const code = `
++        util.testFunction`
+             const then = ""foobar"";
+             if (then) {
+                 return then;
+-            }`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            }
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (until)"", () => {
+-        const code = `
++        util.testFunction`
+             const until = ""foobar"";
+             do {} while (false);
+-            return until;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return until;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (goto)"", () => {
+-        const code = `
++        util.testFunction`
+             const goto = ""foobar"";
+             switch (goto) {
+                 case goto:
+                     return goto;
+-            }`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            }
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (print)"", () => {
+@@ -343,21 +332,21 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     });
+ 
+     test(""variable (type)"", () => {
+-        const code = `
++        util.testFunction`
+             function type(this: void, a: unknown) {
+                 return (typeof a) + ""|foobar"";
+             }
+-            return type(7);`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""number|foobar"");
++            return type(7);
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (error)"", () => {
+-        const code = `
++        const executionResult = util.testFunction`
+             const error = ""foobar"";
+-            throw error;`;
++            throw error;
++        `.getLuaExecutionResult();
+ 
+-        expect(() => util.transpileAndExecute(code)).toThrow(/^LUA ERROR: foobar$/);
++        expect(executionResult).toMatch(/^LUA ERROR: foobar$/);
+     });
+ 
+     test(""variable (assert)"", () => {
+@@ -393,65 +382,58 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     });
+ 
+     test(""variable (string)"", () => {
+-        const code = `
++        util.testFunction`
+             const string = ""foobar"";
+-            return string[0];`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""f"");
++            return string[0];
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (math)"", () => {
+-        const code = `
++        util.testFunction`
+             const math = -17;
+-            return Math.abs(math);`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(17);
++            return Math.abs(math);
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (table)"", () => {
+-        const code = `
++        util.testFunction`
+             const table = [""foobar""];
+-            return table.pop();`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return table.pop();
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (coroutine)"", () => {
+-        const code = `
++        util.testFunction`
+             const coroutine = ""foobar"";
+             function *foo() { yield coroutine; }
+-            return foo().next().value;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return foo().next().value;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (pairs)"", () => {
+-        const code = `
++        util.testFunction`
+             const pairs = {foobar: ""foobar""};
+             let result = """";
+             for (const key in pairs) {
+                 result += key;
+             }
+-            return result;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return result;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (pcall)"", () => {
+-        const code = `
++        util.testFunction`
+             const pcall = ""foobar"";
+             try {} finally {}
+-            return pcall;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++            return pcall;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (rawget)"", () => {
+-        const code = `
++        util.testFunction`
+             const rawget = {foobar: ""foobar""};
+-            return rawget.hasOwnProperty(""foobar"");`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(true);
++            return rawget.hasOwnProperty(""foobar"");
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (require)"", () => {
+@@ -470,11 +452,10 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     });
+ 
+     test(""variable (tostring)"", () => {
+-        const code = `
++        util.testFunction`
+             const tostring = 17;
+-            return tostring.toString();`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(17);
++            return tostring.toString();
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""variable (unpack)"", () => {
+@@ -491,88 +472,78 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     });
+ 
+     test(""variable (_G)"", () => {
+-        const code = `
++        util.testFunction`
+             const _G = ""bar"";
+             (globalThis as any).foo = ""foo"";
+             return (globalThis as any).foo + _G;
+-        `;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar"");
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""function parameter"", () => {
+-        const code = `
++        util.testFunction`
+             function foo(type: unknown) {
+                 return \`\${typeof type}|\${type}\`;
+             }
+-            return foo(""foobar"");`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""string|foobar"");
++            return foo(""foobar"");
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""destructured property function parameter"", () => {
+-        const code = `
++        util.testFunction`
+             function foo({type}: any) {
+                 return \`\${typeof type}|\${type}\`;
+             }
+-            return foo({type: ""foobar""});`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""string|foobar"");
++            return foo({type: ""foobar""});
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""destructured array element function parameter"", () => {
+-        const code = `
++        util.testFunction`
+             function foo([type]: any) {
+                 return \`\${typeof type}|\${type}\`;
+             }
+-            return foo([""foobar""]);`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""string|foobar"");
++            return foo([""foobar""]);
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""property"", () => {
+-        const code = `
++        util.testFunction`
+             const type = ""foobar"";
+             const foo = { type: type };
+-            return type + ""|"" + foo.type + ""|"" + typeof type;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar|foobar|string"");
++            return type + ""|"" + foo.type + ""|"" + typeof type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""shorthand property"", () => {
+-        const code = `
++        util.testFunction`
+             const type = ""foobar"";
+             const foo = { type };
+-            return type + ""|"" + foo.type + ""|"" + typeof type;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar|foobar|string"");
++            return type + ""|"" + foo.type + ""|"" + typeof type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""destructured property"", () => {
+-        const code = `
++        util.testFunction`
+             const foo = { type: ""foobar"" };
+             const { type: type } = foo;
+-            return type + ""|"" + foo.type + ""|"" + typeof type;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar|foobar|string"");
++            return type + ""|"" + foo.type + ""|"" + typeof type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""destructured shorthand property"", () => {
+-        const code = `
++        util.testFunction`
+             const foo = { type: ""foobar"" };
+             const { type } = foo;
+-            return type + ""|"" + foo.type + ""|"" + typeof type;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar|foobar|string"");
++            return type + ""|"" + foo.type + ""|"" + typeof type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""destructured array element"", () => {
+-        const code = `
++        util.testFunction`
+             const foo = [""foobar""];
+             const [type] = foo;
+-            return type + ""|"" + typeof type;`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""foobar|string"");
++            return type + ""|"" + typeof type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test.each([""type"", ""type as type""])(""imported variable (%p)"", importName => {
+@@ -590,18 +561,13 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+         expect(result).toBe(""number|foobar"");
+     });
+ 
+-    test.each([
+-        { returnExport: ""type"", expectResult: ""foobar"" },
+-        { returnExport: ""mytype"", expectResult: ""foobar"" },
+-        { returnExport: ""result"", expectResult: ""string|foobar"" },
+-    ])(""separately exported variable (%p)"", ({ returnExport, expectResult }) => {
+-        const code = `
++    test(""separately exported variable (%p)"", () => {
++        util.testModule`
+             const type = ""foobar"";
+             export { type }
+             export { type as mytype }
+-            export const result = typeof type + ""|"" + type;`;
+-
+-        expect(util.transpileExecuteAndReturnExport(code, returnExport)).toBe(expectResult);
++            export const result = typeof type + ""|"" + type;
++        `.expectToMatchJsResult();
+     });
+ 
+     test.each([""type"", ""type as type""])(""re-exported variable with lua keyword as name (%p)"", importName => {
+@@ -618,59 +584,49 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+     });
+ 
+     test(""class"", () => {
+-        const code = `
++        util.testFunction`
+             class type {
+                 method() { return typeof 0; }
+                 static staticMethod() { return typeof ""foo""; }
+             }
+             const t = new type();
+-            return t.method() + ""|"" + type.staticMethod();`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""number|string"");
++            return t.method() + ""|"" + type.staticMethod();
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""subclass of class"", () => {
+-        const code = `
++        util.testFunction`
+             class type {
+                 method() { return typeof 0; }
+                 static staticMethod() { return typeof ""foo""; }
+             }
+             class Foo extends type {}
+             const foo = new Foo();
+-            return foo.method() + ""|"" + Foo.staticMethod();`;
+-
+-        expect(util.transpileAndExecute(code)).toBe(""number|string"");
++            return foo.method() + ""|"" + Foo.staticMethod();
++        `.expectToMatchJsResult();
+     });
+ 
+-    test.each([
+-        { returnExport: ""result"", expectResult: ""number|string"" },
+-        { returnExport: ""type ~= nil"", expectResult: true },
+-    ])(""exported class (%p)"", ({ returnExport, expectResult }) => {
+-        const code = `
++    test(""exported class (%p)"", () => {
++        util.testModule`
+             export class type {
+                 method() { return typeof 0; }
+                 static staticMethod() { return typeof ""foo""; }
+             }
+             const t = new type();
+-            export const result = t.method() + ""|"" + type.staticMethod();`;
+-
+-        expect(util.transpileExecuteAndReturnExport(code, returnExport)).toBe(expectResult);
++            export const result = t.method() + ""|"" + type.staticMethod();
++        `.expectToMatchJsResult();
+     });
+ 
+-    test.each([
+-        { returnExport: ""result"", expectResult: ""number|string"" },
+-        { returnExport: ""type ~= nil"", expectResult: true },
+-    ])(""subclass of exported class (%p)"", ({ returnExport, expectResult }) => {
+-        const code = `
++    test(""subclass of exported class (%p)"", () => {
++        util.testModule`
+             export class type {
+                 method() { return typeof 0; }
+                 static staticMethod() { return typeof ""foo""; }
+             }
+             class Foo extends type {}
+             const foo = new Foo();
+-            export const result = foo.method() + ""|"" + Foo.staticMethod();`;
+-
+-        expect(util.transpileExecuteAndReturnExport(code, returnExport)).toBe(expectResult);
++            export const result = foo.method() + ""|"" + Foo.staticMethod();
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""namespace"", () => {
+@@ -682,20 +638,16 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+         const code = `
+             return typeof type.foo + ""|"" + type.foo`;
+ 
+-        expect(util.transpileAndExecute(code, undefined, undefined, tsHeader)).toBe(""string|foobar"");
++        util.testFunction(code).setTsHeader(tsHeader).expectToMatchJsResult();
+     });
+ 
+-    test.each([
+-        { returnExport: ""result"", expectResult: ""string|foobar"" },
+-        { returnExport: ""type ~= nil"", expectResult: true },
+-    ])(""exported namespace (%p)"", ({ returnExport, expectResult }) => {
+-        const code = `
++    test(""exported namespace (%p)"", () => {
++        util.testModule`
+             export namespace type {
+                 export const foo = ""foobar"";
+             }
+-            export const result = typeof type.foo + ""|"" + type.foo;`;
+-
+-        expect(util.transpileExecuteAndReturnExport(code, returnExport)).toBe(expectResult);
++            export const result = typeof type.foo + ""|"" + type.foo;
++        `.expectToMatchJsResult();
+     });
+ 
+     test(""merged namespace"", () => {
+@@ -717,14 +669,11 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+             const t = new type();
+             return \`\${t.method()}|\${type.staticMethod()}|\${typeof type.foo}|\${type.foo}|\${type.bar}\`;`;
+ 
+-        expect(util.transpileAndExecute(code, undefined, undefined, tsHeader)).toBe(""number|boolean|string|foo|bar"");
++        util.testFunction(code).setTsHeader(tsHeader).expectToMatchJsResult();
+     });
+ 
+-    test.each([
+-        { returnExport: ""result"", expectResult: ""number|boolean|string|foo|bar"" },
+-        { returnExport: ""type ~= nil"", expectResult: true },
+-    ])(""exported merged namespace (%p)"", ({ returnExport, expectResult }) => {
+-        const code = `
++    test(""exported merged namespace (%p)"", () => {
++        util.testModule`
+             export class type {
+                 method() { return typeof 0; }
+                 static staticMethod() { return typeof true; }
+@@ -739,25 +688,21 @@ describe(""lua keyword as identifier doesn't interfere with lua's value"", () => {
+             }
+ 
+             const t = new type();
+-            export const result = \`\${t.method()}|\${type.staticMethod()}|\${typeof type.foo}|\${type.foo}|\${type.bar}\`;`;
+-
+-        expect(util.transpileExecuteAndReturnExport(code, returnExport)).toBe(expectResult);
++            export const result = \`\${t.method()}|\${type.staticMethod()}|\${typeof type.foo}|\${type.foo}|\${type.bar}\`;
++        `.expectToMatchJsResult();
+     });
+ });
+ 
+ test(""declaration-only variable with lua keyword as name is not renamed"", () => {
+-    const code = `
+-        declare function type(this: void, a: unknown): string;
+-        type(7);`;
+-
+-    expect(util.transpileString(code, undefined, false)).toBe(""type(7)"");
++    util.testFunction(""type(7)"")
++        .setTsHeader(""declare function type(this: void, a: unknown): string;"")
++        .expectLuaToMatchSnapshot();
+ });
+ 
+ test(""exported variable with lua keyword as name is not renamed"", () => {
+-    const code = `
+-        export const print = ""foobar"";`;
+-
+-    expect(util.transpileExecuteAndReturnExport(code, ""print"")).toBe(""foobar"");
++    util.testModule`
++        export const print = ""foobar"";
++    `.expectToMatchJsResult();
+ });
+ 
+ // https://github.com/TypeScriptToLua/TypeScriptToLua/issues/846
+",0,,11,766,2,10,32,2225
+962,f149692a4bb1640f48650cd8980f16fa26bd77e6,f149692a4bb1640f48650cd8980f16fa26bd77e6,"Resolves #960
+
+```ts
+function result() {
+  return $multi(1, 2, 3);
+}
+
+const first = result()[0];
+```
+
+transforms to
+
+```lua
+function result() ... end
+
+local first = select(
+  1, -- uses +1 rule
+  result()
+)
+```
+
+But diagnostics will be generated if anything else about the type is attempted to be accessed
+
+```ts
+result()[""forEach""] // not allowed to access via non-numeric type
+result().forEach // not allowed to access via property access expression
+```","Allow numeric access to MultiReturn
+","diff --git a/test/unit/language-extensions/multi.spec.ts b/test/unit/language-extensions/multi.spec.ts
+index ed5353b..c697cba 100644
+--- a/test/unit/language-extensions/multi.spec.ts
++++ b/test/unit/language-extensions/multi.spec.ts
+@@ -5,6 +5,7 @@ import {
+     invalidMultiFunctionUse,
+     invalidMultiTypeToNonArrayBindingPattern,
+     invalidMultiTypeArrayBindingPatternElementInitializer,
++    invalidMultiReturnAccess,
+ } from ""../../../src/transformation/utils/diagnostics"";
+ 
+ const multiProjectOptions: tstl.CompilerOptions = {
+@@ -126,3 +127,22 @@ test(""allow $multi call in ArrowFunction body"", () => {
+         .setOptions(multiProjectOptions)
+         .expectToEqual(1);
+ });
++
++test.each([""0"", ""i""])(""allow MultiReturn numeric access"", expression => {
++    util.testFunction`
++        ${multiFunction}
++        const i = 0;
++        return multi(1)[${expression}];
++    `
++        .setOptions(multiProjectOptions)
++        .expectToEqual(1);
++});
++
++test.each([""multi()['forEach']"", ""multi().forEach""])(""disallow MultiReturn non-numeric access"", expression => {
++    util.testFunction`
++        ${multiFunction}
++        return ${expression};
++    `
++        .setOptions(multiProjectOptions)
++        .expectDiagnosticsToMatchSnapshot([invalidMultiReturnAccess.code]);
++});
+",0,,4,76,1,1,4,76
+969,f6117f191cddb4703b4b25354c6f56f06964e9c1,70d0988a18fb8c0bf3e56ad095e0cbc37568a355,"Resolves #964
+
+Support for mapping lua's metamethod-based operator overloads to function declarations. This allows operator overloads provided by libraries to be callable from TS.
+
+A common example of this would be a math vector class:
+```ts
+interface Vector {
+    x: number;
+    y: number;
+}
+
+declare function Vector(x: number, y: number): Vector;
+
+const a = Vector(1, 2);
+const b = Vector(3, 4);
+const result = a + b; // Not allowed
+```
+
+To solve this, declaration writers can now map the add operator to a function:
+```ts
+declare const vectorAdd: LuaAdd<Vector, Vector, Vector>;
+
+const result = vectorAdd(a, b); // transpiles to 'result = a + b'
+```
+
+Mappings don't need to be global functions:
+```ts
+declare namespace Vector {
+    export const add: LuaAdd<Vector, Vector, Vector>;
+}
+const result = Vector.add(a, b); // result = a + b
+```
+
+They can also declared as methods on the object using an alternate type:
+```ts
+interface Vector {
+    add: LuaAddMethod<Vector, Vector>;
+}
+const result = a.add(b); // result = a + b
+```
+
+Overloads are allowed using intersections and work as expected:
+```ts
+declare const vectorMul: LuaMul<Vector, Vector, Vector> & LuaMul<Vector, number, number>;
+const result = vectorMul(a, b); // result is Vector
+const result = vectorMul(a, 7); // result is number
+```
+
+Currently, the following operators are supported:
+- Common binary math operators (add, subtract, etc...)
+- Negation operator
+- Less-than & greater-than operators
+- Table length operator
+- Concat operator
+- Bitwise operators (5.3+ only)
+","basic add operator mappings working, including tests and invalid use checks
+","diff --git a/test/unit/language-extensions/operators.spec.ts b/test/unit/language-extensions/operators.spec.ts
+index c8e1836..8289c46 100644
+--- a/test/unit/language-extensions/operators.spec.ts
++++ b/test/unit/language-extensions/operators.spec.ts
+@@ -1,97 +1,131 @@
+ import * as path from ""path"";
+ import * as util from ""../../util"";
+ import * as tstl from ""../../../src"";
++import { invalidOperatorMappingUse } from ""../../../src/transformation/utils/diagnostics"";
+ 
+ const operatorsProjectOptions: tstl.CompilerOptions = {
+     types: [path.resolve(__dirname, ""../../../language-extensions"")],
+ };
+ 
+-const binaryOperatorTestTemplate = `
+-	class BinOp {
++const operatorMapTestObject = `
++	class OpMap {
+ 		public value: number;
+ 		public constructor(value: number) { this.value = value; }
+-		public \${luaOp}(other: BinOp): BinOp;
+-		public \${luaOp}(other: number): number;
+-		public \${luaOp}(other: BinOp | number) {
+-			if (type(other) === ""number"") {
+-				return this.value \${op} (other as number);
++
++		public __add(other: OpMap): OpMap;
++		public __add(other: number): number;
++		public __add(other: OpMap | number) {
++			if (typeof other === ""number"") {
++				return this.value + other;
+ 			} else {
+-				return new BinOp(this.value \${op} (other as BinOp).value);
++				return new OpMap(this.value + other.value);
+ 			}
+ 		}
+-	}
++		public __sub(other: OpMap) { return this.value - other.value; }
++		public __mul(other: OpMap) { return this.value * other.value; }
++		public __div(other: OpMap) { return this.value / other.value; }
++		public __mod(other: OpMap) { return this.value % other.value; }
++		public __pow(other: OpMap) { return this.value ** other.value; }
++		public __idiv(other: OpMap) { return Math.floor(this.value / other.value); }
++		public __band(other: OpMap) { return this.value & other.value; }
++		public __bor(other: OpMap) { return this.value | other.value; }
++		public __bxor(other: OpMap) { return this.value ^ other.value; }
++		public __shl(other: OpMap) { return this.value << other.value; }
++		public __shr(other: OpMap) { return this.value >>> other.value; }
++		public __concat(other: OpMap) { return this.value.toString() + other.value.toString(); }
++		public __lt(other: OpMap) { return this.value < other.value; }
++		public __gt(other: OpMap) { return this.value > other.value; }
+ 
+-	declare interface BinOp {
+-		opMethod: (
+-			OperatorMethod\${opName}<BinOp, BinOp, BinOp>
+-			& OperatorMethod\${opName}<BinOp, number, number>
+-		);
++		public __unm() { return -this.value; }
++		public __bnot() { return ~this.value; }
++		public __len() { return this.value; }
+ 	}
++`;
+ 
+-	declare namespace BinOp {
+-		export const opFn: (
+-			Operator\${opName}<BinOp, BinOp, BinOp>
+-			& Operator\${opName}<BinOp, number, number>
+-		);
+-	}
+-	`;
++const binaryOperatorTests = [[""LuaAdd"", 4, 7, 11]] as const;
+ 
+-function makeBinaryOperatorTestCode(luaOp: string, opName: string, op: string) {
+-    return binaryOperatorTestTemplate.replace(""${luaOp}"", luaOp).replace(""${opName}"", opName).replace(""${op}"", op);
+-}
++test.each(binaryOperatorTests)(""binary operator mapping - global function"", (opType, a, b, expectResult) => {
++    util.testModule`
++		${operatorMapTestObject}
++		declare const op: ${opType}<OpMap, OpMap, OpMap>;
++		const a = new OpMap(${a});
++		const b = new OpMap(${b});
++		export const result = op(a, b).value;
++	`
++        .setOptions(operatorsProjectOptions)
++        .setReturnExport(""result"")
++        .expectToEqual(expectResult);
++});
+ 
+-const binaryOperatorTests = [[""__add"", ""Add"", ""+"", 7, 4, 11]] as const;
++test.each(binaryOperatorTests)(""binary operator mapping - static function"", (opType, a, b, expectResult) => {
++    util.testModule`
++		${operatorMapTestObject}
++		declare namespace OpMap {
++			export const op: ${opType}<OpMap, OpMap, OpMap>;
++		}
++		const a = new OpMap(${a});
++		const b = new OpMap(${b});
++		export const result = OpMap.op(a, b).value;
++	`
++        .setOptions(operatorsProjectOptions)
++        .setReturnExport(""result"")
++        .expectToEqual(expectResult);
++});
+ 
+-test.each(binaryOperatorTests)(
+-    ""binary operator - object overload (function)"",
+-    (luaOp, opName, op, a, b, expectResult) => {
+-        util.testFunction`
+-		${makeBinaryOperatorTestCode(luaOp, opName, op)}
+-		const a = new BinOp(${a});
+-		const b = new BinOp(${b});
+-		return BinOp.opFn(a, b);
++test.each(binaryOperatorTests)(""binary operator mapping - method"", (opType, a, b, expectResult) => {
++    util.testModule`
++		${operatorMapTestObject}
++		declare interface OpMap {
++			op: ${opType}Method<OpMap, OpMap>;
++		}
++		const a = new OpMap(${a});
++		const b = new OpMap(${b});
++		export const result = a.op(b).value;
+ 	`
+-            .setOptions(operatorsProjectOptions)
+-            .expectToEqual(expectResult);
+-    }
+-);
++        .setOptions(operatorsProjectOptions)
++        .setReturnExport(""result"")
++        .expectToEqual(expectResult);
++});
+ 
+-test.each(binaryOperatorTests)(
+-    ""binary operator - object overload (method)"",
+-    (luaOp, opName, op, a, b, expectResult) => {
+-        util.testFunction`
+-		${makeBinaryOperatorTestCode(luaOp, opName, op)}
+-		const a = new BinOp(${a});
+-		const b = new BinOp(${b});
+-		return a.opMethod(b);
++test(""operator mapping - method element call"", () => {
++    util.testModule`
++		${operatorMapTestObject}
++		declare interface OpMap {
++			add: LuaAddMethod<number, number>;
++		}
++		const a = new OpMap(7);
++		export const result = a[""add""](4);
+ 	`
+-            .setOptions(operatorsProjectOptions)
+-            .expectToEqual(expectResult);
+-    }
+-);
++        .setOptions(operatorsProjectOptions)
++        .setReturnExport(""result"")
++        .expectToEqual(11);
++});
+ 
+-test.each(binaryOperatorTests)(
+-    ""binary operator - number overload (function)"",
+-    (luaOp, opName, op, a, b, expectResult) => {
+-        util.testFunction`
+-		${makeBinaryOperatorTestCode(luaOp, opName, op)}
+-		const a = new BinOp(${a});
+-		return BinOp.opFn(a, ${b});
++test(""operator mapping - function element call"", () => {
++    util.testModule`
++		${operatorMapTestObject}
++		declare namespace OpMap {
++			export const add: LuaAdd<OpMap, number, number>;
++		}
++		const a = new OpMap(7);
++		export const result = OpMap[""add""](a, 4);
+ 	`
+-            .setOptions(operatorsProjectOptions)
+-            .expectToEqual(expectResult);
+-    }
+-);
++        .setOptions(operatorsProjectOptions)
++        .setReturnExport(""result"")
++        .expectToEqual(11);
++});
+ 
+-test.each(binaryOperatorTests)(
+-    ""binary operator - number overload - number overload (method)"",
+-    (luaOp, opName, op, a, b, expectResult) => {
+-        util.testFunction`
+-		${makeBinaryOperatorTestCode(luaOp, opName, op)}
+-		const a = new BinOp(${a});
+-		return a.opMethod(${b});
++test.each([
++    ""const foo: unknown = op;"",
++    ""const foo = `${op}`"",
++    ""declare function foo(op: LuaAdd<number, number, number>): void; foo(op);"",
++    ""const foo = (op as any)(1, 2);"",
++    ""const foo = [op];"",
++])(""operator mapping - invalid use (%s)"", invalidCode => {
++    util.testModule`
++		declare const op: LuaAdd<number, number, number>;
++		${invalidCode}
+ 	`
+-            .setOptions(operatorsProjectOptions)
+-            .expectToEqual(expectResult);
+-    }
+-);
++        .setOptions(operatorsProjectOptions)
++        .expectDiagnosticsToMatchSnapshot([invalidOperatorMappingUse.code]);
++});
+",0,,8,344,1,12,8,1203
+978,c965afa3f009e7ad4170e2e453e5dcea69537799,cbeb9cbe732c16e17aaac0f9635d9dd1e1b4eb81,"This turned into a somewhat major refactor on the multi-return stuff, as I ran into more unhandled cases along the way.
+
+Here's the main things this PR does:
+- Rename `MultiReturn` to `LuaMultiReturn` for consistency with other lib extensions
+- Added doc comments to multi-return stuff in lib extension declarations
+- Fixed #968 
+- Enabled support for assigning multi-return values without destructuring, by wrapping call in a table
+- Fixed broken code generation with assignment expressions and try/catch blocks
+- Added a diagnostic for cases where `$multi` could be implicitly cast to something else (such as when the function explicitly defines a non-multireturn return type)
+","renamed MultiReturn to LuaMultiReturn and added some doc comments
+","diff --git a/test/unit/language-extensions/multi.spec.ts b/test/unit/language-extensions/multi.spec.ts
+index c697cba..85b78b3 100644
+--- a/test/unit/language-extensions/multi.spec.ts
++++ b/test/unit/language-extensions/multi.spec.ts
+@@ -14,7 +14,7 @@ const multiProjectOptions: tstl.CompilerOptions = {
+ 
+ test(""multi example use case"", () => {
+     util.testModule`
+-        function multiReturn(): MultiReturn<[string, number]> {
++        function multiReturn(): LuaMultiReturn<[string, number]> {
+             return $multi(""foo"", 5);
+         }
+ 
+@@ -128,7 +128,7 @@ test(""allow $multi call in ArrowFunction body"", () => {
+         .expectToEqual(1);
+ });
+ 
+-test.each([""0"", ""i""])(""allow MultiReturn numeric access"", expression => {
++test.each([""0"", ""i""])(""allow LuaMultiReturn numeric access"", expression => {
+     util.testFunction`
+         ${multiFunction}
+         const i = 0;
+@@ -138,7 +138,7 @@ test.each([""0"", ""i""])(""allow MultiReturn numeric access"", expression => {
+         .expectToEqual(1);
+ });
+ 
+-test.each([""multi()['forEach']"", ""multi().forEach""])(""disallow MultiReturn non-numeric access"", expression => {
++test.each([""multi()['forEach']"", ""multi().forEach""])(""disallow LuaMultiReturn non-numeric access"", expression => {
+     util.testFunction`
+         ${multiFunction}
+         return ${expression};
+",0,,6,38,1,11,15,575
+979,33c94be2c8df423bdb3acc498b4d977c5276a3dd,39b19af35118501a1512177a506cf6fc00c5920e,"This adds the `$range` language extension as a replacement for the `@forRange` annotation, as mentioned in #963","fixed mis-named range spec and test which were actually broken
+","diff --git a/test/unit/language-extensions/range.spec.ts b/test/unit/language-extensions/range.spec.ts
+new file mode 100644
+index 0000000..034cd15
+--- /dev/null
++++ b/test/unit/language-extensions/range.spec.ts
+@@ -0,0 +1,68 @@
++import * as path from ""path"";
++import * as util from ""../../util"";
++import * as tstl from ""../../../src"";
++import { invalidRangeControlVariable, invalidRangeUse } from ""../../../src/transformation/utils/diagnostics"";
++
++const rangeProjectOptions: tstl.CompilerOptions = {
++    types: [path.resolve(__dirname, ""../../../language-extensions"")],
++};
++
++test(""$range basic use"", () => {
++    util.testFunction`
++		const result: number[] = [];
++		for (const i of $range(1, 5)) {
++			result.push(i);
++		}
++		return result;
++	`
++        .setOptions(rangeProjectOptions)
++        .expectToEqual([1, 2, 3, 4, 5]);
++});
++
++test(""$range basic use with step"", () => {
++    util.testFunction`
++		const result: number[] = [];
++		for (const i of $range(1, 10, 2)) {
++			result.push(i);
++		}
++		return result;
++	`
++        .setOptions(rangeProjectOptions)
++        .expectToEqual([1, 3, 5, 7, 9]);
++});
++
++test(""$range basic use reverse"", () => {
++    util.testFunction`
++		const result: number[] = [];
++		for (const i of $range(5, 1, -1)) {
++			result.push(i);
++		}
++		return result;
++	`
++        .setOptions(rangeProjectOptions)
++        .expectToEqual([5, 4, 3, 2, 1]);
++});
++
++test(""$range invalid control variable"", () => {
++    util.testFunction`
++		let i: number;
++		for (i of $range(1, 5)) {}
++	`
++        .setOptions(rangeProjectOptions)
++        .expectDiagnosticsToMatchSnapshot([invalidRangeControlVariable.code]);
++});
++
++test.each([
++    [""for (const i in $range(1, 10, 2)) {}"", [invalidRangeUse.code]],
++    [""const x = $range(1, 10);"", [invalidRangeUse.code]],
++    [""const range = $range;"", [invalidRangeUse.code, invalidRangeUse.code]],
++    [""const y = [...$range(1, 10)];"", [invalidRangeUse.code]],
++    [""for (const i of ($range(1, 10, 2))) {}"", [invalidRangeUse.code]],
++    [""for (const i of $range(1, 10, 2) as number[]) {}"", [invalidRangeUse.code]],
++])(""$range invalid use (%p)"", (statement, codes) => {
++    util.testFunction`
++		${statement}
++	`
++        .setOptions(rangeProjectOptions)
++        .expectDiagnosticsToMatchSnapshot(codes);
++});
+",0,,3,227,1,5,17,321
+981,a5c54ea6988e669ff1278eee5106e507a3fb5791,f81e97b04c395b0674d0f8fb4f504c58b3681e58,"Another language extension for #963.
+
+This one replaces `@luaIterator` with a new type: `LuaIterable`. To iterate multiple values, you can use `LuaIterable<LuaMultiReturn<T>>` (similar to `@luaIterator`+`@tupleReturn`).
+
+This type can be returned by functions or properties. It can be used in `for...of` loops or manually by calling the returned function (and passing the appropriate state/value variables for iterators which require them).
+
+I avoided deprecating `@luaIterator` for now, since it is heavily depended on by [lua-types](https://github.com/TypeScriptToLua/lua-types). Once we are able to update the npm package, this will be deprecated along with `@tupleReturn`.","switched from expectToHaveDiagnostics to expectDiagnosticsToMatchSnapshot
+","diff --git a/test/unit/language-extensions/iterable.spec.ts b/test/unit/language-extensions/iterable.spec.ts
+index 3b55c7e..07e0adb 100644
+--- a/test/unit/language-extensions/iterable.spec.ts
++++ b/test/unit/language-extensions/iterable.spec.ts
+@@ -215,7 +215,7 @@ test.each(
+         ${statement}
+     `
+         .setOptions(iterableProjectOptions)
+-        .expectToHaveDiagnostics([invalidIterableUse.code]);
++        .expectDiagnosticsToMatchSnapshot([invalidIterableUse.code]);
+ });
+ 
+ test.each([""for (const s of testMultiIterable()) {}"", ""let s; for (s of testMultiIterable()) {}""])(
+@@ -226,6 +226,6 @@ test.each([""for (const s of testMultiIterable()) {}"", ""let s; for (s of testMult
+         ${statement}
+     `
+             .setOptions(iterableProjectOptions)
+-            .expectToHaveDiagnostics([invalidMultiIterableWithoutDestructuring.code]);
++            .expectDiagnosticsToMatchSnapshot([invalidMultiIterableWithoutDestructuring.code]);
+     }
+ );
+",0,,2,323,1,10,14,1134
+982,93d9ecd17ae626634a4c1fa216737917af6083fe,df02cd0cfa08fad75d7445984011dd1f8057dc83,,"Added comments to statements in the Lua AST
+","diff --git a/test/transpile/plugins/plugins.spec.ts b/test/transpile/plugins/plugins.spec.ts
+index e78cc42..81401d5 100644
+--- a/test/transpile/plugins/plugins.spec.ts
++++ b/test/transpile/plugins/plugins.spec.ts
+@@ -30,3 +30,12 @@ test(""passing arguments"", () => {
+         .setOptions({ luaPlugins: [{ name: path.join(__dirname, ""arguments.ts""), option: true }] })
+         .expectToEqual({ name: path.join(__dirname, ""arguments.ts""), option: true });
+ });
++
++test(""statement comments"", () => {
++    util.testFunction`
++        let foo = ""bar"";
++        foo = ""baz"";
++    `
++        .setOptions({ luaPlugins: [{ name: path.join(__dirname, ""add-comments.ts"") }] })
++        .expectLuaToMatchSnapshot();
++});
+",0,,5,92,1,4,5,139
+991,4dbf821acdfdcd98245f9054b8b69fe8fc01a85b,7f6c720f8f1555cdd50bb8cfbd55fb97ffdff310,"Next extension for #963 
+
+This adds a set of new extensions to replace functionality provided by `@luaTable`.
+
+It adds `LuaTableGet` & `LuaTableSet` (and method variants) to allow declaring functions which map to `value = table[index]` and `table[index] = value`, similar to how operator overload mappings work.
+
+It also adds a `LuaTable` interface and `LuaTableConstructor` extension to allow tables to be created directly:
+```ts
+const t = new LuaTable(); // local t = {}
+```
+","Lua table extensions
+","diff --git a/test/unit/language-extensions/table.spec.ts b/test/unit/language-extensions/table.spec.ts
+new file mode 100644
+index 0000000..2f1f613
+--- /dev/null
++++ b/test/unit/language-extensions/table.spec.ts
+@@ -0,0 +1,130 @@
++import * as path from ""path"";
++import * as util from ""../../util"";
++import * as tstl from ""../../../src"";
++import { invalidTableExtensionUse, invalidTableSetExpression } from ""../../../src/transformation/utils/diagnostics"";
++
++const tableProjectOptions: tstl.CompilerOptions = {
++    types: [path.resolve(__dirname, ""../../../language-extensions"")],
++};
++
++describe(""LuaTableGet & LuaTableSet extensions"", () => {
++    test(""stand-alone function"", () => {
++        util.testModule`
++            declare const getTable: LuaTableGet<{}, string, number>;
++            declare const setTable: LuaTableSet<{}, string, number>;
++            const tbl = {};
++            setTable(tbl, ""foo"", 3);
++            const result = getTable(tbl, ""foo"");
++            export { result }
++        `
++            .setOptions(tableProjectOptions)
++            .setReturnExport(""result"")
++            .expectToEqual(3);
++    });
++
++    test(""namespace function"", () => {
++        util.testModule`
++            declare namespace Table {
++                export const get: LuaTableGet<{}, string, number>;
++                export const set: LuaTableSet<{}, string, number>;
++            }
++            const tbl = {};
++            Table.set(tbl, ""foo"", 3);
++            const result = Table.get(tbl, ""foo"");
++            export { result }
++        `
++            .setOptions(tableProjectOptions)
++            .setReturnExport(""result"")
++            .expectToEqual(3);
++    });
++
++    test(""method"", () => {
++        util.testModule`
++            interface Table {
++                get: LuaTableGetMethod<string, number>;
++                set: LuaTableSetMethod<string, number>;
++            }
++            const tbl = {} as Table;
++            tbl.set(""foo"", 3);
++            const result = tbl.get(""foo"");
++            export { result }
++        `
++            .setOptions(tableProjectOptions)
++            .setReturnExport(""result"")
++            .expectToEqual(3);
++    });
++
++    test.each([
++        ""const foo: unknown = getTable;"",
++        ""const foo = `${getTable}`;"",
++        ""declare function foo(getTable: LuaTableGet<{}, string, number>): void; foo(getTable);"",
++        ""const foo = (getTable as any)(1, 2);"",
++        ""const foo = [getTable];"",
++    ])(""invalid use (%p)"", statement => {
++        util.testModule`
++            declare const getTable: LuaTableGet<{}, string, number>;
++            ${statement}
++        `
++            .setOptions(tableProjectOptions)
++            .expectDiagnosticsToMatchSnapshot([invalidTableExtensionUse.code]);
++    });
++
++    test.each([
++        'const foo = setTable({}, ""foo"", 3);',
++        'const foo = `${setTable({}, ""foo"", 3)}`;',
++        'declare function foo(arg: any): void; foo(setTable({}, ""foo"", 3));',
++        'const foo = [setTable({}, ""foo"", 3)];',
++    ])(""LuaTableSet invalid use as expression (%p)"", expression => {
++        util.testModule`
++            declare const setTable: LuaTableSet<{}, string, number>;
++            ${expression}
++        `
++            .setOptions(tableProjectOptions)
++            .expectDiagnosticsToMatchSnapshot([invalidTableSetExpression.code]);
++    });
++});
++
++describe(""LuaTable extension interface"", () => {
++    test(""untyped table"", () => {
++        util.testFunction`
++            const tbl = new LuaTable();
++            tbl.set(""foo"", 3);
++            return tbl.get(""foo"");
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual(3);
++    });
++
++    test(""typed table"", () => {
++        util.testFunction`
++            const tbl = new LuaTable<string, number>();
++            tbl.set(""foo"", 3);
++            return tbl.get(""foo"");
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual(3);
++    });
++
++    test(""object keyed table"", () => {
++        util.testFunction`
++            interface Key { keyStr: string }
++            const key: Key = {keyStr: ""foo""};
++            const tbl = new LuaTable<Key, number>();
++            tbl.set(key, 3);
++            return tbl.get(key);
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual(3);
++    });
++
++    test(""table length"", () => {
++        util.testFunction`
++            const tbl = new LuaTable<number, string>();
++            tbl.set(1, ""foo"");
++            tbl.set(3, ""bar"");
++            return tbl.length();
++        `
++            .setOptions(tableProjectOptions)
++            .expectToEqual(1);
++    });
++});
+",0,,12,453,1,2,12,460
+997,074fd15c09d4f57316451c56f8d1c1e8e4505133,cb10d86379c826752af174812579f267f698b8a5,"Fixed the issue. Turns out we were dealing with this problem on normal assignments, so something like this works:
+```js
+let a, b;
+[a, ...b] = string.find(""a"", ""b"");
+```
+This is handled here: https://github.com/TypeScriptToLua/TypeScriptToLua/blob/master/src/transformation/visitors/binary-expression/assignments.ts#L94-L97
+
+Maybe this is an indicative that this needs some refactoring, as that code should be common. However, I just fixed the issue locally, and added a test showing it is now working.
+
+The only other change is a snapshot of a test that's supposed to fail, so that shouldn't be a problem I believe.
+
+`npm test` works.","Fix destructuring assignment of multiReturn (closes #995)
+
+Added a test.
+","diff --git a/test/unit/language-extensions/multi.spec.ts b/test/unit/language-extensions/multi.spec.ts
+index 0b99cf4..1101f77 100644
+--- a/test/unit/language-extensions/multi.spec.ts
++++ b/test/unit/language-extensions/multi.spec.ts
+@@ -24,6 +24,19 @@ test(""multi example use case"", () => {
+         .expectToEqual({ a: ""foo"", b: 5 });
+ });
+ 
++test(""multi #995"", () => {
++    util.testModule`
++        function multiReturn(): LuaMultiReturn<[number, number, number]> {
++            return $multi(1, 2, 3);
++        }
++
++        const [a, ...b] = multiReturn();
++        export {a, b};
++    `
++        .setOptions(multiProjectOptions)
++        .expectToEqual({ a: 1, b: [2, 3] });
++});
++
+ test.each<[string, any]>([
+     [""$multi()"", undefined],
+     [""$multi(true)"", true],
+",0,,3,27,1,3,3,41
+998,856b8e8f81588893f99a0f6cb2054f3adfb4c571,856b8e8f81588893f99a0f6cb2054f3adfb4c571,"And replace the deprecation warning with an error
+
+Progress on #953","Remove phantom, metaExtension, extension, pureAbstract
+
+And replace the deprecation warning with an error
+
+Progress on #953
+","diff --git a/test/unit/annotations/deprecated.spec.ts b/test/unit/annotations/deprecated.spec.ts
+index 4fe8360..072ff63 100644
+--- a/test/unit/annotations/deprecated.spec.ts
++++ b/test/unit/annotations/deprecated.spec.ts
+@@ -1,29 +1,29 @@
+-import { annotationDeprecated } from ""../../../src/transformation/utils/diagnostics"";
++import { annotationDeprecated, annotationRemoved } from ""../../../src/transformation/utils/diagnostics"";
+ import * as util from ""../../util"";
+ 
+-test.each([""extension"", ""metaExtension""])(""extension deprecation"", extensionType => {
++test.each([""extension"", ""metaExtension""])(""extension removed"", extensionType => {
+     util.testModule`
+         declare class A {}
+         /** @${extensionType} **/
+         class B extends A {}
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationRemoved.code]);
+ });
+ 
+-test(""phantom deprecation"", () => {
++test(""phantom removed"", () => {
+     util.testModule`
+         /** @phantom **/
+         namespace A {
+             function nsMember() {}
+         }
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationRemoved.code]);
+ });
+ 
+-test(""pureAbstract deprecation"", () => {
++test(""pureAbstract removed"", () => {
+     util.testModule`
+         /** @pureAbstract */
+         declare class ClassA {}
+         class ClassB extends ClassA {}
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code]);
++    `.expectDiagnosticsToMatchSnapshot([annotationRemoved.code]);
+ });
+ 
+ test(""forRange deprecation"", () => {
+
+diff --git a/test/unit/annotations/extension.spec.ts b/test/unit/annotations/extension.spec.ts
+deleted file mode 100644
+index 2709380..0000000
+--- a/test/unit/annotations/extension.spec.ts
++++ /dev/null
+@@ -1,35 +0,0 @@
+-import {
+-    annotationDeprecated,
+-    extensionCannotConstruct,
+-    extensionCannotExtend,
+-    extensionInvalidInstanceOf,
+-} from ""../../../src/transformation/utils/diagnostics"";
+-import * as util from ""../../util"";
+-
+-test.each([""extension"", ""metaExtension""])(""Class extends extension (%p)"", extensionType => {
+-    util.testModule`
+-        declare class A {}
+-        /** @${extensionType} **/
+-        class B extends A {}
+-        class C extends B {}
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotExtend.code]);
+-});
+-
+-test.each([""extension"", ""metaExtension""])(""Class construct extension (%p)"", extensionType => {
+-    util.testModule`
+-        declare class A {}
+-        /** @${extensionType} **/
+-        class B extends A {}
+-        const b = new B();
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotConstruct.code]);
+-});
+-
+-test.each([""extension"", ""metaExtension""])(""instanceof extension (%p)"", extensionType => {
+-    util.testModule`
+-        declare class A {}
+-        /** @${extensionType} **/
+-        class B extends A {}
+-        declare const foo: any;
+-        const result = foo instanceof B;
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionInvalidInstanceOf.code]);
+-});
+
+diff --git a/test/unit/annotations/metaExtension.spec.ts b/test/unit/annotations/metaExtension.spec.ts
+deleted file mode 100644
+index b0fa565..0000000
+--- a/test/unit/annotations/metaExtension.spec.ts
++++ /dev/null
+@@ -1,50 +0,0 @@
+-import {
+-    annotationDeprecated,
+-    extensionCannotConstruct,
+-    metaExtensionMissingExtends,
+-} from ""../../../src/transformation/utils/diagnostics"";
+-import * as util from ""../../util"";
+-
+-test(""MetaExtension"", () => {
+-    const tsHeader = `
+-        declare class _LOADED {}
+-        declare namespace debug {
+-            function getregistry(): any;
+-        }
+-        /** @metaExtension */
+-        class LoadedExt extends _LOADED {
+-            public static test() {
+-                return 5;
+-            }
+-        }
+-    `;
+-
+-    // Can't use expectToMatchJsResult because above is not valid TS/JS
+-    util.testModule`
+-       export default debug.getregistry()[""_LOADED""].test();
+-    `
+-        .setTsHeader(tsHeader)
+-        .ignoreDiagnostics([annotationDeprecated.code])
+-        .setReturnExport(""default"")
+-        .expectToEqual(5);
+-});
+-
+-test(""IncorrectUsage"", () => {
+-    util.testModule`
+-        /** @metaExtension */
+-        class LoadedExt {
+-            public static test() {
+-                return 5;
+-            }
+-        }
+-    `.expectDiagnosticsToMatchSnapshot([metaExtensionMissingExtends.code, annotationDeprecated.code]);
+-});
+-
+-test(""DontAllowInstantiation"", () => {
+-    util.testModule`
+-        declare class _LOADED {}
+-        /** @metaExtension */
+-        class Ext extends _LOADED {}
+-        const e = new Ext();
+-    `.expectDiagnosticsToMatchSnapshot([annotationDeprecated.code, extensionCannotConstruct.code]);
+-});
+",0,,22,590,4,1,22,590

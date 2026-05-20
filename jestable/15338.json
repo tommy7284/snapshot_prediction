@@ -1,0 +1,110 @@
+{
+    "id": 4071723,
+    "name": "microsoft/beachball",
+    "isFork": false,
+    "commits": 1069,
+    "branches": 21,
+    "releases": 0,
+    "forks": 84,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://microsoft.github.io/beachball",
+    "watchers": 12,
+    "stargazers": 686,
+    "contributors": 47,
+    "size": 14389,
+    "createdAt": "2019-06-25T10:48:21",
+    "pushedAt": "2024-05-09T08:03:05",
+    "updatedAt": "2024-05-08T06:44:34",
+    "totalIssues": 211,
+    "openIssues": 108,
+    "totalPullRequests": 743,
+    "openPullRequests": 16,
+    "blankLines": 3144,
+    "codeLines": 15732,
+    "commentLines": 2347,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 0
+        },
+        {
+            "language": "Stylus",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON5",
+            "commentLines": 22,
+            "codeLines": 60,
+            "blankLines": 9
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 9,
+            "codeLines": 1714,
+            "blankLines": 1136
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 4382,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2266,
+            "codeLines": 9338,
+            "blankLines": 1956
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 28,
+            "codeLines": 144,
+            "blankLines": 8
+        },
+        {
+            "language": "YAML",
+            "commentLines": 22,
+            "codeLines": 90,
+            "blankLines": 35
+        }
+    ],
+    "lastCommit": "2024-04-24T01:43:00",
+    "lastCommitSHA": "e48989673d6967c46d6651d46ba2481c819eb0fc",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 498480,
+        "JavaScript": 3440
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "plugin or peer",
+        "question",
+        "renovate",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "git",
+        "mp",
+        "registry",
+        "semver",
+        "yarn"
+    ]
+}

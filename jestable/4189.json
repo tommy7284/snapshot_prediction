@@ -1,0 +1,90 @@
+{
+    "id": 5532922,
+    "name": "produck/svg-captcha",
+    "isFork": false,
+    "commits": 65,
+    "branches": 4,
+    "releases": 0,
+    "forks": 176,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "1.x",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 1784,
+    "contributors": 4,
+    "size": 1159,
+    "createdAt": "2016-05-06T11:55:26",
+    "pushedAt": "2024-02-04T11:20:25",
+    "updatedAt": "2024-02-05T06:49:02",
+    "totalIssues": 44,
+    "openIssues": 17,
+    "totalPullRequests": 17,
+    "openPullRequests": 5,
+    "blankLines": 156,
+    "codeLines": 7909,
+    "commentLines": 109,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 94,
+            "codeLines": 24
+        },
+        {
+            "blankLines": 70,
+            "language": "JavaScript",
+            "commentLines": 15,
+            "codeLines": 363
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7287
+        },
+        {
+            "blankLines": 86,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 226
+        }
+    ],
+    "lastCommit": "2019-05-03T01:39:27",
+    "lastCommitSHA": "eb2e1dd4f8f93e902d41c6256382b3dffa171ece",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 12014
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "captcha",
+        "captcha-alternative",
+        "captcha-generator",
+        "nodejs-captcha",
+        "svg-captcha"
+    ]
+}

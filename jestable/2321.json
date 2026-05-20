@@ -1,0 +1,82 @@
+{
+    "id": 5064706,
+    "name": "prettier/plugin-python",
+    "isFork": false,
+    "commits": 141,
+    "branches": 2,
+    "releases": 0,
+    "forks": 39,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 40,
+    "stargazers": 509,
+    "contributors": 10,
+    "size": 302,
+    "createdAt": "2017-12-24T01:28:27",
+    "pushedAt": "2019-03-13T10:33:16",
+    "updatedAt": "2021-01-21T10:48:27",
+    "totalIssues": 46,
+    "openIssues": 18,
+    "totalPullRequests": 69,
+    "openPullRequests": 1,
+    "blankLines": 1240,
+    "codeLines": 5056,
+    "commentLines": 1362,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 925,
+            "language": "Python",
+            "commentLines": 1217,
+            "codeLines": 3396
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 36
+        },
+        {
+            "blankLines": 298,
+            "language": "JavaScript",
+            "commentLines": 145,
+            "codeLines": 1481
+        },
+        {
+            "blankLines": 17,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 79
+        }
+    ],
+    "lastCommit": "2019-02-22T04:01:55",
+    "lastCommitSHA": "d59dca4b6166dc20eec3e7aa57b0649c072507ce",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 55581,
+        "Python": 21427
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "in-progress",
+        "invalid",
+        "question",
+        "style",
+        "wontfix"
+    ],
+    "topics": []
+}

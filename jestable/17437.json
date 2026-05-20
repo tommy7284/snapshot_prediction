@@ -1,0 +1,207 @@
+{
+    "id": 49694964,
+    "name": "dohooo/react-native-reanimated-carousel",
+    "isFork": false,
+    "commits": 817,
+    "branches": 7,
+    "releases": 95,
+    "forks": 281,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://react-native-reanimated-carousel.vercel.app",
+    "watchers": 31,
+    "stargazers": 2475,
+    "contributors": 23,
+    "size": 423219,
+    "createdAt": "2021-09-07T05:58:39",
+    "pushedAt": "2024-05-06T04:29:55",
+    "updatedAt": "2024-05-09T08:03:22",
+    "totalIssues": 391,
+    "openIssues": 148,
+    "totalPullRequests": 166,
+    "openPullRequests": 9,
+    "blankLines": 2779,
+    "codeLines": 17840,
+    "commentLines": 1219,
+    "metrics": [
+        {
+            "language": "JavaScript",
+            "commentLines": 506,
+            "codeLines": 2059,
+            "blankLines": 306
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 109,
+            "codeLines": 103,
+            "blankLines": 28
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 12,
+            "codeLines": 5928,
+            "blankLines": 1304
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 92,
+            "codeLines": 160,
+            "blankLines": 37
+        },
+        {
+            "language": "make",
+            "commentLines": 12,
+            "codeLines": 28,
+            "blankLines": 9
+        },
+        {
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 105,
+            "blankLines": 26
+        },
+        {
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16,
+            "blankLines": 2
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 0,
+            "codeLines": 5,
+            "blankLines": 2
+        },
+        {
+            "language": "XML",
+            "commentLines": 18,
+            "codeLines": 336,
+            "blankLines": 9
+        },
+        {
+            "language": "Java",
+            "commentLines": 48,
+            "codeLines": 163,
+            "blankLines": 28
+        },
+        {
+            "language": "C++",
+            "commentLines": 15,
+            "codeLines": 101,
+            "blankLines": 25
+        },
+        {
+            "language": "Properties",
+            "commentLines": 32,
+            "codeLines": 15,
+            "blankLines": 11
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 681,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 338,
+            "codeLines": 7996,
+            "blankLines": 949
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 68,
+            "blankLines": 21
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 10,
+            "codeLines": 2,
+            "blankLines": 2
+        },
+        {
+            "language": "Swift",
+            "commentLines": 4,
+            "codeLines": 0,
+            "blankLines": 0
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 3
+        },
+        {
+            "language": "Objective-C++",
+            "commentLines": 12,
+            "codeLines": 42,
+            "blankLines": 13
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 25,
+            "blankLines": 4
+        }
+    ],
+    "lastCommit": "2024-05-06T10:15:03",
+    "lastCommitSHA": "dede5ebbd15e1ddecf52613fb8c1a779a6f23ae7",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 241237,
+        "MDX": 156681,
+        "JavaScript": 13485,
+        "Java": 9030,
+        "C++": 6973,
+        "Ruby": 3689,
+        "Objective-C++": 3035,
+        "Makefile": 1529,
+        "Starlark": 602,
+        "CSS": 480,
+        "Objective-C": 327,
+        "Swift": 113,
+        "Shell": 3
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs review",
+        "p1",
+        "p2",
+        "p3",
+        "question",
+        "refactor",
+        "size:l",
+        "size:m",
+        "size:s",
+        "size:xl",
+        "size:xs",
+        "size:xxl",
+        "wontfix"
+    ],
+    "topics": [
+        "android",
+        "carousel",
+        "hacktoberfest",
+        "infinite-scroll",
+        "ios",
+        "react-native",
+        "react-native-carousel",
+        "react-native-snap",
+        "react-native-swiper",
+        "reanimated",
+        "snap",
+        "swiper",
+        "web"
+    ]
+}

@@ -1,0 +1,111 @@
+{
+    "id": 6806170,
+    "name": "aeksco/react-typescript-web-extension-starter",
+    "isFork": false,
+    "commits": 184,
+    "branches": 5,
+    "releases": 0,
+    "forks": 80,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 889,
+    "contributors": 10,
+    "size": 2848,
+    "createdAt": "2020-01-01T01:14:35",
+    "pushedAt": "2024-04-10T09:19:28",
+    "updatedAt": "2024-04-11T10:37:17",
+    "totalIssues": 17,
+    "openIssues": 7,
+    "totalPullRequests": 55,
+    "openPullRequests": 4,
+    "blankLines": 144,
+    "codeLines": 798,
+    "commentLines": 171,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 1,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 2,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 175
+        },
+        {
+            "blankLines": 34,
+            "language": "TypeScript",
+            "commentLines": 31,
+            "codeLines": 198
+        },
+        {
+            "blankLines": 12,
+            "language": "JavaScript",
+            "commentLines": 139,
+            "codeLines": 199
+        },
+        {
+            "blankLines": 94,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 183
+        }
+    ],
+    "lastCommit": "2024-04-06T03:48:16",
+    "lastCommitSHA": "d0233f3a7e2ee5e229c8f797370f77e6d62d9ded",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 13726,
+        "TypeScript": 7518,
+        "CSS": 668
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "brave",
+        "chrome-extension",
+        "eslint",
+        "extension-popup",
+        "google-chrome",
+        "jest",
+        "microsoft-edge-extension",
+        "mozilla-firefox",
+        "opera-extension",
+        "prettier",
+        "react",
+        "storybook",
+        "tailwindcss",
+        "typescript",
+        "webpack"
+    ]
+}

@@ -1,0 +1,76 @@
+{
+    "id": 4682622,
+    "name": "simplajs/simpla",
+    "isFork": false,
+    "commits": 394,
+    "branches": 3,
+    "releases": 27,
+    "forks": 38,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.simplajs.org",
+    "watchers": 31,
+    "stargazers": 534,
+    "contributors": null,
+    "size": 1120,
+    "createdAt": "2015-12-04T02:25:38",
+    "pushedAt": "2017-12-23T05:08:22",
+    "updatedAt": "2021-01-16T02:49:40",
+    "totalIssues": 60,
+    "openIssues": 16,
+    "totalPullRequests": 36,
+    "openPullRequests": 1,
+    "blankLines": 472,
+    "codeLines": 7947,
+    "commentLines": 118,
+    "metrics": [
+        {
+            "blankLines": 282,
+            "language": "JavaScript",
+            "commentLines": 118,
+            "codeLines": 1276
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 190,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 347
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6320
+        }
+    ],
+    "lastCommit": "2017-12-21T02:58:39",
+    "lastCommitSHA": "4eb01655548112b77d814c14aa1019f665cbb7f2",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 41443
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "elements",
+        "enhancement",
+        "epic",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "needs discussion",
+        "p1",
+        "question"
+    ],
+    "topics": []
+}

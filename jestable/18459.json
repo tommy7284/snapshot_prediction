@@ -1,0 +1,115 @@
+{
+    "id": 87475650,
+    "name": "styled-components/xstyled",
+    "isFork": false,
+    "commits": 639,
+    "branches": 2,
+    "releases": 79,
+    "forks": 100,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://xstyled.dev",
+    "watchers": 13,
+    "stargazers": 2174,
+    "contributors": 52,
+    "size": 12114,
+    "createdAt": "2019-05-24T01:35:56",
+    "pushedAt": "2023-05-31T08:20:50",
+    "updatedAt": "2023-06-02T11:28:09",
+    "totalIssues": 184,
+    "openIssues": 22,
+    "totalPullRequests": 213,
+    "openPullRequests": 2,
+    "blankLines": 6932,
+    "codeLines": 94984,
+    "commentLines": 248,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 5,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 231,
+            "codeLines": 9312,
+            "blankLines": 895
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 17,
+            "codeLines": 1527,
+            "blankLines": 132
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 32,
+            "blankLines": 10
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 19338,
+            "blankLines": 5895
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 64762,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-04-03T08:31:17",
+    "lastCommitSHA": "829d58d4d17542630ceb68b5e77699b1e5d42ca3",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 278241,
+        "JavaScript": 41320,
+        "CSS": 95
+    },
+    "labels": [
+        "bug \ud83d\udc1b",
+        "dependencies",
+        "discussion \ud83d\udcac",
+        "docs \ud83d\udcd4",
+        "duplicate \ud83d\udc6f\u200d\u2640\ufe0f",
+        "enhancement \u2728",
+        "feature request \ud83c\udf1f",
+        "good first issue \ud83d\udc4d",
+        "help wanted \ud83d\ude4f",
+        "needs more info \ud83d\udd90",
+        "question \u2753",
+        "rfc \ud83d\udca1",
+        "stale \ud83d\udcac",
+        "typings \ud83d\udd27",
+        "wip \u23f3",
+        "wontfix"
+    ],
+    "topics": [
+        "css",
+        "css-in-js",
+        "emotion",
+        "react",
+        "styled-components",
+        "styled-system",
+        "tailwindcss"
+    ]
+}

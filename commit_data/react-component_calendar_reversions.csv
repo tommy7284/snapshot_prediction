@@ -1,0 +1,427 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+251,ead99956c55aab932c79fc4cccec29de4458c51d,ead99956c55aab932c79fc4cccec29de4458c51d,ref: https://github.com/ant-design/ant-design/issues/5691,"feat: make TimePicker[defaultValue] work in Calendar
+","diff --git a/tests/Calendar.spec.jsx b/tests/Calendar.spec.jsx
+index 7c8a53d..3907d19 100644
+--- a/tests/Calendar.spec.jsx
++++ b/tests/Calendar.spec.jsx
+@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom';
+ import TestUtils from 'react-dom/test-utils';
+ import keyCode from 'rc-util/lib/KeyCode';
+ import moment from 'moment';
+-import { render } from 'enzyme';
++import { mount, render } from 'enzyme';
+ import { renderToJson } from 'enzyme-to-json';
+ import async from 'async';
++import TimePickerPanel from 'rc-time-picker/lib/Panel';
+ import Calendar from '../index';
+ import zhCN from '../src/locale/zh_CN';
+ import enUS from '../src/locale/en_US';
+@@ -25,24 +26,51 @@ describe('Calendar', () => {
+   });
+ 
+   describe('render', () => {
+-    describe('render', () => {
+-      it('render correctly', () => {
+-        const zhWrapper = render(
+-          <Calendar locale={zhCN} defaultValue={moment('2017-03-29').locale('zh-cn')} />
+-        );
+-        expect(renderToJson(zhWrapper)).toMatchSnapshot();
+-
+-        const enWrapper = render(
+-          <Calendar locale={enUS} defaultValue={moment('2017-03-29').locale('en')} />
+-        );
+-        expect(renderToJson(enWrapper)).toMatchSnapshot();
+-      });
++    it('render correctly', () => {
++      const zhWrapper = render(
++        <Calendar locale={zhCN} defaultValue={moment('2017-03-29').locale('zh-cn')} />
++      );
++      expect(renderToJson(zhWrapper)).toMatchSnapshot();
++
++      const enWrapper = render(
++        <Calendar locale={enUS} defaultValue={moment('2017-03-29').locale('en')} />
++      );
++      expect(renderToJson(enWrapper)).toMatchSnapshot();
++    });
+ 
+-      it('render showToday false', () => {
+-        calendar = ReactDOM.render(<Calendar showToday={false}/>, container);
+-        expect(TestUtils.scryRenderedDOMComponentsWithClass(calendar,
+-          'rc-calendar-today-btn').length).toBe(0);
+-      });
++    it('render showToday false correctly', () => {
++      const wrapper = mount(<Calendar showToday={false}/>, container);
++      expect(wrapper.find('.rc-calendar-today-btn').length).toBe(0);
++    });
++  });
++
++  describe('timePicker', () => {
++    it('set defaultOpenValue if timePicker.props.defaultValue is set', () => {
++      const timePicker = <TimePickerPanel defaultValue={moment('00:00:00', 'HH:mm:ss')} />;
++      const wrapper = mount(<Calendar timePicker={timePicker} />);
++      wrapper.find('.rc-calendar-time-picker-btn').simulate('click');
++      const selectedValues = wrapper.find('.rc-time-picker-panel-select-option-selected');
++      for (let i = 0; i < selectedValues.length; i += 1) {
++        expect(selectedValues.get(i).innerHTML).toBe('00');
++      }
++    });
++
++    it('use timePicker\'s time', () => {
++      const timePicker = <TimePickerPanel defaultValue={moment('00:00:00', 'HH:mm:ss')} />;
++      const wrapper = mount(<Calendar timePicker={timePicker} />);
++
++      wrapper.find('.rc-calendar-today').simulate('click');
++      // use timePicker's defaultValue if users haven't select a time
++      expect(wrapper.find('.rc-calendar-input').get(0).value).toBe('3/29/2017 00:00:00');
++
++      wrapper.find('.rc-calendar-time-picker-btn').simulate('click');
++      wrapper.find('.rc-time-picker-panel-select ul').at(0).find('li').at(6).simulate('click');
++      // update time to timePicker's time
++      expect(wrapper.find('.rc-calendar-input').get(0).value).toBe('3/29/2017 06:00:00');
++
++      wrapper.find('.rc-calendar-cell').at(10).simulate('click');
++      // still use timePicker's time
++      expect(wrapper.find('.rc-calendar-input').get(0).value).toBe('3/8/2017 06:00:00');
+     });
+   });
+ 
+",0,,5,85,1,1,5,85
+284,bf8c6113124b78ff30d364eb6f70122359d0455a,0d2048c89cb5475de81a07d1f177ec17f440ebf6,Ref: https://github.com/ant-design/ant-design/issues/5190,"test: add test cases and fix some bugs
+","diff --git a/tests/Calendar.spec.jsx b/tests/Calendar.spec.jsx
+index a3c370e..c85582a 100644
+--- a/tests/Calendar.spec.jsx
++++ b/tests/Calendar.spec.jsx
+@@ -86,6 +86,59 @@ describe('Calendar', () => {
+     });
+   });
+ 
++  describe('controlled panels', () => {
++    it('render controlled panels correctly', () => {
++      const MonthPicker = mount(<Calendar mode=""month"" />);
++      expect(renderToJson(MonthPicker.render())).toMatchSnapshot();
++      MonthPicker.find('.rc-calendar-month-panel-year-select').at(0).simulate('click');
++      expect(MonthPicker.find('.rc-calendar-year-panel').length).toBe(0);
++      expect(MonthPicker.find('.rc-calendar-month-panel').length).toBe(1);
++
++      const YearPicker = mount(<Calendar mode=""year"" />);
++      expect(renderToJson(YearPicker.render())).toMatchSnapshot();
++      YearPicker.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      expect(YearPicker.find('.rc-calendar-decade-panel').length).toBe(0);
++      expect(YearPicker.find('.rc-calendar-year-panel').length).toBe(1);
++    });
++
++    it('support controlled mode', () => {
++      class ControlledCalendar extends React.Component {
++        state = { mode: 'date' };
++
++        handlePanelChange = (mode) => {
++          this.setState({ mode });
++        }
++
++        render() {
++          return <Calendar mode={this.state.mode} onPanelChange={this.handlePanelChange} />;
++        }
++      }
++      const wrapper = mount(<ControlledCalendar />);
++
++      wrapper.find('.rc-calendar-month-select').simulate('click');
++      expect(wrapper.find('.rc-calendar-month-panel').length).toBe(1);
++      wrapper.find('.rc-calendar-month-panel-year-select').simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(1);
++      wrapper.find('.rc-calendar-year-panel-decade-select').simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(1);
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-year-panel-selected-cell').simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-month-panel-selected-cell').simulate('click');
++      expect(wrapper.find('.rc-calendar-month-panel').length).toBe(0);
++
++      wrapper.find('.rc-calendar-year-select').simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(1);
++      wrapper.find('.rc-calendar-year-panel-decade-select').simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(1);
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-year-panel-selected-cell').simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(0);
++    });
++  });
++
+   describe('after render', () => {
+     beforeEach((done) => {
+       ReactDOM.render(<Calendar showToday showWeekNumber/>, container, function ok() {
+
+diff --git a/tests/RangeCalendar.spec.jsx b/tests/RangeCalendar.spec.jsx
+index ea9fc83..6294f54 100644
+--- a/tests/RangeCalendar.spec.jsx
++++ b/tests/RangeCalendar.spec.jsx
+@@ -257,4 +257,69 @@ describe('RangeCalendar', () => {
+       expect(wrapper.find('.rc-calendar-input').get(1).value).toBe('3/18/2017 23:59:59');
+     });
+   });
++
++  describe('controlled panels', () => {
++    it('render controlled panels correctly', () => {
++      const RangeMonthPicker = mount(<RangeCalendar mode={['month', 'month']} />);
++      expect(renderToJson(RangeMonthPicker.render())).toMatchSnapshot();
++      RangeMonthPicker.find('.rc-calendar-month-panel-year-select').at(0).simulate('click');
++      RangeMonthPicker.find('.rc-calendar-month-panel-year-select').at(1).simulate('click');
++      expect(RangeMonthPicker.find('.rc-calendar-year-panel').length).toBe(0);
++      expect(RangeMonthPicker.find('.rc-calendar-month-panel').length).toBe(2);
++
++      const RangeYearPicker = mount(<RangeCalendar mode={['year', 'year']} />);
++      expect(renderToJson(RangeYearPicker.render())).toMatchSnapshot();
++      RangeYearPicker.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      RangeYearPicker.find('.rc-calendar-year-panel-decade-select').at(1).simulate('click');
++      expect(RangeYearPicker.find('.rc-calendar-decade-panel').length).toBe(0);
++      expect(RangeYearPicker.find('.rc-calendar-year-panel').length).toBe(2);
++    });
++
++    it('support controlled mode', () => {
++      class ControlledRangeCalendar extends React.Component {
++        state = { mode: ['date', 'date'] };
++
++        handlePanelChange = (mode) => {
++          this.setState({ mode });
++        }
++
++        render() {
++          return <RangeCalendar mode={this.state.mode} onPanelChange={this.handlePanelChange} />;
++        }
++      }
++      const wrapper = mount(<ControlledRangeCalendar />);
++
++      wrapper.find('.rc-calendar-month-select').at(0).simulate('click');
++      wrapper.find('.rc-calendar-month-select').at(1).simulate('click');
++      expect(wrapper.find('.rc-calendar-month-panel').length).toBe(2);
++      wrapper.find('.rc-calendar-month-panel-year-select').at(0).simulate('click');
++      wrapper.find('.rc-calendar-month-panel-year-select').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(2);
++      wrapper.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      wrapper.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(2);
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').at(0).simulate('click');
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-year-panel-selected-cell').at(0).simulate('click');
++      wrapper.find('.rc-calendar-year-panel-selected-cell').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-month-panel-selected-cell').at(0).simulate('click');
++      wrapper.find('.rc-calendar-month-panel-selected-cell').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-month-panel').length).toBe(0);
++
++      wrapper.find('.rc-calendar-year-select').at(0).simulate('click');
++      wrapper.find('.rc-calendar-year-select').at(1).simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(2);
++      wrapper.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      wrapper.find('.rc-calendar-year-panel-decade-select').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(2);
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').at(0).simulate('click');
++      wrapper.find('.rc-calendar-decade-panel-selected-cell').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-decade-panel').length).toBe(0);
++      wrapper.find('.rc-calendar-year-panel-selected-cell').at(0).simulate('click');
++      wrapper.find('.rc-calendar-year-panel-selected-cell').at(0).simulate('click');
++      expect(wrapper.find('.rc-calendar-year-panel').length).toBe(0);
++    });
++  });
+ });
+",0,,6,5873,2,7,13,6242
+329,7f3602fdafb2f8dbea703531858f2173b2a296f7,7f3602fdafb2f8dbea703531858f2173b2a296f7,This allows hiding date input in calendar panels of RangeCalendar component too,"feat: add showDateInput propert to RangeCalendar (with default of true)
+","diff --git a/tests/RangeCalendar.spec.jsx b/tests/RangeCalendar.spec.jsx
+index 5c9ba5d..f9eed46 100644
+--- a/tests/RangeCalendar.spec.jsx
++++ b/tests/RangeCalendar.spec.jsx
+@@ -412,4 +412,9 @@ describe('RangeCalendar', () => {
+       expect(updatedValue[0].add(1, 'month').isSame(updatedValue[1], 'month')).toBe(true);
+     });
+   });
++
++  it('can hide date inputs with showDateInput={false}', () => {
++    const wrapper = render(<RangeCalendar showDateInput={false} />);
++    expect(wrapper).toMatchSnapshot();
++  });
+ });
+",0,,5,1514,1,1,5,1514
+361,447684b694573018212e673c92929d197b8dc84a,261f40d8ebfd61cafb74bea3a9d20c7f77784680,"Please add slovenian locale in this PR.
+
+Thanks","added slovenian (sl_SI) locale
+","diff --git a/tests/locale.spec.js b/tests/locale.spec.js
+index d3a1333..1c62567 100644
+--- a/tests/locale.spec.js
++++ b/tests/locale.spec.js
+@@ -33,6 +33,7 @@ const locales = {
+   ru_RU: require('../src/locale/ru_RU'),
+   sk_SK: require('../src/locale/sk_SK'),
+   sr_RS: require('../src/locale/sr_RS'),
++  sl_SI: require('../src/locale/sl_SI'),
+   sv_SE: require('../src/locale/sv_SE'),
+   th_TH: require('../src/locale/th_TH'),
+   tr_TR: require('../src/locale/tr_TR'),
+",0,,4,17325,1,2,3,793
+392,ff1e7373a089053076e9c7b5605c3542e014184a,ff1e7373a089053076e9c7b5605c3542e014184a,Support key board in RangeCalendar,"add test case
+","diff --git a/tests/RangeCalendar.spec.jsx b/tests/RangeCalendar.spec.jsx
+index f72f3c2..3559ff8 100644
+--- a/tests/RangeCalendar.spec.jsx
++++ b/tests/RangeCalendar.spec.jsx
+@@ -2,6 +2,7 @@
+ import React from 'react';
+ import moment from 'moment';
+ import { mount, render } from 'enzyme';
++import keyCode from 'rc-util/lib/KeyCode';
+ import TimePickerPanel from 'rc-time-picker/lib/Panel';
+ import RangeCalendar from '../src/RangeCalendar';
+ 
+@@ -555,4 +556,77 @@ describe('RangeCalendar', () => {
+       expect(handleHoverChange).toHaveBeenCalledWith([]);
+     });
+   });
++
++  it('key control', () => {
++    const onChange = jest.fn();
++    const onSelect = jest.fn();
++    const wrapper = mount(
++      <RangeCalendar
++        defaultSelectedValue={[moment('2000-09-03', format), moment('2000-11-28', format)]}
++        onChange={onChange}
++        onSelect={onSelect}
++      />
++    );
++    expect(wrapper.render()).toMatchSnapshot();
++
++    const keyDown = (code, info) => {
++      wrapper.find('.rc-calendar').simulate('keyDown', {
++        ...info,
++        keyCode: code,
++      });
++    };
++
++    const keySimulateCheck = (code, month, date, info) => {
++      keyDown(code, info);
++
++      expect(wrapper.find('.rc-calendar-range-left .rc-calendar-month-select').text())
++        .toEqual(String(month));
++      expect(wrapper.find('.rc-calendar-selected-start-date .rc-calendar-date').text())
++        .toEqual(String(date));
++    };
++
++    // 09-03 down 09-10
++    keySimulateCheck(keyCode.DOWN, 'Sep', 10);
++
++    // 09-03 left 09-09
++    keySimulateCheck(keyCode.LEFT, 'Sep', 9);
++
++    // 09-09 right 09-10
++    keySimulateCheck(keyCode.RIGHT, 'Sep', 10);
++
++    // 09-10 home 09-01
++    keySimulateCheck(keyCode.HOME, 'Sep', 1);
++
++    // 09-10 end 09-30
++    keySimulateCheck(keyCode.END, 'Sep', 30);
++
++    // 09-30 page up 08-30
++    keySimulateCheck(keyCode.PAGE_UP, 'Aug', 30);
++
++    // 08-30 page down 09-30
++    keySimulateCheck(keyCode.PAGE_DOWN, 'Sep', 30);
++
++    keyDown(keyCode.ENTER);
++
++    expect(onChange.mock.calls[0][0][0].format(format)).toEqual('2000-09-30');
++
++    // 2000-09-30 ctrl+right 2001-09-30
++    keySimulateCheck(keyCode.RIGHT, 'Sep', 30, {
++      ctrlKey: true,
++    });
++    expect(wrapper.find('.rc-calendar-range-right .rc-calendar-year-select').text())
++      .toEqual('2001');
++
++    // 2001-09-30 ctrl+right 2000-09-30
++    keySimulateCheck(keyCode.LEFT, 'Sep', 30, {
++      ctrlKey: true,
++    });
++
++    keyDown(keyCode.ENTER);
++    expect(onChange.mock.calls[1][0][0].format(format)).toEqual('2000-09-30');
++    expect(onChange.mock.calls[1][0][1].format(format)).toEqual('2000-09-30');
++
++    expect(onSelect.mock.calls[0][0][0].format(format)).toEqual('2000-09-30');
++    expect(onSelect.mock.calls[0][0][1].format(format)).toEqual('2000-09-30');
++  });
+ });
+",0,,2,1584,1,8,7,1814
+418,217c07db3a43f0e002f64ed79765dbf4ff433d0c,217c07db3a43f0e002f64ed79765dbf4ff433d0c,,"Add Vietnamese translation
+","diff --git a/tests/locale.spec.js b/tests/locale.spec.js
+index 1c62567..cfcb8de 100644
+--- a/tests/locale.spec.js
++++ b/tests/locale.spec.js
+@@ -39,6 +39,7 @@ const locales = {
+   tr_TR: require('../src/locale/tr_TR'),
+   ug_CN: require('../src/locale/ug_CN'),
+   uk_UA: require('../src/locale/uk_UA'),
++  vi_VN: require('../src/locale/vi_VN'),
+   zh_CN: require('../src/locale/zh_CN'),
+   zh_TW: require('../src/locale/zh_TW'),
+ };
+",0,,3,797,1,1,3,797
+478,5bb03db8afd45362ed95c4e9cc6e8f25eeca9cdb,515e5c7cf91225b802c131d0c769ed54ebd8b927,"issuse: https://github.com/ant-design/ant-design/issues/13302
+
+hi  我又来了 我的一个项目碰见了这个问题 看了下issuse 正好也有提到 修复了 @afc163 ","根据修复完善test
+","diff --git a/tests/RangeCalendar.spec.jsx b/tests/RangeCalendar.spec.jsx
+index 61fbc3a..8a15504 100644
+--- a/tests/RangeCalendar.spec.jsx
++++ b/tests/RangeCalendar.spec.jsx
+@@ -130,13 +130,13 @@ describe('RangeCalendar', () => {
+       .toMatch('rc-calendar-month-panel-cell-disabled');
+   });
+ 
+-  it('right panel cannot select month same or before left panel', () => {
++  it('right panel cannot select month before left panel', () => {
+     const wrapper = mount(<RangeCalendar />);
+     wrapper.find('.rc-calendar-range-right .rc-calendar-month-select').simulate('click');
+     const monthCells = wrapper.find('.rc-calendar-range-right .rc-calendar-month-panel-cell');
+     const leftPanelMonth = wrapper.state('value')[0].month();
+     expect(monthCells.get(leftPanelMonth).props.className)
+-      .toMatch('rc-calendar-month-panel-cell-disabled');
++      .toMatch('rc-calendar-month-panel-cell rc-calendar-month-panel-current-cell');
+     expect(monthCells.get(leftPanelMonth - 1).props.className)
+       .toMatch('rc-calendar-month-panel-cell-disabled');
+   });
+@@ -303,7 +303,7 @@ describe('RangeCalendar', () => {
+         };
+       }
+       const timePicker = <TimePickerPanel defaultValue={[moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')]} />;
+-      const wrapper = mount(<RangeCalendar timePicker={timePicker} disabledTime={disabledTime}/>);
++      const wrapper = mount(<RangeCalendar timePicker={timePicker} disabledTime={disabledTime} />);
+ 
+       wrapper.find('.rc-calendar-today').at(0).simulate('click').simulate('click');
+       wrapper.find('.rc-calendar-today').at(0).simulate('click').simulate('click');
+",0,,2,8,1,3,3,43
+543,4d7eb2cb26caf62744c66508257815a8e13f5e9b,4d7eb2cb26caf62744c66508257815a8e13f5e9b,"Step to reproduce:
+1. Go to https://codesandbox.io/s/18k4o4ok77
+2. Open calendar
+3. See a lot of NaN values
+![SCREENSHOT](https://i.imgur.com/v8Ux6iK.png)","Fix incorrect behaviour of the Calendar if we pass inValid moment object to defaultValue
+","diff --git a/tests/Calendar.spec.jsx b/tests/Calendar.spec.jsx
+index 89a65ee..3d37a96 100644
+--- a/tests/Calendar.spec.jsx
++++ b/tests/Calendar.spec.jsx
+@@ -33,6 +33,13 @@ describe('Calendar', () => {
+       expect(enWrapperWithMonthFormatWrapper).toMatchSnapshot();
+     });
+ 
++    it('render correctly with invalid moment object', () => {
++      const enWrapper = render(
++          <Calendar locale={enUS} defaultValue={moment('invalid').locale('en')} />
++      );
++      expect(enWrapper).toMatchSnapshot();
++    });
++
+     it('render showToday false correctly', () => {
+       const wrapper = mount(<Calendar showToday={false}/>);
+       expect(wrapper.find('.rc-calendar-today-btn').length).toBe(0);
+",0,,3,794,1,1,3,794
+635,7c1fca2963900ecbee65a938238d840477f5cc93,d96db7c021379b827fe0985635724a29256de33c,"- 重构代码到 ts
+- 切换 trigger 到 新版本","fix test
+",,0,,3,408,1,17,85,8460

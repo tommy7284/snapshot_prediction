@@ -1,0 +1,84 @@
+{
+    "id": 5714588,
+    "name": "dextapp/dext",
+    "isFork": false,
+    "commits": 346,
+    "branches": 3,
+    "releases": 13,
+    "forks": 64,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "develop",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 708,
+    "contributors": 19,
+    "size": 77650,
+    "createdAt": "2016-08-27T12:11:22",
+    "pushedAt": "2020-10-04T06:01:09",
+    "updatedAt": "2021-01-13T07:50:51",
+    "totalIssues": 77,
+    "openIssues": 10,
+    "totalPullRequests": 148,
+    "openPullRequests": 1,
+    "blankLines": 484,
+    "codeLines": 23126,
+    "commentLines": 389,
+    "metrics": [
+        {
+            "blankLines": 201,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 464
+        },
+        {
+            "blankLines": 4,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 43
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 19855
+        },
+        {
+            "blankLines": 279,
+            "language": "JavaScript",
+            "commentLines": 389,
+            "codeLines": 2743
+        }
+    ],
+    "lastCommit": "2018-06-09T10:29:45",
+    "lastCommitSHA": "50713d8a30152f640caf0ec3870c6c4e1befdc4e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 86152,
+        "HTML": 399
+    },
+    "labels": [
+        "good first task \ud83c\udf6d",
+        "status: blocked \ud83d\udea7",
+        "status: code review needed \ud83e\udd13",
+        "status: on hold \u23f8",
+        "status: wip \ud83d\udea7",
+        "type: bug \ud83d\udc1b",
+        "type: discussion \ud83d\udd25",
+        "type: enhancement \ud83e\uddbe",
+        "type: hacktoberfest \ud83c\udf7b",
+        "type: help-wanted \ud83d\udc81\u200d\u2642\ufe0f",
+        "type: performance \ud83d\udc0c",
+        "type: refactor \ud83d\udd27"
+    ],
+    "topics": []
+}

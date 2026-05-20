@@ -1,0 +1,90 @@
+{
+    "id": 5567191,
+    "name": "nitin42/terminal-in-react",
+    "isFork": false,
+    "commits": 362,
+    "branches": 3,
+    "releases": 13,
+    "forks": 163,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://terminal-in-react.surge.sh/",
+    "watchers": 20,
+    "stargazers": 2079,
+    "contributors": 8,
+    "size": 507,
+    "createdAt": "2017-07-07T09:49:19",
+    "pushedAt": "2023-06-13T04:01:29",
+    "updatedAt": "2023-06-17T05:25:31",
+    "totalIssues": 74,
+    "openIssues": 36,
+    "totalPullRequests": 37,
+    "openPullRequests": 5,
+    "blankLines": 494,
+    "codeLines": 2890,
+    "commentLines": 145,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 168,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 508
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 85
+        },
+        {
+            "blankLines": 1,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 325,
+            "language": "JavaScript",
+            "commentLines": 145,
+            "codeLines": 2263
+        }
+    ],
+    "lastCommit": "2019-03-08T09:23:50",
+    "lastCommitSHA": "d276b450df837cf80eb31fd80961895ea8977533",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 70954
+    },
+    "labels": [
+        "assigned",
+        "bug",
+        "difficulty: easy",
+        "duplicate",
+        "enhancement",
+        "good first contribution",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "css",
+        "design",
+        "javascript",
+        "react",
+        "svg",
+        "terminal",
+        "webapp",
+        "webpack"
+    ]
+}

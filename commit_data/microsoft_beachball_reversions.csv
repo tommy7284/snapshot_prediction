@@ -1,0 +1,3889 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1154,f2590499062a853fbcb9833d8d639ec815a4f2f8,3ff1d4caaa16d3d13f2dea32eed7be329ed60a63,"Sometimes it's convenient to be able to reuse the default renderer in a custom renderer.
+
+Also add very basic escaping to prevent comments like `Add --config <file> option` (missing backticks around the placeholder) from being treated as HTML and breaking markdown rendering. Full escaping/sanitizing is the responsibility of the final markdown renderer, same as for a manually authored markdown file; the goal here is just to prevent the most common issue if somebody forgot their comment would be interpreted as markdown.","escape <
+","diff --git a/src/__tests__/changelog/renderPackageChangelog.test.ts b/src/__tests__/changelog/renderPackageChangelog.test.ts
+index d6c4532..eab4ca8 100644
+--- a/src/__tests__/changelog/renderPackageChangelog.test.ts
++++ b/src/__tests__/changelog/renderPackageChangelog.test.ts
+@@ -6,8 +6,7 @@ import { SortedChangeTypes } from '../../changefile/changeTypes';
+ 
+ const { renderEntry, renderEntries, renderChangeTypeHeader, renderChangeTypeSection, renderHeader } = defaultRenderers;
+ 
+-const leadingNewlineRegex = /^\n/;
+-const trailingNewlineRegex = /\n$/;
++const leadingTrailingNewlineRegex = /^\n|\n$/;
+ 
+ describe('changelog renderers -', () => {
+   function getRenderInfo(): PackageChangelogRenderInfo {
+@@ -32,7 +31,7 @@ describe('changelog renderers -', () => {
+       },
+       previousJson: {} as ChangelogJson,
+       renderers: { ...defaultRenderers }, // copy in case of modification
+-      defaultRenderers: { ...defaultRenderers },
++      defaultRenderers,
+     };
+   }
+ 
+@@ -54,23 +53,33 @@ describe('changelog renderers -', () => {
+     return renderInfo;
+   }
+ 
+-  function doBasicTests(result: string) {
+-    expect(result).not.toMatch(leadingNewlineRegex);
+-    expect(result).not.toMatch(trailingNewlineRegex);
+-    expect(result).toMatchSnapshot();
+-  }
+-
+   describe('renderEntry', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderEntry(renderInfo.newVersionChangelog.comments.minor![0], renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`""- Awesome change (user1@example.com)""`);
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderEntry(renderInfo.newVersionChangelog.comments.minor![0], renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`""- Awesome change (user1@example.com)""`);
++    });
++
++    it('escapes < outside of code blocks', async () => {
++      const renderInfo = getRenderInfo();
++      renderInfo.newVersionChangelog.comments.minor![0].comment = 'Add --config <file>';
++      const result = await renderEntry(renderInfo.newVersionChangelog.comments.minor![0], renderInfo);
++      expect(result).toMatchInlineSnapshot(`""- Add --config \\<file> (user1@example.com)""`);
++    });
++
++    it('does not escape < inside code blocks', async () => {
++      const renderInfo = getRenderInfo();
++      renderInfo.newVersionChangelog.comments.minor![0].comment = 'Add `--config <file>`';
++      const result = await renderEntry(renderInfo.newVersionChangelog.comments.minor![0], renderInfo);
++      expect(result).toMatchInlineSnapshot(`""- Add \`--config <file>\` (user1@example.com)""`);
+     });
+   });
+ 
+@@ -78,13 +87,23 @@ describe('changelog renderers -', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderEntries('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""- Awesome change (user1@example.com)
++        - Boring change (user2@example.com)""
++      `);
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderEntries('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""- \`bar\`
++          - Awesome change (user1@example.com)
++        - \`foo\`
++          - Boring change (user2@example.com)""
++      `);
+     });
+   });
+ 
+@@ -92,13 +111,15 @@ describe('changelog renderers -', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderChangeTypeHeader('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`""### Minor changes""`);
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderChangeTypeHeader('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`""### Minor changes""`);
+     });
+   });
+ 
+@@ -106,13 +127,27 @@ describe('changelog renderers -', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderChangeTypeSection('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""### Minor changes
++
++        - Awesome change (user1@example.com)
++        - Boring change (user2@example.com)""
++      `);
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderChangeTypeSection('minor', renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""### Minor changes
++
++        - \`bar\`
++          - Awesome change (user1@example.com)
++        - \`foo\`
++          - Boring change (user2@example.com)""
++      `);
+     });
+   });
+ 
+@@ -120,13 +155,23 @@ describe('changelog renderers -', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderHeader(renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""## 1.2.3
++
++        Thu, 22 Aug 2019 21:20:40 GMT""
++      `);
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderHeader(renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchInlineSnapshot(`
++        ""## 1.2.3
++
++        Thu, 22 Aug 2019 21:20:40 GMT""
++      `);
+     });
+   });
+ 
+@@ -134,7 +179,24 @@ describe('changelog renderers -', () => {
+     it('has correct output', async () => {
+       const renderInfo = getRenderInfo();
+       const result = await renderPackageChangelog(renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      // Most of the package output snapshots go in a snapshot file since they're longer,
++      // but include one inline to help as a sanity check.
++      expect(result).toMatchInlineSnapshot(`
++        ""## 1.2.3
++
++        Thu, 22 Aug 2019 21:20:40 GMT
++
++        ### Minor changes
++
++        - Awesome change (user1@example.com)
++        - Boring change (user2@example.com)
++
++        ### Patches
++
++        - Fix (user1@example.com)
++        - stuff (user2@example.com)""
++      `);
+     });
+ 
+     it('includes all change types', async () => {
+@@ -150,13 +212,15 @@ describe('changelog renderers -', () => {
+           expect(result).toContain(`${type} change`);
+         }
+       }
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchSnapshot();
+     });
+ 
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderPackageChangelog(renderInfo);
+-      doBasicTests(result);
++      expect(result).not.toMatch(leadingTrailingNewlineRegex);
++      expect(result).toMatchSnapshot();
+     });
+ 
+     it('uses custom renderEntry', async () => {
+",0,,4,184,1,3,6,200
+1155,8e760ee209d2f92bfb25094813831310127e3196,8e760ee209d2f92bfb25094813831310127e3196,"Add separate tests for `publishToRegistry()`, and remove slower E2E tests which are now adequately covered by the lower-level tests. The new tests include some snapshots of log output essentially as visual regression tests.
+
+Also improve publish log messages and formatting (issues made obvious by snapshot tests).","More publishing tests + logging improvements
+","diff --git a/src/__functional__/publish/publishToRegistry.test.ts b/src/__functional__/publish/publishToRegistry.test.ts
+new file mode 100644
+index 0000000..39a233f
+--- /dev/null
++++ b/src/__functional__/publish/publishToRegistry.test.ts
+@@ -0,0 +1,354 @@
++import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
++import fs from 'fs';
++import path from 'path';
++import { initMockLogs } from '../../__fixtures__/mockLogs';
++import { _mockNpmPublish, getMockNpmPackName, initNpmMock } from '../../__fixtures__/mockNpm';
++import { makePackageInfos } from '../../__fixtures__/packageInfos';
++import { removeTempDir, tmpdir } from '../../__fixtures__/tmpdir';
++import { writeJson } from '../../object/writeJson';
++import { getDefaultOptions } from '../../options/getDefaultOptions';
++import { publishToRegistry } from '../../publish/publishToRegistry';
++import type { BeachballOptions, HooksOptions } from '../../types/BeachballOptions';
++import type { PublishBumpInfo } from '../../types/BumpInfo';
++import type { PackageJson } from '../../types/PackageInfo';
++
++// Mock npm calls (publish, pack, show)
++jest.mock('../../packageManager/npm');
++
++describe('publishToRegistry', () => {
++  const npmMock = initNpmMock();
++  const logs = initMockLogs();
++
++  let tempRoot: string;
++  let defaultOptions: BeachballOptions;
++
++  beforeEach(() => {
++    tempRoot = tmpdir();
++    defaultOptions = {
++      ...getDefaultOptions(),
++      path: tempRoot,
++      registry: 'http://localhost:99999',
++      bump: false,
++    };
++  });
++
++  afterEach(() => {
++    removeTempDir(tempRoot);
++  });
++
++  /** Create a minimal PublishBumpInfo where all packages are modified and in scope */
++  function makeBumpInfo(
++    partialPackageInfos: Parameters<typeof makePackageInfos>[0],
++    extra?: Partial<Pick<PublishBumpInfo, 'modifiedPackages' | 'calculatedChangeTypes' | 'scopedPackages'>>
++  ): PublishBumpInfo {
++    const packageInfos = makePackageInfos(partialPackageInfos, { path: tempRoot });
++
++    // Write package.json files to disk so mock npm publish can read them
++    for (const info of Object.values(packageInfos)) {
++      const { packageJsonPath, ...json } = info;
++      fs.mkdirSync(path.dirname(packageJsonPath), { recursive: true });
++      writeJson(packageJsonPath, json);
++    }
++
++    const names = Object.keys(packageInfos);
++    return {
++      changeFileChangeInfos: [],
++      packageInfos,
++      calculatedChangeTypes: Object.fromEntries(names.map(n => [n, 'patch' as const])),
++      packageGroups: {},
++      modifiedPackages: new Set(names),
++      dependentChangedBy: {},
++      scopedPackages: new Set(names),
++      ...extra,
++    };
++  }
++
++  it('publishes a single package', async () => {
++    const bumpInfo = makeBumpInfo({ foo: {} });
++
++    await publishToRegistry(bumpInfo, defaultOptions);
++
++    const published = npmMock.getPublishedVersions('foo');
++    expect(published?.versions).toEqual(['1.0.0']);
++
++    // This is like a visual regression test for the log UX
++    expect(logs.getMockLines('all', { root: tempRoot })).toMatchInlineSnapshot(`
++      ""[log] Validating new package versions...
++
++      [log] Package versions are OK to publish:
++        • foo@1.0.0
++
++      [log] Validating no private package among package dependencies
++      [log]   OK!
++
++      [log] Publishing - foo@1.0.0 with tag latest
++      [log]   publish command: publish --registry http://localhost:99999 --tag latest --loglevel warn
++      [log]   (cwd: <root>/packages/foo)
++
++      [log] Published! - foo@1.0.0""
++    `);
++  });
++
++  it('publishes multiple packages in dependency order', async () => {
++    const bumpInfo = makeBumpInfo({
++      app: { dependencies: { lib: '1.0.0' } },
++      lib: {},
++    });
++
++    await publishToRegistry(bumpInfo, defaultOptions);
++
++    // Both packages should be published
++    expect(npmMock.getPublishedVersions('lib')?.versions).toEqual(['1.0.0']);
++    expect(npmMock.getPublishedVersions('app')?.versions).toEqual(['1.0.0']);
++
++    // lib should be published before app (check npm call order)
++    const publishCalls = npmMock.mock.mock.calls.filter(([args]) => args[0] === 'publish');
++    const publishOrder = publishCalls.map(([, opts]) => path.basename(opts.cwd!));
++    expect(publishOrder).toEqual(['lib', 'app']);
++
++    expect(logs.getMockLines('all', { root: tempRoot })).toMatchSnapshot();
++  });
++
++  it('skips private packages', async () => {
++    const bumpInfo = makeBumpInfo({
++      foo: {},
++      'private-pkg': { private: true },
++    });
++
++    await publishToRegistry(bumpInfo, defaultOptions);
++
++    expect(npmMock.getPublishedVersions('foo')?.versions).toEqual(['1.0.0']);
++    expect(npmMock.getPublishedVersions('private-pkg')).toBeUndefined();
++
++    expect(logs.getMockLines('all', { root: tempRoot })).toMatchSnapshot();
++  });
++
++  it('returns early when no packages need publishing', async () => {
++    const bumpInfo = makeBumpInfo({ foo: { private: true } }, { calculatedChangeTypes: { foo: 'none' } });
++
++    await publishToRegistry(bumpInfo, defaultOptions);
++
++    // No npm calls should have been made
++    expect(npmMock.mock).not.toHaveBeenCalled();
++
++    expect(logs.getMockLines('all', { root: tempRoot })).toMatchInlineSnapshot(`
++      ""[log] Skipping publishing the following packages:
++        • foo has change type none
++
++      [log] Nothing to publish""
++    `);
++  });
++
++  it('throws on publish failure', async () => {
++    const bumpInfo = makeBumpInfo({ foo: {} });
++
++    // Make the publish command fail
++    npmMock.setCommandOverride('publish', () =>
++      Promise.resolve({ success: false, stdout: '', stderr: 'network error', all: 'network error', failed: true })
++    );
++
++    await expect(publishToRegistry(bumpInfo, defaultOptions)).rejects.toThrow('Error publishing');
++
++    expect(logs.getMockLines('all', { root: tempRoot })).toMatchSnapshot();
++  });
++
++  it('exits on validation failure when version already exists', async () => {
++    const bumpInfo = makeBumpInfo({ foo: {} });
++
++    // Pre-populate registry so version 1.0.0 already exists
++    npmMock.setRegistryData({ foo: { versions: ['1.0.0'] } });
++
++    // process.exit is mocked in jestSetup.js to throw
++    await expect(publishToRegistry(bumpInfo, defaultOptions)).rejects.toThrow('process.exit called with code 1');
++
++    expect(logs.getMockLines('all')).toMatchInlineSnapshot(`
++      ""[log] Validating new package versions...
++
++      [error] ERROR: Attempting to publish package versions that already exist in the registry:
++        • foo@1.0.0
++
++      [error] Something went wrong with publishing (see above for details). The following packages were NOT published:
++        • foo@1.0.0""
++    `);
++  });
++
++  it('applies publishConfig overrides before publishing', async () => {
++    const bumpInfo = makeBumpInfo({ foo: {} });
++    // Add main and publishConfig on disk (would be stripped by makePackageInfos)
++    const { packageJsonPath, ...json } = bumpInfo.packageInfos.foo;
++    const allJson: PackageJson = { ...json, main: 'src/index.js', publishConfig: { main: 'dist/index.js' } };
++    fs.writeFileSync(packageJsonPath, JSON.stringify(allJson));
++
++    await publishToRegistry(bumpInfo, defaultOptions);
++
++    // performPublishOverrides should have replaced `main` from publishConfig
++    const packageJson = JSON.parse(fs.readFileSync(bumpInfo.packageInfos.foo.packageJsonPath, 'utf-8')) as PackageJson;
++    expect(packageJson).toMatchObject(allJson.publishConfig!);
++  });
++
++  it('calls prepublish and postpublish hooks', async () => {
++    const bumpInfo = makeBumpInfo({ foo: {}, bar: {} });
++
++    const prepublish = jest.fn<Required<HooksOptions>['prepublish']>();
++    const postpublish = jest.fn<Required<HooksOptions>['postpublish']>();
++
++    await publishToRegistry(bumpInfo, { ...defaultOptions, hooks: { prepublish, postpublish } });
++
++    // Verify hook calls and arguments
++    const expectHookCalls = (hook: typeof prepublish) => {
++      expect(hook).toHaveBeenCalledTimes(2);
++      expect(hook).toHaveBeenCalledWith(expect.stringMatching(/packages[\\/]foo$/), 'foo', '1.0.0', expect.anything());
++      expect(hook).toHaveBeenCalledWith(expect.stringMatching(/packages[\\/]bar$/), 'bar', '1.0.0', expect.anything());
++    };
++    expectHookCalls(prepublish);
++    expectHookCalls(postpublish);
++  });
++
++  describe('with concurrency > 1', () => {
++    it('publishes independent packages in parallel', async () => {
++      const bumpInfo = makeBumpInfo({ foo: {}, bar: {}, baz: {}, qux: {}, quux: {} });
++
++      const concurrency = 3;
++      let currentConcurrency = 0;
++      let maxConcurrency = 0;
++
++      npmMock.setCommandOverride('publish', async (registryData, args, opts) => {
++        currentConcurrency++;
++        await new Promise(resolve => setTimeout(resolve, 50));
++        const result = await _mockNpmPublish(registryData, args, opts);
++        maxConcurrency = Math.max(maxConcurrency, currentConcurrency);
++        currentConcurrency--;
++        return result;
++      });
++
++      await publishToRegistry(bumpInfo, { ...defaultOptions, concurrency });
++
++      // Verify that at most `concurrency` number of packages were published concurrently
++      expect(maxConcurrency).toBe(concurrency);
++
++      expect(npmMock.getPublishedVersions('foo')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('bar')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('baz')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('qux')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('quux')?.versions).toEqual(['1.0.0']);
++
++      // If this turns out to be unstable, it can be removed
++      expect(logs.getMockLines('all', { root: tempRoot })).toMatchSnapshot();
++    });
++
++    // Just test postpublish (prepublish should have the same logic)
++    it('respects concurrency limit for publish hooks', async () => {
++      const bumpInfo = makeBumpInfo({ pkg1: {}, pkg2: {}, pkg3: {}, pkg4: {} });
++      const concurrency = 2;
++
++      let currentConcurrency = 0;
++      let maxConcurrency = 0;
++      const hookNames: string[] = [];
++
++      const postpublish = async (_packagePath: string, name: string) => {
++        currentConcurrency++;
++        await new Promise(resolve => setTimeout(resolve, 50));
++        hookNames.push(name);
++        maxConcurrency = Math.max(maxConcurrency, currentConcurrency);
++        currentConcurrency--;
++      };
++
++      await publishToRegistry(bumpInfo, { ...defaultOptions, concurrency, hooks: { postpublish } });
++
++      expect(maxConcurrency).toBe(concurrency);
++      expect(hookNames.sort()).toEqual(['pkg1', 'pkg2', 'pkg3', 'pkg4']);
++    });
++
++    it('throws and shows recovery info on failure', async () => {
++      const bumpInfo = makeBumpInfo({
++        pkg1: { dependencies: { pkg2: '1.0.0' } },
++        pkg2: { dependencies: { pkg3: '1.0.0' } },
++        pkg3: {},
++        pkg4: {},
++        pkg5: {},
++      });
++
++      // Make publish fail for pkg2 and pkg5.
++      // pkg3 and pkg4 should succeed, and pkg1 should be skipped.
++      npmMock.setCommandOverride('publish', async (registryData, args, opts) => {
++        const packageName = path.basename(opts.cwd!);
++        if (packageName === 'pkg2' || packageName === 'pkg5') {
++          return { success: false, stdout: '', stderr: 'oh no', all: 'oh no', failed: true };
++        }
++        // Use a small delay to verify that the started tasks are awaited even if others fail
++        await new Promise(resolve => setTimeout(resolve, 20));
++        return _mockNpmPublish(registryData, args, opts);
++      });
++
++      // Set concurrency to 4 so pkg2-5 will start in parallel (leading to two failures)
++      await expect(publishToRegistry(bumpInfo, { ...defaultOptions, concurrency: 4 }))
++        .rejects // The message should be deduplicated since the same error is thrown for both failures
++        .toThrowErrorMatchingInlineSnapshot(
++          `""Error publishing! Refer to the previous logs for recovery instructions.""`
++        );
++
++      expect(npmMock.getPublishedVersions('pkg1')).toBeUndefined();
++      expect(npmMock.getPublishedVersions('pkg2')).toBeUndefined();
++      expect(npmMock.getPublishedVersions('pkg3')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('pkg4')?.versions).toEqual(['1.0.0']);
++      expect(npmMock.getPublishedVersions('pkg5')).toBeUndefined();
++
++      // If this turns out to be unstable, it can be replaced with more granular tests
++      // (need to verify that all failed packages' logs are shown, and the final errors are aggregated
++      // in a reasonable manner)
++      expect(logs.getMockLines('all', { root: tempRoot })).toMatchSnapshot();
++    });
++  });
++
++  describe('with packToPath', () => {
++    let packToPath: string;
++
++    beforeEach(() => {
++      packToPath = tmpdir();
++    });
++
++    afterEach(() => {
++      removeTempDir(packToPath);
++    });
++
++    it('packs packages', async () => {
++      const bumpInfo = makeBumpInfo({
++        app: { dependencies: { lib: '1.0.0' } },
++        lib: {},
++      });
++
++      await publishToRegistry(bumpInfo, { ...defaultOptions, packToPath });
++
++      // Nothing should be published to the registry
++      expect(npmMock.getPublishedVersions('lib')).toBeUndefined();
++      expect(npmMock.getPublishedVersions('app')).toBeUndefined();
++
++      // Tgz files should be in packToPath with numeric prefixes (toposorted: lib=1, app=2)
++      const files = fs.readdirSync(packToPath).sort();
++      expect(files).toEqual([
++        `1-${getMockNpmPackName(bumpInfo.packageInfos.lib)}`,
++        `2-${getMockNpmPackName(bumpInfo.packageInfos.app)}`,
++      ]);
++
++      expect(
++        logs.getMockLines('all', { replacePaths: { [tempRoot]: '<root>', [packToPath]: '<packPath>' } })
++      ).toMatchSnapshot();
++    });
++
++    it('throws with packing error message on pack failure', async () => {
++      const bumpInfo = makeBumpInfo({ foo: {} });
++
++      npmMock.setCommandOverride('pack', () =>
++        Promise.resolve({ success: false, stdout: '', stderr: 'pack error', all: 'pack error', failed: true })
++      );
++
++      await expect(publishToRegistry(bumpInfo, { ...defaultOptions, packToPath })).rejects.toThrow('Error packing');
++
++      expect(logs.getMockLines('error')).toMatch('Something went wrong with packing packages!');
++
++      expect(
++        logs.getMockLines('all', { replacePaths: { [tempRoot]: '<root>', [packToPath]: '<packPath>' } })
++      ).toMatchSnapshot();
++    });
++  });
++});
+",0,,17,1039,1,1,17,1039
+1158,d5b1dd4a8f7bf648e90d04f42f8c277772d46927,d5b1dd4a8f7bf648e90d04f42f8c277772d46927,"(Same as #1157, but boring/clearer naming--🥞 out, 🎂 in!)
+
+When packing packages to a path, it turns out it may be useful or necessary to group layers of the tree together rather than using sequential ordering.
+
+This PR adds a new option `packStyle: 'sequential' | 'layer'`. The new option refers to packages from each layer of the graph that can be published in parallel. The first layer will be the leaf packages with no dependencies, and the last will be the root packages that depend on all others. The layers go in numbered subfolders under `packToPath`.
+
+The layering uses [Kahn's algorithm for BFS](https://www.geeksforgeeks.org/dsa/topological-sorting-indegree-based-solution/) to extract the layers in O(V+E). (Apparently LLMs are good at choosing and writing algorithms thanks to the many code examples online...) 
+
+If possible, layers are computed based on only the set of published packages. This should be safe with beachball's default behaviors of bumping dependents, but layers will be computed over the full graph under any of the following conditions which might cause missing edges. (Not 100% sure this is necessary, but not sure how to disprove it either...)
+ - `bumpDeps` is false
+ - `scope` is set
+ - There are `newPackages`
+ - Any change has `dependentChangeType` set to ""none""
+
+In either case, `devDependencies` are ignored when computing the graph since they can't break published packages. This should improve improve efficiency and potentially condense the resulting layers slightly.
+
+I also replaced usage of the `toposort` package with the new layer logic, since they effectively do the same thing (exact ordering may vary, but the topological relationships are handled either way).
+
+Currently, there's only VERY basic cycle handling: all cycles are grouped together on a final layer, regardless of any interdependencies. This should be fine since the `toposort` package previously used by beachball doesn't handle cycles at all, which implies that repos publishing with beachball don't have cycles. (Tarjan's strongly connected components algorithm could be added at the end to break cycles into more layers if needed in the future, but it's a lot of extra complexity.)","Implement layer pack style
+","diff --git a/src/__functional__/publish/publishToRegistry.test.ts b/src/__functional__/publish/publishToRegistry.test.ts
+index 2e0d15e..101fec7 100644
+--- a/src/__functional__/publish/publishToRegistry.test.ts
++++ b/src/__functional__/publish/publishToRegistry.test.ts
+@@ -310,7 +310,7 @@ describe('publishToRegistry', () => {
+       removeTempDir(packToPath);
+     });
+ 
+-    it('packs packages', async () => {
++    it('packs packages sequentially by default', async () => {
+       const bumpInfo = makeBumpInfo({
+         app: { dependencies: { lib: '1.0.0' } },
+         lib: {},
+@@ -349,5 +349,33 @@ describe('publishToRegistry', () => {
+         logs.getMockLines('all', { replacePaths: { [tempRoot]: '<root>', [packToPath]: '<packPath>' } })
+       ).toMatchSnapshot();
+     });
++
++    it('packs packages into layer folders', async () => {
++      const bumpInfo = makeBumpInfo({
++        app: { dependencies: { lib: '1.0.0' } },
++        other: { dependencies: { lib: '1.0.0' } },
++        lib: {},
++      });
++
++      await publishToRegistry(bumpInfo, { ...defaultOptions, packToPath, packStyle: 'layer' });
++
++      // Nothing should be published to the registry
++      expect(npmMock.getPublishedVersions('lib')).toBeUndefined();
++      expect(npmMock.getPublishedVersions('app')).toBeUndefined();
++
++      // Tgz files should be in numbered subdirectories by layer
++      // lib has no deps → layer 0 (folder ""1""), app and other depend on lib → layer 1 (folder ""2"")
++      const layer1 = fs.readdirSync(path.join(packToPath, '1'));
++      const layer2 = fs.readdirSync(path.join(packToPath, '2'));
++      expect(layer1).toEqual([getMockNpmPackName(bumpInfo.packageInfos.lib)]);
++      expect(layer2.sort()).toEqual([
++        getMockNpmPackName(bumpInfo.packageInfos.app),
++        getMockNpmPackName(bumpInfo.packageInfos.other),
++      ]);
++
++      expect(
++        logs.getMockLines('all', { replacePaths: { [tempRoot]: '<root>', [packToPath]: '<packPath>' } })
++      ).toMatchSnapshot();
++    });
+   });
+ });
+",0,,21,1016,1,2,23,1056
+1201,92d3d967745bd106028e26281f7f4090697895d1,0f37dbce07516098aeab0a95cf72a8ea753b5a08,"Add more tests, including snapshot tests for publishing. 
+
+Log snapshots in beachball are essentially ""visual regression"" tests since the logs are the UI, and adding the snapshots showed some opportunities to improve the spacing/formatting of various publish logs.","bump and new tests
+","diff --git a/src/__tests__/publish/bumpAndPush.test.ts b/src/__tests__/publish/bumpAndPush.test.ts
+new file mode 100644
+index 0000000..f1a48a1
+--- /dev/null
++++ b/src/__tests__/publish/bumpAndPush.test.ts
+@@ -0,0 +1,249 @@
++/* eslint-disable etc/no-deprecated -- lots of incorrect warnings about variadic signatures */
++import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
++import path from 'path';
++import * as wsTools from 'workspace-tools';
++import type { GitProcessOutput } from 'workspace-tools';
++import _execa from 'execa';
++import { bumpAndPush } from '../../publish/bumpAndPush';
++import { performBump as _performBump } from '../../bump/performBump';
++import { tagPackages as _tagPackages } from '../../publish/tagPackages';
++import { initMockLogs } from '../../__fixtures__/mockLogs';
++import { makePackageInfos } from '../../__fixtures__/packageInfos';
++import type { BumpInfo } from '../../types/BumpInfo';
++import { defaultRemoteBranchName } from '../../__fixtures__/gitDefaults';
++import { getParsedOptions } from '../../options/getOptions';
++import { BeachballError } from '../../types/BeachballError';
++import type { BeachballOptions } from '../../types/BeachballOptions';
++
++jest.mock('execa');
++jest.mock('workspace-tools');
++jest.mock('../../bump/performBump'); // this has a bunch of logic which is tested separately
++jest.mock('../../publish/tagPackages');
++
++// execa's overloaded types are too complex for jest.Mock, so we cast it to the signature that's used
++const mockExeca = _execa as unknown as jest.MockedFunction<
++  (file: string, args?: readonly string[], options?: _execa.Options) => _execa.ExecaChildProcess
++>;
++const mockPerformBump = _performBump as jest.MockedFunction<typeof _performBump>;
++const mockTagPackages = _tagPackages as jest.MockedFunction<typeof _tagPackages>;
++const wsToolsMocks = wsTools as jest.Mocked<typeof wsTools>;
++
++describe('bumpAndPush', () => {
++  const logs = initMockLogs();
++
++  const fakeRoot = path.resolve('/fake/root');
++  const publishBranch = 'publish_12345';
++
++  /** Create a mock execa result that resolves like a real ExecaChildProcess */
++  function makeExecaResult(opts: { success: boolean; output?: string; timedOut?: boolean }) {
++    const result = {
++      failed: !opts.success,
++      all: opts.output ?? '',
++      exitCode: opts.success ? 0 : 1,
++      stdout: opts.output ?? '',
++      stderr: '',
++      timedOut: opts.timedOut ?? false,
++    } as _execa.ExecaReturnValue;
++    return Object.assign(Promise.resolve(result), { stdout: null, stderr: null }) as _execa.ExecaChildProcess;
++  }
++
++  function getExecaCalls() {
++    return mockExeca.mock.calls.map(([file, args]) => `${file} ${args?.join(' ')}`);
++  }
++
++  function getWsToolsGitCalls() {
++    return wsToolsMocks.git.mock.calls.map(([args]) => `git ${args.join(' ')}`);
++  }
++
++  /** Create a mock workspace-tools git() result */
++  function makeGitResult(opts: { success: boolean; output?: string }): GitProcessOutput {
++    return {
++      stderr: opts.success ? '' : opts.output ?? '',
++      stdout: opts.success ? opts.output ?? '' : '',
++      success: opts.success,
++      status: opts.success ? 0 : 1,
++    } as GitProcessOutput;
++  }
++
++  function callBumpAndPush(optionOverrides?: Partial<BeachballOptions>, maxRetries?: number) {
++    const { options } = getParsedOptions({
++      cwd: fakeRoot,
++      argv: [],
++      testRepoOptions: {
++        branch: defaultRemoteBranchName,
++        message: 'apply package updates',
++        ...optionOverrides,
++      },
++    });
++    const bumpInfo: BumpInfo = {
++      packageInfos: makePackageInfos({ foo: { version: '1.1.0' }, bar: { version: '2.0.0' } }),
++      modifiedPackages: new Set(['foo', 'bar']),
++      changeFileChangeInfos: [],
++      calculatedChangeTypes: { foo: 'minor', bar: 'major' },
++      dependentChangedBy: {},
++      packageGroups: {},
++      scopedPackages: new Set(['foo', 'bar']),
++    };
++    return bumpAndPush(bumpInfo, publishBranch, options, maxRetries);
++  }
++
++  beforeEach(() => {
++    wsToolsMocks.parseRemoteBranch.mockReturnValue({ remote: 'origin', remoteBranch: 'master' });
++    wsToolsMocks.revertLocalChanges.mockReturnValue(true);
++    wsToolsMocks.git.mockReturnValue(makeGitResult({ success: true }));
++    mockExeca.mockImplementation(() => makeExecaResult({ success: true }));
++    mockPerformBump.mockResolvedValue(undefined);
++  });
++
++  afterEach(() => {
++    jest.clearAllMocks();
++  });
++
++  it('succeeds on first attempt', async () => {
++    await callBumpAndPush();
++
++    expect(mockPerformBump).toHaveBeenCalledTimes(1);
++    expect(mockTagPackages).toHaveBeenCalledTimes(1);
++    expect(wsToolsMocks.revertLocalChanges).toHaveBeenCalledTimes(1);
++    expect(getWsToolsGitCalls().join('\n')).toEqual('git fetch origin master');
++    expect(getExecaCalls()).toEqual([
++      'git merge -X theirs origin/master',
++      'git add .',
++      'git commit -m apply package updates',
++      'git checkout origin/master',
++      'git merge -X ours publish_12345',
++      'git push --no-verify --follow-tags --verbose origin HEAD:master',
++    ]);
++
++    // Beachball's logs are its UI, so snapshots are essentially ""visual regression"" tests
++    expect(logs.getMockLines('all')).toMatchSnapshot();
++  });
++
++  it('skips fetch when options.fetch is false', async () => {
++    await callBumpAndPush({ fetch: false });
++
++    expect(wsToolsMocks.git).not.toHaveBeenCalled();
++    expect(getExecaCalls().join('\n')).not.toContain('fetch');
++  });
++
++  it('retries on fetch failure then succeeds', async () => {
++    wsToolsMocks.git
++      .mockReturnValueOnce(makeGitResult({ success: false, output: 'fetch error' }))
++      .mockReturnValueOnce(makeGitResult({ success: true }));
++
++    await callBumpAndPush();
++
++    expect(wsToolsMocks.revertLocalChanges).toHaveBeenCalledTimes(2);
++    expect(mockPerformBump).toHaveBeenCalledTimes(1);
++
++    expect(logs.getMockLines('warn')).toMatchInlineSnapshot(`
++      ""fetch error
++      Fetching branch ""master"" from remote ""origin"" failed (code 1)
++      [WARN 1/5]: Fetching from origin/master has failed! (see above for details)""
++    `);
++    expect(logs.getMockLines('all')).toMatchSnapshot();
++  });
++
++  it('retries on mergePublishBranch failure then succeeds', async () => {
++    // First attempt: merge with branch succeeds, but commit in mergePublishBranch fails
++    // (merge is call 1, add is call 2, commit is call 3)
++    let callCount = 0;
++    mockExeca.mockImplementation(() => {
++      callCount++;
++      // Fail on 3rd call (commit) in first attempt
++      if (callCount === 3) {
++        return makeExecaResult({ success: false, output: 'commit failed' });
++      }
++      return makeExecaResult({ success: true });
++    });
++
++    await callBumpAndPush();
++
++    expect(wsToolsMocks.revertLocalChanges).toHaveBeenCalledTimes(2);
++    expect(mockPerformBump).toHaveBeenCalledTimes(2);
++
++    expect(logs.getMockLines('warn')).toMatchInlineSnapshot(`
++      ""commit failed
++      git commit -m apply package updates failed (code 1)
++      [WARN 1/5]: Merging to target has failed! (see above for details)""
++    `);
++  });
++
++  it('retries on push failure then succeeds', async () => {
++    let pushCount = 0;
++    mockExeca.mockImplementation((_cmd, args) => {
++      if (args?.[0] === 'push') {
++        pushCount++;
++        if (pushCount === 1) return makeExecaResult({ success: false, output: 'push rejected' });
++      }
++      return makeExecaResult({ success: true });
++    });
++
++    await callBumpAndPush();
++
++    expect(wsToolsMocks.revertLocalChanges).toHaveBeenCalledTimes(2);
++    expect(mockPerformBump).toHaveBeenCalledTimes(2);
++    expect(mockTagPackages).toHaveBeenCalledTimes(2);
++
++    expect(logs.getMockLines('warn')).toMatchInlineSnapshot(`
++      ""push rejected
++      git push --no-verify --follow-tags --verbose origin HEAD:master failed (code 1)
++      [WARN 1/5]: Pushing to origin/master has failed! (see above for details)""
++    `);
++  });
++
++  it('shows timeout message on push timeout', async () => {
++    let pushCount = 0;
++    mockExeca.mockImplementation((_cmd, args) => {
++      if (args?.[0] === 'push') {
++        pushCount++;
++        if (pushCount === 1) return makeExecaResult({ success: false, timedOut: true });
++      }
++      return makeExecaResult({ success: true });
++    });
++
++    await callBumpAndPush();
++
++    expect(logs.getMockLines('warn')).toMatchInlineSnapshot(`
++      ""git push --no-verify --follow-tags --verbose origin HEAD:master failed (code 1)
++      [WARN 1/5]: Pushing to origin/master has timed out! (see above for details)""
++    `);
++  });
++
++  it('calls precommit hook before merge steps', async () => {
++    // eslint-disable-next-line @typescript-eslint/require-await
++    const precommit = jest.fn<(cwd: string) => Promise<void>>(async () => console.log('hello from hook'));
++    await callBumpAndPush({ hooks: { precommit } });
++
++    expect(precommit).toHaveBeenCalledTimes(1);
++    expect(precommit).toHaveBeenCalledWith(fakeRoot);
++
++    // Should be called right before series of merge steps
++    expect(logs.getMockLines('log')).toContain('hello from hook\n\nMerging publish_');
++  });
++
++  it('calls precommit hook on each retry', async () => {
++    const precommit = jest.fn<(cwd: string) => Promise<void>>();
++    mockExeca.mockImplementation((_cmd, args) =>
++      args?.[0] === 'push' ? makeExecaResult({ success: false, output: 'oh no' }) : makeExecaResult({ success: true })
++    );
++
++    await expect(() => callBumpAndPush({ hooks: { precommit } }, 3)).rejects.toThrow(BeachballError);
++
++    expect(precommit).toHaveBeenCalledTimes(3);
++  });
++
++  it('throws and calls displayManualRecovery after all retries exhausted', async () => {
++    // Fail every fetch (happens to give the shortest snapshot output)
++    wsToolsMocks.git.mockReturnValue(makeGitResult({ success: false, output: 'network error' }));
++
++    await expect(() => callBumpAndPush({}, 3)).rejects.toThrow('Failed to bump and push after 3 attempts');
++
++    expect(wsToolsMocks.revertLocalChanges).toHaveBeenCalledTimes(3);
++    expect(mockPerformBump).not.toHaveBeenCalled();
++
++    const logOutput = logs.getMockLines('all');
++    expect(logOutput).toContain('Something went wrong with publishing'); // from displayManualRecovery
++    expect(logOutput).toMatchSnapshot();
++  });
++});
+",0,,6,421,1,3,21,1381
+471,ab633f758156e4903a1b18f18eab91970d3764b3,9c660d280633f320a864e7adc630db24a6f82872,"Currently, beachball generates changelogs only for packages that are described in change files. Dependent packages, however, do not receive new changelog entries, even though their versions get bumped. 
+
+This PR enables beachball to rollup a changelog entry to dependents, such as: `Bump ${package} to v${version}` making it obvious what has caused the version bump.","Updating the changelog test
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index f29c8d8..78ab027 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -110,7 +110,11 @@ describe('changelog generation', () => {
+       // Gather all package info from package.json
+       const packageInfos = getPackageInfos(repository.rootPath);
+ 
+-      await writeChangelog(beachballOptions, changes, new Array<ChangeInfo>(), packageInfos);
++      const dependentChangeInfos = new Array<ChangeInfo>();
++      dependentChangeInfos.push({ ...getChange({ comment: 'additional comment 1' }), commit: '' });
++      dependentChangeInfos.push({ ...getChange({ comment: 'additional comment 2' }), commit: '' });
++
++      await writeChangelog(beachballOptions, changes, dependentChangeInfos, packageInfos);
+ 
+       const changelogFile = path.join(repository.rootPath, 'CHANGELOG.md');
+       const text = await fs.readFile(changelogFile, { encoding: 'utf-8' });
+",0,,2,20,1,5,15,651
+555,8efaf347bbb0cccf72c86786db5487a84ec6fcde,8efaf347bbb0cccf72c86786db5487a84ec6fcde,"Fixes #553 
+
+1. getPackageChangelogs was taking in the incorrect changeinfo for its job - changed back to dependentChangeInfos + the changeFileChangeInfos
+2. fixes the updateRelatedChangeTypes to create  baseChangeInfo based on changeFileChangeInfos.get(changeFile) rather than package name
+3. added some test cases for the updated code
+","dependent bump changeinfo is up
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index 10dae94..c888d42 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -91,7 +91,12 @@ describe('changelog generation', () => {
+       // Gather all package info from package.json
+       const packageInfos = getPackageInfos(repository.rootPath);
+ 
+-      await writeChangelog(beachballOptions, changes, {}, packageInfos);
++      await writeChangelog(
++        beachballOptions,
++        changes,
++        { foo: { ...getChange({ comment: 'bump foo to v1.0.1' }), commit: 'bogus' } },
++        packageInfos
++      );
+ 
+       const changelogFile = path.join(repository.rootPath, 'CHANGELOG.md');
+       const text = await fs.readFile(changelogFile, { encoding: 'utf-8' });
+",0,,2,14,1,5,10,233
+584,d147a0882eb4ca7762dabd21276af62d2b050dca,ba7939aa5003bd3ad987d2899346f05ebdfb58b3,"In large repos when you're changing a bunch of packages at once, it can be kind of expensive to dump a bunch of JSON files into a single folder.
+
+It's easy enough to just group the change files into single files expressing multiple packages per file.
+
+Essentially, there would be a new `groupChanges` option that would generate change files like...
+
+```json
+{
+""changes"": [{
+  ""packageName"": ""beachball"",
+  ""type"": ""minor"",
+  ""dependentChangeType"": ""patch"",
+  ""email"": ""jcreamer@microsoft.com"",
+  ""comment"": ""support multiple changes per changefile""
+  }]
+}
+```
+
+And there's a bit of confusion on my end as to why each `ChangeInfo` needs its own `comment` as I think that `comment` field is generated from the `yarn change` command? So perhaps we can bubble that `comment` field up into the `summary` as seen above.
+
+Other than supporting multiple packages, in theory nothing else here functionally changes, other than I added the `human-id` library to give the change files a shorter and cleaner name.
+","support multiple changes per changefile
+
+* adds the `groupChanges` option to support multiple changes per changefile
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index 6277846..fb6fbd4 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -11,7 +11,7 @@ import { writeChangeFiles } from '../changefile/writeChangeFiles';
+ import { readChangeFiles } from '../changefile/readChangeFiles';
+ import { SortedChangeTypes } from '../changefile/getPackageChangeTypes';
+ import { BeachballOptions } from '../types/BeachballOptions';
+-import { ChangeFileInfo } from '../types/ChangeInfo';
++import { ChangeFileInfo, ChangeInfo } from '../types/ChangeInfo';
+ import { MonoRepoFactory } from '../fixtures/monorepo';
+ import { ChangelogJson } from '../types/ChangeLog';
+ 
+@@ -73,6 +73,18 @@ describe('changelog generation', () => {
+       expect(changes).toHaveLength(1);
+       expect(changes[0].commit).toBe(undefined);
+     });
++
++    it('does not add commit hash', () => {
++      const repository = repositoryFactory.cloneRepository();
++      repository.commitChange('foo');
++      writeChangeFiles({ foo: getChange(), bar: getChange() }, repository.rootPath);
++
++      const packageInfos = getPackageInfos(repository.rootPath);
++      const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
++      const changes = [...changeSet.values()];
++      expect(changes).toHaveLength(2);
++      expect(changes[0].commit).toBe(undefined);
++    });
+   });
+ 
+   describe('writeChangelog', () => {
+@@ -104,6 +116,40 @@ describe('changelog generation', () => {
+       expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
+     });
+ 
++    it('generates correct changelog with multiple changes changefile', async () => {
++      const repository = repositoryFactory.cloneRepository();
++      repository.commitChange('foo');
++      writeChangeFiles(
++        {
++          foo: getChange({ comment: 'additional comment 2' }),
++          bar: getChange({ comment: 'comment from bar change ' }),
++        },
++        repository.rootPath
++      );
++      writeChangeFiles({ foo: getChange({ comment: 'additional comment 1' }) }, repository.rootPath);
++      writeChangeFiles({ foo: getChange() }, repository.rootPath);
++
++      repository.commitChange('bar');
++      writeChangeFiles({ foo: getChange({ comment: 'comment 2' }) }, repository.rootPath);
++
++      const beachballOptions = { path: repository.rootPath } as BeachballOptions;
++      const packageInfos = getPackageInfos(repository.rootPath);
++      const changes = readChangeFiles(beachballOptions, packageInfos);
++
++      await writeChangelog(beachballOptions, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
++
++      const changelogFile = path.join(repository.rootPath, 'CHANGELOG.md');
++      const text = fs.readFileSync(changelogFile, { encoding: 'utf-8' });
++      expect(cleanMarkdownForSnapshot(text)).toMatchSnapshot();
++
++      const changelogJsonFile = path.join(repository.rootPath, 'CHANGELOG.json');
++      const jsonText = fs.readFileSync(changelogJsonFile, { encoding: 'utf-8' });
++      const changelogJson = JSON.parse(jsonText);
++      expect(cleanJsonForSnapshot(changelogJson)).toMatchSnapshot();
++
++      expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
++    });
++
+     it('generates correct grouped changelog', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('foo');
+@@ -288,7 +334,7 @@ describe('changelog generation', () => {
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+         transform: {
+-          changeFiles: (changeFile, changeFilePath) => {
++          changeFiles: (changeFile: ChangeInfo, changeFilePath) => {
+             // For test, we will be changing the comment based on the package name
+             if (changeFile.packageName === 'foo') {
+               changeFile.comment = editedComment;
+",0,,14,261,1,2,15,262
+586,f212814921072a026b2127227251c91641d806fe,ee3ec604412cfd2ac4fa7b0c9f7d3211a15d2a62,"This PR introduces an option to specify any custom transform method for the change files. It can be used to add more information to the change files which might not be present at the time of their generation. 
+
+The consumer can have the following beachball config file to use this functionality - 
+
+```
+{
+       ...
+
+      transform: {
+          changeFiles: (changeFile, path) => {
+          // Add or Edit the information in the changeFile
+          return changeFile;
+          };
+      }
+
+       ...
+}
+```
+
+","Test changes
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index 5747aeb..61eb826 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -202,7 +202,7 @@ describe('changelog generation', () => {
+         path: monoRepo.rootPath,
+         transform: {
+           changeFiles: (changeFile, path) => {
+-            changeFile.testParam = 'testParam';
++            changeFile.comment = 'Edited comment for testing';
+             return changeFile;
+           }
+         },
+",0,,2,39,1,6,7,76
+598,cdeca3a74dc047a1f3f914f34dddfa51aca9b6b8,926bc3ea4eb4de537ce5a047373ded6c680b77fc,"This is a change that is long in coming where we get rid of data structures internally that are no longer needed. Sticking to the principle that we keep the state as close to what is needed rather than just having a free-for-all style in the BumpInfo.
+
+This fixes #596 with the updateRelatedChangeType changes. The grouped version was not set correctly before, and this addresses that issue as well.
+
+Note: the snapshots are updated because the changeinfo that was created before was ""fake"" - and now we actually teach the changelog generation to understand dep bumps with a new ""dependentChangedBy"" field in BumpInfo. Since the changelog now doesn't take in faked changeinfo objects for dependent bumps, we actually will see the existing versions in these changelog tests.","fixing changelog generation for deps
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index 172dc75..6277846 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -14,9 +14,8 @@ import { BeachballOptions } from '../types/BeachballOptions';
+ import { ChangeFileInfo } from '../types/ChangeInfo';
+ import { MonoRepoFactory } from '../fixtures/monorepo';
+ import { ChangelogJson } from '../types/ChangeLog';
+-import { BumpInfo } from '../types/BumpInfo';
+ 
+-function getChange(partialChange: Partial<ChangeFileInfo> = {}): ChangeFileInfo{
++function getChange(partialChange: Partial<ChangeFileInfo> = {}): ChangeFileInfo {
+   return {
+     comment: 'comment 1',
+     email: 'test@testtestme.com',
+@@ -91,12 +90,7 @@ describe('changelog generation', () => {
+       const packageInfos = getPackageInfos(repository.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+-      await writeChangelog(
+-        beachballOptions,
+-        changes,
+-        { foo: { ...getChange({ comment: 'bump foo to v1.0.1' }), commit: 'bogus' } },
+-        packageInfos
+-      );
++      await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
+ 
+       const changelogFile = path.join(repository.rootPath, 'CHANGELOG.md');
+       const text = fs.readFileSync(changelogFile, { encoding: 'utf-8' });
+@@ -136,7 +130,7 @@ describe('changelog generation', () => {
+       const packageInfos = getPackageInfos(monoRepo.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+-      await writeChangelog(beachballOptions, changes, {}, packageInfos);
++      await writeChangelog(beachballOptions, changes, {}, {}, packageInfos);
+ 
+       // Validate changelog for foo package
+       const fooChangelogFile = path.join(monoRepo.rootPath, 'packages', 'foo', 'CHANGELOG.md');
+@@ -174,14 +168,14 @@ describe('changelog generation', () => {
+ 
+       const packageInfos = getPackageInfos(monoRepo.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+-      // Simulates a dependent change from updateRelatedChangeType
+-      const dependentChanges: BumpInfo['dependentChangeInfos'] = {
+-        bar: {
+-          commit: '0xdeadbeef',
+-          ...getChange({ packageName: 'bar', comment: 'Bump baz to v1.3.5'}),
+-        },
+-      }
+-      await writeChangelog(beachballOptions, changes, dependentChanges, packageInfos);
++
++      await writeChangelog(
++        beachballOptions,
++        changes,
++        { bar: 'patch', baz: 'patch' },
++        { bar: new Set(['baz']) },
++        packageInfos
++      );
+ 
+       // Validate changelog for bar package
+       const barChangelogFile = path.join(monoRepo.rootPath, 'packages', 'bar', 'CHANGELOG.md');
+@@ -203,7 +197,7 @@ describe('changelog generation', () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('baz');
+       writeChangeFiles({ baz: getChange({ packageName: 'baz' }) }, monoRepo.rootPath);
+-      writeChangeFiles({ bar : getChange({ packageName: 'bar' }) }, monoRepo.rootPath);
++      writeChangeFiles({ bar: getChange({ packageName: 'bar' }) }, monoRepo.rootPath);
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+@@ -220,14 +214,14 @@ describe('changelog generation', () => {
+ 
+       const packageInfos = getPackageInfos(monoRepo.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+-      // Simulates a dependent change from updateRelatedChangeType
+-      const dependentChanges: BumpInfo['dependentChangeInfos'] = {
+-        bar: {
+-          commit: '0xdeadbeef',
+-          ...getChange({ packageName: 'bar', comment: 'Bump baz to v1.3.5'}),
+-        },
+-      }
+-      await writeChangelog(beachballOptions, changes, dependentChanges, packageInfos);
++
++      await writeChangelog(
++        beachballOptions,
++        changes,
++        { bar: 'patch', baz: 'patch' },
++        { bar: new Set(['baz']) },
++        packageInfos
++      );
+ 
+       // Validate changelog for bar package
+       const barChangelogFile = path.join(monoRepo.rootPath, 'packages', 'bar', 'CHANGELOG.md');
+@@ -269,7 +263,7 @@ describe('changelog generation', () => {
+       const packageInfos = getPackageInfos(monoRepo.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+-      await writeChangelog(beachballOptions, changes, {}, packageInfos);
++      await writeChangelog(beachballOptions, changes, {}, {}, packageInfos);
+ 
+       // Validate changelog for bar package
+       const barChangelogFile = path.join(monoRepo.rootPath, 'packages', 'bar', 'CHANGELOG.md');
+",0,,18,755,1,9,22,887
+606,2909ddcdc4d8f26ab1d1b65f5660efa4070e5809,12460dcc18bfc35eee91ae4d31335d87c960b3b5,"#584 introduced `groupChanges` but didn't update some logic with generating a `ChangeSet` map from change file name to change info, which implicitly assumes a 1:1 correspondence between change file and change info (and causes changes to overwrite each other in the `ChangeSet` when there's more than one change per file).
+
+Fix is to switch `ChangeSet` to be an array of objects instead. This works fine because basically all the places using `ChangeSet` were iterating over all the values, and the one place that wasn't needed some logic updates for `groupChanges` as well.
+
+I also noticed that the tests added in that PR weren't actually running with `groupChanges` enabled, so I fixed that (which helped me to track down the issue).","Prevent grouped change infos from overwriting each other
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index fb6fbd4..923b608 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -69,21 +69,24 @@ describe('changelog generation', () => {
+ 
+       const packageInfos = getPackageInfos(repository.rootPath);
+       const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
+-      const changes = [...changeSet.values()];
+-      expect(changes).toHaveLength(1);
+-      expect(changes[0].commit).toBe(undefined);
++      expect(changeSet).toHaveLength(1);
++      expect(changeSet[0].change.commit).toBe(undefined);
+     });
+ 
+-    it('does not add commit hash', () => {
++    it('does not add commit hash with groupChanges', () => {
+       const repository = repositoryFactory.cloneRepository();
+       repository.commitChange('foo');
+-      writeChangeFiles({ foo: getChange(), bar: getChange() }, repository.rootPath);
++      writeChangeFiles(
++        { foo: getChange(), bar: getChange() },
++        repository.rootPath,
++        true, // commit
++        true // groupChanges
++      );
+ 
+       const packageInfos = getPackageInfos(repository.rootPath);
+       const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
+-      const changes = [...changeSet.values()];
+-      expect(changes).toHaveLength(2);
+-      expect(changes[0].commit).toBe(undefined);
++      expect(changeSet).toHaveLength(2);
++      expect(changeSet[0].change.commit).toBe(undefined);
+     });
+   });
+ 
+@@ -116,7 +119,7 @@ describe('changelog generation', () => {
+       expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
+     });
+ 
+-    it('generates correct changelog with multiple changes changefile', async () => {
++    it.only('generates correct changelog with groupChanges', async () => {
+       const repository = repositoryFactory.cloneRepository();
+       repository.commitChange('foo');
+       writeChangeFiles(
+@@ -124,15 +127,17 @@ describe('changelog generation', () => {
+           foo: getChange({ comment: 'additional comment 2' }),
+           bar: getChange({ comment: 'comment from bar change ' }),
+         },
+-        repository.rootPath
++        repository.rootPath,
++        true,
++        true
+       );
+-      writeChangeFiles({ foo: getChange({ comment: 'additional comment 1' }) }, repository.rootPath);
+-      writeChangeFiles({ foo: getChange() }, repository.rootPath);
++      writeChangeFiles({ foo: getChange({ comment: 'additional comment 1' }) }, repository.rootPath, true, true);
++      writeChangeFiles({ foo: getChange() }, repository.rootPath, true, true);
+ 
+       repository.commitChange('bar');
+-      writeChangeFiles({ foo: getChange({ comment: 'comment 2' }) }, repository.rootPath);
++      writeChangeFiles({ foo: getChange({ comment: 'comment 2' }) }, repository.rootPath, true, true);
+ 
+-      const beachballOptions = { path: repository.rootPath } as BeachballOptions;
++      const beachballOptions = { path: repository.rootPath, groupChanges: true } as BeachballOptions;
+       const packageInfos = getPackageInfos(repository.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+@@ -357,11 +362,11 @@ describe('changelog generation', () => {
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+       // Verify that the comment of only the intended change file is changed
+-      for (const [changeFileName, changeInfo] of changes) {
+-        if (changeFileName.substr(0, 3) === 'foo') {
+-          expect(changeInfo.comment).toBe(editedComment);
++      for (const { change, changeFile } of changes) {
++        if (changeFile.substr(0, 3) === 'foo') {
++          expect(change.comment).toBe(editedComment);
+         } else {
+-          expect(changeInfo.comment).toBe('comment 2');
++          expect(change.comment).toBe('comment 2');
+         }
+       }
+     });
+",0,,14,358,1,3,15,365
+612,17cd5507cdeab10d9afba43de85407d018a7fe5e,46a0e394987f286b62292a1308fc684607d38f24,"Now that `writeChangeFiles` has four parameters, it's better to use an object signature to avoid confusion. Also change it to take an array for `changes` since having the package names both as keys and in the change infos is redundant (in a way that's not necessary or helpful in this case, and actually caused some mistakes in the tests).
+
+Fixing the `writeChangeFiles` signature revealed some problems with the tests for `groupChanges` (grouped change files): they should be testing against a monorepo since that's the only case where that feature makes sense. So those tests are updated as well.
+
+(This was split out from another PR that will contain bug fixes and test additions for change files.)","Use object signature in writeChangeFiles
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index d572be3..c6b20e1 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -15,14 +15,13 @@ import { ChangeFileInfo, ChangeInfo } from '../types/ChangeInfo';
+ import { MonoRepoFactory } from '../fixtures/monorepo';
+ import { ChangelogJson } from '../types/ChangeLog';
+ 
+-function getChange(partialChange: Partial<ChangeFileInfo> = {}): ChangeFileInfo {
++function getChange(packageName: string, comment: string): ChangeFileInfo {
+   return {
+-    comment: 'comment 1',
++    comment,
+     email: 'test@testtestme.com',
+-    packageName: 'foo',
++    packageName,
+     type: 'patch',
+     dependentChangeType: 'patch',
+-    ...partialChange,
+   };
+ }
+ 
+@@ -65,41 +64,25 @@ describe('changelog generation', () => {
+     it('does not add commit hash', () => {
+       const repository = repositoryFactory.cloneRepository();
+       repository.commitChange('foo');
+-      writeChangeFiles({ foo: getChange() }, repository.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], cwd: repository.rootPath });
+ 
+       const packageInfos = getPackageInfos(repository.rootPath);
+       const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
+       expect(changeSet).toHaveLength(1);
+       expect(changeSet[0].change.commit).toBe(undefined);
+     });
+-
+-    it('does not add commit hash with groupChanges', () => {
+-      const repository = repositoryFactory.cloneRepository();
+-      repository.commitChange('foo');
+-      writeChangeFiles(
+-        { foo: getChange(), bar: getChange() },
+-        repository.rootPath,
+-        true, // commit
+-        true // groupChanges
+-      );
+-
+-      const packageInfos = getPackageInfos(repository.rootPath);
+-      const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
+-      expect(changeSet).toHaveLength(2);
+-      expect(changeSet[0].change.commit).toBe(undefined);
+-    });
+   });
+ 
+   describe('writeChangelog', () => {
+     it('generates correct changelog', async () => {
+       const repository = repositoryFactory.cloneRepository();
+       repository.commitChange('foo');
+-      writeChangeFiles({ foo: getChange({ comment: 'additional comment 2' }) }, repository.rootPath);
+-      writeChangeFiles({ foo: getChange({ comment: 'additional comment 1' }) }, repository.rootPath);
+-      writeChangeFiles({ foo: getChange() }, repository.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'additional comment 2')], cwd: repository.rootPath });
++      writeChangeFiles({ changes: [getChange('foo', 'additional comment 1')], cwd: repository.rootPath });
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], cwd: repository.rootPath });
+ 
+       repository.commitChange('bar');
+-      writeChangeFiles({ foo: getChange({ comment: 'comment 2' }) }, repository.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'comment 2')], cwd: repository.rootPath });
+ 
+       const beachballOptions = { path: repository.rootPath } as BeachballOptions;
+       const packageInfos = getPackageInfos(repository.rootPath);
+@@ -112,58 +95,58 @@ describe('changelog generation', () => {
+       expect(cleanMarkdownForSnapshot(text)).toMatchSnapshot();
+ 
+       const changelogJsonFile = path.join(repository.rootPath, 'CHANGELOG.json');
+-      const jsonText = fs.readFileSync(changelogJsonFile, { encoding: 'utf-8' });
+-      const changelogJson = JSON.parse(jsonText);
++      const changelogJson = fs.readJSONSync(changelogJsonFile);
+       expect(cleanJsonForSnapshot(changelogJson)).toMatchSnapshot();
+ 
+       expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
+     });
+ 
+-    it('generates correct changelog with groupChanges', async () => {
+-      const repository = repositoryFactory.cloneRepository();
+-      repository.commitChange('foo');
+-      writeChangeFiles(
+-        {
+-          foo: getChange({ comment: 'additional comment 2' }),
+-          bar: getChange({ comment: 'comment from bar change ' }),
+-        },
+-        repository.rootPath,
+-        true,
+-        true
+-      );
+-      writeChangeFiles({ foo: getChange({ comment: 'additional comment 1' }) }, repository.rootPath, true, true);
+-      writeChangeFiles({ foo: getChange() }, repository.rootPath, true, true);
++    it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
++      const monoRepo = monoRepoFactory.cloneRepository();
++      monoRepo.commitChange('foo');
++      const options: Omit<Parameters<typeof writeChangeFiles>[0], 'changes'> = {
++        cwd: monoRepo.rootPath,
++        groupChanges: true,
++      };
++      writeChangeFiles({
++        changes: [getChange('foo', 'additional comment 2'), getChange('bar', 'comment from bar change ')],
++        ...options,
++      });
++      writeChangeFiles({ changes: [getChange('foo', 'additional comment 1')], ...options });
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], ...options });
+ 
+-      repository.commitChange('bar');
+-      writeChangeFiles({ foo: getChange({ comment: 'comment 2' }) }, repository.rootPath, true, true);
++      monoRepo.commitChange('bar');
++      writeChangeFiles({ changes: [getChange('foo', 'comment 2')], ...options });
+ 
+-      const beachballOptions = { path: repository.rootPath, groupChanges: true } as BeachballOptions;
+-      const packageInfos = getPackageInfos(repository.rootPath);
++      const beachballOptions = { path: monoRepo.rootPath, groupChanges: true } as BeachballOptions;
++      const packageInfos = getPackageInfos(monoRepo.rootPath);
+       const changes = readChangeFiles(beachballOptions, packageInfos);
+ 
+       await writeChangelog(beachballOptions, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
+ 
+-      const changelogFile = path.join(repository.rootPath, 'CHANGELOG.md');
+-      const text = fs.readFileSync(changelogFile, { encoding: 'utf-8' });
+-      expect(cleanMarkdownForSnapshot(text)).toMatchSnapshot();
++      // check changelogs for both foo and bar
++      const fooText = fs.readFileSync(path.join(monoRepo.rootPath, 'packages/foo/CHANGELOG.md'), { encoding: 'utf-8' });
++      expect(cleanMarkdownForSnapshot(fooText)).toMatchSnapshot();
++      const barText = fs.readFileSync(path.join(monoRepo.rootPath, 'packages/bar/CHANGELOG.md'), { encoding: 'utf-8' });
++      expect(cleanMarkdownForSnapshot(barText)).toMatchSnapshot();
+ 
+-      const changelogJsonFile = path.join(repository.rootPath, 'CHANGELOG.json');
+-      const jsonText = fs.readFileSync(changelogJsonFile, { encoding: 'utf-8' });
+-      const changelogJson = JSON.parse(jsonText);
+-      expect(cleanJsonForSnapshot(changelogJson)).toMatchSnapshot();
++      const fooJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/foo/CHANGELOG.json'));
++      expect(cleanJsonForSnapshot(fooJson)).toMatchSnapshot();
++      const barJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/bar/CHANGELOG.json'));
++      expect(cleanJsonForSnapshot(barJson)).toMatchSnapshot();
+ 
+-      expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
++      expect(fooJson.entries[0].comments.patch[0].commit).toBe(monoRepo.getCurrentHash());
+     });
+ 
+     it('generates correct grouped changelog', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('foo');
+-      writeChangeFiles({ foo: getChange() }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], cwd: monoRepo.rootPath });
+ 
+       monoRepo.commitChange('bar');
+-      writeChangeFiles({ bar: getChange({ packageName: 'bar', comment: 'comment 2' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('bar', 'comment 2')], cwd: monoRepo.rootPath });
+ 
+-      writeChangeFiles({ bar: getChange({ packageName: 'bar', comment: 'comment 3' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('bar', 'comment 3')], cwd: monoRepo.rootPath });
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+@@ -202,7 +185,7 @@ describe('changelog generation', () => {
+     it('generates grouped changelog without dependent change entries', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('baz');
+-      writeChangeFiles({ baz: getChange({ packageName: 'baz' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('baz', 'comment 1')], cwd: monoRepo.rootPath });
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+@@ -247,8 +230,8 @@ describe('changelog generation', () => {
+     it('generates grouped changelog without dependent change entries where packages have normal changes and dependenc changes', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('baz');
+-      writeChangeFiles({ baz: getChange({ packageName: 'baz' }) }, monoRepo.rootPath);
+-      writeChangeFiles({ bar: getChange({ packageName: 'bar' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('baz', 'comment 1')], cwd: monoRepo.rootPath });
++      writeChangeFiles({ changes: [getChange('bar', 'comment 1')], cwd: monoRepo.rootPath });
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+@@ -293,10 +276,10 @@ describe('changelog generation', () => {
+     it('generates correct grouped changelog when grouped change log is saved to the same dir as a regular changelog', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('foo');
+-      writeChangeFiles({ foo: getChange() }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], cwd: monoRepo.rootPath });
+ 
+       monoRepo.commitChange('bar');
+-      writeChangeFiles({ bar: getChange({ packageName: 'bar', comment: 'comment 2' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('bar', 'comment 2')], cwd: monoRepo.rootPath });
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+@@ -331,10 +314,10 @@ describe('changelog generation', () => {
+       const editedComment: string = 'Edited comment for testing';
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('foo');
+-      writeChangeFiles({ foo: getChange() }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('foo', 'comment 1')], cwd: monoRepo.rootPath });
+ 
+       monoRepo.commitChange('bar');
+-      writeChangeFiles({ bar: getChange({ packageName: 'bar', comment: 'comment 2' }) }, monoRepo.rootPath);
++      writeChangeFiles({ changes: [getChange('bar', 'comment 2')], cwd: monoRepo.rootPath });
+ 
+       const beachballOptions = {
+         path: monoRepo.rootPath,
+",0,,11,585,1,2,12,592
+613,75528e33add5c4f72617ae6e6cf8b93618e476c9,ccfe4a53bc14923a87844ad149ca3cd52bb8156e,"#531 introduced an issue where the same commit hash was written to the change log for *every* change in a round of bumping/publishing. Fix this issue while preserving good `beachball change` perf by fetching the proper commit hash when running `generatePackageChangelogs` (which only runs during bumping), and add better tests.
+
+Also:
+- Update change info types to accurately reflect when commit info is and isn't present
+- Remove a bunch of duplicate code for `groupChanges` in `writeChangeFiles`
+
+Will fix https://github.com/microsoft/fluentui/issues/19932 once picked up.","Add commit in getPackageChangelogs
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index c6b20e1..15a2e74 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -31,12 +31,19 @@ function cleanMarkdownForSnapshot(text: string) {
+ 
+ function cleanJsonForSnapshot(changelog: ChangelogJson) {
+   changelog = _.cloneDeep(changelog);
++  // for a better snapshot, make the fake commit match if the real commit did
++  const fakeCommits: { [commit: string]: string } = {};
++  let fakeHashNum = 0;
++
+   for (const entry of changelog.entries) {
+     entry.date = '(date)';
+     for (const changeType of SortedChangeTypes) {
+       if (entry.comments[changeType]) {
+         for (const comment of entry.comments[changeType]!) {
+-          comment.commit = '(sha1)';
++          if (!fakeCommits[comment.commit]) {
++            fakeCommits[comment.commit] = `(sha1-${fakeHashNum++})`;
++          }
++          comment.commit = fakeCommits[comment.commit];
+         }
+       }
+     }
+@@ -95,10 +102,16 @@ describe('changelog generation', () => {
+       expect(cleanMarkdownForSnapshot(text)).toMatchSnapshot();
+ 
+       const changelogJsonFile = path.join(repository.rootPath, 'CHANGELOG.json');
+-      const changelogJson = fs.readJSONSync(changelogJsonFile);
++      const changelogJson: ChangelogJson = fs.readJSONSync(changelogJsonFile);
+       expect(cleanJsonForSnapshot(changelogJson)).toMatchSnapshot();
+ 
+-      expect(changelogJson.entries[0].comments.patch[0].commit).toBe(repository.getCurrentHash());
++      // Every entry should have a different commit hash
++      const patchComments = changelogJson.entries[0].comments.patch!;
++      const commits = patchComments.map(entry => entry.commit);
++      expect(new Set(commits).size).toEqual(patchComments.length);
++
++      // The first entry should be the newest
++      expect(patchComments[0].commit).toBe(repository.getCurrentHash());
+     });
+ 
+     it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
+@@ -130,12 +143,18 @@ describe('changelog generation', () => {
+       const barText = fs.readFileSync(path.join(monoRepo.rootPath, 'packages/bar/CHANGELOG.md'), { encoding: 'utf-8' });
+       expect(cleanMarkdownForSnapshot(barText)).toMatchSnapshot();
+ 
+-      const fooJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/foo/CHANGELOG.json'));
++      const fooJson: ChangelogJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/foo/CHANGELOG.json'));
+       expect(cleanJsonForSnapshot(fooJson)).toMatchSnapshot();
+-      const barJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/bar/CHANGELOG.json'));
++      const barJson: ChangelogJson = fs.readJSONSync(path.join(monoRepo.rootPath, 'packages/bar/CHANGELOG.json'));
+       expect(cleanJsonForSnapshot(barJson)).toMatchSnapshot();
+ 
+-      expect(fooJson.entries[0].comments.patch[0].commit).toBe(monoRepo.getCurrentHash());
++      // Every entry should have a different commit hash
++      const patchComments = fooJson.entries[0].comments.patch!;
++      const commits = patchComments.map(entry => entry.commit);
++      expect(new Set(commits).size).toEqual(patchComments.length);
++
++      // The first entry should be the newest
++      expect(patchComments[0].commit).toBe(monoRepo.getCurrentHash());
+     });
+ 
+     it('generates correct grouped changelog', async () => {
+@@ -214,6 +233,7 @@ describe('changelog generation', () => {
+       // Validate changelog for bar package
+       const barChangelogFile = path.join(monoRepo.rootPath, 'packages', 'bar', 'CHANGELOG.md');
+       const barChangelogText = fs.readFileSync(barChangelogFile, { encoding: 'utf-8' });
++      expect(barChangelogText).toContain('- Bump baz');
+       expect(cleanMarkdownForSnapshot(barChangelogText)).toMatchSnapshot();
+ 
+       // Validate changelog for baz package
+@@ -224,6 +244,8 @@ describe('changelog generation', () => {
+       // Validate grouped changelog for foo master package
+       const groupedChangelogFile = path.join(monoRepo.rootPath, 'CHANGELOG.md');
+       const groupedChangelogText = fs.readFileSync(groupedChangelogFile, { encoding: 'utf-8' });
++      expect(groupedChangelogText).toContain('- comment 1');
++      expect(groupedChangelogText).not.toContain('- Bump baz');
+       expect(cleanMarkdownForSnapshot(groupedChangelogText)).toMatchSnapshot();
+     });
+ 
+",0,,5,171,1,3,6,173
+742,34e95610ddf21216a5a2bd312bd222c4ee9b8f92,9228d48eb0420c4f608dc65f335e30fa571a84bf,"If a package had only invalid change files (packages that were private or didn't exist), beachball would start the publish process but then fail partway through because there was nothing to commit. `getBumpInfo` had attempted to filter out those files, but by that point it was too late because the publish process had already started.
+
+This PR fixes the issue at the root by modifying `readChangeFiles` to exclude (and warn about) any change files from private or nonexistent packages. 
+
+Fixes #597","test name spelling fix
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+index 6710bf1..71c7b75 100644
+--- a/src/__e2e__/changelog.test.ts
++++ b/src/__e2e__/changelog.test.ts
+@@ -251,7 +251,7 @@ describe('changelog generation', () => {
+       expect(cleanMarkdownForSnapshot(groupedChangelogText)).toMatchSnapshot();
+     });
+ 
+-    it('generates grouped changelog without dependent change entries where packages have normal changes and dependenc changes', async () => {
++    it('generates grouped changelog without dependent change entries where packages have normal changes and dependency changes', async () => {
+       const monoRepo = monoRepoFactory.cloneRepository();
+       monoRepo.commitChange('baz');
+       writeChangeFiles({ changes: [getChange('baz', 'comment 1')], cwd: monoRepo.rootPath });
+",0,,2,8,1,7,9,342
+762,90259249ebcc0ed63a9bc57f73dc9f5ad5b1de88,90259249ebcc0ed63a9bc57f73dc9f5ad5b1de88,"Some of beachball's tests cover individual helper functions, but were being run as part of E2E tests because they need to use fixtures on the filesystem. The problem with this is that if one of the helper functions has a bug, that failure will probably also cause downstream failures in the actual E2E scenario tests, and then logs for the important failure in the helper function will be buried in logs for all the downstream failures.
+
+This PR introduces a third category, functional tests, which are run after unit tests and before E2E tests. I moved some of the existing ""E2E"" tests into the functional group and added one new test.
+
+NOTE: The files which show as deleted are not actually gone; they're just split into multiple new files.","Separate functional tests from E2E tests
+","diff --git a/src/__e2e__/changelog.test.ts b/src/__e2e__/changelog.test.ts
+deleted file mode 100644
+index ae4e19d..0000000
+--- a/src/__e2e__/changelog.test.ts
++++ /dev/null
+@@ -1,378 +0,0 @@
+-import _ from 'lodash';
+-
+-import { generateChangeFiles } from '../__fixtures__/changeFiles';
+-import { cleanChangelogJson, readChangelogJson, readChangelogMd } from '../__fixtures__/changelog';
+-import { initMockLogs } from '../__fixtures__/mockLogs';
+-import { RepositoryFactory } from '../__fixtures__/repositoryFactory';
+-
+-import { writeChangelog } from '../changelog/writeChangelog';
+-import { getPackageInfos } from '../monorepo/getPackageInfos';
+-import { readChangeFiles } from '../changefile/readChangeFiles';
+-import { BeachballOptions } from '../types/BeachballOptions';
+-import { ChangeFileInfo, ChangeInfo } from '../types/ChangeInfo';
+-
+-function getChange(packageName: string, comment: string): ChangeFileInfo {
+-  return {
+-    comment,
+-    email: 'test@testtestme.com',
+-    packageName,
+-    type: 'patch',
+-    dependentChangeType: 'patch',
+-  };
+-}
+-
+-describe('changelog generation', () => {
+-  let repositoryFactory: RepositoryFactory;
+-  let monoRepoFactory: RepositoryFactory;
+-
+-  const logs = initMockLogs();
+-
+-  beforeAll(() => {
+-    // These tests can share the same repo factories because they don't push to origin
+-    // (the actual tests run against a clone)
+-    repositoryFactory = new RepositoryFactory('single');
+-    monoRepoFactory = new RepositoryFactory('monorepo');
+-  });
+-
+-  afterAll(() => {
+-    repositoryFactory.cleanUp();
+-    monoRepoFactory.cleanUp();
+-  });
+-
+-  describe('readChangeFiles', () => {
+-    it('does not add commit hash', () => {
+-      const repository = repositoryFactory.cloneRepository();
+-      repository.commitChange('foo');
+-      generateChangeFiles(['foo'], repository.rootPath);
+-
+-      const packageInfos = getPackageInfos(repository.rootPath);
+-      const changeSet = readChangeFiles({ path: repository.rootPath } as BeachballOptions, packageInfos);
+-      expect(changeSet).toHaveLength(1);
+-      expect(changeSet[0].change.commit).toBe(undefined);
+-    });
+-
+-    it('excludes invalid change files', () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.updateJsonFile('packages/bar/package.json', { private: true });
+-      // fake doesn't exist, bar is private, foo is okay
+-      generateChangeFiles(['fake', 'bar', 'foo'], monoRepo.rootPath);
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changeSet = readChangeFiles({ path: monoRepo.rootPath } as BeachballOptions, packageInfos);
+-      expect(changeSet).toHaveLength(1);
+-
+-      expect(logs.mocks.warn).toHaveBeenCalledWith(expect.stringContaining('Change detected for private package bar'));
+-      expect(logs.mocks.warn).toHaveBeenCalledWith(
+-        expect.stringContaining('Change detected for nonexistent package fake')
+-      );
+-    });
+-
+-    it('excludes invalid changes from grouped change file', () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.updateJsonFile('packages/bar/package.json', { private: true });
+-      // fake doesn't exist, bar is private, foo is okay
+-      generateChangeFiles(['fake', 'bar', 'foo'], monoRepo.rootPath, true /*groupChanges*/);
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changeSet = readChangeFiles(
+-        { path: monoRepo.rootPath, groupChanges: true } as BeachballOptions,
+-        packageInfos
+-      );
+-      expect(changeSet).toHaveLength(1);
+-
+-      expect(logs.mocks.warn).toHaveBeenCalledWith(expect.stringContaining('Change detected for private package bar'));
+-      expect(logs.mocks.warn).toHaveBeenCalledWith(
+-        expect.stringContaining('Change detected for nonexistent package fake')
+-      );
+-    });
+-
+-    it('excludes out of scope change files', () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      generateChangeFiles(['bar', 'foo'], monoRepo.rootPath);
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changeSet = readChangeFiles(
+-        { path: monoRepo.rootPath, scope: ['packages/foo'] } as BeachballOptions,
+-        packageInfos
+-      );
+-      expect(changeSet).toHaveLength(1);
+-      expect(logs.mocks.warn).not.toHaveBeenCalled();
+-    });
+-
+-    it('excludes out of scope changes from grouped change file', () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      generateChangeFiles(['bar', 'foo'], monoRepo.rootPath, true /*groupChanges*/);
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changeSet = readChangeFiles(
+-        { path: monoRepo.rootPath, scope: ['packages/foo'], groupChanges: true } as BeachballOptions,
+-        packageInfos
+-      );
+-      expect(changeSet).toHaveLength(1);
+-      expect(logs.mocks.warn).not.toHaveBeenCalled();
+-    });
+-  });
+-
+-  describe('writeChangelog', () => {
+-    it('generates correct changelog', async () => {
+-      const repository = repositoryFactory.cloneRepository();
+-      repository.commitChange('foo');
+-      generateChangeFiles([getChange('foo', 'additional comment 2')], repository.rootPath);
+-      generateChangeFiles([getChange('foo', 'additional comment 1')], repository.rootPath);
+-      generateChangeFiles([getChange('foo', 'comment 1')], repository.rootPath);
+-
+-      repository.commitChange('bar');
+-      generateChangeFiles([getChange('foo', 'comment 2')], repository.rootPath);
+-
+-      const beachballOptions = { path: repository.rootPath } as BeachballOptions;
+-      const packageInfos = getPackageInfos(repository.rootPath);
+-      const changes = readChangeFiles(beachballOptions, packageInfos);
+-
+-      await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
+-
+-      expect(readChangelogMd(repository.rootPath)).toMatchSnapshot('changelog md');
+-
+-      const changelogJson = readChangelogJson(repository.rootPath);
+-      expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
+-
+-      // Every entry should have a different commit hash
+-      const patchComments = changelogJson.entries[0].comments.patch!;
+-      const commits = patchComments.map(entry => entry.commit);
+-      expect(new Set(commits).size).toEqual(patchComments.length);
+-
+-      // The first entry should be the newest
+-      expect(patchComments[0].commit).toBe(repository.getCurrentHash());
+-    });
+-
+-    it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('foo');
+-      const params = [monoRepo.rootPath, true /*groupChanges*/] as const;
+-      generateChangeFiles(
+-        [getChange('foo', 'additional comment 2'), getChange('bar', 'comment from bar change ')],
+-        ...params
+-      );
+-      generateChangeFiles([getChange('foo', 'additional comment 1')], ...params);
+-      generateChangeFiles([getChange('foo', 'comment 1')], ...params);
+-
+-      monoRepo.commitChange('bar');
+-      generateChangeFiles([getChange('foo', 'comment 2')], ...params);
+-
+-      const beachballOptions = { path: monoRepo.rootPath, groupChanges: true } as BeachballOptions;
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions, packageInfos);
+-
+-      await writeChangelog(beachballOptions, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
+-
+-      // check changelogs for both foo and bar
+-      expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-      expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+-
+-      const fooJson = readChangelogJson(monoRepo.pathTo('packages/foo'));
+-      expect(cleanChangelogJson(fooJson)).toMatchSnapshot('foo CHANGELOG.json');
+-      expect(readChangelogJson(monoRepo.pathTo('packages/bar'), true /*clean*/)).toMatchSnapshot('bar CHANGELOG.json');
+-
+-      // Every entry should have a different commit hash
+-      const patchComments = fooJson.entries[0].comments.patch!;
+-      const commits = patchComments.map(entry => entry.commit);
+-      expect(new Set(commits).size).toEqual(patchComments.length);
+-
+-      // The first entry should be the newest
+-      expect(patchComments[0].commit).toBe(monoRepo.getCurrentHash());
+-    });
+-
+-    it('generates correct grouped changelog', async () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('foo');
+-      generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
+-
+-      monoRepo.commitChange('bar');
+-      generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
+-      generateChangeFiles([getChange('bar', 'comment 3')], monoRepo.rootPath);
+-
+-      const beachballOptions: Partial<BeachballOptions> = {
+-        path: monoRepo.rootPath,
+-        changelog: {
+-          groups: [
+-            {
+-              masterPackageName: 'foo',
+-              changelogPath: monoRepo.rootPath,
+-              include: ['packages/foo', 'packages/bar'],
+-            },
+-          ],
+-        },
+-      };
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
+-
+-      await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
+-
+-      // Validate changelog for foo and bar packages
+-      expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-      expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+-
+-      // Validate grouped changelog for foo and bar packages
+-      expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
+-    });
+-
+-    it('generates grouped changelog without dependent change entries', async () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('baz');
+-      generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
+-
+-      const beachballOptions: Partial<BeachballOptions> = {
+-        path: monoRepo.rootPath,
+-        changelog: {
+-          groups: [
+-            {
+-              masterPackageName: 'foo',
+-              changelogPath: monoRepo.rootPath,
+-              include: ['packages/foo', 'packages/bar', 'packages/baz'],
+-            },
+-          ],
+-        },
+-      };
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
+-
+-      await writeChangelog(
+-        beachballOptions as BeachballOptions,
+-        changes,
+-        { bar: 'patch', baz: 'patch' },
+-        { bar: new Set(['baz']) },
+-        packageInfos
+-      );
+-
+-      // Validate changelog for bar package
+-      const barChangelogText = readChangelogMd(monoRepo.pathTo('packages/bar'));
+-      expect(barChangelogText).toContain('- Bump baz');
+-      expect(barChangelogText).toMatchSnapshot('bar CHANGELOG.md');
+-
+-      // Validate changelog for baz package
+-      expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
+-
+-      // Validate grouped changelog for foo master package
+-      const groupedChangelogText = readChangelogMd(monoRepo.rootPath);
+-      expect(groupedChangelogText).toContain('- comment 1');
+-      expect(groupedChangelogText).not.toContain('- Bump baz');
+-      expect(groupedChangelogText).toMatchSnapshot('grouped CHANGELOG.md');
+-    });
+-
+-    it('generates grouped changelog without dependent change entries where packages have normal changes and dependency changes', async () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('baz');
+-      generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
+-      generateChangeFiles([getChange('bar', 'comment 1')], monoRepo.rootPath);
+-
+-      const beachballOptions: Partial<BeachballOptions> = {
+-        path: monoRepo.rootPath,
+-        changelog: {
+-          groups: [
+-            {
+-              masterPackageName: 'foo',
+-              changelogPath: monoRepo.rootPath,
+-              include: ['packages/foo', 'packages/bar', 'packages/baz'],
+-            },
+-          ],
+-        },
+-      };
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
+-
+-      await writeChangelog(
+-        beachballOptions as BeachballOptions,
+-        changes,
+-        { bar: 'patch', baz: 'patch' },
+-        { bar: new Set(['baz']) },
+-        packageInfos
+-      );
+-
+-      // Validate changelog for bar and baz packages
+-      expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+-      expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
+-
+-      // Validate grouped changelog for foo master package
+-      expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
+-    });
+-
+-    it('generates correct grouped changelog when grouped change log is saved to the same dir as a regular changelog', async () => {
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('foo');
+-      generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
+-
+-      monoRepo.commitChange('bar');
+-      generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
+-
+-      const beachballOptions: Partial<BeachballOptions> = {
+-        path: monoRepo.rootPath,
+-        changelog: {
+-          groups: [
+-            {
+-              masterPackageName: 'foo',
+-              changelogPath: monoRepo.pathTo('packages/foo'),
+-              include: ['packages/foo', 'packages/bar'],
+-            },
+-          ],
+-        },
+-      };
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
+-
+-      await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
+-
+-      // Validate changelog for bar package
+-      expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot();
+-
+-      // Validate grouped changelog for foo and bar packages
+-      expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot();
+-    });
+-
+-    it('Verify that the changeFile transform functions are run, if provided', async () => {
+-      const editedComment: string = 'Edited comment for testing';
+-      const monoRepo = monoRepoFactory.cloneRepository();
+-      monoRepo.commitChange('foo');
+-      generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
+-
+-      monoRepo.commitChange('bar');
+-      generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
+-
+-      const beachballOptions: Partial<BeachballOptions> = {
+-        path: monoRepo.rootPath,
+-        transform: {
+-          changeFiles: (changeFile, changeFilePath) => {
+-            // For test, we will be changing the comment based on the package name
+-            if ((changeFile as ChangeInfo).packageName === 'foo') {
+-              (changeFile as ChangeInfo).comment = editedComment;
+-            }
+-            return changeFile as ChangeInfo;
+-          },
+-        },
+-        changelog: {
+-          groups: [
+-            {
+-              masterPackageName: 'foo',
+-              changelogPath: monoRepo.pathTo('packages/foo'),
+-              include: ['packages/foo', 'packages/bar'],
+-            },
+-          ],
+-        },
+-      };
+-
+-      const packageInfos = getPackageInfos(monoRepo.rootPath);
+-      const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
+-
+-      // Verify that the comment of only the intended change file is changed
+-      for (const { change, changeFile } of changes) {
+-        if (changeFile.startsWith('foo')) {
+-          expect(change.comment).toBe(editedComment);
+-        } else {
+-          expect(change.comment).toBe('comment 2');
+-        }
+-      }
+-    });
+-  });
+-});
+
+diff --git a/src/__functional__/changelog/writeChangelog.test.ts b/src/__functional__/changelog/writeChangelog.test.ts
+new file mode 100644
+index 0000000..ca9fed6
+--- /dev/null
++++ b/src/__functional__/changelog/writeChangelog.test.ts
+@@ -0,0 +1,300 @@
++import { generateChangeFiles } from '../../__fixtures__/changeFiles';
++import { cleanChangelogJson, readChangelogJson, readChangelogMd } from '../../__fixtures__/changelog';
++import { initMockLogs } from '../../__fixtures__/mockLogs';
++import { RepositoryFactory } from '../../__fixtures__/repositoryFactory';
++
++import { writeChangelog } from '../../changelog/writeChangelog';
++import { getPackageInfos } from '../../monorepo/getPackageInfos';
++import { readChangeFiles } from '../../changefile/readChangeFiles';
++import { BeachballOptions } from '../../types/BeachballOptions';
++import { ChangeFileInfo, ChangeInfo } from '../../types/ChangeInfo';
++
++function getChange(packageName: string, comment: string): ChangeFileInfo {
++  return {
++    comment,
++    email: 'test@testtestme.com',
++    packageName,
++    type: 'patch',
++    dependentChangeType: 'patch',
++  };
++}
++
++describe('writeChangelog', () => {
++  let repositoryFactory: RepositoryFactory;
++  let monoRepoFactory: RepositoryFactory;
++
++  initMockLogs();
++
++  beforeAll(() => {
++    // These tests can share the same repo factories because they don't push to origin
++    // (the actual tests run against a clone)
++    repositoryFactory = new RepositoryFactory('single');
++    monoRepoFactory = new RepositoryFactory('monorepo');
++  });
++
++  afterAll(() => {
++    repositoryFactory.cleanUp();
++    monoRepoFactory.cleanUp();
++  });
++
++  it('generates correct changelog', async () => {
++    const repository = repositoryFactory.cloneRepository();
++    repository.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'additional comment 2')], repository.rootPath);
++    generateChangeFiles([getChange('foo', 'additional comment 1')], repository.rootPath);
++    generateChangeFiles([getChange('foo', 'comment 1')], repository.rootPath);
++
++    repository.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], repository.rootPath);
++
++    const beachballOptions = { path: repository.rootPath } as BeachballOptions;
++    const packageInfos = getPackageInfos(repository.rootPath);
++    const changes = readChangeFiles(beachballOptions, packageInfos);
++
++    await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++
++    expect(readChangelogMd(repository.rootPath)).toMatchSnapshot('changelog md');
++
++    const changelogJson = readChangelogJson(repository.rootPath);
++    expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
++
++    // Every entry should have a different commit hash
++    const patchComments = changelogJson.entries[0].comments.patch!;
++    const commits = patchComments.map(entry => entry.commit);
++    expect(new Set(commits).size).toEqual(patchComments.length);
++
++    // The first entry should be the newest
++    expect(patchComments[0].commit).toBe(repository.getCurrentHash());
++  });
++
++  it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('foo');
++    const params = [monoRepo.rootPath, true /*groupChanges*/] as const;
++    generateChangeFiles(
++      [getChange('foo', 'additional comment 2'), getChange('bar', 'comment from bar change ')],
++      ...params
++    );
++    generateChangeFiles([getChange('foo', 'additional comment 1')], ...params);
++    generateChangeFiles([getChange('foo', 'comment 1')], ...params);
++
++    monoRepo.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], ...params);
++
++    const beachballOptions = { path: monoRepo.rootPath, groupChanges: true } as BeachballOptions;
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions, packageInfos);
++
++    await writeChangelog(beachballOptions, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
++
++    // check changelogs for both foo and bar
++    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
++    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++
++    const fooJson = readChangelogJson(monoRepo.pathTo('packages/foo'));
++    expect(cleanChangelogJson(fooJson)).toMatchSnapshot('foo CHANGELOG.json');
++    expect(readChangelogJson(monoRepo.pathTo('packages/bar'), true /*clean*/)).toMatchSnapshot('bar CHANGELOG.json');
++
++    // Every entry should have a different commit hash
++    const patchComments = fooJson.entries[0].comments.patch!;
++    const commits = patchComments.map(entry => entry.commit);
++    expect(new Set(commits).size).toEqual(patchComments.length);
++
++    // The first entry should be the newest
++    expect(patchComments[0].commit).toBe(monoRepo.getCurrentHash());
++  });
++
++  it('generates correct grouped changelog', async () => {
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
++
++    monoRepo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
++    generateChangeFiles([getChange('bar', 'comment 3')], monoRepo.rootPath);
++
++    const beachballOptions: Partial<BeachballOptions> = {
++      path: monoRepo.rootPath,
++      changelog: {
++        groups: [
++          {
++            masterPackageName: 'foo',
++            changelogPath: monoRepo.rootPath,
++            include: ['packages/foo', 'packages/bar'],
++          },
++        ],
++      },
++    };
++
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++
++    await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
++
++    // Validate changelog for foo and bar packages
++    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
++    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++
++    // Validate grouped changelog for foo and bar packages
++    expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
++  });
++
++  it('generates grouped changelog without dependent change entries', async () => {
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('baz');
++    generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
++
++    const beachballOptions: Partial<BeachballOptions> = {
++      path: monoRepo.rootPath,
++      changelog: {
++        groups: [
++          {
++            masterPackageName: 'foo',
++            changelogPath: monoRepo.rootPath,
++            include: ['packages/foo', 'packages/bar', 'packages/baz'],
++          },
++        ],
++      },
++    };
++
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++
++    await writeChangelog(
++      beachballOptions as BeachballOptions,
++      changes,
++      { bar: 'patch', baz: 'patch' },
++      { bar: new Set(['baz']) },
++      packageInfos
++    );
++
++    // Validate changelog for bar package
++    const barChangelogText = readChangelogMd(monoRepo.pathTo('packages/bar'));
++    expect(barChangelogText).toContain('- Bump baz');
++    expect(barChangelogText).toMatchSnapshot('bar CHANGELOG.md');
++
++    // Validate changelog for baz package
++    expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
++
++    // Validate grouped changelog for foo master package
++    const groupedChangelogText = readChangelogMd(monoRepo.rootPath);
++    expect(groupedChangelogText).toContain('- comment 1');
++    expect(groupedChangelogText).not.toContain('- Bump baz');
++    expect(groupedChangelogText).toMatchSnapshot('grouped CHANGELOG.md');
++  });
++
++  it('generates grouped changelog without dependent change entries where packages have normal changes and dependency changes', async () => {
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('baz');
++    generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
++    generateChangeFiles([getChange('bar', 'comment 1')], monoRepo.rootPath);
++
++    const beachballOptions: Partial<BeachballOptions> = {
++      path: monoRepo.rootPath,
++      changelog: {
++        groups: [
++          {
++            masterPackageName: 'foo',
++            changelogPath: monoRepo.rootPath,
++            include: ['packages/foo', 'packages/bar', 'packages/baz'],
++          },
++        ],
++      },
++    };
++
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++
++    await writeChangelog(
++      beachballOptions as BeachballOptions,
++      changes,
++      { bar: 'patch', baz: 'patch' },
++      { bar: new Set(['baz']) },
++      packageInfos
++    );
++
++    // Validate changelog for bar and baz packages
++    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
++
++    // Validate grouped changelog for foo master package
++    expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
++  });
++
++  it('generates correct grouped changelog when grouped change log is saved to the same dir as a regular changelog', async () => {
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
++
++    monoRepo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
++
++    const beachballOptions: Partial<BeachballOptions> = {
++      path: monoRepo.rootPath,
++      changelog: {
++        groups: [
++          {
++            masterPackageName: 'foo',
++            changelogPath: monoRepo.pathTo('packages/foo'),
++            include: ['packages/foo', 'packages/bar'],
++          },
++        ],
++      },
++    };
++
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++
++    await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
++
++    // Validate changelog for bar package
++    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot();
++
++    // Validate grouped changelog for foo and bar packages
++    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot();
++  });
++
++  it('Verify that the changeFile transform functions are run, if provided', async () => {
++    const editedComment: string = 'Edited comment for testing';
++    const monoRepo = monoRepoFactory.cloneRepository();
++    monoRepo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
++
++    monoRepo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
++
++    const beachballOptions: Partial<BeachballOptions> = {
++      path: monoRepo.rootPath,
++      transform: {
++        changeFiles: (changeFile, changeFilePath) => {
++          // For test, we will be changing the comment based on the package name
++          if ((changeFile as ChangeInfo).packageName === 'foo') {
++            (changeFile as ChangeInfo).comment = editedComment;
++          }
++          return changeFile as ChangeInfo;
++        },
++      },
++      changelog: {
++        groups: [
++          {
++            masterPackageName: 'foo',
++            changelogPath: monoRepo.pathTo('packages/foo'),
++            include: ['packages/foo', 'packages/bar'],
++          },
++        ],
++      },
++    };
++
++    const packageInfos = getPackageInfos(monoRepo.rootPath);
++    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++
++    // Verify that the comment of only the intended change file is changed
++    for (const { change, changeFile } of changes) {
++      if (changeFile.startsWith('foo')) {
++        expect(change.comment).toBe(editedComment);
++      } else {
++        expect(change.comment).toBe('comment 2');
++      }
++    }
++  });
++});
+",0,,26,2934,2,1,21,1260
+969,05446c6b0d3340a6826f64d2814df29a62fa08eb,c68f290f13fd4a71acdf49885844f18ca8ad978e,"## What
+
+Add a new CLI option call `changeDir` that allows changing the change folder name
+
+## Why
+
+Fixes #968
+
+## How Tested
+
+- ✅ Added unit tests
+- Built, exported tgz and ran locally in a new repo:
+  - ✅ Creating changefile created file to `myChangeFolder`
+  - ✅ Creating changelog grabbed change files from `myChangeFolder`
+
+","Add unit tests
+","diff --git a/src/__functional__/changelog/writeChangelog.test.ts b/src/__functional__/changelog/writeChangelog.test.ts
+index 3d4b47a..0362d96 100644
+--- a/src/__functional__/changelog/writeChangelog.test.ts
++++ b/src/__functional__/changelog/writeChangelog.test.ts
+@@ -68,6 +68,37 @@ describe('writeChangelog', () => {
+     expect(patchComments[0].commit).toBe(repository.getCurrentHash());
+   });
+ 
++  it('generates correct changelog with changedir set', async () => {
++    const testChangeDir = 'myChangeDir';
++    const repository = repositoryFactory.cloneRepository();
++    repository.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'additional comment 2')], repository.rootPath, undefined, testChangeDir);
++    generateChangeFiles([getChange('foo', 'additional comment 1')], repository.rootPath, undefined, testChangeDir);
++    generateChangeFiles([getChange('foo', 'comment 1')], repository.rootPath, undefined, testChangeDir);
++
++    repository.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], repository.rootPath, undefined, testChangeDir);
++
++    const beachballOptions = { path: repository.rootPath, changedir: testChangeDir } as BeachballOptions;
++    const packageInfos = getPackageInfos(repository.rootPath);
++    const changes = readChangeFiles(beachballOptions, packageInfos);
++
++    await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++
++    expect(readChangelogMd(repository.rootPath)).toMatchSnapshot('changelog md');
++
++    const changelogJson = readChangelogJson(repository.rootPath);
++    expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
++
++    // Every entry should have a different commit hash
++    const patchComments = changelogJson.entries[0].comments.patch!;
++    const commits = patchComments.map(entry => entry.commit);
++    expect(new Set(commits).size).toEqual(patchComments.length);
++
++    // The first entry should be the newest
++    expect(patchComments[0].commit).toBe(repository.getCurrentHash());
++  });
++
+   it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
+     const monoRepo = monoRepoFactory.cloneRepository();
+     monoRepo.commitChange('foo');
+",0,,8,231,1,5,24,309
+974,182a2e1f68a38fee4c0a22ad080245e62dcb690f,182a2e1f68a38fee4c0a22ad080245e62dcb690f,"Make `changeDir` required in `getChangePath`, and take the options as an object so they're easier to pass through from callers.
+
+Revert one small part of #969: when generating change file **names** (not folder paths) for grouped change files, we should continue to use the generic prefix `change-` rather than using `changeDir`.
+
+Update tests that were casting partial `BeachballOptions` to instead generate options using helpers which merge with `getDefaultOptions`. Or where feasible, switch functions to require only the relevant `Partial<BeachballOptions>` in their signatures.","Ensure changeDir is always set, and improve options handling in tests
+","diff --git a/src/__functional__/changelog/writeChangelog.test.ts b/src/__functional__/changelog/writeChangelog.test.ts
+index 5d4bd5b..afe2c4b 100644
+--- a/src/__functional__/changelog/writeChangelog.test.ts
++++ b/src/__functional__/changelog/writeChangelog.test.ts
+@@ -1,4 +1,4 @@
+-import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
++import { describe, expect, it, beforeAll, afterAll, afterEach } from '@jest/globals';
+ import { generateChangeFiles } from '../../__fixtures__/changeFiles';
+ import { cleanChangelogJson, readChangelogJson, readChangelogMd } from '../../__fixtures__/changelog';
+ import { initMockLogs } from '../../__fixtures__/mockLogs';
+@@ -9,6 +9,8 @@ import { getPackageInfos } from '../../monorepo/getPackageInfos';
+ import { readChangeFiles } from '../../changefile/readChangeFiles';
+ import { BeachballOptions } from '../../types/BeachballOptions';
+ import { ChangeFileInfo, ChangeInfo } from '../../types/ChangeInfo';
++import type { Repository } from '../../__fixtures__/repository';
++import { getDefaultOptions } from '../../options/getDefaultOptions';
+ 
+ function getChange(packageName: string, comment: string): ChangeFileInfo {
+   return {
+@@ -23,9 +25,19 @@ function getChange(packageName: string, comment: string): ChangeFileInfo {
+ describe('writeChangelog', () => {
+   let repositoryFactory: RepositoryFactory;
+   let monoRepoFactory: RepositoryFactory;
++  let repo: Repository | undefined;
+ 
+   initMockLogs();
+ 
++  function getOptions(options?: Partial<BeachballOptions>): BeachballOptions {
++    return {
++      ...getDefaultOptions(),
++      // change to ?. if a future test uses a non-standard repo
++      path: repo!.rootPath,
++      ...options,
++    };
++  }
++
+   beforeAll(() => {
+     // These tests can share the same repo factories because they don't push to origin
+     // (the actual tests run against a clone)
+@@ -33,30 +45,35 @@ describe('writeChangelog', () => {
+     monoRepoFactory = new RepositoryFactory('monorepo');
+   });
+ 
++  afterEach(() => {
++    repo = undefined;
++  });
++
+   afterAll(() => {
+     repositoryFactory.cleanUp();
+     monoRepoFactory.cleanUp();
+   });
+ 
+   it('generates correct changelog', async () => {
+-    const repository = repositoryFactory.cloneRepository();
+-    repository.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'additional comment 2')], repository.rootPath);
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], repository.rootPath);
+-    generateChangeFiles([getChange('foo', 'comment 1')], repository.rootPath);
++    repo = repositoryFactory.cloneRepository();
++    const options = getOptions();
+ 
+-    repository.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], repository.rootPath);
++    repo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'additional comment 2')], options);
++    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    const beachballOptions = { path: repository.rootPath } as BeachballOptions;
+-    const packageInfos = getPackageInfos(repository.rootPath);
+-    const changes = readChangeFiles(beachballOptions, packageInfos);
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], options);
+ 
+-    await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
+ 
+-    expect(readChangelogMd(repository.rootPath)).toMatchSnapshot('changelog md');
++    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
+ 
+-    const changelogJson = readChangelogJson(repository.rootPath);
++    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('changelog md');
++
++    const changelogJson = readChangelogJson(repo.rootPath);
+     expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
+ 
+     // Every entry should have a different commit hash
+@@ -65,29 +82,32 @@ describe('writeChangelog', () => {
+     expect(new Set(commits).size).toEqual(patchComments.length);
+ 
+     // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(repository.getCurrentHash());
++    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
+   });
+ 
+   it('generates correct changelog with changeDir set', async () => {
+-    const testChangeDir = 'myChangeDir';
+-    const repository = repositoryFactory.cloneRepository();
+-    repository.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'additional comment 2')], repository.rootPath, undefined, testChangeDir);
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], repository.rootPath, undefined, testChangeDir);
+-    generateChangeFiles([getChange('foo', 'comment 1')], repository.rootPath, undefined, testChangeDir);
++    repo = repositoryFactory.cloneRepository();
++
++    const options = getOptions({
++      changeDir: 'myChangeDir',
++    });
++
++    repo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'additional comment 2')], options);
++    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    repository.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], repository.rootPath, undefined, testChangeDir);
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], options);
+ 
+-    const beachballOptions = { path: repository.rootPath, changeDir: testChangeDir } as BeachballOptions;
+-    const packageInfos = getPackageInfos(repository.rootPath);
+-    const changes = readChangeFiles(beachballOptions, packageInfos);
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
+ 
+-    await writeChangelog(beachballOptions, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
+ 
+-    expect(readChangelogMd(repository.rootPath)).toMatchSnapshot('changelog md');
++    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('changelog md');
+ 
+-    const changelogJson = readChangelogJson(repository.rootPath);
++    const changelogJson = readChangelogJson(repo.rootPath);
+     expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
+ 
+     // Every entry should have a different commit hash
+@@ -96,36 +116,39 @@ describe('writeChangelog', () => {
+     expect(new Set(commits).size).toEqual(patchComments.length);
+ 
+     // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(repository.getCurrentHash());
++    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
+   });
+ 
+   it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('foo');
+-    const params = [monoRepo.rootPath, true /*groupChanges*/] as const;
++    repo = monoRepoFactory.cloneRepository();
++
++    const options = getOptions({
++      groupChanges: true,
++    });
++
++    repo.commitChange('foo');
+     generateChangeFiles(
+       [getChange('foo', 'additional comment 2'), getChange('bar', 'comment from bar change ')],
+-      ...params
++      options
+     );
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], ...params);
+-    generateChangeFiles([getChange('foo', 'comment 1')], ...params);
++    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    monoRepo.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], ...params);
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('foo', 'comment 2')], options);
+ 
+-    const beachballOptions = { path: monoRepo.rootPath, groupChanges: true } as BeachballOptions;
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions, packageInfos);
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
+ 
+-    await writeChangelog(beachballOptions, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
++    await writeChangelog(options, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
+ 
+     // check changelogs for both foo and bar
+-    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+ 
+-    const fooJson = readChangelogJson(monoRepo.pathTo('packages/foo'));
++    const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
+     expect(cleanChangelogJson(fooJson)).toMatchSnapshot('foo CHANGELOG.json');
+-    expect(readChangelogJson(monoRepo.pathTo('packages/bar'), true /*clean*/)).toMatchSnapshot('bar CHANGELOG.json');
++    expect(readChangelogJson(repo.pathTo('packages/bar'), true /*clean*/)).toMatchSnapshot('bar CHANGELOG.json');
+ 
+     // Every entry should have a different commit hash
+     const patchComments = fooJson.entries[0].comments.patch!;
+@@ -133,170 +156,152 @@ describe('writeChangelog', () => {
+     expect(new Set(commits).size).toEqual(patchComments.length);
+ 
+     // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(monoRepo.getCurrentHash());
++    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
+   });
+ 
+-  it('generates correct grouped changelog', async () => {
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
++  it('generates correct grouped changelog in monorepo', async () => {
++    repo = monoRepoFactory.cloneRepository();
+ 
+-    monoRepo.commitChange('bar');
+-    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
+-    generateChangeFiles([getChange('bar', 'comment 3')], monoRepo.rootPath);
+-
+-    const beachballOptions: Partial<BeachballOptions> = {
+-      path: monoRepo.rootPath,
++    const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: monoRepo.rootPath,
++            changelogPath: repo.rootPath,
+             include: ['packages/foo', 'packages/bar'],
+           },
+         ],
+       },
+-    };
++    });
+ 
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++    repo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], options);
++    generateChangeFiles([getChange('bar', 'comment 3')], options);
++
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
++
++    await writeChangelog(options, changes, {}, {}, packageInfos);
+ 
+     // Validate changelog for foo and bar packages
+-    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+ 
+     // Validate grouped changelog for foo and bar packages
+-    expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
++    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
+   });
+ 
+   it('generates grouped changelog without dependent change entries', async () => {
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('baz');
+-    generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
++    repo = monoRepoFactory.cloneRepository();
+ 
+-    const beachballOptions: Partial<BeachballOptions> = {
+-      path: monoRepo.rootPath,
++    const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: monoRepo.rootPath,
++            changelogPath: repo.rootPath,
+             include: ['packages/foo', 'packages/bar', 'packages/baz'],
+           },
+         ],
+       },
+-    };
++    });
+ 
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++    repo.commitChange('baz');
++    generateChangeFiles([getChange('baz', 'comment 1')], options);
+ 
+-    await writeChangelog(
+-      beachballOptions as BeachballOptions,
+-      changes,
+-      { bar: 'patch', baz: 'patch' },
+-      { bar: new Set(['baz']) },
+-      packageInfos
+-    );
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
++
++    await writeChangelog(options, changes, { bar: 'patch', baz: 'patch' }, { bar: new Set(['baz']) }, packageInfos);
+ 
+     // Validate changelog for bar package
+-    const barChangelogText = readChangelogMd(monoRepo.pathTo('packages/bar'));
++    const barChangelogText = readChangelogMd(repo.pathTo('packages/bar'));
+     expect(barChangelogText).toContain('- Bump baz');
+     expect(barChangelogText).toMatchSnapshot('bar CHANGELOG.md');
+ 
+     // Validate changelog for baz package
+-    expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
+ 
+     // Validate grouped changelog for foo master package
+-    const groupedChangelogText = readChangelogMd(monoRepo.rootPath);
++    const groupedChangelogText = readChangelogMd(repo.rootPath);
+     expect(groupedChangelogText).toContain('- comment 1');
+     expect(groupedChangelogText).not.toContain('- Bump baz');
+     expect(groupedChangelogText).toMatchSnapshot('grouped CHANGELOG.md');
+   });
+ 
+   it('generates grouped changelog without dependent change entries where packages have normal changes and dependency changes', async () => {
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('baz');
+-    generateChangeFiles([getChange('baz', 'comment 1')], monoRepo.rootPath);
+-    generateChangeFiles([getChange('bar', 'comment 1')], monoRepo.rootPath);
++    repo = monoRepoFactory.cloneRepository();
+ 
+-    const beachballOptions: Partial<BeachballOptions> = {
+-      path: monoRepo.rootPath,
++    const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: monoRepo.rootPath,
++            changelogPath: repo.rootPath,
+             include: ['packages/foo', 'packages/bar', 'packages/baz'],
+           },
+         ],
+       },
+-    };
++    });
+ 
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++    repo.commitChange('baz');
++    generateChangeFiles([getChange('baz', 'comment 1')], options);
++    generateChangeFiles([getChange('bar', 'comment 1')], options);
+ 
+-    await writeChangelog(
+-      beachballOptions as BeachballOptions,
+-      changes,
+-      { bar: 'patch', baz: 'patch' },
+-      { bar: new Set(['baz']) },
+-      packageInfos
+-    );
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
++
++    await writeChangelog(options, changes, { bar: 'patch', baz: 'patch' }, { bar: new Set(['baz']) }, packageInfos);
+ 
+     // Validate changelog for bar and baz packages
+-    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+-    expect(readChangelogMd(monoRepo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    expect(readChangelogMd(repo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
+ 
+     // Validate grouped changelog for foo master package
+-    expect(readChangelogMd(monoRepo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
++    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
+   });
+ 
+   it('generates correct grouped changelog when grouped change log is saved to the same dir as a regular changelog', async () => {
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
+-
+-    monoRepo.commitChange('bar');
+-    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
++    repo = monoRepoFactory.cloneRepository();
+ 
+-    const beachballOptions: Partial<BeachballOptions> = {
+-      path: monoRepo.rootPath,
++    const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: monoRepo.pathTo('packages/foo'),
++            changelogPath: repo.pathTo('packages/foo'),
+             include: ['packages/foo', 'packages/bar'],
+           },
+         ],
+       },
+-    };
++    });
+ 
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++    repo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    await writeChangelog(beachballOptions as BeachballOptions, changes, {}, {}, packageInfos);
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], options);
++
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
++
++    await writeChangelog(options, changes, {}, {}, packageInfos);
+ 
+     // Validate changelog for bar package
+-    expect(readChangelogMd(monoRepo.pathTo('packages/bar'))).toMatchSnapshot();
++    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot();
+ 
+     // Validate grouped changelog for foo and bar packages
+-    expect(readChangelogMd(monoRepo.pathTo('packages/foo'))).toMatchSnapshot();
++    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot();
+   });
+ 
+   it('runs transform.changeFiles functions if provided', async () => {
+     const editedComment: string = 'Edited comment for testing';
+-    const monoRepo = monoRepoFactory.cloneRepository();
+-    monoRepo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], monoRepo.rootPath);
+-
+-    monoRepo.commitChange('bar');
+-    generateChangeFiles([getChange('bar', 'comment 2')], monoRepo.rootPath);
++    repo = monoRepoFactory.cloneRepository();
+ 
+-    const beachballOptions: Partial<BeachballOptions> = {
+-      path: monoRepo.rootPath,
++    const options = getOptions({
+       command: 'change',
+       transform: {
+         changeFiles: (changeFile, changeFilePath, { command }) => {
+@@ -312,15 +317,21 @@ describe('writeChangelog', () => {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: monoRepo.pathTo('packages/foo'),
++            changelogPath: repo.pathTo('packages/foo'),
+             include: ['packages/foo', 'packages/bar'],
+           },
+         ],
+       },
+-    };
++    });
++
++    repo.commitChange('foo');
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
++
++    repo.commitChange('bar');
++    generateChangeFiles([getChange('bar', 'comment 2')], options);
+ 
+-    const packageInfos = getPackageInfos(monoRepo.rootPath);
+-    const changes = readChangeFiles(beachballOptions as BeachballOptions, packageInfos);
++    const packageInfos = getPackageInfos(repo.rootPath);
++    const changes = readChangeFiles(options, packageInfos);
+ 
+     // Verify that the comment of only the intended change file is changed
+     for (const { change, changeFile } of changes) {
+",0,,37,1748,1,1,37,1748
+977,924b3ce813332b45e60080436a68f092674b1cb7,0912d268f7cb98db0411b41497ea03eb8148e1eb,"Implements the changes discussed in #975 including:
+
+- Comments out the  `<!-- This log was last generated ... -->` part of the changelog by default, since it's mostly intended for someone who's trying to edit the markdown source.
+- Supports changing the default `<h1>` content `# Changelog - <@package-name>` via a `renderMainHeader` changelog option.","add renderMainHeader changelog option
+",,0,,5,60,1,3,7,81
+983,fdeb84dbcae404338de5472306140bcf1220f318,fdeb84dbcae404338de5472306140bcf1220f318,"#944 added change types premajor/preminor/prepatch, but they weren't being included in the changelog.","Include pre* changes in changelog
+","diff --git a/src/__tests__/changelog/renderPackageChangelog.test.ts b/src/__tests__/changelog/renderPackageChangelog.test.ts
+index 7a840db..c259b4f 100644
+--- a/src/__tests__/changelog/renderPackageChangelog.test.ts
++++ b/src/__tests__/changelog/renderPackageChangelog.test.ts
+@@ -1,6 +1,8 @@
+ import { describe, expect, it } from '@jest/globals';
+ import { PackageChangelogRenderInfo } from '../../types/ChangelogOptions';
+ import { defaultRenderers, renderPackageChangelog } from '../../changelog/renderPackageChangelog';
++import { ChangelogEntry } from '../../types/ChangeLog';
++import { SortedChangeTypes } from '../../changefile/changeTypes';
+ 
+ const { renderEntry, renderEntries, renderChangeTypeHeader, renderChangeTypeSection, renderHeader } = defaultRenderers;
+ 
+@@ -33,6 +35,16 @@ describe('changelog renderers -', () => {
+     };
+   }
+ 
++  function getChangelogEntry(entry: Partial<ChangelogEntry>): ChangelogEntry {
++    return {
++      comment: 'comment',
++      author: 'user1@example.com',
++      commit: 'sha1',
++      package: 'foo',
++      ...entry,
++    };
++  }
++
+   function getGroupedRenderInfo(): PackageChangelogRenderInfo {
+     const renderInfo = getRenderInfo();
+     renderInfo.isGrouped = true;
+@@ -124,6 +136,22 @@ describe('changelog renderers -', () => {
+       doBasicTests(result);
+     });
+ 
++    it('includes all change types', async () => {
++      const renderInfo = getRenderInfo();
++      renderInfo.newVersionChangelog.comments = Object.fromEntries(
++        SortedChangeTypes.map(type => [type, [getChangelogEntry({ comment: `${type} change` })]])
++      );
++      const result = await renderPackageChangelog(renderInfo);
++      // a couple explicit tests
++      expect(result).not.toContain('none change');
++      for (const type of SortedChangeTypes) {
++        if (type !== 'none') {
++          expect(result).toContain(`${type} change`);
++        }
++      }
++      doBasicTests(result);
++    });
++
+     it('has correct grouped output', async () => {
+       const renderInfo = getGroupedRenderInfo();
+       const result = await renderPackageChangelog(renderInfo);
+",0,,5,118,1,1,5,118
+984,d111ab85b5a2750ce3cfca58962e58b6e0283f40,d111ab85b5a2750ce3cfca58962e58b6e0283f40,"Fix an edge case and improve changelog tests.
+
+Scenario: Suppose there's a changelog group with `masterPackageName: 'foo', changelogPath: 'packages/foo'`. This is supposed to make the grouped changelog be written in place of `foo`'s normal changelog. But if `foo` has no changes besides dependency bumps, and there are no changes in other grouped packages (so the grouped changelog isn't written), previously the dependency bumps from `foo`'s normal changelog would be prepended to what's supposed to be a grouped changelog. (See [this test case](https://github.com/microsoft/beachball/pull/984/files#diff-1819960692d0b38e963fb83251d573780176b3d9a0923f04a27de0a7190cd209R384) for a clearer example.)
+
+This PR fixes the issue by *always* skipping potential grouped changelog paths when writing package changelogs.
+
+I also updated the tests for `writeChangelog` to have more complete coverage/be more realistic, remove redundant tests, and not rely so heavily on snapshots, which are too easy to ignore if they change when they shouldn't.","Prevent accidentally writing dep bumps to grouped changelog
+","diff --git a/src/__functional__/changelog/writeChangelog.test.ts b/src/__functional__/changelog/writeChangelog.test.ts
+index 6c64c0b..e5d8495 100644
+--- a/src/__functional__/changelog/writeChangelog.test.ts
++++ b/src/__functional__/changelog/writeChangelog.test.ts
+@@ -1,51 +1,83 @@
+ import { describe, expect, it, beforeAll, afterAll, afterEach } from '@jest/globals';
+-import { generateChangeFiles } from '../../__fixtures__/changeFiles';
+-import { cleanChangelogJson, readChangelogJson, readChangelogMd } from '../../__fixtures__/changelog';
++import fs from 'fs-extra';
++import { generateChangeFiles, getChange, fakeEmail as author } from '../../__fixtures__/changeFiles';
++import {
++  cleanChangelogJson,
++  readChangelogJson,
++  readChangelogMd,
++  fakeCommit as commit,
++  trimChangelogMd,
++} from '../../__fixtures__/changelog';
+ import { initMockLogs } from '../../__fixtures__/mockLogs';
+ import { RepositoryFactory } from '../../__fixtures__/repositoryFactory';
+-
+ import { writeChangelog } from '../../changelog/writeChangelog';
+ import { getPackageInfos } from '../../monorepo/getPackageInfos';
+ import { readChangeFiles } from '../../changefile/readChangeFiles';
+-import { BeachballOptions } from '../../types/BeachballOptions';
+-import { ChangeFileInfo, ChangeType } from '../../types/ChangeInfo';
++import type { BeachballOptions } from '../../types/BeachballOptions';
+ import type { Repository } from '../../__fixtures__/repository';
+ import { getDefaultOptions } from '../../options/getDefaultOptions';
+-
+-function getChange(packageName: string, comment: string, type: ChangeType = 'patch'): ChangeFileInfo {
+-  return {
+-    comment,
+-    email: 'test@testtestme.com',
+-    packageName,
+-    type,
+-    dependentChangeType: 'patch',
+-  };
+-}
++import type { BumpInfo } from '../../types/BumpInfo';
++import { getMaxChangeType } from '../../changefile/changeTypes';
++import { getChangePath } from '../../paths';
+ 
+ describe('writeChangelog', () => {
+   let repositoryFactory: RepositoryFactory;
+   let monoRepoFactory: RepositoryFactory;
+   let repo: Repository | undefined;
++  let sharedSingleRepo: Repository;
++  let sharedMonoRepo: Repository;
+ 
+   initMockLogs();
+ 
++  /**
++   * Read package infos and change files, fill in default options, and call `writeChangelog`.
++   *
++   * `calculatedChangeTypes` will be generated based on the max change type of each package's change files,
++   * and assuming every `dependentChangedBy` package has change type `patch`.
++   */
++  async function writeChangelogWrapper(
++    params: Partial<Pick<BumpInfo, 'dependentChangedBy'>> & {
++      options: BeachballOptions;
++    }
++  ) {
++    const { options, dependentChangedBy = {} } = params;
++    const packageInfos = getPackageInfos(repo!.rootPath);
++    const changeFileChangeInfos = readChangeFiles(options, packageInfos);
++
++    // Generate a basic best guess at calculatedChangeTypes
++    const calculatedChangeTypes: BumpInfo['calculatedChangeTypes'] = {};
++    for (const { change } of changeFileChangeInfos) {
++      const { packageName, type } = change;
++      calculatedChangeTypes[packageName] = getMaxChangeType(type, calculatedChangeTypes[packageName]);
++    }
++    for (const pkgName of Object.keys(dependentChangedBy)) {
++      calculatedChangeTypes[pkgName] = getMaxChangeType('patch', calculatedChangeTypes[pkgName]);
++    }
++
++    await writeChangelog({ dependentChangedBy, calculatedChangeTypes, changeFileChangeInfos, packageInfos }, options);
++  }
++
+   function getOptions(options?: Partial<BeachballOptions>): BeachballOptions {
+     return {
+       ...getDefaultOptions(),
+-      // change to ?. if a future test uses a non-standard repo
++      // change to ?. if a future test uses a non-standard repo var name
+       path: repo!.rootPath,
+       ...options,
+     };
+   }
+ 
+   beforeAll(() => {
+-    // These tests can share the same repo factories because they don't push to origin
+-    // (the actual tests run against a clone)
++    // These tests can share the same factories and repos because they don't push to the remote,
++    // and the repo used is reset after each test (which is faster than making new clones).
+     repositoryFactory = new RepositoryFactory('single');
+     monoRepoFactory = new RepositoryFactory('monorepo');
++    sharedSingleRepo = repositoryFactory.cloneRepository();
++    sharedMonoRepo = monoRepoFactory.cloneRepository();
+   });
+ 
+   afterEach(() => {
++    // Revert whichever shared repo was used to the original state
++    repo?.resetAndClean();
+     repo = undefined;
+   });
+ 
+@@ -54,247 +86,343 @@ describe('writeChangelog', () => {
+     monoRepoFactory.cleanUp();
+   });
+ 
+-  it('generates correct changelog', async () => {
+-    repo = repositoryFactory.cloneRepository();
++  it('does not write changelogs if there are no changes', async () => {
++    repo = sharedSingleRepo;
+     const options = getOptions();
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'additional comment 2')], options);
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    await writeChangelogWrapper({ options });
++
++    expect(readChangelogMd(repo.rootPath)).toBeNull();
++    expect(readChangelogJson(repo.rootPath)).toBeNull();
++  });
+ 
+-    repo.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], options);
++  it('generates basic changelog', async () => {
++    repo = sharedSingleRepo;
++    const options = getOptions();
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++    generateChangeFiles([getChange('foo', 'old minor comment')], options);
++    generateChangeFiles([getChange('foo', 'patch comment', 'patch')], options);
++    generateChangeFiles([getChange('foo', 'no comment', 'none')], options);
++    generateChangeFiles([getChange('foo', 'new minor comment', 'minor')], options);
+ 
+-    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    await writeChangelogWrapper({ options });
+ 
+-    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('changelog md');
++    const changelogMd = readChangelogMd(repo.rootPath);
++    // Do some explicit tests since snapshot changes are too easy to ignore
++    expect(changelogMd).toMatch(/^# Change Log - foo/);
++    expect(changelogMd).toMatch(/### Minor changes\n\n- new minor comment.*\n- old minor comment/);
++    expect(changelogMd).toContain('### Patches\n\n- patch comment');
++    expect(changelogMd).not.toContain('no comment');
++    expect(changelogMd).toMatchSnapshot('changelog md');
+ 
+     const changelogJson = readChangelogJson(repo.rootPath);
+-    expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
++    expect(changelogJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(cleanChangelogJson(changelogJson)!.entries[0]).toEqual({
++      version: '1.0.0',
++      date: '(date)',
++      tag: 'foo_v1.0.0',
++      comments: {
++        minor: [
++          { comment: 'new minor comment', package: 'foo', author, commit },
++          { comment: 'old minor comment', package: 'foo', author, commit },
++        ],
++        patch: [{ comment: 'patch comment', package: 'foo', author, commit }],
++        none: [{ comment: 'no comment', package: 'foo', author, commit }],
++      },
++    });
+ 
+     // Every entry should have a different commit hash
+-    const patchComments = changelogJson!.entries[0].comments.patch!;
+-    const commits = patchComments.map(entry => entry.commit);
+-    expect(new Set(commits).size).toEqual(patchComments.length);
++    const minorComments = changelogJson!.entries[0].comments.minor!;
++    expect(minorComments).toBeTruthy();
++    const commits = minorComments.map(entry => entry.commit);
++    expect(new Set(commits).size).toEqual(minorComments.length);
+ 
+     // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
++    expect(minorComments[0].commit).toBe(repo!.getCurrentHash());
+   });
+ 
+-  it('generates correct changelog with changeDir set', async () => {
+-    repo = repositoryFactory.cloneRepository();
++  it('generates changelog with custom changeDir', async () => {
++    repo = sharedSingleRepo;
++    const changeDir = 'myChangeDir';
++    const options = getOptions({ changeDir });
+ 
+-    const options = getOptions({
+-      changeDir: 'myChangeDir',
+-    });
++    generateChangeFiles([{ packageName: 'foo', comment: 'comment 1' }], options);
++    // make sure the setup worked as expected
++    expect(fs.readdirSync(repo.pathTo(changeDir))).toEqual([expect.stringMatching(/^foo-.*\.json$/)]);
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'additional comment 2')], options);
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    await writeChangelogWrapper({ options });
+ 
+-    repo.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], options);
++    // Just check for a comment in the md to verify that the change file was found
++    expect(readChangelogMd(repo.rootPath)).toContain('### Minor changes\n\n- comment 1');
++  });
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++  it('generates changelogs with dependent changes in monorepo', async () => {
++    repo = sharedMonoRepo;
++    const options = getOptions();
+ 
+-    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    generateChangeFiles([{ packageName: 'foo', comment: 'foo comment' }], options);
++    generateChangeFiles([{ packageName: 'baz', comment: 'baz comment' }], options);
+ 
+-    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('changelog md');
++    await writeChangelogWrapper({
++      options,
++      // Per the fixture, bar depends on baz (and is bumped), and foo depends on bar.
++      // Note that the changelogs will only include dependent bump entries as specified here
++      // (which may be different than what would actually be calculated while bumping), and
++      // NO actual bumping will occur (so the versions will be the same as the fixture).
++      dependentChangedBy: { bar: new Set(['baz']), foo: new Set(['bar']) },
++    });
+ 
+-    const changelogJson = readChangelogJson(repo.rootPath);
+-    expect(cleanChangelogJson(changelogJson)).toMatchSnapshot('changelog json');
++    // check changelogs for foo, bar, and baz
++    const fooText = readChangelogMd(repo.pathTo('packages/foo'));
++    expect(fooText).toMatch(/### Minor changes\n\n- foo comment.*\n- Bump bar to/);
++    expect(fooText).not.toContain('baz comment');
++    expect(fooText).toMatchSnapshot('foo CHANGELOG.md');
+ 
+-    // Every entry should have a different commit hash
+-    const patchComments = changelogJson!.entries[0].comments.patch!;
+-    const commits = patchComments.map(entry => entry.commit);
+-    expect(new Set(commits).size).toEqual(patchComments.length);
++    const barText = readChangelogMd(repo.pathTo('packages/bar'));
++    expect(barText).toContain('### Patches\n\n- Bump baz to');
++    expect(barText).not.toMatch(/(foo|baz) comment/);
++    expect(barText).toMatchSnapshot('bar CHANGELOG.md');
+ 
+-    // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
+-  });
++    const bazText = readChangelogMd(repo.pathTo('packages/baz'));
++    expect(bazText).toContain('baz comment');
++    expect(bazText).not.toContain('Bump');
++    expect(bazText).toMatchSnapshot('baz CHANGELOG.md');
+ 
+-  it('generates correct changelog in monorepo with groupChanges (grouped change FILES)', async () => {
+-    repo = monoRepoFactory.cloneRepository();
++    const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
++    expect(fooJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(cleanChangelogJson(fooJson)!.entries[0]).toEqual({
++      version: '1.0.0',
++      date: '(date)',
++      tag: 'foo_v1.0.0',
++      comments: {
++        minor: [
++          { package: 'foo', comment: 'foo comment', author, commit },
++          { package: 'foo', comment: 'Bump bar to v1.3.4', author: 'beachball', commit },
++        ],
++      },
++    });
+ 
+-    const options = getOptions({
+-      groupChanges: true,
++    const barJson = readChangelogJson(repo.pathTo('packages/bar'));
++    expect(barJson).toEqual({ name: 'bar', entries: [expect.anything()] });
++    expect(cleanChangelogJson(barJson)!.entries[0]).toEqual({
++      comments: {
++        patch: [{ package: 'bar', comment: 'Bump baz to v1.3.4', author: 'beachball', commit }],
++      },
++      date: '(date)',
++      tag: 'bar_v1.3.4',
++      version: '1.3.4',
+     });
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles(
+-      [getChange('foo', 'additional comment 2'), getChange('bar', 'comment from bar change ')],
+-      options
+-    );
+-    generateChangeFiles([getChange('foo', 'additional comment 1')], options);
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    const bazJson = readChangelogJson(repo.pathTo('packages/baz'));
++    expect(bazJson).toEqual({ name: 'baz', entries: [expect.anything()] });
++    expect(cleanChangelogJson(bazJson)!.entries[0]).toEqual({
++      version: '1.3.4',
++      date: '(date)',
++      tag: 'baz_v1.3.4',
++      comments: {
++        minor: [{ package: 'baz', comment: 'baz comment', author, commit }],
++      },
++    });
++  });
+ 
+-    repo.commitChange('bar');
+-    generateChangeFiles([getChange('foo', 'comment 2')], options);
++  it('generates changelog in monorepo with grouped change files (groupChanges)', async () => {
++    repo = sharedMonoRepo;
++    const options = getOptions({ groupChanges: true });
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++    // these will be in one change file
++    generateChangeFiles([getChange('foo', 'comment 2'), getChange('bar', 'bar comment')], options);
++    // separate change file
++    generateChangeFiles([getChange('foo', 'comment 1')], options);
+ 
+-    await writeChangelog(options, changes, { foo: 'patch', bar: 'patch' }, {}, packageInfos);
++    await writeChangelogWrapper({ options, dependentChangedBy: { foo: new Set(['bar']) } });
+ 
+     // check changelogs for both foo and bar
+-    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    const fooText = readChangelogMd(repo.pathTo('packages/foo'));
++    expect(fooText).toMatch(/- comment 1.*\n- comment 2/);
++    expect(fooText).not.toContain('bar comment');
+ 
+-    const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
+-    expect(cleanChangelogJson(fooJson)).toMatchSnapshot('foo CHANGELOG.json');
+-    expect(readChangelogJson(repo.pathTo('packages/bar'), true /*clean*/)).toMatchSnapshot('bar CHANGELOG.json');
++    const barText = readChangelogMd(repo.pathTo('packages/bar'));
++    expect(barText).toContain('bar comment');
++    expect(barText).not.toMatch(/comment (1|2)/);
+ 
+-    // Every entry should have a different commit hash
+-    const patchComments = fooJson!.entries[0].comments.patch!;
+-    const commits = patchComments.map(entry => entry.commit);
+-    expect(new Set(commits).size).toEqual(patchComments.length);
++    const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
++    expect(fooJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(cleanChangelogJson(fooJson)!.entries[0].comments).toEqual({
++      minor: [
++        expect.objectContaining({ comment: 'comment 1', package: 'foo' }),
++        expect.objectContaining({ comment: 'comment 2', package: 'foo' }),
++        expect.objectContaining({ comment: 'Bump bar to v1.3.4', package: 'foo' }),
++      ],
++    });
+ 
+-    // The first entry should be the newest
+-    expect(patchComments[0].commit).toBe(repo.getCurrentHash());
++    const barJson = readChangelogJson(repo.pathTo('packages/bar'));
++    expect(barJson).toEqual({ name: 'bar', entries: [expect.anything()] });
++    expect(cleanChangelogJson(barJson)!.entries[0].comments).toEqual({
++      minor: [expect.objectContaining({ comment: 'bar comment', package: 'bar' })],
++    });
+   });
+ 
+-  it('generates correct grouped changelog in monorepo', async () => {
+-    repo = monoRepoFactory.cloneRepository();
+-
++  it('generates grouped changelog in monorepo', async () => {
++    repo = sharedMonoRepo;
+     const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: repo.rootPath,
+-            include: ['packages/foo', 'packages/bar'],
++            changelogPath: '.',
++            include: ['packages/*'],
+           },
+         ],
+       },
+     });
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    // foo and baz have changes.
++    // bar has no direct changes, but it depends on baz.
++    generateChangeFiles(['foo', 'baz'], options);
++    generateChangeFiles([getChange('foo', 'foo comment 2')], options);
+ 
+-    repo.commitChange('bar');
+-    generateChangeFiles([getChange('bar', 'comment 2')], options);
+-    generateChangeFiles([getChange('bar', 'comment 3')], options);
++    await writeChangelogWrapper({
++      options,
++      // Per the fixture structure, bar will have a dependent change from baz, which changes foo
++      dependentChangedBy: { bar: new Set(['baz']), foo: new Set(['bar']) },
++    });
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++    // Validate package changelogs
++    const fooText = readChangelogMd(repo.pathTo('packages/foo'));
++    // includes the dependent change from bar
++    expect(fooText).toMatch(/- foo comment.*\n- Bump bar to/);
++    expect(fooText).not.toContain('baz comment');
+ 
+-    await writeChangelog(options, changes, {}, {}, packageInfos);
++    const barText = readChangelogMd(repo.pathTo('packages/bar'));
++    // includes the dependent change from baz
++    expect(barText).toContain('Bump baz to');
++    expect(barText).not.toMatch(/(foo|baz) comment/);
+ 
+-    // Validate changelog for foo and bar packages
+-    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot('foo CHANGELOG.md');
+-    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
++    const bazText = readChangelogMd(repo.pathTo('packages/baz'));
++    expect(bazText).toContain('baz comment');
++    expect(bazText).not.toMatch(/Bump|foo comment/);
+ 
+-    // Validate grouped changelog for foo and bar packages
+-    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
+-  });
++    // Verify that dependent entries are in foo CHANGELOG.json
++    const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
++    expect(fooJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(fooJson!.entries[0].comments.minor).toContainEqual(
++      expect.objectContaining({ comment: 'Bump bar to v1.3.4' })
++    );
+ 
+-  it('generates grouped changelog without dependent change entries', async () => {
+-    repo = monoRepoFactory.cloneRepository();
++    // Validate grouped changelog: it shouldn't have dependent entries
++    const groupedText = readChangelogMd(repo.rootPath);
++    expect(groupedText).not.toContain('Bump');
++    expect(groupedText).toMatch(/- `foo`.*\n  - foo comment 2.*\n  - foo comment/);
++    expect(groupedText).toMatch(/- `baz`.*\n  - baz comment/);
++    expect(groupedText).toMatchSnapshot('grouped CHANGELOG.md');
++
++    // Validate grouped CHANGELOG.json
++    const groupedJson = readChangelogJson(repo.rootPath);
++    expect(groupedJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(cleanChangelogJson(groupedJson)!.entries[0]).toEqual({
++      comments: {
++        minor: [
++          { comment: 'foo comment 2', package: 'foo', author, commit },
++          { comment: 'foo comment', package: 'foo', author, commit },
++          { comment: 'baz comment', package: 'baz', author, commit },
++        ],
++      },
++      date: '(date)',
++      tag: 'foo_v1.0.0',
++      version: '1.0.0',
++    });
++  });
+ 
++  it('generates grouped changelog when path overlaps with regular changelog', async () => {
++    repo = sharedMonoRepo;
+     const options = getOptions({
+       changelog: {
+         groups: [
+           {
+             masterPackageName: 'foo',
+-            changelogPath: repo.rootPath,
+-            include: ['packages/foo', 'packages/bar', 'packages/baz'],
++            changelogPath: 'packages/foo',
++            include: ['packages/foo', 'packages/bar'],
+           },
+         ],
+       },
+     });
+ 
+-    repo.commitChange('baz');
+-    generateChangeFiles([getChange('baz', 'comment 1')], options);
+-
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++    generateChangeFiles(['foo', 'bar'], options);
+ 
+-    await writeChangelog(options, changes, { bar: 'patch', baz: 'patch' }, { bar: new Set(['baz']) }, packageInfos);
++    await writeChangelogWrapper({ options, dependentChangedBy: { foo: new Set(['bar']) } });
+ 
+-    // Validate changelog for bar package
+-    const barChangelogText = readChangelogMd(repo.pathTo('packages/bar'));
+-    expect(barChangelogText).toContain('- Bump baz');
+-    expect(barChangelogText).toMatchSnapshot('bar CHANGELOG.md');
++    // packages/foo changelog should be grouped, not regular.
++    // We can verify this by just looking for the bar entry.
++    const groupedChangelogMd = readChangelogMd(repo.pathTo('packages/foo'));
++    expect(groupedChangelogMd).toContain('- `bar`\n  - bar comment');
+ 
+-    // Validate changelog for baz package
+-    expect(readChangelogMd(repo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
+-
+-    // Validate grouped changelog for foo master package
+-    const groupedChangelogText = readChangelogMd(repo.rootPath);
+-    expect(groupedChangelogText).toContain('- comment 1');
+-    expect(groupedChangelogText).not.toContain('- Bump baz');
+-    expect(groupedChangelogText).toMatchSnapshot('grouped CHANGELOG.md');
++    const groupedJson = readChangelogJson(repo.pathTo('packages/foo'));
++    expect(groupedJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++    expect(groupedJson!.entries[0].comments.minor).toContainEqual(expect.objectContaining({ comment: 'bar comment' }));
+   });
+ 
+-  it('generates grouped changelog without dependent change entries where packages have normal changes and dependency changes', async () => {
+-    repo = monoRepoFactory.cloneRepository();
+-
++  it('does not write grouped changelog if group would only have dependent bumps', async () => {
++    repo = sharedMonoRepo;
+     const options = getOptions({
+       changelog: {
+-        groups: [
+-          {
+-            masterPackageName: 'foo',
+-            changelogPath: repo.rootPath,
+-            include: ['packages/foo', 'packages/bar', 'packages/baz'],
+-          },
+-        ],
++        groups: [{ masterPackageName: 'foo', changelogPath: '.', include: ['packages/foo', 'packages/baz'] }],
+       },
+     });
+ 
+-    repo.commitChange('baz');
+-    generateChangeFiles([getChange('baz', 'comment 1')], options);
+-    generateChangeFiles([getChange('bar', 'comment 1')], options);
++    // bar is not in the group, but it causes a dependent change for foo
++    generateChangeFiles(['bar'], options);
++    await writeChangelogWrapper({ options, dependentChangedBy: { foo: new Set(['bar']) } });
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
+-
+-    await writeChangelog(options, changes, { bar: 'patch', baz: 'patch' }, { bar: new Set(['baz']) }, packageInfos);
+-
+-    // Validate changelog for bar and baz packages
+-    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot('bar CHANGELOG.md');
+-    expect(readChangelogMd(repo.pathTo('packages/baz'))).toMatchSnapshot('baz CHANGELOG.md');
++    // grouped changelog was not written
++    expect(readChangelogMd(repo.rootPath)).toBeNull();
++    expect(readChangelogJson(repo.rootPath)).toBeNull();
+ 
+-    // Validate grouped changelog for foo master package
+-    expect(readChangelogMd(repo.rootPath)).toMatchSnapshot('grouped CHANGELOG.md');
++    // foo changelog was written with the dependent bump
++    expect(readChangelogMd(repo.pathTo('packages/foo'))).toBeTruthy();
+   });
+ 
+-  it('generates correct grouped changelog when grouped change log is saved to the same dir as a regular changelog', async () => {
+-    repo = monoRepoFactory.cloneRepository();
+-
++  it('does not write grouped changelog overlapping regular changelog if it would contain only dependent bumps', async () => {
++    repo = sharedMonoRepo;
+     const options = getOptions({
+       changelog: {
+         groups: [
+-          {
+-            masterPackageName: 'foo',
+-            changelogPath: repo.pathTo('packages/foo'),
+-            include: ['packages/foo', 'packages/bar'],
+-          },
++          // The grouped changelog overlaps with the changelog for packages/foo.
++          { masterPackageName: 'foo', changelogPath: 'packages/foo', include: ['packages/foo', 'packages/baz'] },
+         ],
+       },
+     });
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    // bar is not in the group
++    generateChangeFiles(['bar'], options);
++    // but it causes a dependent change for foo (so normally foo's non-grouped changelog would be written)
++    await writeChangelogWrapper({ options, dependentChangedBy: { foo: new Set(['bar']) } });
+ 
+-    repo.commitChange('bar');
+-    generateChangeFiles([getChange('bar', 'comment 2')], options);
++    // Nothing was written (not the grouped changelog, and not a normal changelog for foo)
++    expect(readChangelogMd(repo.pathTo('packages/foo'))).toBeNull();
++    expect(readChangelogJson(repo.pathTo('packages/foo'))).toBeNull();
++  });
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
++  it('includes pre* changes', async () => {
++    repo = sharedSingleRepo;
++    const options = getOptions();
+ 
+-    await writeChangelog(options, changes, {}, {}, packageInfos);
++    generateChangeFiles(
++      [
++        { packageName: 'foo', comment: 'comment 1', type: 'premajor' },
++        { packageName: 'foo', comment: 'comment 2', type: 'preminor' },
++        { packageName: 'foo', comment: 'comment 3', type: 'prepatch' },
++        { packageName: 'foo', comment: 'comment 4', type: 'prerelease' },
++      ],
++      options
++    );
+ 
+-    // Validate changelog for bar package
+-    expect(readChangelogMd(repo.pathTo('packages/bar'))).toMatchSnapshot();
++    await writeChangelogWrapper({ options });
+ 
+-    // Validate grouped changelog for foo and bar packages
+-    expect(readChangelogMd(repo.pathTo('packages/foo'))).toMatchSnapshot();
++    const changelogMd = readChangelogMd(repo.rootPath);
++    expect(changelogMd).toContain('### Major changes (pre-release)\n\n- comment 1');
++    expect(changelogMd).toContain('### Minor changes (pre-release)\n\n- comment 2');
++    expect(changelogMd).toContain('### Patches (pre-release)\n\n- comment 3');
++    expect(changelogMd).toContain('### Changes\n\n- comment 4');
+   });
+ 
+   it('includes pre* changes', async () => {
+@@ -303,16 +431,14 @@ describe('writeChangelog', () => {
+ 
+     generateChangeFiles(
+       [
+-        { packageName: 'foo', comment: 'comment 1', type: 'premajor' },
+-        { packageName: 'foo', comment: 'comment 2', type: 'preminor' },
+-        { packageName: 'foo', comment: 'comment 3', type: 'prepatch' },
++        getChange('foo', 'comment 1', 'premajor'),
++        getChange('foo', 'comment 2', 'preminor'),
++        getChange('foo', 'comment 3', 'prepatch'),
+       ],
+       options
+     );
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
+-    await writeChangelog(options, changes, {}, {}, packageInfos);
++    await writeChangelogWrapper({ options });
+ 
+     const changelogMd = readChangelogMd(repo.rootPath);
+     expect(changelogMd).toContain('### Major changes (pre-release)\n\n- comment 1');
+@@ -321,16 +447,12 @@ describe('writeChangelog', () => {
+   });
+ 
+   it('writes only CHANGELOG.md if generateChangelog is ""md""', async () => {
+-    repo = repositoryFactory.cloneRepository();
++    repo = sharedSingleRepo;
+     const options = getOptions({ generateChangelog: 'md' });
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    generateChangeFiles(['foo'], options);
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
+-
+-    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    await writeChangelogWrapper({ options });
+ 
+     // CHANGELOG.md is written
+     expect(readChangelogMd(repo.rootPath)).toContain('## 1.0.0');
+@@ -340,16 +462,12 @@ describe('writeChangelog', () => {
+   });
+ 
+   it('writes only CHANGELOG.json if generateChangelog is ""json""', async () => {
+-    repo = repositoryFactory.cloneRepository();
++    repo = sharedSingleRepo;
+     const options = getOptions({ generateChangelog: 'json' });
+ 
+-    repo.commitChange('foo');
+-    generateChangeFiles([getChange('foo', 'comment 1')], options);
++    generateChangeFiles(['foo'], options);
+ 
+-    const packageInfos = getPackageInfos(repo.rootPath);
+-    const changes = readChangeFiles(options, packageInfos);
+-
+-    await writeChangelog(options, changes, { foo: 'patch' }, { foo: new Set(['foo']) }, packageInfos);
++    await writeChangelogWrapper({ options });
+ 
+     // CHANGELOG.md is not written
+     expect(readChangelogMd(repo.rootPath)).toBeNull();
+@@ -357,6 +475,39 @@ describe('writeChangelog', () => {
+     // CHANGELOG.json is written
+     const changelogJson = readChangelogJson(repo.rootPath);
+     expect(changelogJson).not.toBeNull();
+-    expect(changelogJson!.entries[0].comments.patch).toEqual([expect.objectContaining({ comment: 'comment 1' })]);
++    expect(changelogJson!.entries[0].comments.minor).toEqual([expect.objectContaining({ comment: 'foo comment' })]);
++  });
++
++  it('appends to existing changelog', async () => {
++    // Most of the previous content tests are handled by renderChangelog, but writeChangelog is
++    // responsible for reading that content and passing it in.
++    repo = sharedSingleRepo;
++    const options = getOptions();
++
++    // Write some changes and generate changelogs
++    generateChangeFiles(['foo'], options);
++    await writeChangelogWrapper({ options });
++
++    // Read and save the initial changelogs
++    const firstChangelogMd = readChangelogMd(repo.rootPath);
++    expect(firstChangelogMd).toContain('foo comment');
++    const firstChangelogJson = cleanChangelogJson(readChangelogJson(repo.rootPath));
++    expect(firstChangelogJson).toEqual({ name: 'foo', entries: [expect.anything()] });
++
++    // Delete the change files, generate new ones, and re-generate changelogs
++    fs.emptyDirSync(getChangePath(options));
++    generateChangeFiles([getChange('foo', 'extra change')], options);
++    await writeChangelogWrapper({ options });
++
++    // Read the changelogs again and verify that the previous content is still there
++    const secondChangelogMd = readChangelogMd(repo.rootPath);
++    expect(secondChangelogMd).toContain('extra change');
++    expect(secondChangelogMd).toContain(trimChangelogMd(firstChangelogMd!));
++
++    const secondChangelogJson = cleanChangelogJson(readChangelogJson(repo.rootPath));
++    expect(secondChangelogJson).toEqual({
++      name: 'foo',
++      entries: [expect.anything(), firstChangelogJson!.entries[0]],
++    });
+   });
+ });
+",0,,10,1113,1,1,10,1113
+997,a1bf36f52005fa3c0ac25241e714ced304bcb258,a1bf36f52005fa3c0ac25241e714ced304bcb258,"Add an option `changelog.maxVersions` which truncates the number of versions stored in `CHANGELOG.md` and `CHANGELOG.json`.
+
+Related to #978","Add option changelog.maxVersions
+","diff --git a/src/__functional__/changelog/writeChangelog.test.ts b/src/__functional__/changelog/writeChangelog.test.ts
+index e5d8495..f0da447 100644
+--- a/src/__functional__/changelog/writeChangelog.test.ts
++++ b/src/__functional__/changelog/writeChangelog.test.ts
+@@ -1,5 +1,6 @@
+ import { describe, expect, it, beforeAll, afterAll, afterEach } from '@jest/globals';
+ import fs from 'fs-extra';
++import semver from 'semver';
+ import { generateChangeFiles, getChange, fakeEmail as author } from '../../__fixtures__/changeFiles';
+ import {
+   cleanChangelogJson,
+@@ -19,6 +20,7 @@ import { getDefaultOptions } from '../../options/getDefaultOptions';
+ import type { BumpInfo } from '../../types/BumpInfo';
+ import { getMaxChangeType } from '../../changefile/changeTypes';
+ import { getChangePath } from '../../paths';
++import { trimmedVersionsNote } from '../../changelog/renderChangelog';
+ 
+ describe('writeChangelog', () => {
+   let repositoryFactory: RepositoryFactory;
+@@ -30,10 +32,15 @@ describe('writeChangelog', () => {
+   initMockLogs();
+ 
+   /**
+-   * Read package infos and change files, fill in default options, and call `writeChangelog`.
++   * Read package infos and change files, fill in default options, bump versions in package info,
++   * and call `writeChangelog`.
+    *
+    * `calculatedChangeTypes` will be generated based on the max change type of each package's change files,
+    * and assuming every `dependentChangedBy` package has change type `patch`.
++   *
++   * The package info versions and package.json versions on disk (but not dependency ranges) will be
++   * bumped based on the `calculatedChangeTypes`, so that the changelog results are more realistic,
++   * and tests involving multiple bumps work more realistically.
+    */
+   async function writeChangelogWrapper(
+     params: Partial<Pick<BumpInfo, 'dependentChangedBy'>> & {
+@@ -54,6 +61,14 @@ describe('writeChangelog', () => {
+       calculatedChangeTypes[pkgName] = getMaxChangeType('patch', calculatedChangeTypes[pkgName]);
+     }
+ 
++    // Bump versions in package info and package.json for more realistic changelogs.
++    // (This is a much more basic variant of the usual bump process.)
++    for (const [pkgName, changeType] of Object.entries(calculatedChangeTypes)) {
++      packageInfos[pkgName].version = semver.inc(packageInfos[pkgName].version, changeType as semver.ReleaseType)!;
++      const { packageJsonPath, ...packageJson } = packageInfos[pkgName];
++      fs.writeJsonSync(packageJsonPath, packageJson, { spaces: 2 });
++    }
++
+     await writeChangelog({ dependentChangedBy, calculatedChangeTypes, changeFileChangeInfos, packageInfos }, options);
+   }
+ 
+@@ -118,9 +133,9 @@ describe('writeChangelog', () => {
+     const changelogJson = readChangelogJson(repo.rootPath);
+     expect(changelogJson).toEqual({ name: 'foo', entries: [expect.anything()] });
+     expect(cleanChangelogJson(changelogJson)!.entries[0]).toEqual({
+-      version: '1.0.0',
++      version: '1.1.0',
+       date: '(date)',
+-      tag: 'foo_v1.0.0',
++      tag: 'foo_v1.1.0',
+       comments: {
+         minor: [
+           { comment: 'new minor comment', package: 'foo', author, commit },
+@@ -191,13 +206,13 @@ describe('writeChangelog', () => {
+     const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
+     expect(fooJson).toEqual({ name: 'foo', entries: [expect.anything()] });
+     expect(cleanChangelogJson(fooJson)!.entries[0]).toEqual({
+-      version: '1.0.0',
++      version: '1.1.0',
+       date: '(date)',
+-      tag: 'foo_v1.0.0',
++      tag: 'foo_v1.1.0',
+       comments: {
+         minor: [
+           { package: 'foo', comment: 'foo comment', author, commit },
+-          { package: 'foo', comment: 'Bump bar to v1.3.4', author: 'beachball', commit },
++          { package: 'foo', comment: 'Bump bar to v1.3.5', author: 'beachball', commit },
+         ],
+       },
+     });
+@@ -206,19 +221,19 @@ describe('writeChangelog', () => {
+     expect(barJson).toEqual({ name: 'bar', entries: [expect.anything()] });
+     expect(cleanChangelogJson(barJson)!.entries[0]).toEqual({
+       comments: {
+-        patch: [{ package: 'bar', comment: 'Bump baz to v1.3.4', author: 'beachball', commit }],
++        patch: [{ package: 'bar', comment: 'Bump baz to v1.4.0', author: 'beachball', commit }],
+       },
+       date: '(date)',
+-      tag: 'bar_v1.3.4',
+-      version: '1.3.4',
++      tag: 'bar_v1.3.5',
++      version: '1.3.5',
+     });
+ 
+     const bazJson = readChangelogJson(repo.pathTo('packages/baz'));
+     expect(bazJson).toEqual({ name: 'baz', entries: [expect.anything()] });
+     expect(cleanChangelogJson(bazJson)!.entries[0]).toEqual({
+-      version: '1.3.4',
++      version: '1.4.0',
+       date: '(date)',
+-      tag: 'baz_v1.3.4',
++      tag: 'baz_v1.4.0',
+       comments: {
+         minor: [{ package: 'baz', comment: 'baz comment', author, commit }],
+       },
+@@ -251,7 +266,7 @@ describe('writeChangelog', () => {
+       minor: [
+         expect.objectContaining({ comment: 'comment 1', package: 'foo' }),
+         expect.objectContaining({ comment: 'comment 2', package: 'foo' }),
+-        expect.objectContaining({ comment: 'Bump bar to v1.3.4', package: 'foo' }),
++        expect.objectContaining({ comment: 'Bump bar to v1.4.0', package: 'foo' }),
+       ],
+     });
+ 
+@@ -306,7 +321,7 @@ describe('writeChangelog', () => {
+     const fooJson = readChangelogJson(repo.pathTo('packages/foo'));
+     expect(fooJson).toEqual({ name: 'foo', entries: [expect.anything()] });
+     expect(fooJson!.entries[0].comments.minor).toContainEqual(
+-      expect.objectContaining({ comment: 'Bump bar to v1.3.4' })
++      expect.objectContaining({ comment: 'Bump bar to v1.3.5' })
+     );
+ 
+     // Validate grouped changelog: it shouldn't have dependent entries
+@@ -328,8 +343,8 @@ describe('writeChangelog', () => {
+         ],
+       },
+       date: '(date)',
+-      tag: 'foo_v1.0.0',
+-      version: '1.0.0',
++      tag: 'foo_v1.1.0',
++      version: '1.1.0',
+     });
+   });
+ 
+@@ -455,7 +470,7 @@ describe('writeChangelog', () => {
+     await writeChangelogWrapper({ options });
+ 
+     // CHANGELOG.md is written
+-    expect(readChangelogMd(repo.rootPath)).toContain('## 1.0.0');
++    expect(readChangelogMd(repo.rootPath)).toContain('## 1.1.0');
+ 
+     // CHANGELOG.json is not written
+     expect(readChangelogJson(repo.rootPath)).toBeNull();
+@@ -510,4 +525,29 @@ describe('writeChangelog', () => {
+       entries: [expect.anything(), firstChangelogJson!.entries[0]],
+     });
+   });
++
++  it('trims previous changelog entries over maxVersions', async () => {
++    repo = sharedSingleRepo;
++    const options = getOptions({ changelog: { maxVersions: 2 } });
++
++    // Bump and write three times
++    for (let i = 1; i <= 3; i++) {
++      fs.emptyDirSync(getChangePath(options));
++      generateChangeFiles([{ packageName: 'foo', comment: `foo comment ${i}` }], options);
++      await writeChangelogWrapper({ options });
++    }
++
++    // Read the changelog md and verify that it only has the last two versions
++    const changelogMd = readChangelogMd(repo.rootPath);
++    expect(changelogMd).toContain('## 1.3.0');
++    expect(changelogMd).toContain('## 1.2.0');
++    expect(changelogMd).not.toContain('## 1.1.0');
++    expect(changelogMd).toContain(trimmedVersionsNote);
++    // Do a snapshot to make sure there's no funny formatting
++    expect(changelogMd).toMatchSnapshot('CHANGELOG.md');
++
++    // Same with changelog json
++    const changelogJson = readChangelogJson(repo.rootPath);
++    expect(changelogJson!.entries).toHaveLength(2);
++  });
+ });
+
+diff --git a/src/__tests__/changelog/renderChangelog.test.ts b/src/__tests__/changelog/renderChangelog.test.ts
+index e0e2c7c..32329d5 100644
+--- a/src/__tests__/changelog/renderChangelog.test.ts
++++ b/src/__tests__/changelog/renderChangelog.test.ts
+@@ -1,16 +1,25 @@
+ import { describe, expect, it, jest } from '@jest/globals';
+ import { initMockLogs } from '../../__fixtures__/mockLogs';
+-import { MarkdownChangelogRenderOptions, renderChangelog, markerComment } from '../../changelog/renderChangelog';
++import {
++  MarkdownChangelogRenderOptions,
++  renderChangelog,
++  markerComment,
++  _trimPreviousLog,
++  trimmedVersionsNote,
++} from '../../changelog/renderChangelog';
+ import { ChangelogEntry, PackageChangelog } from '../../types/ChangeLog';
+ 
+-const previousHeader = `# Change Log - foo
++/** Make a changelog string with a header and basic content for each version */
++function changelogFromVersions(versions: string[]): string {
++  // Having the change type h3 is important for testing trimming
++  return versions.map(v => [`## ${v}`, '(date)', '### Patch changes', `- content of ${v}`].join('\n\n')).join('\n\n');
++}
+ 
+-This log was last generated on Wed, 21 Aug 2019 21:20:40 GMT and should not be manually modified.`;
++const previousHeader = `# Change Log - foo
+ 
+-const previousVersion = `## 1.2.0
++<!-- This log was last generated on Wed, 21 Aug 2019 21:20:40 GMT and should not be manually modified. -->`;
+ 
+-(content here)
+-`;
++const previousVersion = changelogFromVersions(['1.2.0']);
+ 
+ describe('renderChangelog', () => {
+   initMockLogs();
+@@ -76,6 +85,22 @@ describe('renderChangelog', () => {
+     expect(result).toMatchSnapshot();
+   });
+ 
++  it('trims previous versions if over maxVersions', async () => {
++    const options = getOptions();
++    options.previousContent += '\n\n' + changelogFromVersions(['1.1.9', '1.1.8', '1.1.7']);
++    options.changelogOptions.maxVersions = 3;
++
++    const result = await renderChangelog(options);
++    expect(result).toContain(trimmedVersionsNote);
++    expect(result.trim().endsWith(trimmedVersionsNote)).toBe(true);
++    expect(result).toContain(changelogFromVersions(['1.2.0']));
++    expect(result).toContain(changelogFromVersions(['1.1.9']));
++    expect(result).not.toContain('1.1.8');
++    expect(result).not.toContain('1.1.7');
++    // do a snapshot to make sure there's no funny formatting
++    expect(result).toMatchSnapshot();
++  });
++
+   it('merges default and custom renderers', async () => {
+     const options = getOptions();
+     options.changelogOptions.customRenderers = {
+@@ -104,7 +129,7 @@ describe('renderChangelog', () => {
+     expect(result).toContain('# Change Log - foo'); // still includes header
+     expect(result).toContain(markerComment); // still includes marker comment
+     expect(result).toContain('no notes for you'); // uses custom version body
+-    expect(result).toContain('content here'); // includes previous content
++    expect(result).toContain(previousVersion); // includes previous content
+     expect(result).toMatchSnapshot();
+   });
+ 
+@@ -138,3 +163,45 @@ describe('renderChangelog', () => {
+     );
+   });
+ });
++
++describe('renderChangelog _trimPreviousLog', () => {
++  it('returns log as-is if under max', () => {
++    const previousLogEntries = changelogFromVersions(['1.2.2', '1.2.1']);
++    const trimmed = _trimPreviousLog({
++      packageChangelog: changelogFromVersions(['1.2.3']),
++      previousLogEntries,
++      maxVersions: 5,
++    });
++    expect(trimmed).toEqual(previousLogEntries);
++  });
++
++  it('returns log as-is if equal to max', () => {
++    // 2 previous + current version = 3
++    const previousLogEntries = changelogFromVersions(['1.2.2', '1.2.1']);
++    const trimmed = _trimPreviousLog({
++      packageChangelog: changelogFromVersions(['1.2.3']),
++      previousLogEntries,
++      maxVersions: 3,
++    });
++    expect(trimmed).toEqual(previousLogEntries);
++  });
++
++  it('trims versions if one over max', () => {
++    // 3 previous + current version = 4
++    const trimmed = _trimPreviousLog({
++      packageChangelog: changelogFromVersions(['1.2.3']),
++      previousLogEntries: changelogFromVersions(['1.2.2', '1.2.1', '1.2.0']),
++      maxVersions: 3,
++    });
++    expect(trimmed).toEqual(changelogFromVersions(['1.2.2', '1.2.1']) + '\n\n' + trimmedVersionsNote);
++  });
++
++  it('trims versions if multiple over max', () => {
++    const trimmed = _trimPreviousLog({
++      packageChangelog: changelogFromVersions(['1.2.3']),
++      previousLogEntries: changelogFromVersions(['1.2.2', '1.2.1', '1.2.0', '1.1.0']),
++      maxVersions: 3,
++    });
++    expect(trimmed).toEqual(changelogFromVersions(['1.2.2', '1.2.1']) + '\n\n' + trimmedVersionsNote);
++  });
++});
+",0,,10,409,2,1,10,409

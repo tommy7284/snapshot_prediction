@@ -1,0 +1,85 @@
+{
+    "id": 6246498,
+    "name": "tasti/react-linkify",
+    "isFork": false,
+    "commits": 72,
+    "branches": 23,
+    "releases": 12,
+    "forks": 109,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://tasti.github.io/react-linkify/",
+    "watchers": 3,
+    "stargazers": 526,
+    "contributors": 10,
+    "size": 354,
+    "createdAt": "2015-05-29T07:29:56",
+    "pushedAt": "2022-12-07T09:35:13",
+    "updatedAt": "2022-12-16T04:40:40",
+    "totalIssues": 57,
+    "openIssues": 24,
+    "totalPullRequests": 61,
+    "openPullRequests": 25,
+    "blankLines": 101,
+    "codeLines": 367,
+    "commentLines": 16,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 17,
+            "language": "JSX",
+            "commentLines": 4,
+            "codeLines": 71
+        },
+        {
+            "blankLines": 3,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 46,
+            "language": "JavaScript",
+            "commentLines": 12,
+            "codeLines": 150
+        },
+        {
+            "blankLines": 35,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 50
+        }
+    ],
+    "lastCommit": "2020-01-14T05:10:54",
+    "lastCommitSHA": "325cb5e43300d7ada5bdf8d2849783d98fcd3c2c",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 9357
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

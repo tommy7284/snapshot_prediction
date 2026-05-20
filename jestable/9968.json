@@ -1,0 +1,99 @@
+{
+    "id": 6890160,
+    "name": "okonet/lint-staged",
+    "isFork": false,
+    "commits": 946,
+    "branches": 15,
+    "releases": 219,
+    "forks": 437,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 43,
+    "stargazers": 12200,
+    "contributors": 125,
+    "size": 5722,
+    "createdAt": "2016-01-15T07:51:21",
+    "pushedAt": "2023-09-12T04:03:37",
+    "updatedAt": "2023-09-12T06:56:05",
+    "totalIssues": 724,
+    "openIssues": 97,
+    "totalPullRequests": 594,
+    "openPullRequests": 16,
+    "blankLines": 2485,
+    "codeLines": 19033,
+    "commentLines": 909,
+    "metrics": [
+        {
+            "blankLines": 1060,
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 1649
+        },
+        {
+            "blankLines": 17,
+            "language": "YAML",
+            "commentLines": 21,
+            "codeLines": 234
+        },
+        {
+            "blankLines": 1405,
+            "language": "JavaScript",
+            "commentLines": 871,
+            "codeLines": 5473
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11668
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 9
+        }
+    ],
+    "lastCommit": "2023-09-12T03:38:57",
+    "lastCommitSHA": "f85be258c1fafe46feb550d0c511cb40c89216d8",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 241983,
+        "Shell": 241
+    },
+    "labels": [
+        "? needs validation ?",
+        "blocker",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "idea",
+        "invalid",
+        "linux",
+        "macos",
+        "question",
+        "released",
+        "released on @beta",
+        "released on @next",
+        "windows",
+        "wontfix"
+    ],
+    "topics": [
+        "developer-experience",
+        "eslint",
+        "git",
+        "linter",
+        "stage-files",
+        "stylelint",
+        "workflow"
+    ]
+}

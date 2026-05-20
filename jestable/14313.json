@@ -1,0 +1,98 @@
+{
+    "id": 4048235,
+    "name": "toomuchdesign/re-reselect",
+    "isFork": false,
+    "commits": 387,
+    "branches": 2,
+    "releases": 0,
+    "forks": 46,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 8,
+    "stargazers": 1072,
+    "contributors": 19,
+    "size": 1983,
+    "createdAt": "2017-02-23T01:53:41",
+    "pushedAt": "2024-05-04T11:31:41",
+    "updatedAt": "2024-05-04T11:31:44",
+    "totalIssues": 45,
+    "openIssues": 5,
+    "totalPullRequests": 195,
+    "openPullRequests": 1,
+    "blankLines": 651,
+    "codeLines": 18791,
+    "commentLines": 176,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 147,
+            "codeLines": 5426,
+            "blankLines": 274
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 12,
+            "codeLines": 358,
+            "blankLines": 49
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 21,
+            "blankLines": 5
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 810,
+            "blankLines": 321
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12151,
+            "blankLines": 0
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 15,
+            "blankLines": 0
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        }
+    ],
+    "lastCommit": "2024-05-04T11:31:40",
+    "lastCommitSHA": "d99a5b810670d252fe72da54c5df100406da46be",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 32014,
+        "JavaScript": 5866
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "don't merge",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": [
+        "memoization",
+        "reactjs",
+        "reselect"
+    ]
+}

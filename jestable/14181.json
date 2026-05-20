@@ -1,0 +1,111 @@
+{
+    "id": 4045294,
+    "name": "marp-team/marp-core",
+    "isFork": false,
+    "commits": 1199,
+    "branches": 4,
+    "releases": 88,
+    "forks": 128,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 10,
+    "stargazers": 665,
+    "contributors": 4,
+    "size": 3458,
+    "createdAt": "2018-06-05T03:43:27",
+    "pushedAt": "2023-11-07T10:49:01",
+    "updatedAt": "2023-11-13T05:24:44",
+    "totalIssues": 75,
+    "openIssues": 7,
+    "totalPullRequests": 272,
+    "openPullRequests": 1,
+    "blankLines": 1640,
+    "codeLines": 6236,
+    "commentLines": 167,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 88,
+            "codeLines": 3291,
+            "blankLines": 697
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 14,
+            "codeLines": 224,
+            "blankLines": 23
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 50,
+            "codeLines": 705,
+            "blankLines": 136
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 140,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 173,
+            "blankLines": 27
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 12,
+            "codeLines": 949,
+            "blankLines": 621
+        },
+        {
+            "language": "Sass",
+            "commentLines": 2,
+            "codeLines": 753,
+            "blankLines": 136
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-11-07T10:49:01",
+    "lastCommitSHA": "47dd2129e7fa3d41247b3503a83b5df08328035a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 132789,
+        "SCSS": 15249,
+        "JavaScript": 6902
+    },
+    "labels": [
+        "better-for-plugin",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feedback required",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "need more info",
+        "question",
+        "upstream",
+        "wontfix"
+    ],
+    "topics": [
+        "deck",
+        "markdown",
+        "marp",
+        "presentation",
+        "slides"
+    ]
+}

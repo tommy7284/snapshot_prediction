@@ -1,0 +1,158 @@
+{
+    "id": 82686534,
+    "name": "bamlab/flashlight",
+    "isFork": false,
+    "commits": 443,
+    "branches": 30,
+    "releases": 83,
+    "forks": 23,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://docs.flashlight.dev",
+    "watchers": 16,
+    "stargazers": 1015,
+    "contributors": 25,
+    "size": 115171,
+    "createdAt": "2022-04-20T08:09:13",
+    "pushedAt": "2024-05-10T08:25:58",
+    "updatedAt": "2024-05-10T02:18:23",
+    "totalIssues": 56,
+    "openIssues": 9,
+    "totalPullRequests": 220,
+    "openPullRequests": 5,
+    "blankLines": 2542,
+    "codeLines": 337734,
+    "commentLines": 518,
+    "metrics": [
+        {
+            "language": "C++",
+            "commentLines": 14,
+            "codeLines": 277,
+            "blankLines": 50
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 9,
+            "codeLines": 15,
+            "blankLines": 6
+        },
+        {
+            "language": "YAML",
+            "commentLines": 11,
+            "codeLines": 61,
+            "blankLines": 5
+        },
+        {
+            "language": "CMake",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 1682,
+            "blankLines": 1136
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 15,
+            "codeLines": 110,
+            "blankLines": 41
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 101,
+            "codeLines": 537,
+            "blankLines": 66
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 2471,
+            "blankLines": 26
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 16,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 323701,
+            "blankLines": 2
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 566,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 358,
+            "codeLines": 8158,
+            "blankLines": 1192
+        },
+        {
+            "language": "CSS",
+            "commentLines": 7,
+            "codeLines": 82,
+            "blankLines": 14
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 55,
+            "blankLines": 4
+        }
+    ],
+    "lastCommit": "2024-04-18T02:25:15",
+    "lastCommitSHA": "78dab21d01122ec4f0968ecef42695c77e572386",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 270561,
+        "JavaScript": 28478,
+        "HTML": 13610,
+        "C++": 8663,
+        "Shell": 3434,
+        "CSS": 2550,
+        "MDX": 744,
+        "CMake": 147
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "sweep",
+        "wontfix"
+    ],
+    "topics": [
+        "android",
+        "apm",
+        "audit",
+        "e2e",
+        "flutter",
+        "lighthouse",
+        "mobile",
+        "monitoring",
+        "native",
+        "performance",
+        "performance-optimization",
+        "performance-testing",
+        "profiling",
+        "react-native",
+        "tracing"
+    ]
+}

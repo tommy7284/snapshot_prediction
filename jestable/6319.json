@@ -1,0 +1,114 @@
+{
+    "id": 6251179,
+    "name": "ssense/vue-carousel",
+    "isFork": false,
+    "commits": 255,
+    "branches": 38,
+    "releases": 46,
+    "forks": 514,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://ssense.github.io/vue-carousel/",
+    "watchers": 40,
+    "stargazers": 1704,
+    "contributors": 56,
+    "size": 11065,
+    "createdAt": "2016-12-28T09:11:47",
+    "pushedAt": "2023-12-10T02:10:13",
+    "updatedAt": "2024-01-03T02:08:48",
+    "totalIssues": 382,
+    "openIssues": 185,
+    "totalPullRequests": 233,
+    "openPullRequests": 55,
+    "blankLines": 1664,
+    "codeLines": 14333,
+    "commentLines": 1404,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 146
+        },
+        {
+            "blankLines": 77,
+            "language": "Vuejs Component",
+            "commentLines": 307,
+            "codeLines": 1055
+        },
+        {
+            "blankLines": 1100,
+            "language": "JavaScript",
+            "commentLines": 1031,
+            "codeLines": 8848
+        },
+        {
+            "blankLines": 12,
+            "language": "YAML",
+            "commentLines": 20,
+            "codeLines": 50
+        },
+        {
+            "blankLines": 261,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 549
+        },
+        {
+            "blankLines": 75,
+            "language": "Stylus",
+            "commentLines": 14,
+            "codeLines": 967
+        },
+        {
+            "blankLines": 22,
+            "language": "EJS",
+            "commentLines": 8,
+            "codeLines": 305
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 1741
+        },
+        {
+            "blankLines": 117,
+            "language": "HTML",
+            "commentLines": 24,
+            "codeLines": 672
+        }
+    ],
+    "lastCommit": "2019-04-02T10:32:14",
+    "lastCommitSHA": "7c8e213e6773100b7cfad19b3ee88feebd777970",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 66206,
+        "Vue": 38612
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "need repro",
+        "question",
+        "refactor",
+        "roadmap",
+        "wontfix"
+    ],
+    "topics": [
+        "carousel-component",
+        "vue",
+        "vue-carousel"
+    ]
+}

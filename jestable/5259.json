@@ -1,0 +1,92 @@
+{
+    "id": 5742182,
+    "name": "atomiks/tippyjs-react",
+    "isFork": false,
+    "commits": 289,
+    "branches": 17,
+    "releases": 35,
+    "forks": 86,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 12,
+    "stargazers": 1689,
+    "contributors": 15,
+    "size": 1852,
+    "createdAt": "2018-08-24T09:23:47",
+    "pushedAt": "2023-03-04T12:49:19",
+    "updatedAt": "2023-03-23T08:41:20",
+    "totalIssues": 283,
+    "openIssues": 32,
+    "totalPullRequests": 90,
+    "openPullRequests": 18,
+    "blankLines": 442,
+    "codeLines": 2238,
+    "commentLines": 18,
+    "metrics": [
+        {
+            "blankLines": 99,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 319
+        },
+        {
+            "blankLines": 2,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 132
+        },
+        {
+            "blankLines": 8,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 332,
+            "language": "JavaScript",
+            "commentLines": 17,
+            "codeLines": 1708
+        }
+    ],
+    "lastCommit": "2022-04-01T12:33:44",
+    "lastCommitSHA": "2699f0450c28a92cd5bbd402573ce9ed64252899",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 38428
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

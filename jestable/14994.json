@@ -1,0 +1,116 @@
+{
+    "id": 4056476,
+    "name": "pmndrs/react-three-fiber",
+    "isFork": false,
+    "commits": 2602,
+    "branches": 17,
+    "releases": 99,
+    "forks": 1485,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://docs.pmnd.rs/react-three-fiber",
+    "watchers": 203,
+    "stargazers": 26116,
+    "contributors": 195,
+    "size": 24538,
+    "createdAt": "2019-02-25T02:31:51",
+    "pushedAt": "2024-05-09T11:21:27",
+    "updatedAt": "2024-05-10T10:37:10",
+    "totalIssues": 969,
+    "openIssues": 37,
+    "totalPullRequests": 716,
+    "openPullRequests": 17,
+    "blankLines": 3218,
+    "codeLines": 14092,
+    "commentLines": 757,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 4880,
+            "blankLines": 1929
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 13,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 35,
+            "blankLines": 10
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 555,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 753,
+            "codeLines": 8559,
+            "blankLines": 1278
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 41,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-08T07:06:10",
+    "lastCommitSHA": "d7c46f840e3c11915be5847be5724b221a38b989",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 343679,
+        "JavaScript": 1248,
+        "HTML": 377,
+        "Shell": 68
+    },
+    "labels": [
+        "bug",
+        "core",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "needs more info",
+        "needs reproduction",
+        "question",
+        "react three test renderer",
+        "react-native",
+        "request for comments",
+        "typescript",
+        "web",
+        "wontfix"
+    ],
+    "topics": [
+        "3d",
+        "animation",
+        "fiber",
+        "react",
+        "renderer",
+        "threejs"
+    ]
+}

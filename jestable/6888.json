@@ -1,0 +1,76 @@
+{
+    "id": 6337319,
+    "name": "craig1123/react-recipes",
+    "isFork": false,
+    "commits": 177,
+    "branches": 9,
+    "releases": 4,
+    "forks": 59,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 941,
+    "contributors": 7,
+    "size": 1754,
+    "createdAt": "2019-10-25T02:01:29",
+    "pushedAt": "2023-02-10T10:44:49",
+    "updatedAt": "2023-02-16T10:54:46",
+    "totalIssues": 11,
+    "openIssues": 5,
+    "totalPullRequests": 60,
+    "openPullRequests": 8,
+    "blankLines": 927,
+    "codeLines": 17848,
+    "commentLines": 648,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 350,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1020
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 14798
+        },
+        {
+            "blankLines": 577,
+            "language": "JavaScript",
+            "commentLines": 647,
+            "codeLines": 2014
+        }
+    ],
+    "lastCommit": "2023-02-10T10:33:00",
+    "lastCommitSHA": "f6fddb6c535299677bbf680acc66a933f1b4af39",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 87969
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "new hook",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

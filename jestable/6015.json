@@ -1,0 +1,73 @@
+{
+    "id": 6216140,
+    "name": "ds300/react-native-typescript-transformer",
+    "isFork": false,
+    "commits": 137,
+    "branches": 6,
+    "releases": 28,
+    "forks": 55,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 16,
+    "stargazers": 655,
+    "contributors": 18,
+    "size": 312,
+    "createdAt": "2017-05-07T09:24:29",
+    "pushedAt": "2020-12-10T05:39:42",
+    "updatedAt": "2021-02-08T04:34:55",
+    "totalIssues": 73,
+    "openIssues": 23,
+    "totalPullRequests": 29,
+    "openPullRequests": 4,
+    "blankLines": 204,
+    "codeLines": 6222,
+    "commentLines": 6,
+    "metrics": [
+        {
+            "blankLines": 72,
+            "language": "JavaScript",
+            "commentLines": 6,
+            "codeLines": 466
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 5533
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 132,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 216
+        }
+    ],
+    "lastCommit": "2019-10-18T03:46:38",
+    "lastCommitSHA": "369a457696cb1126da9c69fa403d6502366b7afd",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 15601
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

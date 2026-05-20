@@ -1,0 +1,433 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+52,a06ce0d8d5455ce18efafbc9704799aea89e641e,f52d83ee0401af9a7ee2483342f7d2eea2efe748,test/__snapshots__/cacheContext-option.test.js.snap,test/cacheContext-option.test.js,"This should fix the snapshots path generated on windows test env. Closes the problem foud with the CI on windows https://github.com/webpack-contrib/cache-loader/pull/51
+
+\CC @evilebottnawi ","chore(NA): updated snapshots.
+","diff --git a/test/cacheContext-option.test.js b/test/cacheContext-option.test.js
+index 0e5f41d..8af405e 100644
+--- a/test/cacheContext-option.test.js
++++ b/test/cacheContext-option.test.js
+@@ -33,15 +33,17 @@ const buildSnapshotReadyDeps = (deps) =>
+     .sort();
+ 
+ const buildCacheLoaderCallsData = (calls) =>
+-  calls.sort().map((rawCall) => {
+-    const call = rawCall[1];
+-    return {
+-      ...call,
+-      remainingRequest: normalizePath(call.remainingRequest),
+-      dependencies: buildSnapshotReadyDeps(call.dependencies),
+-      contextDependencies: buildSnapshotReadyDeps(call.contextDependencies),
+-    };
+-  });
++  calls
++    .map((rawCall) => {
++      const [, call] = rawCall;
++      return {
++        ...call,
++        remainingRequest: normalizePath(call.remainingRequest),
++        dependencies: buildSnapshotReadyDeps(call.dependencies),
++        contextDependencies: buildSnapshotReadyDeps(call.contextDependencies),
++      };
++    })
++    .sort();
+ 
+ describe('cacheContext option', () => {
+   it('should generate relative paths to the project root', async () => {
+",0,
+52,a06ce0d8d5455ce18efafbc9704799aea89e641e,f52d83ee0401af9a7ee2483342f7d2eea2efe748,test/__snapshots__/cacheContext-option.test.js.snap,test/cacheContext-option.test.js,"This should fix the snapshots path generated on windows test env. Closes the problem foud with the CI on windows https://github.com/webpack-contrib/cache-loader/pull/51
+
+\CC @evilebottnawi ","chore(NA): updated snapshots.
+","diff --git a/test/cacheContext-option.test.js b/test/cacheContext-option.test.js
+index 0e5f41d..8af405e 100644
+--- a/test/cacheContext-option.test.js
++++ b/test/cacheContext-option.test.js
+@@ -33,15 +33,17 @@ const buildSnapshotReadyDeps = (deps) =>
+     .sort();
+ 
+ const buildCacheLoaderCallsData = (calls) =>
+-  calls.sort().map((rawCall) => {
+-    const call = rawCall[1];
+-    return {
+-      ...call,
+-      remainingRequest: normalizePath(call.remainingRequest),
+-      dependencies: buildSnapshotReadyDeps(call.dependencies),
+-      contextDependencies: buildSnapshotReadyDeps(call.contextDependencies),
+-    };
+-  });
++  calls
++    .map((rawCall) => {
++      const [, call] = rawCall;
++      return {
++        ...call,
++        remainingRequest: normalizePath(call.remainingRequest),
++        dependencies: buildSnapshotReadyDeps(call.dependencies),
++        contextDependencies: buildSnapshotReadyDeps(call.contextDependencies),
++      };
++    })
++    .sort();
+ 
+ describe('cacheContext option', () => {
+   it('should generate relative paths to the project root', async () => {
+",0,
+53,62ec4437ac12ef852b8973a7357a4a21061d418e,62ec4437ac12ef852b8973a7357a4a21061d418e,test/__snapshots__/cacheContext-option.test.js.snap,test/cacheContext-option.test.js,"Update defaults
+","chore: update defaults
+","diff --git a/test/cacheContext-option.test.js b/test/cacheContext-option.test.js
+index b0b893f..b6d82ee 100644
+--- a/test/cacheContext-option.test.js
++++ b/test/cacheContext-option.test.js
+@@ -48,6 +48,18 @@ const buildCacheLoaderCallsData = (calls) =>
+       .values()
+   );
+ 
++const sortData = (a, b) => {
++  if (a.remainingRequest < b.remainingRequest) {
++    return -1;
++  }
++
++  if (a.remainingRequest > b.remainingRequest) {
++    return 1;
++  }
++
++  return 0;
++};
++
+ describe('cacheContext option', () => {
+   it('should generate relative paths to the project root', async () => {
+     const testId = './basic/index.js';
+@@ -55,7 +67,7 @@ describe('cacheContext option', () => {
+ 
+     const cacheLoaderCallsData = buildCacheLoaderCallsData(
+       mockCacheLoaderWriteFn.mock.calls
+-    );
++    ).sort(sortData);
+ 
+     expect(
+       cacheLoaderCallsData.every(
+@@ -67,13 +79,13 @@ describe('cacheContext option', () => {
+     expect(stats.compilation.errors).toMatchSnapshot('errors');
+   });
+ 
+-  it('should generate absolute paths to the project root', async () => {
++  it('should generate absolute paths to the project root 2', async () => {
+     const testId = './basic/index.js';
+     const stats = await webpack(testId, mockBaseWebpackConfig);
+ 
+     const cacheLoaderCallsData = buildCacheLoaderCallsData(
+       mockCacheLoaderWriteFn.mock.calls
+-    );
++    ).sort(sortData);
+ 
+     expect(
+       cacheLoaderCallsData.every((call) =>
+",0,
+53,62ec4437ac12ef852b8973a7357a4a21061d418e,62ec4437ac12ef852b8973a7357a4a21061d418e,test/__snapshots__/cacheContext-option.test.js.snap,test/cacheContext-option.test.js,"Update defaults
+","chore: update defaults
+","diff --git a/test/cacheContext-option.test.js b/test/cacheContext-option.test.js
+index b0b893f..b6d82ee 100644
+--- a/test/cacheContext-option.test.js
++++ b/test/cacheContext-option.test.js
+@@ -48,6 +48,18 @@ const buildCacheLoaderCallsData = (calls) =>
+       .values()
+   );
+ 
++const sortData = (a, b) => {
++  if (a.remainingRequest < b.remainingRequest) {
++    return -1;
++  }
++
++  if (a.remainingRequest > b.remainingRequest) {
++    return 1;
++  }
++
++  return 0;
++};
++
+ describe('cacheContext option', () => {
+   it('should generate relative paths to the project root', async () => {
+     const testId = './basic/index.js';
+@@ -55,7 +67,7 @@ describe('cacheContext option', () => {
+ 
+     const cacheLoaderCallsData = buildCacheLoaderCallsData(
+       mockCacheLoaderWriteFn.mock.calls
+-    );
++    ).sort(sortData);
+ 
+     expect(
+       cacheLoaderCallsData.every(
+@@ -67,13 +79,13 @@ describe('cacheContext option', () => {
+     expect(stats.compilation.errors).toMatchSnapshot('errors');
+   });
+ 
+-  it('should generate absolute paths to the project root', async () => {
++  it('should generate absolute paths to the project root 2', async () => {
+     const testId = './basic/index.js';
+     const stats = await webpack(testId, mockBaseWebpackConfig);
+ 
+     const cacheLoaderCallsData = buildCacheLoaderCallsData(
+       mockCacheLoaderWriteFn.mock.calls
+-    );
++    ).sort(sortData);
+ 
+     expect(
+       cacheLoaderCallsData.every((call) =>
+",0,
+89,4ce7867aab09849721882144656891e63dd4c539,4ce7867aab09849721882144656891e63dd4c539,test/__snapshots__/errors.test.js.snap,test/errors.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Better validation error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/errors.test.js b/test/errors.test.js
+deleted file mode 100644
+index b71417a..0000000
+--- a/test/errors.test.js
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import loader, { pitch } from '../src';
+-
+-// Needed for `schema-utils` to not call
+-// process.exit(1) when running tests
+-process.env.JEST = true;
+-
+-describe('Errors', () => {
+-  test('Validation Error', () => {
+-    const err = () => loader.call({ query: { cacheIdentifier: 1 } });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-
+-  test('Validation Error (Pitch)', () => {
+-    const err = () => pitch.call({ query: { cacheIdentifier: 1 } });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-});
+",0,
+89,4ce7867aab09849721882144656891e63dd4c539,4ce7867aab09849721882144656891e63dd4c539,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Better validation error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..99fa734
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,35 @@
++import loader, { pitch } from '../src';
++
++// Needed for `schema-utils` to not call
++// process.exit(1) when running tests
++process.env.JEST = true;
++
++describe('validate options', () => {
++  test('error', () => {
++    const err = () => loader.call({ query: { cacheIdentifier: 1 } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('unknown', () => {
++    const err = () => loader.call({ query: { unknown: 'unknown' } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('error (pitch)', () => {
++    const err = () => pitch.call({ query: { cacheIdentifier: 1 } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('unknown (pitch)', () => {
++    const err = () => pitch.call({ query: { unknown: 'unknown' } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++});
+",0,
+89,4ce7867aab09849721882144656891e63dd4c539,4ce7867aab09849721882144656891e63dd4c539,test/__snapshots__/errors.test.js.snap,test/errors.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Better validation error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/errors.test.js b/test/errors.test.js
+deleted file mode 100644
+index b71417a..0000000
+--- a/test/errors.test.js
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import loader, { pitch } from '../src';
+-
+-// Needed for `schema-utils` to not call
+-// process.exit(1) when running tests
+-process.env.JEST = true;
+-
+-describe('Errors', () => {
+-  test('Validation Error', () => {
+-    const err = () => loader.call({ query: { cacheIdentifier: 1 } });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-
+-  test('Validation Error (Pitch)', () => {
+-    const err = () => pitch.call({ query: { cacheIdentifier: 1 } });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-});
+",0,
+89,4ce7867aab09849721882144656891e63dd4c539,4ce7867aab09849721882144656891e63dd4c539,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Better validation error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..99fa734
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,35 @@
++import loader, { pitch } from '../src';
++
++// Needed for `schema-utils` to not call
++// process.exit(1) when running tests
++process.env.JEST = true;
++
++describe('validate options', () => {
++  test('error', () => {
++    const err = () => loader.call({ query: { cacheIdentifier: 1 } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('unknown', () => {
++    const err = () => loader.call({ query: { unknown: 'unknown' } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('error (pitch)', () => {
++    const err = () => pitch.call({ query: { cacheIdentifier: 1 } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++
++  test('unknown (pitch)', () => {
++    const err = () => pitch.call({ query: { unknown: 'unknown' } });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++});
+",0,

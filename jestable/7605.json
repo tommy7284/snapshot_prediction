@@ -1,0 +1,81 @@
+{
+    "id": 6654347,
+    "name": "xotahal/react-native-material-ui",
+    "isFork": false,
+    "commits": 524,
+    "branches": 25,
+    "releases": 20,
+    "forks": 641,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 90,
+    "stargazers": 3784,
+    "contributors": 67,
+    "size": 1539,
+    "createdAt": "2016-03-24T03:40:53",
+    "pushedAt": "2023-04-19T08:31:36",
+    "updatedAt": "2023-04-24T02:07:49",
+    "totalIssues": 314,
+    "openIssues": 170,
+    "totalPullRequests": 205,
+    "openPullRequests": 44,
+    "blankLines": 839,
+    "codeLines": 6681,
+    "commentLines": 604,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 68
+        },
+        {
+            "blankLines": 713,
+            "language": "JavaScript",
+            "commentLines": 597,
+            "codeLines": 5251
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 116,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1289
+        }
+    ],
+    "lastCommit": "2019-04-19T09:39:12",
+    "lastCommitSHA": "254006ae408201a3c48947fdb1e394a9f1e5ac1d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 174415
+    },
+    "labels": [
+        "android",
+        "dependencies",
+        "released",
+        "semantic-release",
+        "\u274c wontfix",
+        "\u2753 question",
+        "\u2754needs more information",
+        "\u2795 missing component",
+        "\ud83c\udfad duplicate",
+        "\ud83d\udcac discussion",
+        "\ud83d\udcd1 docs",
+        "\ud83d\udcf1 ios",
+        "\ud83d\udd0d read this",
+        "\ud83d\udd26 help wanted",
+        "\ud83e\udd17 enhancement",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": []
+}

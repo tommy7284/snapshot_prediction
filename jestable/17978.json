@@ -1,0 +1,116 @@
+{
+    "id": 70014300,
+    "name": "sql-formatter-org/sql-formatter",
+    "isFork": false,
+    "commits": 2871,
+    "branches": 9,
+    "releases": 126,
+    "forks": 390,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://sql-formatter-org.github.io/sql-formatter/",
+    "watchers": 28,
+    "stargazers": 2140,
+    "contributors": 39,
+    "size": 5297,
+    "createdAt": "2016-09-12T01:09:04",
+    "pushedAt": "2024-04-23T06:25:26",
+    "updatedAt": "2024-04-23T06:25:29",
+    "totalIssues": 392,
+    "openIssues": 40,
+    "totalPullRequests": 330,
+    "openPullRequests": 3,
+    "blankLines": 1743,
+    "codeLines": 24838,
+    "commentLines": 1282,
+    "metrics": [
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1094,
+            "blankLines": 321
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1271,
+            "codeLines": 22626,
+            "blankLines": 1365
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 347,
+            "blankLines": 30
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 200,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 57,
+            "blankLines": 17
+        },
+        {
+            "language": "SVG",
+            "commentLines": 2,
+            "codeLines": 237,
+            "blankLines": 0
+        },
+        {
+            "language": "SQL",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 79,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 171,
+            "blankLines": 9
+        }
+    ],
+    "lastCommit": "2024-04-23T06:24:48",
+    "lastCommitSHA": "7aee25099c8bf19336a9bedf0eef1cfd06a865d9",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 579081,
+        "Nearley": 10622,
+        "JavaScript": 8459,
+        "HTML": 6907,
+        "CSS": 1301
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "feature",
+        "new dialect",
+        "vscode",
+        "wontfix"
+    ],
+    "topics": [
+        "formatter",
+        "javascript",
+        "n1ql",
+        "sql"
+    ]
+}

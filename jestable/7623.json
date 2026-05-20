@@ -1,0 +1,78 @@
+{
+    "id": 6654639,
+    "name": "hyperfuse/react-anime",
+    "isFork": false,
+    "commits": 172,
+    "branches": 9,
+    "releases": 2,
+    "forks": 78,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://alain.xyz/libraries/react-anime",
+    "watchers": 24,
+    "stargazers": 1263,
+    "contributors": 8,
+    "size": 6064,
+    "createdAt": "2016-09-07T01:44:16",
+    "pushedAt": "2021-01-12T10:55:18",
+    "updatedAt": "2021-02-15T12:23:08",
+    "totalIssues": 58,
+    "openIssues": 22,
+    "totalPullRequests": 25,
+    "openPullRequests": 7,
+    "blankLines": 70,
+    "codeLines": 27713,
+    "commentLines": 35,
+    "metrics": [
+        {
+            "blankLines": 38,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25433
+        },
+        {
+            "blankLines": 32,
+            "language": "TypeScript",
+            "commentLines": 35,
+            "codeLines": 2135
+        }
+    ],
+    "lastCommit": "2020-01-01T06:42:37",
+    "lastCommitSHA": "3a0064749a61b16c8cd5730c8d85c9cb9e9ce47e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 3157
+    },
+    "labels": [
+        "animejs parity",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "missing documentation",
+        "question",
+        "types",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,74 @@
+{
+    "id": 6725419,
+    "name": "yeoman/generator-node",
+    "isFork": false,
+    "commits": 473,
+    "branches": 1,
+    "releases": 58,
+    "forks": 163,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "http://yeoman.io",
+    "watchers": 25,
+    "stargazers": 553,
+    "contributors": 53,
+    "size": 982,
+    "createdAt": "2013-05-15T03:15:10",
+    "pushedAt": "2021-01-24T06:35:20",
+    "updatedAt": "2021-02-03T08:53:28",
+    "totalIssues": 131,
+    "openIssues": 3,
+    "totalPullRequests": 158,
+    "openPullRequests": 1,
+    "blankLines": 208,
+    "codeLines": 12566,
+    "commentLines": 5,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11126
+        },
+        {
+            "blankLines": 159,
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 1241
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 49,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 190
+        }
+    ],
+    "lastCommit": "2019-11-17T05:36:24",
+    "lastCommitSHA": "25d1ca4ea2122ce08b88398848e6df41f54cbe1a",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 33327
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "in progress",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

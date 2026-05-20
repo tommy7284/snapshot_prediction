@@ -1,0 +1,68 @@
+{
+    "id": 5509831,
+    "name": "gribnoysup/wunderbar",
+    "isFork": false,
+    "commits": 58,
+    "branches": 6,
+    "releases": 13,
+    "forks": 21,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://npm.im/@gribnoysup/wunderbar",
+    "watchers": 12,
+    "stargazers": 570,
+    "contributors": 2,
+    "size": 1378,
+    "createdAt": "2018-03-05T05:56:25",
+    "pushedAt": "2022-04-09T05:00:49",
+    "updatedAt": "2022-04-11T06:38:50",
+    "totalIssues": 4,
+    "openIssues": 0,
+    "totalPullRequests": 17,
+    "openPullRequests": 5,
+    "blankLines": 137,
+    "codeLines": 5725,
+    "commentLines": 47,
+    "metrics": [
+        {
+            "blankLines": 33,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 80
+        },
+        {
+            "blankLines": 104,
+            "language": "JavaScript",
+            "commentLines": 47,
+            "codeLines": 530
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 5115
+        }
+    ],
+    "lastCommit": "2021-05-07T02:20:07",
+    "lastCommitSHA": "7a8c081b0233155f3c1c81ead99b978b1cb6a598",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 18951
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

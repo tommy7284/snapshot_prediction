@@ -1,0 +1,113 @@
+{
+    "id": 92746326,
+    "name": "ds300/lazyrepo",
+    "isFork": false,
+    "commits": 199,
+    "branches": 13,
+    "releases": 14,
+    "forks": 13,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 8,
+    "stargazers": 511,
+    "contributors": 5,
+    "size": 1169,
+    "createdAt": "2023-04-07T09:23:46",
+    "pushedAt": "2023-11-18T05:54:18",
+    "updatedAt": "2024-01-04T05:17:19",
+    "totalIssues": 36,
+    "openIssues": 14,
+    "totalPullRequests": 100,
+    "openPullRequests": 8,
+    "blankLines": 2597,
+    "codeLines": 16991,
+    "commentLines": 2756,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 1688,
+            "codeLines": 6703,
+            "blankLines": 945
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1049,
+            "codeLines": 3934,
+            "blankLines": 579
+        },
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 1
+        },
+        {
+            "language": "Diff",
+            "commentLines": 8,
+            "codeLines": 7,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 5679,
+            "blankLines": 825
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 5,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 5,
+            "codeLines": 436,
+            "blankLines": 238
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 217,
+            "blankLines": 8
+        }
+    ],
+    "lastCommit": "2023-06-06T08:29:01",
+    "lastCommitSHA": "c67eda9d332b85c135f8a69a23570a67b3b1f698",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 268122,
+        "JavaScript": 153692,
+        "Shell": 70
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "internal",
+        "invalid",
+        "major",
+        "minor",
+        "patch",
+        "performance",
+        "question",
+        "tests",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,102 @@
+{
+    "id": 6924776,
+    "name": "kyechan99/capsule-render",
+    "isFork": false,
+    "commits": 95,
+    "branches": 11,
+    "releases": 0,
+    "forks": 591,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://capsule-render.vercel.app",
+    "watchers": 7,
+    "stargazers": 1106,
+    "contributors": 5,
+    "size": 427,
+    "createdAt": "2020-07-17T07:43:30",
+    "pushedAt": "2024-04-23T03:22:57",
+    "updatedAt": "2024-04-23T07:24:05",
+    "totalIssues": 9,
+    "openIssues": 2,
+    "totalPullRequests": 32,
+    "openPullRequests": 8,
+    "blankLines": 554,
+    "codeLines": 18181,
+    "commentLines": 52,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 16185
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 347,
+            "language": "Markdown",
+            "commentLines": 9,
+            "codeLines": 652
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 6,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 7,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 93
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 195,
+            "language": "JavaScript",
+            "commentLines": 36,
+            "codeLines": 1192
+        }
+    ],
+    "lastCommit": "2024-04-04T11:44:55",
+    "lastCommitSHA": "1944af06be0a5ad381cc2d9cc9d83f55fcce78db",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 46410,
+        "HTML": 1918,
+        "CSS": 1464,
+        "Shell": 166
+    },
+    "labels": [
+        "bug",
+        "color",
+        "dependencies",
+        "feature",
+        "help wanted",
+        "idea",
+        "need more",
+        "question",
+        "typo"
+    ],
+    "topics": [
+        "dynamic",
+        "dynamic-profile",
+        "github-profile",
+        "image-generator",
+        "profile-readme",
+        "readme-generator"
+    ]
+}

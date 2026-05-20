@@ -1,0 +1,98 @@
+{
+    "id": 6714555,
+    "name": "hibiken/react-places-autocomplete",
+    "isFork": false,
+    "commits": 302,
+    "branches": 28,
+    "releases": 24,
+    "forks": 393,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://hibiken.github.io/react-places-autocomplete/",
+    "watchers": 18,
+    "stargazers": 1363,
+    "contributors": 17,
+    "size": 2024,
+    "createdAt": "2016-07-09T11:55:51",
+    "pushedAt": "2023-12-27T10:03:05",
+    "updatedAt": "2024-01-04T03:58:09",
+    "totalIssues": 263,
+    "openIssues": 95,
+    "totalPullRequests": 145,
+    "openPullRequests": 31,
+    "blankLines": 326,
+    "codeLines": 21602,
+    "commentLines": 40,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 19546
+        },
+        {
+            "blankLines": 152,
+            "language": "JavaScript",
+            "commentLines": 40,
+            "codeLines": 1419
+        },
+        {
+            "blankLines": 152,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 469
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 22,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 128
+        }
+    ],
+    "lastCommit": "2023-01-17T09:29:00",
+    "lastCommitSHA": "242c0f5ea37e1fc19d761aae5efcc53d21db7f94",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37697
+    },
+    "labels": [
+        "bug",
+        "changes needed before merge",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "exploring options",
+        "feature request",
+        "github housekeeping",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs investigation",
+        "question",
+        "waiting for elaboration"
+    ],
+    "topics": [
+        "autocomplete",
+        "component",
+        "geocoder",
+        "google-api",
+        "google-maps",
+        "react"
+    ]
+}

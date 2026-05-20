@@ -1,0 +1,122 @@
+{
+    "id": 6685700,
+    "name": "all-contributors/app",
+    "isFork": false,
+    "commits": 345,
+    "branches": 6,
+    "releases": 54,
+    "forks": 144,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://allcontributors.org",
+    "watchers": 16,
+    "stargazers": 547,
+    "contributors": 33,
+    "size": 2637,
+    "createdAt": "2019-01-06T02:33:42",
+    "pushedAt": "2024-03-13T07:09:54",
+    "updatedAt": "2024-03-12T07:26:33",
+    "totalIssues": 187,
+    "openIssues": 50,
+    "totalPullRequests": 284,
+    "openPullRequests": 7,
+    "blankLines": 543,
+    "codeLines": 20885,
+    "commentLines": 233,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 18247
+        },
+        {
+            "blankLines": 97,
+            "language": "Markdown",
+            "commentLines": 6,
+            "codeLines": 255
+        },
+        {
+            "blankLines": 24,
+            "language": "YAML",
+            "commentLines": 105,
+            "codeLines": 78
+        },
+        {
+            "blankLines": 421,
+            "language": "JavaScript",
+            "commentLines": 122,
+            "codeLines": 2273
+        }
+    ],
+    "lastCommit": "2024-03-13T07:09:08",
+    "lastCommitSHA": "86d6bc7baafae823f34e7be2b194c645366ef03e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 79571,
+        "HTML": 586
+    },
+    "labels": [
+        "beginner-friendly",
+        "bug",
+        "bug:confirmed",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "first-timers-only",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "maintenance",
+        "pinned",
+        "priority: critical",
+        "priority: high",
+        "priority: low",
+        "priority: medium",
+        "question",
+        "regression",
+        "released",
+        "spam",
+        "status: accepted",
+        "status: available",
+        "status: in progress",
+        "status: in review",
+        "status: left out",
+        "status: on hold",
+        "status: review needed",
+        "status: waiting for feedback",
+        "translations",
+        "vulnerability",
+        "wontfix"
+    ],
+    "topics": [
+        "acknowledgements",
+        "all-contributors",
+        "contributors",
+        "github-apps",
+        "open-source-tooling",
+        "opensource",
+        "opensource-management",
+        "probot-app",
+        "recognition"
+    ]
+}

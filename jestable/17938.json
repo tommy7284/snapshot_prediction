@@ -1,0 +1,166 @@
+{
+    "id": 69912760,
+    "name": "redocly/redocly-cli",
+    "isFork": false,
+    "commits": 1362,
+    "branches": 31,
+    "releases": 54,
+    "forks": 125,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://redocly.com/docs/cli/",
+    "watchers": 27,
+    "stargazers": 822,
+    "contributors": 92,
+    "size": 25030,
+    "createdAt": "2019-09-10T02:56:25",
+    "pushedAt": "2024-05-10T02:57:19",
+    "updatedAt": "2024-05-10T02:57:22",
+    "totalIssues": 574,
+    "openIssues": 137,
+    "totalPullRequests": 961,
+    "openPullRequests": 7,
+    "blankLines": 12241,
+    "codeLines": 130356,
+    "commentLines": 1255,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 10,
+            "codeLines": 43,
+            "blankLines": 17
+        },
+        {
+            "language": "TOML",
+            "commentLines": 3,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 21,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 800,
+            "codeLines": 41419,
+            "blankLines": 4032
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 24290,
+            "blankLines": 0
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 6,
+            "codeLines": 20,
+            "blankLines": 10
+        },
+        {
+            "language": "Handlebars",
+            "commentLines": 3,
+            "codeLines": 57,
+            "blankLines": 10
+        },
+        {
+            "language": "YAML",
+            "commentLines": 144,
+            "codeLines": 46654,
+            "blankLines": 1037
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 151,
+            "blankLines": 0
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 33,
+            "blankLines": 11
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 10240,
+            "blankLines": 4322
+        },
+        {
+            "language": "PHP",
+            "commentLines": 1,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 271,
+            "codeLines": 7416,
+            "blankLines": 2802
+        }
+    ],
+    "lastCommit": "2024-05-10T02:57:18",
+    "lastCommitSHA": "dbbbad889ca220c565b336978249c80bcf970f4a",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 1311399,
+        "JavaScript": 272104,
+        "Shell": 2261,
+        "Handlebars": 1464,
+        "Dockerfile": 1312,
+        "HTML": 614,
+        "PHP": 232
+    },
+    "labels": [
+        "breaking change",
+        "c0",
+        "c1",
+        "c2",
+        "configurable rules",
+        "decorator",
+        "dependencies",
+        "deploy_dockerhub",
+        "deploy_s3_sandbox",
+        "duplicate",
+        "good first issue",
+        "governance",
+        "gsod",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "no changeset needed",
+        "on_hold",
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+        "question",
+        "refactor",
+        "type: bug",
+        "type: docs",
+        "type: enhancement",
+        "type: idea",
+        "type: maintenance",
+        "wontfix"
+    ],
+    "topics": [
+        "api-governance",
+        "cicd",
+        "linter",
+        "openapi",
+        "openapi-cli",
+        "openapi3",
+        "openapi31",
+        "redoc",
+        "redocly",
+        "swagger2"
+    ]
+}

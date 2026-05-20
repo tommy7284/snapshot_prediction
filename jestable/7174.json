@@ -1,0 +1,86 @@
+{
+    "id": 6597293,
+    "name": "anthonyjgrove/react-google-login",
+    "isFork": false,
+    "commits": 464,
+    "branches": 27,
+    "releases": 29,
+    "forks": 425,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://anthonyjgrove.github.io/react-google-login",
+    "watchers": 21,
+    "stargazers": 1800,
+    "contributors": 72,
+    "size": 4848,
+    "createdAt": "2016-03-01T01:12:19",
+    "pushedAt": "2023-03-04T02:25:48",
+    "updatedAt": "2023-03-27T11:34:33",
+    "totalIssues": 368,
+    "openIssues": 167,
+    "totalPullRequests": 194,
+    "openPullRequests": 37,
+    "blankLines": 320,
+    "codeLines": 21372,
+    "commentLines": 215,
+    "metrics": [
+        {
+            "blankLines": 100,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 495
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 101
+        },
+        {
+            "blankLines": 18,
+            "language": "TypeScript",
+            "commentLines": 6,
+            "codeLines": 160
+        },
+        {
+            "blankLines": 191,
+            "language": "JavaScript",
+            "commentLines": 209,
+            "codeLines": 1235
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 19373
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 8
+        }
+    ],
+    "lastCommit": "2022-12-28T12:00:25",
+    "lastCommitSHA": "a38c7b6c5d44fa01354ae37c6e1a5e807ff36259",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 39853
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "needs reproduction",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

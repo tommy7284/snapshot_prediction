@@ -1,0 +1,81 @@
+{
+    "id": 6246268,
+    "name": "realadvisor/rifm",
+    "isFork": false,
+    "commits": 152,
+    "branches": 21,
+    "releases": 11,
+    "forks": 44,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://realadvisor.github.io/rifm/",
+    "watchers": 13,
+    "stargazers": 1290,
+    "contributors": 9,
+    "size": 9179,
+    "createdAt": "2018-07-05T01:20:58",
+    "pushedAt": "2023-03-04T03:46:27",
+    "updatedAt": "2023-03-27T11:40:14",
+    "totalIssues": 34,
+    "openIssues": 15,
+    "totalPullRequests": 104,
+    "openPullRequests": 19,
+    "blankLines": 459,
+    "codeLines": 2554,
+    "commentLines": 721,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 227
+        },
+        {
+            "blankLines": 45,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 112
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 9,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 51
+        },
+        {
+            "blankLines": 405,
+            "language": "JavaScript",
+            "commentLines": 718,
+            "codeLines": 2161
+        }
+    ],
+    "lastCommit": "2022-04-16T12:49:39",
+    "lastCommitSHA": "b51d843e6991b36a5f7bfb5f7dcb4cd78919be44",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 67918,
+        "TypeScript": 667
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

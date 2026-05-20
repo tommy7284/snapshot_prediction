@@ -1,0 +1,99 @@
+{
+    "id": 6782570,
+    "name": "rebassjs/rebass",
+    "isFork": false,
+    "commits": 2024,
+    "branches": 37,
+    "releases": 4,
+    "forks": 697,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://rebassjs.org",
+    "watchers": 62,
+    "stargazers": 7903,
+    "contributors": 50,
+    "size": 15676,
+    "createdAt": "2015-02-11T02:48:09",
+    "pushedAt": "2023-07-27T03:42:53",
+    "updatedAt": "2023-07-28T05:33:44",
+    "totalIssues": 477,
+    "openIssues": 47,
+    "totalPullRequests": 681,
+    "openPullRequests": 51,
+    "blankLines": 824,
+    "codeLines": 5443,
+    "commentLines": 26,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 380
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 12,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 171,
+            "language": "JavaScript",
+            "commentLines": 14,
+            "codeLines": 2593
+        },
+        {
+            "blankLines": 646,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2429
+        }
+    ],
+    "lastCommit": "2021-08-03T07:54:17",
+    "lastCommitSHA": "31726a00fc81371b5cde9eb35fd01cabc5a21a58",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 55487
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "color",
+        "components",
+        "css",
+        "design-system",
+        "emotion",
+        "grid",
+        "javascript",
+        "layout",
+        "react",
+        "react-components",
+        "rebass",
+        "styled-components",
+        "styled-system",
+        "theme",
+        "typography",
+        "ui"
+    ]
+}

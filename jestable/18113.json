@@ -1,0 +1,82 @@
+{
+    "id": 70357748,
+    "name": "beekai-oss/react-simple-animate",
+    "isFork": false,
+    "commits": 417,
+    "branches": 6,
+    "releases": 68,
+    "forks": 59,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://react-simple-animate.now.sh/",
+    "watchers": 12,
+    "stargazers": 1761,
+    "contributors": 13,
+    "size": 2060,
+    "createdAt": "2017-07-29T12:54:19",
+    "pushedAt": "2023-01-18T09:29:39",
+    "updatedAt": "2023-02-07T07:54:13",
+    "totalIssues": 27,
+    "openIssues": 0,
+    "totalPullRequests": 82,
+    "openPullRequests": 4,
+    "blankLines": 229,
+    "codeLines": 1551,
+    "commentLines": 12,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 98,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 10,
+            "codeLines": 1192,
+            "blankLines": 168
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 73,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 41,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 147,
+            "blankLines": 47
+        }
+    ],
+    "lastCommit": "2023-01-18T09:29:39",
+    "lastCommitSHA": "29c570b811870e534202c55ccc687d79a442bd72",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 36467,
+        "JavaScript": 1796
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "help wanted",
+        "invalid",
+        "question",
+        "resolve",
+        "wontfix"
+    ],
+    "topics": []
+}

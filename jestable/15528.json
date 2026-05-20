@@ -1,0 +1,113 @@
+{
+    "id": 4073634,
+    "name": "twilio/twilio-video-app-react",
+    "isFork": false,
+    "commits": 367,
+    "branches": 113,
+    "releases": 20,
+    "forks": 723,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": null,
+    "watchers": 49,
+    "stargazers": 1794,
+    "contributors": 20,
+    "size": 32828,
+    "createdAt": "2019-10-18T05:02:47",
+    "pushedAt": "2024-05-08T03:44:36",
+    "updatedAt": "2024-05-09T10:04:19",
+    "totalIssues": 377,
+    "openIssues": 35,
+    "totalPullRequests": 444,
+    "openPullRequests": 26,
+    "blankLines": 2562,
+    "codeLines": 102483,
+    "commentLines": 531,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 413,
+            "blankLines": 278
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 86476,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 16,
+            "codeLines": 16,
+            "blankLines": 3
+        },
+        {
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 40,
+            "blankLines": 3
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 34,
+            "blankLines": 0
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 108,
+            "blankLines": 25
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 469,
+            "codeLines": 14630,
+            "blankLines": 2120
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 43,
+            "codeLines": 764,
+            "blankLines": 133
+        }
+    ],
+    "lastCommit": "2024-03-27T04:38:41",
+    "lastCommitSHA": "c1036639699adfef779d00345db9543d9fa60cca",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 624509,
+        "JavaScript": 32818,
+        "Shell": 1860,
+        "HTML": 1543
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "react",
+        "twilio",
+        "video",
+        "webrtc"
+    ]
+}

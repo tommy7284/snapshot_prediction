@@ -1,0 +1,795 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+268,c6bb886026236bbec5f45bbb39f17b03216bc712,68bad6e39de9e79b7ac977555cd4bb164e34431d,src/__snapshots__/index.test.js.snap,src/index.test.js,"This is a bugfix PR.
+
+I noticed that the `<ServerLocation>` component doesn't parse `pathname` `search` and `hash` in the same way as on the client, which means that components that depend on values in `location.search` and `location.hash` don't render the same on server renders as they do on the client.
+
+For instance, with the url `/my-page?a=foo#bar` and this component
+
+```jsx
+// returns { key:value } of params or {} if search is empty
+const parseQueryParams = (search) => ...
+
+const MyPage = ({ location }) => {
+  const query = parseQueryParams(location.search)
+
+  return ( 
+    <div>pathname: [{location.pathname}] query: [{query.a}] hash: [{location.hash}]</div> 
+  )
+}
+
+...
+
+<Router>
+  <MyPage path='/my-page' />
+</Router>
+```
+
+On the client this renders `<div>pathname: [/my-page] query: [foo] hash: [bar]</div>`
+
+Whilst on the server, it renders  `<div>pathname: [/my-page?a=foo#bar] query: [] hash: []</div>`
+
+This is using
+
+```jsx
+<ServerLocation url='/my-page?a=foo#bar'>...</ServerLocation>
+```
+
+Notice how on the server, instead of `pathname` `search` and `hash` being parsed out  from `url` into their respective `location` fields, the entire `url` just gets put in `pathname` and `search` and `hash` are empty -- this is the bug.
+
+---
+
+My PR changes explained:
+
+- 1st commit: Introduce a failing test, showing the above behaviour. You can run this test to verify what I've said above is true.
+- 2nd commit: Fix the failing test by making <ServerLocation /> parse the fields the same way as on the client - i.e. fix the bug.
+- 3rd commit: New passing test verifying same behaviour on the client
+- 4th commit: Update snapshots for 2 other tests which changed due to some necessary changes in the test utils to include search and hash in route test history.","Add new passing test (with snapshot) showing correct client behaviour of parsing out pathname, search & host from url. Other tests' snapshots now fail due to addition of hash to test history util
+
+Forgot to add history.js changes in last commit, test now passes
+","diff --git a/src/index.test.js b/src/index.test.js
+index 70d15a3..bf87e44 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -564,6 +564,27 @@ describe(""Match"", () => {
+   });
+ });
+ 
++describe(""location"", () => {
++  it(""correctly parses pathname, search and hash fields"", () => {
++    let testHistory = createHistory(
++      createMemorySource(
++        ""/print-location"",
++        ""?it=works&with=queries"",
++        ""#and-hashes""
++      )
++    );
++    let wrapper = renderer.create(
++      <LocationProvider history={testHistory}>
++        <Router>
++          <PrintLocation path=""/print-location"" />
++        </Router>
++      </LocationProvider>
++    );
++    const tree = wrapper.toJSON();
++    expect(tree).toMatchSnapshot();
++  });
++});
++
+ // React 16.4 is buggy https://github.com/facebook/react/issues/12968
+ // so some tests are skipped
+ describe(""ServerLocation"", () => {
+",0,
+268,c6bb886026236bbec5f45bbb39f17b03216bc712,68bad6e39de9e79b7ac977555cd4bb164e34431d,src/__snapshots__/index.test.js.snap,src/index.test.js,"This is a bugfix PR.
+
+I noticed that the `<ServerLocation>` component doesn't parse `pathname` `search` and `hash` in the same way as on the client, which means that components that depend on values in `location.search` and `location.hash` don't render the same on server renders as they do on the client.
+
+For instance, with the url `/my-page?a=foo#bar` and this component
+
+```jsx
+// returns { key:value } of params or {} if search is empty
+const parseQueryParams = (search) => ...
+
+const MyPage = ({ location }) => {
+  const query = parseQueryParams(location.search)
+
+  return ( 
+    <div>pathname: [{location.pathname}] query: [{query.a}] hash: [{location.hash}]</div> 
+  )
+}
+
+...
+
+<Router>
+  <MyPage path='/my-page' />
+</Router>
+```
+
+On the client this renders `<div>pathname: [/my-page] query: [foo] hash: [bar]</div>`
+
+Whilst on the server, it renders  `<div>pathname: [/my-page?a=foo#bar] query: [] hash: []</div>`
+
+This is using
+
+```jsx
+<ServerLocation url='/my-page?a=foo#bar'>...</ServerLocation>
+```
+
+Notice how on the server, instead of `pathname` `search` and `hash` being parsed out  from `url` into their respective `location` fields, the entire `url` just gets put in `pathname` and `search` and `hash` are empty -- this is the bug.
+
+---
+
+My PR changes explained:
+
+- 1st commit: Introduce a failing test, showing the above behaviour. You can run this test to verify what I've said above is true.
+- 2nd commit: Fix the failing test by making <ServerLocation /> parse the fields the same way as on the client - i.e. fix the bug.
+- 3rd commit: New passing test verifying same behaviour on the client
+- 4th commit: Update snapshots for 2 other tests which changed due to some necessary changes in the test utils to include search and hash in route test history.","Add new passing test (with snapshot) showing correct client behaviour of parsing out pathname, search & host from url. Other tests' snapshots now fail due to addition of hash to test history util
+
+Forgot to add history.js changes in last commit, test now passes
+","diff --git a/src/index.test.js b/src/index.test.js
+index 70d15a3..bf87e44 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -564,6 +564,27 @@ describe(""Match"", () => {
+   });
+ });
+ 
++describe(""location"", () => {
++  it(""correctly parses pathname, search and hash fields"", () => {
++    let testHistory = createHistory(
++      createMemorySource(
++        ""/print-location"",
++        ""?it=works&with=queries"",
++        ""#and-hashes""
++      )
++    );
++    let wrapper = renderer.create(
++      <LocationProvider history={testHistory}>
++        <Router>
++          <PrintLocation path=""/print-location"" />
++        </Router>
++      </LocationProvider>
++    );
++    const tree = wrapper.toJSON();
++    expect(tree).toMatchSnapshot();
++  });
++});
++
+ // React 16.4 is buggy https://github.com/facebook/react/issues/12968
+ // so some tests are skipped
+ describe(""ServerLocation"", () => {
+",0,
+289,509e706b41a83b7b3c604358d882b400e99eeeb2,509e706b41a83b7b3c604358d882b400e99eeeb2,src/__snapshots__/index.test.js.snap,src/index.test.js,"This pull request adds support for using fragments directly inside of Router components, test included.
+
+Here's what happens when you add a fragment today: https://codesandbox.io/s/festive-sutherland-5b9rf
+
+This pull request fixes this error by checking whether a fragment is present, and if so, traverses the children of that fragment recursively.
+
+Fixes #181 ","Add support for fragments
+","diff --git a/src/index.test.js b/src/index.test.js
+index ad24dbf..80ff19a 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -87,6 +87,20 @@ describe(""Router children"", () => {
+       )
+     });
+   });
++  it.only(""allows for fragments"", () => {
++    snapshot({
++      pathname: ""/report"",
++      element: (
++        <Router>
++          <Home path=""/"" />
++          <React.Fragment>
++            <Dash path=""/dash"" />
++            <AnnualReport path=""/report"" />
++          </React.Fragment>
++        </Router>
++      )
++    });
++  });
+ });
+ 
+ describe(""passed props"", () => {
+",0,
+289,509e706b41a83b7b3c604358d882b400e99eeeb2,509e706b41a83b7b3c604358d882b400e99eeeb2,src/__snapshots__/index.test.js.snap,src/index.test.js,"This pull request adds support for using fragments directly inside of Router components, test included.
+
+Here's what happens when you add a fragment today: https://codesandbox.io/s/festive-sutherland-5b9rf
+
+This pull request fixes this error by checking whether a fragment is present, and if so, traverses the children of that fragment recursively.
+
+Fixes #181 ","Add support for fragments
+","diff --git a/src/index.test.js b/src/index.test.js
+index ad24dbf..80ff19a 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -87,6 +87,20 @@ describe(""Router children"", () => {
+       )
+     });
+   });
++  it.only(""allows for fragments"", () => {
++    snapshot({
++      pathname: ""/report"",
++      element: (
++        <Router>
++          <Home path=""/"" />
++          <React.Fragment>
++            <Dash path=""/dash"" />
++            <AnnualReport path=""/report"" />
++          </React.Fragment>
++        </Router>
++      )
++    });
++  });
+ });
+ 
+ describe(""passed props"", () => {
+",0,
+323,14d1e7dc9e05100082704f7ecb1cc96b21a3d029,1edee1343c3b08f9cb348bb80b4cac924fe84548,src/__snapshots__/index.test.js.snap,src/index.test.js,"I was reading the doc and spot this issue [here](https://reach.tech/router/api/RouteComponent). Figured that maybe I could help sending PR.
+
+> (Now that I’m writing this doc, should probably allow you to just name it like /*filePath … PRs welcome.)
+
+This PR add support for naming trailing wildcard in `RouteComponent` and `<Match>`.
+
+```diff
+render(
+  <Router>
+-    <FileBrowser path=""files/*"" />
++    <FileBrowser path=""files/*filePath"" />
+  </Router>
+)
+
+const FileBrowser = props => {
+-  let filePath = props[""*""]
++  let filePath = props.filePath
+  // URL: ""/files/taxes/2018""
+  // filePath === ""taxes/2018""
+}
+```
+
+The change should be backward-compatible and introduce no breaking changes. Since it's stated in the doc as PR-wanted, I didn't open an issue. Hope that I understand the issue correctly?
+
+- [x] Add tests
+- [x] Update doc","Add support for named trailing wildcard
+","diff --git a/src/index.test.js b/src/index.test.js
+index 4c9086b..54c4bc0 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -749,3 +749,31 @@ describe(""ServerLocation"", () => {
+     expect(markup).toContain(""location.search: [?it=works]"");
+   });
+ });
++
++describe(""trailing wildcard"", () => {
++  it(""passes down wildcard name to the component as prop"", () => {
++    const FileBrowser = ({ filePath }) => filePath;
++
++    snapshot({
++      pathname: `/files/README.md`,
++      element: (
++        <Router>
++          <FileBrowser path=""files/*filePath"" />
++        </Router>
++      )
++    });
++  });
++
++  it(""passes down '*' as the prop name if not specified"", () => {
++    const FileBrowser = props => props[""*""];
++
++    snapshot({
++      pathname: `/files/README.md`,
++      element: (
++        <Router>
++          <FileBrowser path=""files/*"" />
++        </Router>
++      )
++    });
++  });
++});
+",0,
+323,14d1e7dc9e05100082704f7ecb1cc96b21a3d029,1edee1343c3b08f9cb348bb80b4cac924fe84548,src/__snapshots__/index.test.js.snap,src/index.test.js,"I was reading the doc and spot this issue [here](https://reach.tech/router/api/RouteComponent). Figured that maybe I could help sending PR.
+
+> (Now that I’m writing this doc, should probably allow you to just name it like /*filePath … PRs welcome.)
+
+This PR add support for naming trailing wildcard in `RouteComponent` and `<Match>`.
+
+```diff
+render(
+  <Router>
+-    <FileBrowser path=""files/*"" />
++    <FileBrowser path=""files/*filePath"" />
+  </Router>
+)
+
+const FileBrowser = props => {
+-  let filePath = props[""*""]
++  let filePath = props.filePath
+  // URL: ""/files/taxes/2018""
+  // filePath === ""taxes/2018""
+}
+```
+
+The change should be backward-compatible and introduce no breaking changes. Since it's stated in the doc as PR-wanted, I didn't open an issue. Hope that I understand the issue correctly?
+
+- [x] Add tests
+- [x] Update doc","Add support for named trailing wildcard
+","diff --git a/src/index.test.js b/src/index.test.js
+index 4c9086b..54c4bc0 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -749,3 +749,31 @@ describe(""ServerLocation"", () => {
+     expect(markup).toContain(""location.search: [?it=works]"");
+   });
+ });
++
++describe(""trailing wildcard"", () => {
++  it(""passes down wildcard name to the component as prop"", () => {
++    const FileBrowser = ({ filePath }) => filePath;
++
++    snapshot({
++      pathname: `/files/README.md`,
++      element: (
++        <Router>
++          <FileBrowser path=""files/*filePath"" />
++        </Router>
++      )
++    });
++  });
++
++  it(""passes down '*' as the prop name if not specified"", () => {
++    const FileBrowser = props => props[""*""];
++
++    snapshot({
++      pathname: `/files/README.md`,
++      element: (
++        <Router>
++          <FileBrowser path=""files/*"" />
++        </Router>
++      )
++    });
++  });
++});
+",0,
+346,dd5b370ad08b2d702888baccd0a2665838c593b0,03812b134ab254745d3a4c9bcadecfd19317ef2e,src/__snapshots__/index.test.js.snap,src/index.test.js,"# @reach/router, we have the hooks
+
+This PR Adds react-router compatible hook APIs:
+
+- `useMatch(path: string): MatchBag`
+- `useLocation(): Location`
+- `useNavigate(): NavigateFn`
+- `useParams(): { [pathPart: string]: string | number } | null`
+
+Questions & Thoughts:
+
+1. Should we consider naming something like `useRouterMatch` to avoid naming conflicts with user code for being overly generic?
+1. ~Should `useMatch` return the `<Match>{bag =>}` object? I implemented it as a boolean which seems more usable and logical, but I might not know all the use cases.~","Add Hooks APIs
+","diff --git a/src/index.test.js b/src/index.test.js
+index 29b2389..e165da4 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -14,7 +14,11 @@ import {
+   Match,
+   Redirect,
+   isRedirect,
+-  ServerLocation
++  ServerLocation,
++  useLocation,
++  useMatch,
++  useNavigate,
++  useParams
+ } from ""./index"";
+ 
+ let snapshot = ({ pathname, element }) => {
+@@ -765,7 +769,7 @@ describe(""ServerLocation"", () => {
+     </Router>
+   );
+ 
+-  it.skip(""works"", () => {
++  it(""works"", () => {
+     expect(
+       renderToString(
+         <ServerLocation url=""/"">
+@@ -876,3 +880,123 @@ describe(""trailing wildcard"", () => {
+     });
+   });
+ });
++
++describe(""hooks"", () => {
++  describe(""useLocation"", () => {
++    it(""returns the location"", () => {
++      function Fixture() {
++        const location = useLocation();
++        return `path: ${location.pathname}`;
++      }
++
++      snapshot({
++        pathname: `/this/path/is/returned`,
++        element: (
++          <Router>
++            <Fixture path=""/this/path/is/returned"" />
++          </Router>
++        )
++      });
++    });
++
++    it(""throws an error if a location context hasnt been rendered"", () => {
++      function Fixture() {
++        const location = useLocation();
++        return `path: ${location.pathname}`;
++      }
++
++      expect(() => {
++        renderToString(<Fixture />);
++      }).toThrow(
++        ""useLocation hook was used but a LocationContext.Provider was not found in the parent tree. Make sure this is used in a component that is a child of Router""
++      );
++    });
++  });
++
++  describe(""useNavigate"", () => {
++    it(""navigates relative"", async () => {
++      let navigate;
++
++      const Foo = () => {
++        navigate = useNavigate();
++        return `IF_THIS_IS_IN_SNAPSHOT_BAAAAADDDDDDDD`;
++      };
++
++      const Bar = () => `THIS_IS_WHAT_WE_WANT_TO_SEE_IN_SNAPSHOT`;
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"" />
++          <Bar path=""/bar"" />
++        </Router>,
++        ""/foo""
++      );
++      snapshot();
++      await navigate(""/bar"");
++      snapshot();
++    });
++  });
++
++  describe(""useParams"", () => {
++    it(""gives an object of the params from the route"", () => {
++      const Fixture = () => {
++        const params = useParams();
++        return JSON.stringify(params);
++      };
++
++      snapshot({
++        pathname: ""/foo/123/baz/hi"",
++        element: (
++          <Router>
++            <Fixture path=""/foo/:bar/baz/:bax"" />
++          </Router>
++        )
++      });
++    });
++  });
++
++  describe(""useMatch"", () => {
++    it(""matches on direct routes"", async () => {
++      let match;
++
++      const Foo = () => {
++        match = useMatch(""/foo"");
++        return ``;
++      };
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"" />
++        </Router>,
++        ""/foo""
++      );
++
++      expect(match).toBe(true);
++    });
++
++    it(""matches on matching child routes"", () => {
++      let matchExact;
++      let matchSplat;
++
++      const Foo = () => {
++        matchExact = useMatch(""/foo"");
++        matchSplat = useMatch(""/foo/*"");
++        return ``;
++      };
++
++      const Bar = () => """";
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"">
++            <Bar path=""/bar"" />
++          </Foo>
++        </Router>,
++        ""/foo/bar""
++      );
++
++      expect(matchExact).toBe(false);
++      expect(matchSplat).toBe(true);
++    });
++  });
++});
+",0,
+346,dd5b370ad08b2d702888baccd0a2665838c593b0,03812b134ab254745d3a4c9bcadecfd19317ef2e,src/__snapshots__/index.test.js.snap,src/index.test.js,"# @reach/router, we have the hooks
+
+This PR Adds react-router compatible hook APIs:
+
+- `useMatch(path: string): MatchBag`
+- `useLocation(): Location`
+- `useNavigate(): NavigateFn`
+- `useParams(): { [pathPart: string]: string | number } | null`
+
+Questions & Thoughts:
+
+1. Should we consider naming something like `useRouterMatch` to avoid naming conflicts with user code for being overly generic?
+1. ~Should `useMatch` return the `<Match>{bag =>}` object? I implemented it as a boolean which seems more usable and logical, but I might not know all the use cases.~","Add Hooks APIs
+","diff --git a/src/index.test.js b/src/index.test.js
+index 29b2389..e165da4 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -14,7 +14,11 @@ import {
+   Match,
+   Redirect,
+   isRedirect,
+-  ServerLocation
++  ServerLocation,
++  useLocation,
++  useMatch,
++  useNavigate,
++  useParams
+ } from ""./index"";
+ 
+ let snapshot = ({ pathname, element }) => {
+@@ -765,7 +769,7 @@ describe(""ServerLocation"", () => {
+     </Router>
+   );
+ 
+-  it.skip(""works"", () => {
++  it(""works"", () => {
+     expect(
+       renderToString(
+         <ServerLocation url=""/"">
+@@ -876,3 +880,123 @@ describe(""trailing wildcard"", () => {
+     });
+   });
+ });
++
++describe(""hooks"", () => {
++  describe(""useLocation"", () => {
++    it(""returns the location"", () => {
++      function Fixture() {
++        const location = useLocation();
++        return `path: ${location.pathname}`;
++      }
++
++      snapshot({
++        pathname: `/this/path/is/returned`,
++        element: (
++          <Router>
++            <Fixture path=""/this/path/is/returned"" />
++          </Router>
++        )
++      });
++    });
++
++    it(""throws an error if a location context hasnt been rendered"", () => {
++      function Fixture() {
++        const location = useLocation();
++        return `path: ${location.pathname}`;
++      }
++
++      expect(() => {
++        renderToString(<Fixture />);
++      }).toThrow(
++        ""useLocation hook was used but a LocationContext.Provider was not found in the parent tree. Make sure this is used in a component that is a child of Router""
++      );
++    });
++  });
++
++  describe(""useNavigate"", () => {
++    it(""navigates relative"", async () => {
++      let navigate;
++
++      const Foo = () => {
++        navigate = useNavigate();
++        return `IF_THIS_IS_IN_SNAPSHOT_BAAAAADDDDDDDD`;
++      };
++
++      const Bar = () => `THIS_IS_WHAT_WE_WANT_TO_SEE_IN_SNAPSHOT`;
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"" />
++          <Bar path=""/bar"" />
++        </Router>,
++        ""/foo""
++      );
++      snapshot();
++      await navigate(""/bar"");
++      snapshot();
++    });
++  });
++
++  describe(""useParams"", () => {
++    it(""gives an object of the params from the route"", () => {
++      const Fixture = () => {
++        const params = useParams();
++        return JSON.stringify(params);
++      };
++
++      snapshot({
++        pathname: ""/foo/123/baz/hi"",
++        element: (
++          <Router>
++            <Fixture path=""/foo/:bar/baz/:bax"" />
++          </Router>
++        )
++      });
++    });
++  });
++
++  describe(""useMatch"", () => {
++    it(""matches on direct routes"", async () => {
++      let match;
++
++      const Foo = () => {
++        match = useMatch(""/foo"");
++        return ``;
++      };
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"" />
++        </Router>,
++        ""/foo""
++      );
++
++      expect(match).toBe(true);
++    });
++
++    it(""matches on matching child routes"", () => {
++      let matchExact;
++      let matchSplat;
++
++      const Foo = () => {
++        matchExact = useMatch(""/foo"");
++        matchSplat = useMatch(""/foo/*"");
++        return ``;
++      };
++
++      const Bar = () => """";
++
++      const { snapshot } = runWithNavigation(
++        <Router>
++          <Foo path=""/foo"">
++            <Bar path=""/bar"" />
++          </Foo>
++        </Router>,
++        ""/foo/bar""
++      );
++
++      expect(matchExact).toBe(false);
++      expect(matchSplat).toBe(true);
++    });
++  });
++});
+",0,
+99,6ce1ba0199a33729483e350c170972be27cff234,6ce1ba0199a33729483e350c170972be27cff234,src/__snapshots__/index.test.js.snap,src/index.test.js,"This PR fixes the `location` prop on `<Router />` not being passed to nested paths.
+
+I came across this issue when trying to implement a modals/overlay system similar to React Router v4 in which `location` is captured and stored as `previousLocation` to use on the underlying UI that needs to still display the old location.
+
+Currently this setup won't work with path nesting because the `location` prop is not passed to the cloned nested children that get wrapped in another `<Router />`, only the `primary` prop is passed along.
+
+*Example:*
+```
+<React.Fragment>
+  <Router location={previousLocation}>
+    <NestedComponent path=""/"">
+      <Dash path=""/"" />
+      <Test path=""test"" />
+    </NestedComponent>
+  </Router>
+
+  <Router>
+    <TestModal path=""test"" />
+  </Router>
+</React.Fragment>
+```
+
+In the example above `<Dash />` and `<Test />`'s `location` prop should match `previousLocation`.
+
+I am assuming this was just overlooked and should be considered a bug, as I can't see any reason why location shouldn't be passed along.
+
+Cheers. ","fix: pass router location prop to nested paths
+","diff --git a/src/index.test.js b/src/index.test.js
+index 4095a3e..6c6ac54 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -135,6 +135,24 @@ describe(""passed props"", () => {
+       )
+     });
+   });
++
++  it(""router location prop to nested path"", () => {
++    const pathname = ""/reports/1"";
++    const history = createHistory(createMemorySource(pathname));
++    const location = history.location;
++
++    snapshot({
++      pathname: ""/"",
++      element: (
++        <Router location={location}>
++          <Dash path=""/"">
++            <Dash path=""/"" />
++            <Reports path=""reports/:reportId"" />
++          </Dash>
++        </Router>
++      )
++    });
++  });
+ });
+ 
+ describe(""route ranking"", () => {
+",0,
+99,6ce1ba0199a33729483e350c170972be27cff234,6ce1ba0199a33729483e350c170972be27cff234,src/__snapshots__/index.test.js.snap,src/index.test.js,"This PR fixes the `location` prop on `<Router />` not being passed to nested paths.
+
+I came across this issue when trying to implement a modals/overlay system similar to React Router v4 in which `location` is captured and stored as `previousLocation` to use on the underlying UI that needs to still display the old location.
+
+Currently this setup won't work with path nesting because the `location` prop is not passed to the cloned nested children that get wrapped in another `<Router />`, only the `primary` prop is passed along.
+
+*Example:*
+```
+<React.Fragment>
+  <Router location={previousLocation}>
+    <NestedComponent path=""/"">
+      <Dash path=""/"" />
+      <Test path=""test"" />
+    </NestedComponent>
+  </Router>
+
+  <Router>
+    <TestModal path=""test"" />
+  </Router>
+</React.Fragment>
+```
+
+In the example above `<Dash />` and `<Test />`'s `location` prop should match `previousLocation`.
+
+I am assuming this was just overlooked and should be considered a bug, as I can't see any reason why location shouldn't be passed along.
+
+Cheers. ","fix: pass router location prop to nested paths
+","diff --git a/src/index.test.js b/src/index.test.js
+index 4095a3e..6c6ac54 100644
+--- a/src/index.test.js
++++ b/src/index.test.js
+@@ -135,6 +135,24 @@ describe(""passed props"", () => {
+       )
+     });
+   });
++
++  it(""router location prop to nested path"", () => {
++    const pathname = ""/reports/1"";
++    const history = createHistory(createMemorySource(pathname));
++    const location = history.location;
++
++    snapshot({
++      pathname: ""/"",
++      element: (
++        <Router location={location}>
++          <Dash path=""/"">
++            <Dash path=""/"" />
++            <Reports path=""reports/:reportId"" />
++          </Dash>
++        </Router>
++      )
++    });
++  });
+ });
+ 
+ describe(""route ranking"", () => {
+",0,

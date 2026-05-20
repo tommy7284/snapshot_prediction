@@ -1,0 +1,150 @@
+{
+    "id": 4056717,
+    "name": "electron/fiddle",
+    "isFork": false,
+    "commits": 2014,
+    "branches": 27,
+    "releases": 68,
+    "forks": 679,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://electronjs.org/fiddle",
+    "watchers": 148,
+    "stargazers": 7327,
+    "contributors": 71,
+    "size": 17478,
+    "createdAt": "2018-06-07T10:52:57",
+    "pushedAt": "2024-05-10T02:35:52",
+    "updatedAt": "2024-05-10T02:35:57",
+    "totalIssues": 430,
+    "openIssues": 66,
+    "totalPullRequests": 1127,
+    "openPullRequests": 8,
+    "blankLines": 4568,
+    "codeLines": 26897,
+    "commentLines": 2557,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 393,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 147,
+            "blankLines": 61
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 24,
+            "blankLines": 0
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 13,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1592,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 11,
+            "codeLines": 26,
+            "blankLines": 13
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2243,
+            "codeLines": 22725,
+            "blankLines": 4090
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 264,
+            "codeLines": 768,
+            "blankLines": 175
+        },
+        {
+            "language": "Less",
+            "commentLines": 35,
+            "codeLines": 1020,
+            "blankLines": 208
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 2,
+            "codeLines": 188,
+            "blankLines": 8
+        }
+    ],
+    "lastCommit": "2024-05-10T02:35:52",
+    "lastCommitSHA": "406c61b13f0677b122cbd0d125b679d4975e8ffa",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 847333,
+        "JavaScript": 33379,
+        "Less": 22402,
+        "HTML": 4483,
+        "Shell": 1494
+    },
+    "labels": [
+        "*sentry",
+        ":beetle: bug",
+        ":question: more-information-needed",
+        ":sparkles: enhancement",
+        ":test_tube: tests",
+        ":wrench: refactor",
+        "area:bisect",
+        "area:console",
+        "area:editors",
+        "area:gist",
+        "area:packages",
+        "area:performance",
+        "area:settings",
+        "area:show-me",
+        "area:themes",
+        "area:versions",
+        "dependencies",
+        "esm",
+        "github_actions",
+        "good first issue",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "javascript",
+        "platform:linux",
+        "platform:macos",
+        "platform:windows",
+        "stale",
+        "\ud83c\udf1e google summer of code",
+        "\ud83d\udc6f\u200d\u2642\ufe0f duplicate",
+        "\ud83d\udcac  question",
+        "\ud83d\udd3a upstream",
+        "\ud83d\uddd1\ufe0f wontfix",
+        "\ud83d\udeab invalid"
+    ],
+    "topics": [
+        "desktop",
+        "electron",
+        "hacktoberfest",
+        "javascript"
+    ]
+}

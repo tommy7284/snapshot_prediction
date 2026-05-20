@@ -1,0 +1,105 @@
+{
+    "id": 88131992,
+    "name": "wuba/react-native-echarts",
+    "isFork": false,
+    "commits": 126,
+    "branches": 8,
+    "releases": 16,
+    "forks": 22,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://wuba.github.io/react-native-echarts/",
+    "watchers": 19,
+    "stargazers": 656,
+    "contributors": 10,
+    "size": 232780,
+    "createdAt": "2023-01-09T06:12:24",
+    "pushedAt": "2024-05-10T06:56:51",
+    "updatedAt": "2024-05-10T06:56:55",
+    "totalIssues": 76,
+    "openIssues": 17,
+    "totalPullRequests": 84,
+    "openPullRequests": 0,
+    "blankLines": 310,
+    "codeLines": 2614,
+    "commentLines": 84,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 271,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 165,
+            "blankLines": 16
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 444,
+            "blankLines": 153
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 74,
+            "codeLines": 1606,
+            "blankLines": 116
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 9,
+            "codeLines": 116,
+            "blankLines": 20
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 4
+        }
+    ],
+    "lastCommit": "2024-05-10T06:50:38",
+    "lastCommitSHA": "0da22ff4ce70fe3150aec02b6c74cfb7ae8b12cf",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 47181,
+        "JavaScript": 3307
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "android",
+        "app",
+        "chart",
+        "charts",
+        "echarts",
+        "ios",
+        "react",
+        "react-native",
+        "skia",
+        "svg"
+    ]
+}

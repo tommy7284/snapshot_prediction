@@ -1,0 +1,536 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1045,5ce1d9f2b48278ce027089b1bff61dfc7ac33d16,5ce1d9f2b48278ce027089b1bff61dfc7ac33d16,"Our tests test _against_ documentation.js itself. Which is neat, but has the disadvantage that they include the version number of documentation.js, so every time that we release a version, the tests break because the version number doesn't match.
+
+This PR that I should have written a long time ago sanitizes that version number, so tests continue to pass even when we release new versions.","test: Make tests resilient between versions: no more annoying chores
+","diff --git a/__tests__/bin.js b/__tests__/bin.js
+index 7ced569..a6f3e2c 100644
+--- a/__tests__/bin.js
++++ b/__tests__/bin.js
+@@ -171,7 +171,8 @@ test('--config', async function() {
+     {},
+     false
+   );
+-  const output = fs.readFileSync(outputIndex, 'utf8');
++  let output = fs.readFileSync(outputIndex, 'utf8');
++  output = output.replace(/documentation \d+\.\d+\.\d+/g, '');
+   expect(output).toMatchSnapshot();
+ });
+ 
+
+diff --git a/__tests__/test.js b/__tests__/test.js
+index 2f65335..666de22 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -103,7 +103,9 @@ describe('html', function() {
+         const clean = html
+           .sort((a, b) => a.path > b.path)
+           .filter(r => r.path.match(/(html)$/))
+-          .map(r => r.contents)
++          .map(r =>
++            r.contents.toString().replace(/documentation \d+\.\d+\.\d+/g, '')
++          )
+           .join('\n');
+         expect(clean).toMatchSnapshot();
+       });
+",0,,4,15,2,1,4,15
+1052,b33d0004b3a7b43e8e462ee77a4d2354f02c8382,b33d0004b3a7b43e8e462ee77a4d2354f02c8382,,"test: Another tweak to make tests resistant to versioning
+","diff --git a/__tests__/bin.js b/__tests__/bin.js
+index a6f3e2c..d2a5514 100644
+--- a/__tests__/bin.js
++++ b/__tests__/bin.js
+@@ -172,7 +172,9 @@ test('--config', async function() {
+     false
+   );
+   let output = fs.readFileSync(outputIndex, 'utf8');
+-  output = output.replace(/documentation \d+\.\d+\.\d+/g, '');
++  output = output
++    .replace(/documentation \d+\.\d+\.\d+/g, '')
++    .replace(/<code>\d+\.\d+\.\d+<\/code>/g, '');
+   expect(output).toMatchSnapshot();
+ });
+ 
+
+diff --git a/__tests__/test.js b/__tests__/test.js
+index 666de22..d607a53 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -104,7 +104,10 @@ describe('html', function() {
+           .sort((a, b) => a.path > b.path)
+           .filter(r => r.path.match(/(html)$/))
+           .map(r =>
+-            r.contents.toString().replace(/documentation \d+\.\d+\.\d+/g, '')
++            r.contents
++              .toString()
++              .replace(/documentation \d+\.\d+\.\d+/g, '')
++              .replace(/<code>\d+\.\d+\.\d+<\/code>/g, '')
+           )
+           .join('\n');
+         expect(clean).toMatchSnapshot();
+",0,,4,13,2,1,4,13
+1056,0d5d5c82cde9dfd0c8c6576f10e9936fc1761319,5f35705584c885f3b10c7d05e1b35567da6909b1,,"test: Normalize vue test output, rename to avoid interfering with other test cases
+","diff --git a/__tests__/test.js b/__tests__/test.js
+index 2dae040..69ba36f 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -237,9 +237,7 @@ test('.lint with bad input', async function() {
+ 
+ test('Vue file', async function() {
+   await pify(chdir)(__dirname);
+-  const data = await documentation.build(
+-    '__tests__/fixture/simple.input.vue',
+-    {}
+-  );
++  const data = await documentation.build('__tests__/fixture/vue.input.vue', {});
++  normalize(data);
+   expect(data).toMatchSnapshot();
+ });
+",0,,4,343,1,8,9,357
+1058,64fdd1fd19e53befad656caf9b9ce9ff9501e7f0,64fdd1fd19e53befad656caf9b9ce9ff9501e7f0,fix #1057,"Added fresh snapshot
+",,0,,1,281,1,3,3,312
+1061,bdc5a2784f5692321623c08fef0edc08adb7d91c,bdc5a2784f5692321623c08fef0edc08adb7d91c,"…cripts
+
+Fixes #1060","fix(vue): Make vue parser tolerant of components that don't contain scripts
+
+Fixes #1060
+","diff --git a/__tests__/test.js b/__tests__/test.js
+index 8246306..eaf9cc0 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -242,6 +242,16 @@ test('Vue file', async function() {
+   expect(data).toMatchSnapshot();
+ });
+ 
++test('Vue file', async function() {
++  await pify(chdir)(__dirname);
++  const data = await documentation.build(
++    '__tests__/fixture/vue-no-script.input.vue',
++    {}
++  );
++  normalize(data);
++  expect(data).toMatchSnapshot();
++});
++
+ test('Use Source attribute only', async function() {
+   await pify(chdir)(__dirname);
+   const documentationSource = `
+",0,,4,23,1,1,4,23
+1077,ae789deac79d359819e1ace6f6dc967183674c81,ae789deac79d359819e1ace6f6dc967183674c81,,"fix: Don't detect non-markdown readme types, add tests
+","diff --git a/__tests__/bin-readme.js b/__tests__/bin-readme.js
+index 19c26cd..51f6441 100644
+--- a/__tests__/bin-readme.js
++++ b/__tests__/bin-readme.js
+@@ -22,6 +22,29 @@ function documentation(args, options, parseJSON) {
+   });
+ }
+ 
++describe('readme autodetection of different filenames', function() {
++  const fixtures = path.join(__dirname, 'fixture/readme');
++  const sourceFile = path.join(fixtures, 'index.js');
++  let d;
++  let removeCallback;
++
++  beforeEach(() => {
++    const dirEntry = tmp.dirSync({ unsafeCleanup: true });
++    d = dirEntry.name;
++    fs.copySync(
++      path.join(fixtures, 'README.input.md'),
++      path.join(d, 'readme.markdown')
++    );
++    fs.copySync(path.join(fixtures, 'index.js'), path.join(d, 'index.js'));
++  });
++
++  test('updates readme.markdown', async function() {
++    await documentation(['readme index.js -s API'], { cwd: d });
++    const outputPath = path.join(d, 'readme.markdown');
++    expect(fs.readFileSync(outputPath, 'utf-8')).toMatchSnapshot();
++  });
++});
++
+ describe('readme command', function() {
+   const fixtures = path.join(__dirname, 'fixture/readme');
+   const sourceFile = path.join(fixtures, 'index.js');
+",0,,3,62,1,4,4,86
+1114,c804df4e95c99a0ecf9663c7f74cb86430860d89,c804df4e95c99a0ecf9663c7f74cb86430860d89,update babel parser (goal is to support optional chaining in our codebase),"Update babel parser
+",,0,,25,2531,1,1,25,2531
+1134,ab3d1dc5ffa45cdb4d7ccbb4b89f031054e2ebe6,ab3d1dc5ffa45cdb4d7ccbb4b89f031054e2ebe6,This upgrades babel and related dependencies that have have since been bumped from rc to stables.,"chore: Update test fixture
+",,0,,1,2,1,3,5,4798
+1158,87cacd6e851d707829e892d0f8c860ce98ac1966,87cacd6e851d707829e892d0f8c860ce98ac1966,,"test: Make tests resilient even for tagged semvers
+","diff --git a/__tests__/bin.js b/__tests__/bin.js
+index d2a5514..a5155a7 100644
+--- a/__tests__/bin.js
++++ b/__tests__/bin.js
+@@ -159,6 +159,7 @@ describe('invalid arguments', function() {
+   });
+ });
+ 
++const semver = /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/gi;
+ test('--config', async function() {
+   const dst = path.join(os.tmpdir(), (Date.now() + Math.random()).toString());
+   fs.mkdirSync(dst);
+@@ -172,9 +173,8 @@ test('--config', async function() {
+     false
+   );
+   let output = fs.readFileSync(outputIndex, 'utf8');
+-  output = output
+-    .replace(/documentation \d+\.\d+\.\d+/g, '')
+-    .replace(/<code>\d+\.\d+\.\d+<\/code>/g, '');
++  const version = require('../package.json').version;
++  output = output.replace(new RegExp(version.replace(/\./g, '\\.'), 'g'), '');
+   expect(output).toMatchSnapshot();
+ });
+ 
+",0,,3,14,2,1,3,14
+1161,9db088214b943d9ee3c112a91458cf01caec983c,c3f804ad7402cd9a98c8464b00c59668f88639bd,,"fix: add tests
+","diff --git a/__tests__/bin.js b/__tests__/bin.js
+index a5155a7..83869e2 100644
+--- a/__tests__/bin.js
++++ b/__tests__/bin.js
+@@ -408,3 +408,15 @@ test('build large file without error (no deoptimized styling error)', function()
+     fs.unlinkSync(dstFile);
+   });
+ });
++
++test('should use browser resolve', async function() {
++  const data = await documentation(['build fixture/resolve/index.js']);
++  expect(normalize(data)).toMatchSnapshot();
++});
++
++test('should use node resolve', async function() {
++  const data = await documentation([
++    'build fixture/resolve/index.js --resolve node'
++  ]);
++  expect(normalize(data)).toMatchSnapshot();
++});
+",0,,5,462,1,4,10,480
+1192,1cdac3ed5be44ae756965aa87f24766ff9b62032,ddde11c01da4f77c2ad7f65425e7b7bf2349c227,"Intended wins:
+
+- Makes it easier for people to contribute to documentation.js
+- Reduces dependency load
+
+Cons:
+
+- It's a big change
+- We lose type safety","refactor: Remove flow, required babel step
+",,0,,60,453,2,5,65,1651
+1230,9b4e1c9253bf46898cb836509941e745717add67,9b4e1c9253bf46898cb836509941e745717add67,Fixes #1229,"Merge explicit and inferred param defaults
+","diff --git a/__tests__/lib/infer/params.js b/__tests__/lib/infer/params.js
+index 7647e8d..1a7e238 100644
+--- a/__tests__/lib/infer/params.js
++++ b/__tests__/lib/infer/params.js
+@@ -191,4 +191,15 @@ test('inferParams', function() {
+       }
+     `).params
+   ).toEqual([]);
++
++  expect(
++    evaluate(
++      `
++    /** Test
++     * @param x
++    */
++    function f(x: number = 4) {}
++  `
++    ).params
++  ).toMatchSnapshot();
+ });
+",0,,3,30,1,1,3,30
+1236,aa604ec3f4a8765d197e2860947af936f55b76c5,9e01b6b160b07055c8602c25a9f9eec57ce732e0,,"feat: TypeScript support & inference
+","diff --git a/__tests__/lib/infer/params.js b/__tests__/lib/infer/params.js
+index 1a7e238..ae3cf1c 100644
+--- a/__tests__/lib/infer/params.js
++++ b/__tests__/lib/infer/params.js
+@@ -202,4 +202,87 @@ test('inferParams', function() {
+   `
+     ).params
+   ).toMatchSnapshot();
++
++  expect(
++    evaluate(`interface Foo { /** b */ b(v: string): void; }`).params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`type Foo = { /** b */ b(v: string): void }`).params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`interface Foo { /** b */ b(...v: string): void; }`).params
++  ).toMatchSnapshot();
++});
++
++test('inferParams (typescript)', function() {
++  expect(
++    evaluate(`/** Test */function f(a: string) {};`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`/** Test */function f([a: string, b, {c}]) {};`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(
++      `
++    /** Test
++     * @param x
++    */
++    function f(x: number = 4) {}
++  `
++  , 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(
++      `
++    /** Test */
++    function f(opts: { x: string }) {}
++  ` , 'test.ts'
++    ).params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(
++      `
++    /** Test */
++    function f(opts: { [foo]: string }) {}
++  ` , 'test.ts'
++    ).params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`/** Test */function f(...a: string) {};`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`/** Test */function f(a?: string) {};`).params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`/** Test */function f(a?: string) {};`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`/** Test */function f(a?: string);`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`abstract class Foo { /** */ abstract f(a?: string); }`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`interface Foo { /** b */ b(v: string): void; }`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`type Foo = { /** b */ b(v: string): void }`, 'test.ts').params
++  ).toMatchSnapshot();
++
++  expect(
++    evaluate(`interface Foo { /** b */ b(...v: string): void; }`, 'test.ts').params
++  ).toMatchSnapshot();
+ });
+",0,,37,3060,3,2,37,3100
+1241,32e3a17a09a32570600f13d374317c74dcda6489,32e3a17a09a32570600f13d374317c74dcda6489,"BREAKING CHANGE: this removes support for legacy decorators, because
+in one place we had legacy and in another we didn't.
+
+TODO:
+
+- [x] Markdown test snapshots are looking funky and wrong.","test: Fix markdown test snapshots
+","diff --git a/__tests__/test.js b/__tests__/test.js
+index 7d47041..63fa336 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -129,7 +129,7 @@ describe('outputs', function() {
+           const md = await outputMarkdown(_.cloneDeep(result), {
+             markdownToc: true
+           });
+-          expect(result.toString()).toMatchSnapshot();
++          expect(md.toString()).toMatchSnapshot();
+         });
+ 
+         if (file.match(/es6.input.js/)) {
+",0,,2,2194,1,2,6,2575
+895,c2ab10d4701597212587c2aa8130274439dae3d6,c2ab10d4701597212587c2aa8130274439dae3d6,"Fixes #582
+
+See `docs/CONFIG.md` for usage, but this is pretty much just as straightforward an implementation of #582 as I could manage.","feat: groups in toc
+","diff --git a/__tests__/lib/sort.js b/__tests__/lib/sort.js
+index cdc7b2a..099b671 100644
+--- a/__tests__/lib/sort.js
++++ b/__tests__/lib/sort.js
+@@ -87,7 +87,13 @@ test('sort stream with configuration and a section', function() {
+         }
+       }
+     },
+-    kind: 'note'
++    kind: 'note',
++    path: [
++      {
++        name: 'This is the banana type',
++        scope: 'static'
++      }
++    ]
+   };
+ 
+   expect(
+@@ -161,7 +167,13 @@ test('sort an already-sorted stream containing a section/description', function(
+         }
+       }
+     },
+-    kind: 'note'
++    kind: 'note',
++    path: [
++      {
++        name: 'This is the banana type',
++        scope: 'static'
++      }
++    ]
+   };
+ 
+   var config = {
+@@ -180,7 +192,7 @@ test('sort toc with files', function() {
+ 
+   var snowflake = {
+     name: 'snowflake',
+-    file: 'test/fixture/snowflake.md'
++    file: path.join(__dirname, '../fixture/snowflake.md')
+   };
+ 
+   expect(
+
+diff --git a/__tests__/test.js b/__tests__/test.js
+index cbcbbac..604ae88 100644
+--- a/__tests__/test.js
++++ b/__tests__/test.js
+@@ -179,6 +179,15 @@ test('config', async function() {
+   expect(md).toMatchSnapshot();
+ });
+ 
++test('config with nested sections', async function() {
++  var file = path.join(__dirname, 'fixture', 'sections.input.js');
++  const out = await documentation.build([file], {
++    config: path.join(__dirname, 'fixture', 'sections.config.yml')
++  });
++  const md = await outputMarkdown(out, {});
++  expect(md).toMatchSnapshot();
++});
++
+ test('multi-file input', async function() {
+   const result = await documentation.build(
+     [
+",0,,10,335,2,1,10,335
+897,12ae0b4cdf1c4f75601881e7377a146a274b5322,12ae0b4cdf1c4f75601881e7377a146a274b5322,"The previous support for `@name` tags suppressing inference from surrounding code was ad-hoc and incomplete. This commit makes a `@name` tag (or a tag acting as a `@kind`/`@name` shorthand combo, like `@function`) detach the `ast` field from the comment context, so that the surrounding code will be universally ignored per the JSDoc spec.
+
+Close #896","fix: @name tag disconnects comment
+
+The previous support for @name tags suppressing inference from
+surrounding code was ad-hoc and incomplete. This commit makes a @name
+tag (or a tag acting as a @kind/@name shorthand combo, like @function)
+detach the `ast` field from the comment context, so that the surrounding
+code will be universally ignored per the JSDoc spec.
+","diff --git a/__tests__/bin.js b/__tests__/bin.js
+index 084cfe4..b5b8ae5 100644
+--- a/__tests__/bin.js
++++ b/__tests__/bin.js
+@@ -163,10 +163,6 @@ test('--config', async function() {
+   var dst = path.join(os.tmpdir(), (Date.now() + Math.random()).toString());
+   fs.mkdirSync(dst);
+   var outputIndex = path.join(dst, 'index.html');
+-  var expectedOutputPath = path.join(
+-    __dirname,
+-    'fixture/html/nested.config-output.html'
+-  );
+   const data = await documentation(
+     [
+       'build -c fixture/html/documentation.yml -f html fixture/html/nested.input.js -o ' +
+",0,,14,1504,2,1,14,1504
+914,699e44bbf7fc6d7d4272054978a16097ef9e9fe8,699e44bbf7fc6d7d4272054978a16097ef9e9fe8,,"test: Add stronger jest tests for inference
+","diff --git a/__tests__/lib/infer/params.js b/__tests__/lib/infer/params.js
+index 66ea1b2..2dbf7e6 100644
+--- a/__tests__/lib/infer/params.js
++++ b/__tests__/lib/infer/params.js
+@@ -94,6 +94,10 @@ test('inferParams', function() {
+   ).toMatchSnapshot();
+ 
+   expect(
++    evaluate(`/** Test */function f([a: string, b, {c}]) {};`).params
++  ).toMatchSnapshot();
++
++  expect(
+     evaluate(
+       `
+     /**
+",0,,4,114,1,1,4,114
+916,99357705aaed4ed9850b76bcf6a2315cb617b546,99357705aaed4ed9850b76bcf6a2315cb617b546,,"test: Even more tests
+","diff --git a/__tests__/index.js b/__tests__/index.js
+new file mode 100644
+index 0000000..ceeb374
+--- /dev/null
++++ b/__tests__/index.js
+@@ -0,0 +1,68 @@
++var documentation = require('../src/');
++var os = require('os');
++var path = require('path');
++var fs = require('fs');
++
++function inputs(contents) {
++  var dirEntry = os.tmpdir();
++  var paths = {};
++  for (var filename in contents) {
++    paths[filename] = path.join(dirEntry, '/', filename);
++    fs.writeFileSync(paths[filename], contents[filename]);
++  }
++  return {
++    paths
++  };
++}
++
++function cleanup(comments) {
++  comments.forEach(c => {
++    delete c.context;
++  });
++}
++
++test('lint', async function() {
++  var { paths } = inputs({
++    'index.js': '/** hi */var name = 1;'
++  });
++
++  const data = await documentation.lint([paths['index.js']], {});
++  expect(data).toEqual('');
++});
++
++test('build', async function() {
++  var { paths } = inputs({
++    'index.js': '/** hi */var name = 1;'
++  });
++
++  const data = await documentation.build([paths['index.js']], {});
++  cleanup(data);
++  expect(data).toMatchSnapshot();
++
++  const md = await documentation.formats.md(data);
++  expect(md).toMatchSnapshot();
++
++  const json = await documentation.formats.json(data, {});
++  expect(json).toMatchSnapshot();
++});
++
++test('expandInputs', async function() {
++  var { paths } = inputs({
++    'index.js': '/** hi */var name = 1;'
++  });
++
++  {
++    const data = await documentation.expandInputs([paths['index.js']], {
++      parseExtension: ['js']
++    });
++    expect(data.length).toEqual(1);
++  }
++
++  {
++    const data = await documentation.expandInputs([paths['index.js']], {
++      parseExtension: ['js'],
++      shallow: true
++    });
++    expect(data.length).toEqual(1);
++  }
++});
+",0,,2,264,1,1,2,264

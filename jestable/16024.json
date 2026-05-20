@@ -1,0 +1,122 @@
+{
+    "id": 4105127,
+    "name": "react-boilerplate/react-boilerplate-cra-template",
+    "isFork": false,
+    "commits": 292,
+    "branches": 5,
+    "releases": 13,
+    "forks": 389,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://react-boilerplate.github.io/react-boilerplate-cra-template/",
+    "watchers": 42,
+    "stargazers": 1866,
+    "contributors": 20,
+    "size": 4234,
+    "createdAt": "2020-03-26T07:01:11",
+    "pushedAt": "2024-05-01T09:49:11",
+    "updatedAt": "2024-05-02T01:11:10",
+    "totalIssues": 114,
+    "openIssues": 7,
+    "totalPullRequests": 99,
+    "openPullRequests": 2,
+    "blankLines": 1290,
+    "codeLines": 6079,
+    "commentLines": 319,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 166,
+            "blankLines": 10
+        },
+        {
+            "language": "HTML",
+            "commentLines": 41,
+            "codeLines": 50,
+            "blankLines": 10
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 13,
+            "blankLines": 3
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1329,
+            "blankLines": 650
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 448,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 249,
+            "codeLines": 3695,
+            "blankLines": 575
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 26,
+            "codeLines": 163,
+            "blankLines": 20
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 70,
+            "blankLines": 0
+        },
+        {
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 145,
+            "blankLines": 21
+        }
+    ],
+    "lastCommit": "2022-10-23T01:15:28",
+    "lastCommitSHA": "535c85448e4fba15a3099dcd079fabf554050329",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 128378,
+        "JavaScript": 6357,
+        "Handlebars": 4476,
+        "HTML": 3862,
+        "Shell": 270
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "examples&tutorials",
+        "help wanted",
+        "invalid",
+        "issue of create-react-app",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "create-react-app",
+        "create-react-app-typescript",
+        "i18n",
+        "react",
+        "react-boilerplate",
+        "react-boilerplate-template",
+        "redux",
+        "redux-saga",
+        "redux-toolkit",
+        "styled-components",
+        "typescript"
+    ]
+}

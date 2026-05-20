@@ -1,0 +1,77 @@
+{
+    "id": 6227842,
+    "name": "jasonetco/todo",
+    "isFork": false,
+    "commits": 718,
+    "branches": 2,
+    "releases": 0,
+    "forks": 79,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "ISC License",
+    "homepage": "https://todo.jasonet.co",
+    "watchers": 7,
+    "stargazers": 720,
+    "contributors": 15,
+    "size": 3801,
+    "createdAt": "2017-09-28T03:26:21",
+    "pushedAt": "2022-01-15T01:13:04",
+    "updatedAt": "2022-01-15T01:13:15",
+    "totalIssues": 142,
+    "openIssues": 0,
+    "totalPullRequests": 138,
+    "openPullRequests": 0,
+    "blankLines": 290,
+    "codeLines": 13214,
+    "commentLines": 159,
+    "metrics": [
+        {
+            "blankLines": 222,
+            "language": "JavaScript",
+            "commentLines": 153,
+            "codeLines": 1257
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 61
+        },
+        {
+            "blankLines": 45,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 113
+        },
+        {
+            "blankLines": 18,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11783
+        }
+    ],
+    "lastCommit": "2022-01-15T01:13:04",
+    "lastCommitSHA": "b17e10b406768059f38899cdb0fcf8126b97a4c2",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 51714
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "stale",
+        "todo :spiral_notepad:",
+        "website",
+        "wontfix"
+    ],
+    "topics": []
+}

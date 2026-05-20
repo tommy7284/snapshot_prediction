@@ -1,0 +1,104 @@
+{
+    "id": 6734192,
+    "name": "signavio/react-mentions",
+    "isFork": false,
+    "commits": 516,
+    "branches": 13,
+    "releases": 49,
+    "forks": 551,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://react-mentions.vercel.app",
+    "watchers": 25,
+    "stargazers": 2341,
+    "contributors": 64,
+    "size": 35501,
+    "createdAt": "2014-11-20T08:51:31",
+    "pushedAt": "2024-04-21T10:50:52",
+    "updatedAt": "2024-04-22T03:58:51",
+    "totalIssues": 484,
+    "openIssues": 202,
+    "totalPullRequests": 257,
+    "openPullRequests": 22,
+    "blankLines": 796,
+    "codeLines": 4865,
+    "commentLines": 197,
+    "metrics": [
+        {
+            "blankLines": 16,
+            "language": "YAML",
+            "commentLines": 27,
+            "codeLines": 81
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 136
+        },
+        {
+            "blankLines": 85,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 176
+        },
+        {
+            "blankLines": 654,
+            "language": "JavaScript",
+            "commentLines": 170,
+            "codeLines": 4370
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 32,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 6,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 50
+        }
+    ],
+    "lastCommit": "2024-03-22T12:37:24",
+    "lastCommitSHA": "a75fe1f707906446ad341b5b27bb548db50ebd5b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 128546
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "semantic-release",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "wontfix"
+    ],
+    "topics": [
+        "inline-styles",
+        "mentions",
+        "react",
+        "tags"
+    ]
+}

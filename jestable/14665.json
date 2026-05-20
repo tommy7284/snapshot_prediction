@@ -1,0 +1,109 @@
+{
+    "id": 4052327,
+    "name": "skovy/typed-scss-modules",
+    "isFork": false,
+    "commits": 288,
+    "branches": 1,
+    "releases": 45,
+    "forks": 61,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://skovy.dev/generating-typescript-definitions-for-css-modules-using-sass/",
+    "watchers": 3,
+    "stargazers": 601,
+    "contributors": 22,
+    "size": 4673,
+    "createdAt": "2019-02-10T11:53:16",
+    "pushedAt": "2024-03-23T07:29:33",
+    "updatedAt": "2024-03-23T07:38:23",
+    "totalIssues": 89,
+    "openIssues": 9,
+    "totalPullRequests": 136,
+    "openPullRequests": 3,
+    "blankLines": 599,
+    "codeLines": 27533,
+    "commentLines": 197,
+    "metrics": [
+        {
+            "language": "SCSS",
+            "commentLines": 0,
+            "codeLines": 116,
+            "blankLines": 16
+        },
+        {
+            "language": "Sass",
+            "commentLines": 0,
+            "codeLines": 108,
+            "blankLines": 14
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 43,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 315,
+            "blankLines": 160
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 24293,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 170,
+            "codeLines": 2582,
+            "blankLines": 405
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 10,
+            "codeLines": 70,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2024-03-23T07:28:21",
+    "lastCommitSHA": "c60f74e51977e48fae30e8b868d417c18e27b8be",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 85523,
+        "JavaScript": 6028,
+        "SCSS": 907,
+        "Shell": 125
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "question",
+        "released",
+        "released on @alpha",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "css-modules",
+        "generator",
+        "sass",
+        "scss",
+        "scss-modules",
+        "typescript"
+    ]
+}

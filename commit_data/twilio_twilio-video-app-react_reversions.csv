@@ -1,0 +1,1607 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+192,92c07f3c2d4a1be28dba6e7bf815727d67adbad2,92c07f3c2d4a1be28dba6e7bf815727d67adbad2,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [ ] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+N/A
+
+### Description
+
+A description of what this PR does.
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [ ] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [ ] Verified locally with `npm test`
+* [ ] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [ ] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Fix screenshare regression
+","diff --git a/src/components/ParticipantTracks/ParticipantTracks.test.tsx b/src/components/ParticipantTracks/ParticipantTracks.test.tsx
+index 28db850..2ca76e5 100644
+--- a/src/components/ParticipantTracks/ParticipantTracks.test.tsx
++++ b/src/components/ParticipantTracks/ParticipantTracks.test.tsx
+@@ -6,8 +6,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+ 
+ jest.mock('../../hooks/usePublications/usePublications', () =>
+   jest.fn(() => [
+-    { trackSid: 0, kind: 'video' },
+-    { trackSid: 1, kind: 'audio' },
++    { trackSid: 0, kind: 'video', trackName: '' },
++    { trackSid: 1, kind: 'audio', trackName: '' },
+   ])
+ );
+ jest.mock('../../hooks/useVideoContext/useVideoContext');
+@@ -40,7 +40,7 @@ describe('the ParticipantTracks component', () => {
+     mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+     mockUsePublications.mockImplementation(() => [
+       { trackName: 'screen', trackSid: 0, kind: 'video' },
+-      { trackName: 'camera', trackSid: 1, kind: 'video' },
++      { trackName: 'camera-123456', trackSid: 1, kind: 'video' },
+     ]);
+     const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} />);
+     expect(wrapper.find('Publication').length).toBe(1);
+@@ -49,7 +49,7 @@ describe('the ParticipantTracks component', () => {
+         .find('Publication')
+         .at(0)
+         .prop('publication')
+-    ).toEqual({ trackName: 'camera', trackSid: 1, kind: 'video' });
++    ).toEqual({ trackName: 'camera-123456', trackSid: 1, kind: 'video' });
+   });
+ 
+   describe('with enableScreenShare prop', () => {
+@@ -57,7 +57,7 @@ describe('the ParticipantTracks component', () => {
+       mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+       mockUsePublications.mockImplementation(() => [
+         { trackName: 'screen', trackSid: 0, kind: 'video' },
+-        { trackName: 'camera', trackSid: 1, kind: 'video' },
++        { trackName: 'camera-123456', trackSid: 1, kind: 'video' },
+       ]);
+       const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} enableScreenShare />);
+       expect(wrapper.find('Publication').length).toBe(1);
+@@ -71,7 +71,7 @@ describe('the ParticipantTracks component', () => {
+ 
+     it('should render camera publications when a screen share publication is absent', () => {
+       mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+-      mockUsePublications.mockImplementation(() => [{ trackName: 'camera', trackSid: 1, kind: 'video' }]);
++      mockUsePublications.mockImplementation(() => [{ trackName: 'camera-123456', trackSid: 1, kind: 'video' }]);
+       const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} enableScreenShare />);
+       expect(wrapper.find('Publication').length).toBe(1);
+       expect(
+@@ -79,7 +79,7 @@ describe('the ParticipantTracks component', () => {
+           .find('Publication')
+           .at(0)
+           .prop('publication')
+-      ).toEqual({ trackName: 'camera', trackSid: 1, kind: 'video' });
++      ).toEqual({ trackName: 'camera-123456', trackSid: 1, kind: 'video' });
+     });
+   });
+ });
+",0,,4,26,1,1,4,26
+446,3203c43b5f235cde1efce3e2663f3aeef951311b,f3ed47f89ac4cd84e4e16a4ec05d0da967270dd7,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-3726](https://issues.corp.twilio.com/browse/VIDEO-3726)
+
+### Description
+
+This PR add functionality to the Chat feature. It looks for URLs in the chat messages and converts them to links that open the URL in a new tab:
+
+![image](https://user-images.githubusercontent.com/12685223/109841166-05917980-7c06-11eb-8054-375501dcbd21.png)
+
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [x] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Add links to TextMessage component
+","diff --git a/src/components/ChatWindow/MessageList/MessageList.test.tsx b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+index 65b34f8..50ff087 100644
+--- a/src/components/ChatWindow/MessageList/MessageList.test.tsx
++++ b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+@@ -51,6 +51,13 @@ const messages: any = [
+     sid: 'IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX6',
+     type: 'text',
+   },
++  {
++    author: 'tim',
++    dateCreated: new Date(1614635361000),
++    body: 'look at this app: github.com/twilio/twilio-video-app-react. ',
++    sid: 'IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX6',
++    type: 'text',
++  },
+ ];
+ 
+ describe('the messageList component', () => {
+",0,,5,80,1,5,5,106
+458,9be7c6d4997b6154fcfed191a671cbece8100809,fe210174a655b9c135cb5e7e145bd3379be0116f,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-3888](https://issues.corp.twilio.com/browse/VIDEO-3888)
+- [VIDEO-3889](https://issues.corp.twilio.com/browse/VIDEO-3889)
+
+### Description
+
+This PR adds support for sending and receiving files while in a room. It uses the Twilio Conversations SDK to send the files in the chat. I left a link to a quick-deploy version of this PR in our slack channel if you want to try it out.  
+
+On Monday when I get back I'll take a look at the failing test. Otherwise I think the code is ready for review.
+
+![files](https://user-images.githubusercontent.com/12685223/111533322-445a2000-872c-11eb-84bb-f5970012648a.gif)
+
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [x] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Update messageList tests
+","diff --git a/src/components/ChatWindow/MessageList/MessageList.test.tsx b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+index d0011ca..2c47bd1 100644
+--- a/src/components/ChatWindow/MessageList/MessageList.test.tsx
++++ b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+@@ -58,6 +58,15 @@ const messages: any = [
+     sid: 'IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX7',
+     type: 'text',
+   },
++  {
++    author: 'tim',
++    dateCreated: new Date(1614635361000),
++    media: {
++      filename: 'test1.txt',
++      size: 123456,
++    },
++    type: 'media',
++  },
+ ];
+ 
+ describe('the messageList component', () => {
+",0,,2,80,1,20,12,485
+472,149049474b74730f5ddb03fbba574e2f0a3ac7ad,d3ce5eaab4f8887baf86df9ad43fa9647597cc4d,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-4672](https://issues.corp.twilio.com/browse/VIDEO-4672)
+
+### Description
+
+This PR contains a variety of small fixes that were discovered during testing. A list of the issues that were fixed can be found below:
+
+https://docs.google.com/document/d/11qxy3JbcyZH9lqqa09yrQTKj0iIjHlnElBCL1KpnD74/edit#
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Update messageList snapshot
+",,0,,1,162,1,14,13,394
+489,0901207e0a8e90b47500fff8e9a5922a19ea9088,0a7a3bcda84398f1337f8e6f74e9eb632143808c,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [X] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-4673](https://issues.corp.twilio.com/browse/VIDEO-4673)
+
+### Description
+
+This PR addresses the question from GitHub issue #463.
+
+We removed the `<PreflightTest />` component from the React app. At one point, this app did run the preflight test that was found in the 2.8.0-beta version of the twilio-video SDK, however it was just a beta feature and hasn't been implemented in the current version of the SDK. We do plan on developing a new preflight test in the future.
+
+Note: because of this, the `SubContent` found in the `<PreJoinScreens />` was no longer necessary, so we moved the `<MediaErrorSnackbar />` component to the render method in the `<IntroContainer />`.  I've included a screenshot of what this will look like if an error is present:
+
+![Screen Shot 2021-04-12 at 3 16 11 PM](https://user-images.githubusercontent.com/77076398/114464457-c9ade480-9bb3-11eb-8301-5be6df7e432f.png)
+
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [X] ~Added~ Updated unit tests if necessary
+* [ ] Updated affected documentation
+* [X] Verified locally with `npm test`
+* [X] Manually sanity tested running locally
+* [X] Included screenshot as PR comment (if needed)
+* [X] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","remove PreflightTest component
+","diff --git a/src/components/PreJoinScreens/PreflightTest/PreflightTest.test.tsx b/src/components/PreJoinScreens/PreflightTest/PreflightTest.test.tsx
+deleted file mode 100644
+index cce1697..0000000
+--- a/src/components/PreJoinScreens/PreflightTest/PreflightTest.test.tsx
++++ /dev/null
+@@ -1,69 +0,0 @@
+-import React from 'react';
+-import getNetworkCondition from './getNetworkCondition/getNetworkCondition';
+-import PreflightTest, { NetworkCondition, Result } from './PreflightTest';
+-import ProgressIndicator from './ProgressIndicator/ProgressIndicator';
+-import { shallow } from 'enzyme';
+-import useGetPreflightTokens from './useGetPreflightTokens/useGetPreflightTokens';
+-import usePreflightTest from './usePreflightTest/usePreflightTest';
+-
+-jest.mock('./useGetPreflightTokens/useGetPreflightTokens');
+-jest.mock('./usePreflightTest/usePreflightTest');
+-jest.mock('./getNetworkCondition/getNetworkCondition');
+-
+-const mockUseGetPreflightTokens = useGetPreflightTokens as jest.Mock<any>;
+-const mockUsePreflightTest = usePreflightTest as jest.Mock<any>;
+-const mockGetNetworkCondition = getNetworkCondition as jest.Mock<any>;
+-
+-mockUseGetPreflightTokens.mockImplementation(() => ({ tokens: ['mockTokenA', 'mockTokenB'], tokenError: undefined }));
+-mockGetNetworkCondition.mockImplementation(() => NetworkCondition.Green);
+-
+-describe('the PreflightTest component', () => {
+-  it('should render correctly when the test is in progress', () => {
+-    mockUsePreflightTest.mockImplementation(() => ({}));
+-    const wrapper = shallow(<PreflightTest />);
+-    expect(wrapper.text()).toContain('Checking your network connection');
+-    expect(wrapper.find(ProgressIndicator).exists()).toBe(true);
+-    expect(wrapper.find(Result).exists()).toBe(false);
+-  });
+-
+-  it('should render correctly when there is a report', () => {
+-    mockUsePreflightTest.mockImplementation(() => ({ testReport: 'mockTestReport' }));
+-    const wrapper = shallow(<PreflightTest />);
+-    expect(wrapper.find(ProgressIndicator).exists()).toBe(false);
+-    expect(wrapper.find(Result).exists()).toBe(true);
+-  });
+-
+-  it('should render correctly when there is a failure', () => {
+-    mockUsePreflightTest.mockImplementation(() => ({ testFailure: 'mockTestFailure' }));
+-    const wrapper = shallow(<PreflightTest />);
+-    expect(wrapper.find(ProgressIndicator).exists()).toBe(false);
+-    expect(wrapper.find(Result).exists()).toBe(true);
+-  });
+-});
+-
+-describe('the Result component', () => {
+-  it('should render correctly when the network condition is green', () => {
+-    const wrapper = shallow(<Result networkCondition={NetworkCondition.Green} />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when the network condition is yellow', () => {
+-    const wrapper = shallow(<Result networkCondition={NetworkCondition.Yellow} />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when the network condition is red', () => {
+-    const wrapper = shallow(<Result networkCondition={NetworkCondition.Red} />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when there is an error', () => {
+-    const wrapper = shallow(<Result error={new Error()} />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should not render anything when there are no props', () => {
+-    const wrapper = shallow(<Result />);
+-    expect(wrapper.isEmptyRender()).toBe(true);
+-  });
+-});
+
+diff --git a/src/components/PreJoinScreens/PreflightTest/ProgressIndicator/ProgressIndicator.test.tsx b/src/components/PreJoinScreens/PreflightTest/ProgressIndicator/ProgressIndicator.test.tsx
+deleted file mode 100644
+index 79e895a..0000000
+--- a/src/components/PreJoinScreens/PreflightTest/ProgressIndicator/ProgressIndicator.test.tsx
++++ /dev/null
+@@ -1,10 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import ProgressIndicator from './ProgressIndicator';
+-
+-describe('the ProgressIndicator component', () => {
+-  it('should render correctly', () => {
+-    const tree = renderer.create(<ProgressIndicator />).toJSON();
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,,12,574,2,8,18,709
+491,dfa5aecb6315677bee93273382dcc0cf1543c1ba,d92654ce4f03f179e10cf135c0ee877f45e809b0,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-4708](https://issues.corp.twilio.com/browse/VIDEO-4708)
+
+### Description
+
+This PR makes some changes with respect to the user interface seen when a user starts and stops recordings.
+
+Specifically:
+
+- When a user is in a room when a recording is started, they will see a ""Recording has started"" snackbar.
+- When a user is in a room when a recording is stopped, they will see a ""Recording Complete"" snackbar, with information about how to find the recordings in the Twilio Console.
+- When a user joins a room where a recording is in progress, they will see a ""Recording is in progress"" snackbar.
+
+
+While in a room:
+![recording](https://user-images.githubusercontent.com/12685223/114623010-f291b080-9c6b-11eb-9bfd-6b6432dfa0cd.gif)
+
+Joining a room where recording is in progress:
+![recording2](https://user-images.githubusercontent.com/12685223/114623766-f4a83f00-9c6c-11eb-9abc-ad45e0305f73.gif)
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Update Menu tests
+",,0,,2,27,1,9,14,378
+676,c6b0c6401d2e91042cd7663f1205c86b7a771b80,d63937b6a094cc2b44ff64a64ced342c2aacd936,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-8472](https://issues.corp.twilio.com/browse/VIDEO-8472)
+
+### Description
+
+This PR adds the dominantSpeaker functionality for grid mode. The dominant speaker UI adds a green highlight around the participant's video when they are actively speaking. 
+
+- When the dominantSpeaker is ""on screen"" (on the first page of the grid), their video will be outlined in green, and their position in the grid will not change.
+- When the dominantSpeaker is ""off screen"" (not on the first page of the grid), their video will be outlined in green _and_ they will replace the least recent (oldest) dominantSpeaker on the first page. The least recent dominantSpeaker is moved to the end of the participant list.
+
+![gridModeDS](https://user-images.githubusercontent.com/77076398/167702455-e6531725-2f02-4386-81b8-2d0752dc8716.gif)
+
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [x] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","update failing tests for mocks and imports
+","diff --git a/src/components/GridView/GridView.test.tsx b/src/components/GridView/GridView.test.tsx
+index e791a86..b3b1eca 100644
+--- a/src/components/GridView/GridView.test.tsx
++++ b/src/components/GridView/GridView.test.tsx
+@@ -2,6 +2,7 @@ import React from 'react';
+ import { GridView } from './GridView';
+ import { shallow } from 'enzyme';
+ import useGridLayout from '../../hooks/useGridLayout/useGridLayout';
++import { useAppState } from '../../state';
+ import { usePagination } from '../../hooks/usePagination/usePagination';
+ 
+ const mockLocalParticipant = { identity: 'test-local-participant', sid: 0 };
+@@ -16,7 +17,7 @@ jest.mock('../../constants', () => ({
+   GRID_MODE_ASPECT_RATIO: 9 / 16,
+   GRID_MODE_MARGIN: 3,
+ }));
+-jest.mock('../../hooks/useParticipants/useParticipants', () => () => mockParticipants);
++jest.mock('../../hooks/useCollaborationParticipants/useCollaborationParticipants', () => () => mockParticipants);
+ jest.mock('../../hooks/useVideoContext/useVideoContext', () => () => ({
+   room: {
+     localParticipant: mockLocalParticipant,
+@@ -38,7 +39,12 @@ jest.mock('../../hooks/usePagination/usePagination', () => ({
+   })),
+ }));
+ 
++jest.mock('../../state');
++
+ const mockUsePagination = usePagination as jest.Mock<any>;
++const mockUseAppState = useAppState as jest.Mock<any>;
++
++mockUseAppState.mockImplementation(() => ({ maxGridParticipants: 9 }));
+ 
+ describe('the GridView component', () => {
+   it('should render correctly', () => {
+",0,,6,21,1,22,17,459
+705,7c08ebe14e7a57f57ffd9ff716fa1e3953eff564,a3a00613a2f0925e6e715b2a32d0c758329980ef,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-10220](https://issues.corp.twilio.com/browse/AHOYAPPS-0000)
+
+### Description
+
+This PR addresses some feedback received during the dogfooding session for Grid View:
+- Hides Grid View settings when on mobile 
+- Adds a `<ParticipantProvider />` so that the presentation participants and grid participants do not re-render when users switch between Grid and Presentation View. This helps preserve the ordering of the dominant speakers as users switch between views.
+- Adds styling for landscape mode for mobile devices so that it is consistent with iOS. Note, I included the custom breakpoint from the Diagnostics app so that we are including large mobile phones that can have a similar width to a tablet when put in landscape mode. We might have to do some testing with different devices to ensure that all have the same behavior when in landscape.
+
+![dogfoodFeedback](https://user-images.githubusercontent.com/77076398/174163260-6c9d8d5d-cafc-4e46-92a1-e665e42b7f03.gif)
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [x] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","fix failing snapshot
+",,0,,1,8,1,16,13,231
+716,ce22b7d08371b34b76a360a537ffef6ee5895d5e,21a4cf8f48ead65b79ba6ee771fa1549dfbf3b7a,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDEO-10448](https://issues.corp.twilio.com/browse/VIDEO-10448)
+
+### Description
+
+This PR sets the max gallery view participants to 6, and adds the options for 6, 12, and 24. It also changes the name ""Presentation View"" to ""Speaker View"", and ""Grid View"" to ""Gallery View"".
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Change to Speaker and Gallery View naming
+","diff --git a/src/components/GalleryView/GalleryView.test.tsx b/src/components/GalleryView/GalleryView.test.tsx
+new file mode 100644
+index 0000000..001b5f1
+--- /dev/null
++++ b/src/components/GalleryView/GalleryView.test.tsx
+@@ -0,0 +1,118 @@
++import React from 'react';
++import { GalleryView } from './GalleryView';
++import { shallow } from 'enzyme';
++import useGalleryViewLayout from '../../hooks/useGalleryViewLayout/useGalleryViewLayout';
++import { useAppState } from '../../state';
++import { usePagination } from './usePagination/usePagination';
++
++const mockLocalParticipant = { identity: 'test-local-participant', sid: 0 };
++const mockParticipants = [
++  { identity: 'test-participant-1', sid: 1 },
++  { identity: 'test-participant-2', sid: 2 },
++  { identity: 'test-participant-3', sid: 3 },
++  { identity: 'test-participant-4', sid: 4 },
++];
++
++jest.mock('../../constants', () => ({
++  GALLERY_VIEW_ASPECT_RATIO: 9 / 16,
++  GALLERY_VIEW_MARGIN: 3,
++}));
++jest.mock('../../hooks/useSpeakerViewParticipants/useSpeakerViewParticipants', () => () => mockParticipants);
++jest.mock('../../hooks/useVideoContext/useVideoContext', () => () => ({
++  room: {
++    localParticipant: mockLocalParticipant,
++  },
++}));
++
++jest.mock('../../hooks/useParticipantsContext/useParticipantsContext', () => () => ({
++  galleryViewParticipants: mockParticipants,
++}));
++
++jest.mock('../../hooks/useGalleryViewLayout/useGalleryViewLayout', () =>
++  jest.fn(() => ({
++    participantVideoWidth: 720,
++    containerRef: { current: null },
++  }))
++);
++
++jest.mock('./usePagination/usePagination', () => ({
++  usePagination: jest.fn(() => ({
++    currentPage: 2,
++    totalPages: 4,
++    setCurrentPage: jest.fn(),
++    paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
++  })),
++}));
++
++jest.mock('../../state');
++
++const mockUsePagination = usePagination as jest.Mock<any>;
++const mockUseAppState = useAppState as jest.Mock<any>;
++
++mockUseAppState.mockImplementation(() => ({ maxGalleryViewParticipants: 9 }));
++
++describe('the GalleryView component', () => {
++  it('should render correctly', () => {
++    const wrapper = shallow(<GalleryView />);
++    expect(wrapper).toMatchSnapshot();
++    expect(useGalleryViewLayout).toHaveBeenCalledWith(9);
++  });
++
++  it('should not render the previous page button when the user is viewing the first page', () => {
++    mockUsePagination.mockImplementationOnce(() => ({
++      currentPage: 1,
++      totalPages: 4,
++      setCurrentPage: jest.fn(),
++      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
++    }));
++
++    const wrapper = shallow(<GalleryView />);
++    expect(
++      wrapper
++        .find('.makeStyles-buttonContainerLeft-4')
++        .childAt(0)
++        .exists()
++    ).toBe(false);
++    expect(
++      wrapper
++        .find('.makeStyles-buttonContainerRight-5')
++        .childAt(0)
++        .exists()
++    ).toBe(true);
++  });
++
++  it('should not render the next page button when the user is viewing the last page', () => {
++    mockUsePagination.mockImplementationOnce(() => ({
++      currentPage: 4,
++      totalPages: 4,
++      setCurrentPage: jest.fn(),
++      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
++    }));
++
++    const wrapper = shallow(<GalleryView />);
++    expect(
++      wrapper
++        .find('.makeStyles-buttonContainerLeft-4')
++        .childAt(0)
++        .exists()
++    ).toBe(true);
++    expect(
++      wrapper
++        .find('.makeStyles-buttonContainerRight-5')
++        .childAt(0)
++        .exists()
++    ).toBe(false);
++  });
++
++  it('should not render the Pagination component when there is only one page', () => {
++    mockUsePagination.mockImplementationOnce(() => ({
++      currentPage: 1,
++      totalPages: 1,
++      setCurrentPage: jest.fn(),
++      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
++    }));
++
++    const wrapper = shallow(<GalleryView />);
++    expect(wrapper.find('.makeStyles-pagination-8').exists()).toBe(false);
++  });
++});
+
+diff --git a/src/components/GridView/GridView.test.tsx b/src/components/GridView/GridView.test.tsx
+deleted file mode 100644
+index 2a91d9d..0000000
+--- a/src/components/GridView/GridView.test.tsx
++++ /dev/null
+@@ -1,118 +0,0 @@
+-import React from 'react';
+-import { GridView } from './GridView';
+-import { shallow } from 'enzyme';
+-import useGridLayout from '../../hooks/useGridLayout/useGridLayout';
+-import { useAppState } from '../../state';
+-import { usePagination } from './usePagination/usePagination';
+-
+-const mockLocalParticipant = { identity: 'test-local-participant', sid: 0 };
+-const mockParticipants = [
+-  { identity: 'test-participant-1', sid: 1 },
+-  { identity: 'test-participant-2', sid: 2 },
+-  { identity: 'test-participant-3', sid: 3 },
+-  { identity: 'test-participant-4', sid: 4 },
+-];
+-
+-jest.mock('../../constants', () => ({
+-  GRID_VIEW_ASPECT_RATIO: 9 / 16,
+-  GRID_VIEW_MARGIN: 3,
+-}));
+-jest.mock('../../hooks/usePresentationParticipants/usePresentationParticipants', () => () => mockParticipants);
+-jest.mock('../../hooks/useVideoContext/useVideoContext', () => () => ({
+-  room: {
+-    localParticipant: mockLocalParticipant,
+-  },
+-}));
+-
+-jest.mock('../../hooks/useParticipantsContext/useParticipantsContext', () => () => ({
+-  gridParticipants: mockParticipants,
+-}));
+-
+-jest.mock('../../hooks/useGridLayout/useGridLayout', () =>
+-  jest.fn(() => ({
+-    participantVideoWidth: 720,
+-    containerRef: { current: null },
+-  }))
+-);
+-
+-jest.mock('./usePagination/usePagination', () => ({
+-  usePagination: jest.fn(() => ({
+-    currentPage: 2,
+-    totalPages: 4,
+-    setCurrentPage: jest.fn(),
+-    paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
+-  })),
+-}));
+-
+-jest.mock('../../state');
+-
+-const mockUsePagination = usePagination as jest.Mock<any>;
+-const mockUseAppState = useAppState as jest.Mock<any>;
+-
+-mockUseAppState.mockImplementation(() => ({ maxGridParticipants: 9 }));
+-
+-describe('the GridView component', () => {
+-  it('should render correctly', () => {
+-    const wrapper = shallow(<GridView />);
+-    expect(wrapper).toMatchSnapshot();
+-    expect(useGridLayout).toHaveBeenCalledWith(9);
+-  });
+-
+-  it('should not render the previous page button when the user is viewing the first page', () => {
+-    mockUsePagination.mockImplementationOnce(() => ({
+-      currentPage: 1,
+-      totalPages: 4,
+-      setCurrentPage: jest.fn(),
+-      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
+-    }));
+-
+-    const wrapper = shallow(<GridView />);
+-    expect(
+-      wrapper
+-        .find('.makeStyles-buttonContainerLeft-4')
+-        .childAt(0)
+-        .exists()
+-    ).toBe(false);
+-    expect(
+-      wrapper
+-        .find('.makeStyles-buttonContainerRight-5')
+-        .childAt(0)
+-        .exists()
+-    ).toBe(true);
+-  });
+-
+-  it('should not render the next page button when the user is viewing the last page', () => {
+-    mockUsePagination.mockImplementationOnce(() => ({
+-      currentPage: 4,
+-      totalPages: 4,
+-      setCurrentPage: jest.fn(),
+-      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
+-    }));
+-
+-    const wrapper = shallow(<GridView />);
+-    expect(
+-      wrapper
+-        .find('.makeStyles-buttonContainerLeft-4')
+-        .childAt(0)
+-        .exists()
+-    ).toBe(true);
+-    expect(
+-      wrapper
+-        .find('.makeStyles-buttonContainerRight-5')
+-        .childAt(0)
+-        .exists()
+-    ).toBe(false);
+-  });
+-
+-  it('should not render the Pagination component when there is only one page', () => {
+-    mockUsePagination.mockImplementationOnce(() => ({
+-      currentPage: 1,
+-      totalPages: 1,
+-      setCurrentPage: jest.fn(),
+-      paginatedParticipants: [mockLocalParticipant, ...mockParticipants],
+-    }));
+-
+-    const wrapper = shallow(<GridView />);
+-    expect(wrapper.find('.makeStyles-pagination-8').exists()).toBe(false);
+-  });
+-});
+
+diff --git a/src/components/MobileGalleryView/MobileGalleryView.test.tsx b/src/components/MobileGalleryView/MobileGalleryView.test.tsx
+new file mode 100644
+index 0000000..a0ecd61
+--- /dev/null
++++ b/src/components/MobileGalleryView/MobileGalleryView.test.tsx
+@@ -0,0 +1,88 @@
++import { MobileGalleryView } from './MobileGalleryView';
++import { shallow } from 'enzyme';
++import { useAppState } from '../../state';
++import useParticipantContext from '../../hooks/useParticipantsContext/useParticipantsContext';
++import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
++
++const mockLocalParticipant = { identity: 'test-local-participant', sid: 0 };
++
++jest.mock('swiper/react/swiper-react.js', () => ({
++  Swiper: jest.fn(),
++  SwiperSlide: jest.fn(),
++}));
++
++jest.mock('swiper', () => ({
++  Pagination: jest.fn(),
++}));
++
++jest.mock('../../hooks/useParticipantsContext/useParticipantsContext');
++jest.mock('../../hooks/useVideoContext/useVideoContext');
++jest.mock('../../state');
++
++const mockUseVideoContext = useVideoContext as jest.Mock<any>;
++const mockUseParticipantContext = useParticipantContext as jest.Mock<any>;
++const mockUseAppState = useAppState as jest.Mock<any>;
++
++mockUseAppState.mockImplementation(() => ({ maxGalleryViewParticipants: 9 }));
++mockUseVideoContext.mockImplementation(() => ({
++  room: {
++    localParticipant: mockLocalParticipant,
++  },
++}));
++mockUseParticipantContext.mockImplementation(() => ({
++  mobileGalleryViewParticipants: [],
++}));
++
++describe('the MobileGalleryView component', () => {
++  it('should render correctly when there is only the localParticipant', () => {
++    const wrapper = shallow(<MobileGalleryView />);
++    expect(wrapper).toMatchSnapshot();
++  });
++
++  it('should render correctly when there is one participant plus the localParticipant', () => {
++    mockUseVideoContext.mockImplementation(() => ({
++      room: {
++        localParticipant: mockLocalParticipant,
++      },
++    }));
++    mockUseParticipantContext.mockImplementation(() => ({
++      mobileGalleryViewParticipants: [{ identity: 'test-participant-1', sid: 1 }],
++    }));
++    const wrapper = shallow(<MobileGalleryView />);
++    expect(wrapper).toMatchSnapshot();
++  });
++
++  it('should render correctly when there are two participants plus the localParticipant', () => {
++    mockUseVideoContext.mockImplementation(() => ({
++      room: {
++        localParticipant: mockLocalParticipant,
++      },
++    }));
++    mockUseParticipantContext.mockImplementation(() => ({
++      mobileGalleryViewParticipants: [
++        { identity: 'test-participant-1', sid: 1 },
++        { identity: 'test-participant-2', sid: 2 },
++      ],
++    }));
++    const wrapper = shallow(<MobileGalleryView />);
++    expect(wrapper).toMatchSnapshot();
++  });
++
++  it('should render correctly when there are 3 or more participants plus the localParticipant', () => {
++    mockUseVideoContext.mockImplementation(() => ({
++      room: {
++        localParticipant: mockLocalParticipant,
++      },
++    }));
++    mockUseParticipantContext.mockImplementation(() => ({
++      mobileGalleryViewParticipants: [
++        { identity: 'test-participant-1', sid: 1 },
++        { identity: 'test-participant-2', sid: 2 },
++        { identity: 'test-participant-3', sid: 3 },
++        { identity: 'test-participant-4', sid: 4 },
++      ],
++    }));
++    const wrapper = shallow(<MobileGalleryView />);
++    expect(wrapper).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/MobileGridView/MobileGridView.test.tsx b/src/components/MobileGridView/MobileGridView.test.tsx
+deleted file mode 100644
+index 5f501da..0000000
+--- a/src/components/MobileGridView/MobileGridView.test.tsx
++++ /dev/null
+@@ -1,88 +0,0 @@
+-import { MobileGridView } from './MobileGridView';
+-import { shallow } from 'enzyme';
+-import { useAppState } from '../../state';
+-import useParticipantContext from '../../hooks/useParticipantsContext/useParticipantsContext';
+-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+-
+-const mockLocalParticipant = { identity: 'test-local-participant', sid: 0 };
+-
+-jest.mock('swiper/react/swiper-react.js', () => ({
+-  Swiper: jest.fn(),
+-  SwiperSlide: jest.fn(),
+-}));
+-
+-jest.mock('swiper', () => ({
+-  Pagination: jest.fn(),
+-}));
+-
+-jest.mock('../../hooks/useParticipantsContext/useParticipantsContext');
+-jest.mock('../../hooks/useVideoContext/useVideoContext');
+-jest.mock('../../state');
+-
+-const mockUseVideoContext = useVideoContext as jest.Mock<any>;
+-const mockUseParticipantContext = useParticipantContext as jest.Mock<any>;
+-const mockUseAppState = useAppState as jest.Mock<any>;
+-
+-mockUseAppState.mockImplementation(() => ({ maxGridParticipants: 9 }));
+-mockUseVideoContext.mockImplementation(() => ({
+-  room: {
+-    localParticipant: mockLocalParticipant,
+-  },
+-}));
+-mockUseParticipantContext.mockImplementation(() => ({
+-  mobileGridParticipants: [],
+-}));
+-
+-describe('the MobileGridView component', () => {
+-  it('should render correctly when there is only the localParticipant', () => {
+-    const wrapper = shallow(<MobileGridView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when there is one participant plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGridParticipants: [{ identity: 'test-participant-1', sid: 1 }],
+-    }));
+-    const wrapper = shallow(<MobileGridView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when there are two participants plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGridParticipants: [
+-        { identity: 'test-participant-1', sid: 1 },
+-        { identity: 'test-participant-2', sid: 2 },
+-      ],
+-    }));
+-    const wrapper = shallow(<MobileGridView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when there are 3 or more participants plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGridParticipants: [
+-        { identity: 'test-participant-1', sid: 1 },
+-        { identity: 'test-participant-2', sid: 2 },
+-        { identity: 'test-participant-3', sid: 3 },
+-        { identity: 'test-participant-4', sid: 4 },
+-      ],
+-    }));
+-    const wrapper = shallow(<MobileGridView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-});
+",0,,45,3719,4,4,33,531
+717,af4dc124565f4d36c6994cceacdddbb0a246013a,1d22f9267bf35895dc281e87fc087ebf9fe67aae,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### Description
+
+This PR ensures that ""pinned"" participants are unselected when switching to Gallery View. It also memoizes the  `<Participant />` component to fix a flicker bug on iOS mobile
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [ ] Added unit tests if necessary
+* [x] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","memoize Participant and fix failing ParticipantList tests
+","diff --git a/src/components/ParticipantList/ParticipantList.test.tsx b/src/components/ParticipantList/ParticipantList.test.tsx
+index dbceb2a..89ff878 100644
+--- a/src/components/ParticipantList/ParticipantList.test.tsx
++++ b/src/components/ParticipantList/ParticipantList.test.tsx
+@@ -52,7 +52,7 @@ describe('the ParticipantList component', () => {
+     const wrapper = shallow(<ParticipantList />);
+     expect(
+       wrapper
+-        .find('Participant')
++        .find('Memo(Participant)')
+         .at(1)
+         .prop('isSelected')
+     ).toBe(true);
+@@ -79,14 +79,14 @@ describe('the ParticipantList component', () => {
+     const wrapper = shallow(<ParticipantList />);
+     expect(
+       wrapper
+-        .find('Participant')
++        .find('Memo(Participant)')
+         .at(1)
+         .prop('hideParticipant')
+     ).toBe(true);
+ 
+     expect(
+       wrapper
+-        .find('Participant')
++        .find('Memo(Participant)')
+         .at(2)
+         .prop('hideParticipant')
+     ).toBe(false);
+@@ -104,7 +104,7 @@ describe('the ParticipantList component', () => {
+     const wrapper = shallow(<ParticipantList />);
+     expect(
+       wrapper
+-        .find('Participant')
++        .find('Memo(Participant)')
+         .at(1)
+         .prop('hideParticipant')
+     ).toBe(false);
+@@ -122,7 +122,7 @@ describe('the ParticipantList component', () => {
+     const wrapper = shallow(<ParticipantList />);
+     expect(
+       wrapper
+-        .find('Participant')
++        .find('Memo(Participant)')
+         .at(1)
+         .prop('hideParticipant')
+     ).toBe(false);
+",0,,3,22,1,3,8,87
+733,7bc8e2de53a3e7526b80ed3d8d7df0726d5e982a,910e7625897993021b187f38e9b3ce256e2f12d6,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [VIDE0-10586](https://issues.corp.twilio.com/browse/VIDE0-10586)
+
+### Description
+
+This PR updates the following dependencies to the versions listed below:
+- react-scripts: `5.0.0`
+- @types/jest: `^27.5.2`
+- ts-jest: `^27.0.1`
+- firebase: `^9.9.0`
+
+Note that there were additional jest configurations needed in order to test code associated with the SwiperJs library. Please see [this solution](https://stackoverflow.com/questions/72141568/swiper-8-and-jest/72926658#72926658:~:text=I%20have%20the%20same%20issue%20and%20still%20searching%20for%20a%20solution%3B%20I%20believe%20what%20the%20OP%20is%20asking%20is%20how%20can%20we%20transform%20swiper/react%20into%20a%20CJS%20module%20on%20the%20JEST%20pipeline.) for more information.
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","fix message list snapshot test
+","diff --git a/src/components/ChatWindow/MessageList/MessageList.test.tsx b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+index a2fba12..a9a51f7 100644
+--- a/src/components/ChatWindow/MessageList/MessageList.test.tsx
++++ b/src/components/ChatWindow/MessageList/MessageList.test.tsx
+@@ -59,10 +59,12 @@ const messages: any = [
+   {
+     author: 'tim',
+     dateCreated: new Date(1614635361000),
+-    media: {
+-      filename: 'test1.txt',
+-      size: 123456,
+-    },
++    attachedMedia: [
++      {
++        filename: 'test1.txt',
++        size: 123456,
++      },
++    ],
+     sid: 'IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX8',
+     type: 'media',
+   },
+",1,OID=OID,3,84,1,18,31,74317
+738,533e485a37a9779717f65cdb662895e263997419,27c8b31ceea593c2f0024e8d5c9a057c836e566c,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- N/A
+
+### Description
+
+This PR fixes an issue with the landscape MobileGalleryView component where four participants were displayed as a 4x1 grid instead of a 2x2 grid. I also added tests for landscape MobileGalleryView and refactored the other tests. I removed the snapshot file as it would have been 900+ lines long with all the extra tests.
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Update existing tests and add tests for landscape MobileGalleryView
+","diff --git a/src/components/MobileGalleryView/MobileGalleryView.test.tsx b/src/components/MobileGalleryView/MobileGalleryView.test.tsx
+index 2f289cc..072ef9c 100644
+--- a/src/components/MobileGalleryView/MobileGalleryView.test.tsx
++++ b/src/components/MobileGalleryView/MobileGalleryView.test.tsx
+@@ -1,6 +1,7 @@
+ import { MobileGalleryView } from './MobileGalleryView';
+ import { shallow } from 'enzyme';
+ import { useAppState } from '../../state';
++import useMediaQuery from '@material-ui/core/useMediaQuery';
+ import useParticipantContext from '../../hooks/useParticipantsContext/useParticipantsContext';
+ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+ 
+@@ -18,10 +19,12 @@ jest.mock('swiper', () => ({
+ jest.mock('../../hooks/useParticipantsContext/useParticipantsContext');
+ jest.mock('../../hooks/useVideoContext/useVideoContext');
+ jest.mock('../../state');
++jest.mock('@material-ui/core/useMediaQuery');
+ 
+ const mockUseVideoContext = useVideoContext as jest.Mock<any>;
+ const mockUseParticipantContext = useParticipantContext as jest.Mock<any>;
+ const mockUseAppState = useAppState as jest.Mock<any>;
++const mockUseMediaQuery = useMediaQuery as jest.Mock<any>;
+ 
+ mockUseAppState.mockImplementation(() => ({ maxGalleryViewParticipants: 9 }));
+ mockUseVideoContext.mockImplementation(() => ({
+@@ -34,55 +37,179 @@ mockUseParticipantContext.mockImplementation(() => ({
+ }));
+ 
+ describe('the MobileGalleryView component', () => {
+-  it('should render correctly when there is only the localParticipant', () => {
+-    const wrapper = shallow(<MobileGalleryView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
++  describe('in portrait orientation', () => {
++    beforeEach(() => {
++      mockUseMediaQuery.mockImplementation(() => false);
++    });
+ 
+-  it('should render correctly when there is one participant plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGalleryViewParticipants: [{ identity: 'test-participant-1', sid: 1 }],
+-    }));
+-    const wrapper = shallow(<MobileGalleryView />);
+-    expect(wrapper).toMatchSnapshot();
+-  });
++    it('should render correctly when there is only the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(1);
++      expect(containers.prop('style')).toMatchObject({
++        height: '100%',
++        width: '100%',
++      });
++    });
++
++    it('should render correctly when there is one participant plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [{ identity: 'test-participant-1', sid: 1 }],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(2);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '50%',
++        width: '100%',
++      });
++    });
++
++    it('should render correctly when there are two participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++        ],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(3);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '33.33%',
++        width: '100%',
++      });
++    });
++
++    it('should render correctly when there are 3 participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++          { identity: 'test-participant-3', sid: 3 },
++        ],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(4);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '50%',
++        width: '50%',
++      });
++    });
++
++    it('should render correctly when there are 3 or more participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++          { identity: 'test-participant-3', sid: 3 },
++          { identity: 'test-participant-4', sid: 4 },
++        ],
++      }));
+ 
+-  it('should render correctly when there are two participants plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGalleryViewParticipants: [
+-        { identity: 'test-participant-1', sid: 1 },
+-        { identity: 'test-participant-2', sid: 2 },
+-      ],
+-    }));
+-    const wrapper = shallow(<MobileGalleryView />);
+-    expect(wrapper).toMatchSnapshot();
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(5);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '33.33%',
++        width: '50%',
++      });
++    });
+   });
+ 
+-  it('should render correctly when there are 3 or more participants plus the localParticipant', () => {
+-    mockUseVideoContext.mockImplementation(() => ({
+-      room: {
+-        localParticipant: mockLocalParticipant,
+-      },
+-    }));
+-    mockUseParticipantContext.mockImplementation(() => ({
+-      mobileGalleryViewParticipants: [
+-        { identity: 'test-participant-1', sid: 1 },
+-        { identity: 'test-participant-2', sid: 2 },
+-        { identity: 'test-participant-3', sid: 3 },
+-        { identity: 'test-participant-4', sid: 4 },
+-      ],
+-    }));
+-    const wrapper = shallow(<MobileGalleryView />);
+-    expect(wrapper).toMatchSnapshot();
++  describe('in landscape orientation', () => {
++    beforeEach(() => {
++      mockUseMediaQuery.mockImplementation(() => true);
++    });
++
++    it('should render correctly when there is only the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(1);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '100%',
++        width: '100%',
++      });
++    });
++
++    it('should render correctly when there is one participant plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [{ identity: 'test-participant-1', sid: 1 }],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(2);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '100%',
++        width: '50%',
++      });
++    });
++
++    it('should render correctly when there are two participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++        ],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(3);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '100%',
++        width: '33.33%',
++      });
++    });
++
++    it('should render correctly when there are 3 participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++          { identity: 'test-participant-3', sid: 3 },
++        ],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(4);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '50%',
++        width: '50%',
++      });
++    });
++
++    it('should render correctly when there are 3 or more participants plus the localParticipant', () => {
++      mockUseParticipantContext.mockImplementation(() => ({
++        mobileGalleryViewParticipants: [
++          { identity: 'test-participant-1', sid: 1 },
++          { identity: 'test-participant-2', sid: 2 },
++          { identity: 'test-participant-3', sid: 3 },
++          { identity: 'test-participant-4', sid: 4 },
++        ],
++      }));
++
++      const wrapper = shallow(<MobileGalleryView />);
++      const containers = wrapper.find('[data-test-id=""participantContainer""]');
++      expect(containers.length).toBe(5);
++      expect(containers.at(0).prop('style')).toMatchObject({
++        height: '50%',
++        width: '33.33%',
++      });
++    });
+   });
+ });
+",0,,2,550,1,4,6,10745
+78,994172d03d6a5bf0c23917a764e95fa9fff7a36f,59558884a8229eae3947039e613c95e060d58808,"<!-- Describe your Pull Request. You may remove some parts that are not applicable. -->
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [x] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [AHOYAPPS-251](https://issues.corp.twilio.com/browse/AHOYAPPS-251)
+
+### Description
+
+This PR reduces the flicker that occurs when the main participant changes. Some flicker still occurs, and this is because of something in the SDK (https://issues.corp.twilio.com/browse/JSDK-2641).
+
+Fixes an issue with respect to how `<Publication>` components are rendered by ParticipantTracks.tsx. Previously, each Publication component's key was set to `publication.trackSid`. This means that when the trackSid changed, the instance of the Publication component was destroyed and a new one was created. This was causing flicker, because it removed the `<video>` element from the page and created a new one. 
+Instead, when the track changes, we want the component instance to stay the same and we want it to just re-render with new props.  This can be achieved by using `publication.kind` as the key. This way, when the main participant changes, the Participant component instance stays the same (because the key is still 'video'), but it is re-rendered with new props. This means that the `<video>` element stays the same, and there is no flicker as a result.
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [ ] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [ ] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Reduce flickering when main participant changes
+","diff --git a/src/components/ParticipantTracks/ParticipantTracks.test.tsx b/src/components/ParticipantTracks/ParticipantTracks.test.tsx
+index fc9dfd1..28db850 100644
+--- a/src/components/ParticipantTracks/ParticipantTracks.test.tsx
++++ b/src/components/ParticipantTracks/ParticipantTracks.test.tsx
+@@ -4,7 +4,12 @@ import usePublications from '../../hooks/usePublications/usePublications';
+ import { shallow } from 'enzyme';
+ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+ 
+-jest.mock('../../hooks/usePublications/usePublications', () => jest.fn(() => [{ trackSid: 0 }, { trackSid: 1 }]));
++jest.mock('../../hooks/usePublications/usePublications', () =>
++  jest.fn(() => [
++    { trackSid: 0, kind: 'video' },
++    { trackSid: 1, kind: 'audio' },
++  ])
++);
+ jest.mock('../../hooks/useVideoContext/useVideoContext');
+ 
+ const mockUsePublications = usePublications as jest.Mock<any>;
+@@ -34,8 +39,8 @@ describe('the ParticipantTracks component', () => {
+   it('should filter out any screen share publications', () => {
+     mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+     mockUsePublications.mockImplementation(() => [
+-      { trackName: 'screen', trackSid: 0 },
+-      { trackName: 'camera', trackSid: 1 },
++      { trackName: 'screen', trackSid: 0, kind: 'video' },
++      { trackName: 'camera', trackSid: 1, kind: 'video' },
+     ]);
+     const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} />);
+     expect(wrapper.find('Publication').length).toBe(1);
+@@ -44,15 +49,15 @@ describe('the ParticipantTracks component', () => {
+         .find('Publication')
+         .at(0)
+         .prop('publication')
+-    ).toEqual({ trackName: 'camera', trackSid: 1 });
++    ).toEqual({ trackName: 'camera', trackSid: 1, kind: 'video' });
+   });
+ 
+   describe('with enableScreenShare prop', () => {
+     it('should filter out camera publications when a screen share publication is present', () => {
+       mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+       mockUsePublications.mockImplementation(() => [
+-        { trackName: 'screen', trackSid: 0 },
+-        { trackName: 'camera', trackSid: 1 },
++        { trackName: 'screen', trackSid: 0, kind: 'video' },
++        { trackName: 'camera', trackSid: 1, kind: 'video' },
+       ]);
+       const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} enableScreenShare />);
+       expect(wrapper.find('Publication').length).toBe(1);
+@@ -61,12 +66,12 @@ describe('the ParticipantTracks component', () => {
+           .find('Publication')
+           .at(0)
+           .prop('publication')
+-      ).toEqual({ trackName: 'screen', trackSid: 0 });
++      ).toEqual({ trackName: 'screen', trackSid: 0, kind: 'video' });
+     });
+ 
+     it('should render camera publications when a screen share publication is absent', () => {
+       mockUseVideoContext.mockImplementation(() => ({ room: {} }));
+-      mockUsePublications.mockImplementation(() => [{ trackName: 'camera', trackSid: 1 }]);
++      mockUsePublications.mockImplementation(() => [{ trackName: 'camera', trackSid: 1, kind: 'video' }]);
+       const wrapper = shallow(<ParticipantTracks participant={'mockParticipant' as any} enableScreenShare />);
+       expect(wrapper.find('Publication').length).toBe(1);
+       expect(
+@@ -74,7 +79,7 @@ describe('the ParticipantTracks component', () => {
+           .find('Publication')
+           .at(0)
+           .prop('publication')
+-      ).toEqual({ trackName: 'camera', trackSid: 1 });
++      ).toEqual({ trackName: 'camera', trackSid: 1, kind: 'video' });
+     });
+   });
+ });
+",0,,5,38,1,2,3,31
+9,5aab9b4249b60e09ced1495f563c38cac94c8c8f,bd8d6a08b3e62649a3c66eaa36549eaa5a506359,"This PR adds the ability to mute and unmute audio and video
+
+**Contributing to Twilio**
+
+> All third party contributors acknowledge that any contributions they provide will be made under the same open source license that the open source project is provided under.
+
+- [ ] I acknowledge that all my contributions will be made under the project's license.
+
+## Pull Request Details
+
+### JIRA link(s):
+
+- [AHOYAPPS-49](https://issues.corp.twilio.com/browse/AHOYAPPS-49)
+
+### Description
+
+User controls have been added.  They allow the use to mute/unmute their audio or video.  This can also be done before entering a room.  There is also an End Call button when in a room.
+
+The filmstrip shows a muted icon when the participant has muted audio.  When the participant's video is muted, their preview will be black.
+
+## Burndown
+
+### Before review
+* [ ] Updated CHANGELOG.md if necessary
+* [x] Added unit tests if necessary
+* [ ] Updated affected documentation
+* [x] Verified locally with `npm test`
+* [x] Manually sanity tested running locally
+* [x] Included screenshot as PR comment (if needed)
+* [x] Ready for review
+
+### Before merge
+* [ ] Got one or more +1s
+* [ ] Re-tested if necessary","Add tests for ParticipantInfo changes
+","diff --git a/src/components/ParticipantInfo/ParticipantInfo.test.tsx b/src/components/ParticipantInfo/ParticipantInfo.test.tsx
+index 1fb34d8..1a3c336 100644
+--- a/src/components/ParticipantInfo/ParticipantInfo.test.tsx
++++ b/src/components/ParticipantInfo/ParticipantInfo.test.tsx
+@@ -1,14 +1,19 @@
+ import React from 'react';
+ import ParticipantInfo from './ParticipantInfo';
+ import { shallow } from 'enzyme';
++import usePublications from '../../hooks/usePublications/usePublications';
+ 
+ jest.mock(
+   '../../hooks/useParticipantNetworkQualityLevel/useParticipantNetworkQualityLevel',
+   () => () => 4
+ );
+ 
++jest.mock('../../hooks/usePublications/usePublications');
++const mockUsePublications = usePublications as jest.Mock<any>;
++
+ describe('the ParticipantInfo component', () => {
+   it('should render correctly', () => {
++    mockUsePublications.mockImplementation(() => []);
+     const wrapper = shallow(
+       <ParticipantInfo participant={{ identity: 'mockIdentity' } as any}>
+         mock children
+@@ -16,4 +21,16 @@ describe('the ParticipantInfo component', () => {
+     );
+     expect(wrapper).toMatchSnapshot();
+   });
++
++  it('should not display MicOff icon when microphone is enabled', () => {
++    mockUsePublications.mockImplementation(() => [
++      { trackName: 'microphone', isTrackEnabled: true },
++    ]);
++    const wrapper = shallow(
++      <ParticipantInfo participant={{ identity: 'mockIdentity' } as any}>
++        mock children
++      </ParticipantInfo>
++    );
++    expect(wrapper.find('MicOffIcon').length).toEqual(0);
++  });
+ });
+",0,,2,32,1,10,15,625

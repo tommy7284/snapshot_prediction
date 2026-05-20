@@ -1,0 +1,105 @@
+{
+    "id": 6891811,
+    "name": "sapegin/mrm",
+    "isFork": false,
+    "commits": 438,
+    "branches": 8,
+    "releases": 1000,
+    "forks": 86,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://mrm.js.org/",
+    "watchers": 16,
+    "stargazers": 1542,
+    "contributors": 42,
+    "size": 8233,
+    "createdAt": "2016-12-12T08:23:27",
+    "pushedAt": "2023-09-14T05:18:14",
+    "updatedAt": "2023-11-03T02:46:50",
+    "totalIssues": 90,
+    "openIssues": 0,
+    "totalPullRequests": 207,
+    "openPullRequests": 9,
+    "blankLines": 4739,
+    "codeLines": 107411,
+    "commentLines": 945,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 34,
+            "language": "CSS",
+            "commentLines": 13,
+            "codeLines": 212
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 94768
+        },
+        {
+            "blankLines": 19,
+            "language": "TypeScript",
+            "commentLines": 6,
+            "codeLines": 143
+        },
+        {
+            "blankLines": 1351,
+            "language": "JavaScript",
+            "commentLines": 898,
+            "codeLines": 8173
+        },
+        {
+            "blankLines": 3334,
+            "language": "Markdown",
+            "commentLines": 28,
+            "codeLines": 4016
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 97
+        }
+    ],
+    "lastCommit": "2023-09-14T05:18:12",
+    "lastCommitSHA": "bc0212c378a46525fbd62fc87944970e64c3bf30",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 244889,
+        "CSS": 4931
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "codemod",
+        "config",
+        "dotfiles",
+        "hacktoberfest",
+        "opensource",
+        "scaffold",
+        "template"
+    ]
+}

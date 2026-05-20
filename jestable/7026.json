@@ -1,0 +1,92 @@
+{
+    "id": 6574719,
+    "name": "didierfranc/react-waterfall",
+    "isFork": false,
+    "commits": 89,
+    "branches": 51,
+    "releases": 10,
+    "forks": 83,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 22,
+    "stargazers": 1322,
+    "contributors": 9,
+    "size": 2471,
+    "createdAt": "2018-02-20T11:01:14",
+    "pushedAt": "2022-12-08T05:24:14",
+    "updatedAt": "2023-01-07T11:37:41",
+    "totalIssues": 62,
+    "openIssues": 7,
+    "totalPullRequests": 142,
+    "openPullRequests": 50,
+    "blankLines": 895,
+    "codeLines": 2520,
+    "commentLines": 35,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 6,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 45
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 769,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1722
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 163
+        },
+        {
+            "blankLines": 117,
+            "language": "JavaScript",
+            "commentLines": 15,
+            "codeLines": 552
+        }
+    ],
+    "lastCommit": "2020-07-30T01:16:54",
+    "lastCommitSHA": "ee9ec6fbb7e815cd81418c47187524d21a1a102f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 11438
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "feedback",
+        "good first issue",
+        "great",
+        "help wanted",
+        "invalid",
+        "question",
+        "react-native",
+        "v4",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": []
+}

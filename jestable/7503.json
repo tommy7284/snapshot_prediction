@@ -1,0 +1,93 @@
+{
+    "id": 6644674,
+    "name": "paularmstrong/normalizr",
+    "isFork": false,
+    "commits": 455,
+    "branches": 39,
+    "releases": 26,
+    "forks": 855,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 204,
+    "stargazers": 20857,
+    "contributors": 57,
+    "size": 2471,
+    "createdAt": "2014-08-20T08:41:38",
+    "pushedAt": "2022-03-19T10:44:12",
+    "updatedAt": "2022-03-24T05:10:35",
+    "totalIssues": 0,
+    "openIssues": 0,
+    "totalPullRequests": 193,
+    "openPullRequests": 0,
+    "blankLines": 607,
+    "codeLines": 4309,
+    "commentLines": 50,
+    "metrics": [
+        {
+            "blankLines": 251,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 786
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1065
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 49,
+            "language": "TypeScript",
+            "commentLines": 5,
+            "codeLines": 227
+        },
+        {
+            "blankLines": 300,
+            "language": "JavaScript",
+            "commentLines": 39,
+            "codeLines": 2199
+        }
+    ],
+    "lastCommit": "2022-03-19T10:39:16",
+    "lastCommitSHA": "c2ab080641c7ebc6f5dc085a4ac074947f48ca58",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 54968,
+        "TypeScript": 5108
+    },
+    "labels": [
+        "dependencies",
+        "greenkeeper",
+        "outdated",
+        "priority: critical",
+        "priority: high",
+        "priority: low",
+        "priority: medium",
+        "status: abandoned",
+        "status: accepted",
+        "status: available",
+        "status: blocked",
+        "status: completed",
+        "status: in progress",
+        "status: on hold",
+        "status: pending",
+        "status: review needed",
+        "status: revision needed",
+        "type: bug",
+        "type: enhancement",
+        "type: maintenance",
+        "type: question"
+    ],
+    "topics": []
+}

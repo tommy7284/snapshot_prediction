@@ -1,0 +1,117 @@
+{
+    "id": 6904929,
+    "name": "roxiness/routify",
+    "isFork": false,
+    "commits": 1546,
+    "branches": 32,
+    "releases": 450,
+    "forks": 86,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "next",
+    "license": null,
+    "homepage": "https://routify.dev",
+    "watchers": 20,
+    "stargazers": 1825,
+    "contributors": 11,
+    "size": 9631,
+    "createdAt": "2019-09-25T06:13:42",
+    "pushedAt": "2024-04-07T09:13:10",
+    "updatedAt": "2024-04-08T01:30:44",
+    "totalIssues": 359,
+    "openIssues": 32,
+    "totalPullRequests": 163,
+    "openPullRequests": 12,
+    "blankLines": 2525,
+    "codeLines": 85131,
+    "commentLines": 3425,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 63712
+        },
+        {
+            "blankLines": 13,
+            "language": "TypeScript",
+            "commentLines": 824,
+            "codeLines": 1225
+        },
+        {
+            "blankLines": 1357,
+            "language": "JavaScript",
+            "commentLines": 2354,
+            "codeLines": 8398
+        },
+        {
+            "blankLines": 11,
+            "language": "YAML",
+            "commentLines": 13,
+            "codeLines": 95
+        },
+        {
+            "blankLines": 179,
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 292
+        },
+        {
+            "blankLines": 145,
+            "language": "HTML",
+            "commentLines": 52,
+            "codeLines": 836
+        },
+        {
+            "blankLines": 469,
+            "language": "Svelte",
+            "commentLines": 132,
+            "codeLines": 5476
+        },
+        {
+            "blankLines": 351,
+            "language": "CSS",
+            "commentLines": 48,
+            "codeLines": 5097
+        }
+    ],
+    "lastCommit": "2024-04-07T09:12:17",
+    "lastCommitSHA": "9d693d576918c250d8786a48a0ce57d9a1c322cd",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 289132,
+        "Svelte": 31852,
+        "CSS": 900,
+        "HTML": 723
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discuss",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "exciting! [please look]",
+        "feedback wanted",
+        "good first issue",
+        "help wanted",
+        "housekeeping",
+        "invalid",
+        "needs triage",
+        "not routify",
+        "question",
+        "released",
+        "released on @beta",
+        "released on @next",
+        "semantic-release",
+        "solved",
+        "v2",
+        "v3",
+        "wontfix"
+    ],
+    "topics": [
+        "hacktoberfest"
+    ]
+}

@@ -1,0 +1,128 @@
+{
+    "id": 6208126,
+    "name": "pugjs/pug",
+    "isFork": false,
+    "commits": 2572,
+    "branches": 11,
+    "releases": 22,
+    "forks": 1955,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://pugjs.org",
+    "watchers": 547,
+    "stargazers": 21472,
+    "contributors": 217,
+    "size": 14862,
+    "createdAt": "2010-06-23T01:05:42",
+    "pushedAt": "2024-03-04T06:18:49",
+    "updatedAt": "2024-03-04T06:58:12",
+    "totalIssues": 2559,
+    "openIssues": 284,
+    "totalPullRequests": 856,
+    "openPullRequests": 22,
+    "blankLines": 2028,
+    "codeLines": 21431,
+    "commentLines": 987,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 8545
+        },
+        {
+            "blankLines": 49,
+            "language": "TypeScript",
+            "commentLines": 2,
+            "codeLines": 371
+        },
+        {
+            "blankLines": 905,
+            "language": "JavaScript",
+            "commentLines": 909,
+            "codeLines": 8070
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 0,
+            "language": "CoffeeScript",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 42,
+            "language": "HTML",
+            "commentLines": 28,
+            "codeLines": 857
+        },
+        {
+            "blankLines": 17,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 113
+        },
+        {
+            "blankLines": 314,
+            "language": "Pug",
+            "commentLines": 47,
+            "codeLines": 1631
+        },
+        {
+            "blankLines": 701,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1834
+        },
+        {
+            "blankLines": 0,
+            "language": "Stylus",
+            "commentLines": 0,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2021-12-23T05:15:31",
+    "lastCommitSHA": "4767cafea0af3d3f935553df0f9a8a6e76d470c2",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 263313,
+        "Pug": 50394,
+        "HTML": 20111,
+        "TypeScript": 1640,
+        "CoffeeScript": 126,
+        "Stylus": 88,
+        "CSS": 48
+    },
+    "labels": [
+        "being worked on",
+        "breaking change",
+        "bug",
+        "client & runtime",
+        "command line",
+        "dependencies",
+        "documentation",
+        "good first issue",
+        "includes",
+        "interpolation",
+        "meta",
+        "mixin",
+        "needs test case",
+        "performance",
+        "plugin-request",
+        "pug-filters",
+        "pug-linker",
+        "pug-load",
+        "pug-walk",
+        "tests",
+        "\u200b\u200b\u200b\u200b\u200berror reporting"
+    ],
+    "topics": []
+}

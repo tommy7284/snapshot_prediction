@@ -1,0 +1,135 @@
+{
+    "id": 7914086,
+    "name": "grommet/grommet",
+    "isFork": false,
+    "commits": 6799,
+    "branches": 78,
+    "releases": 157,
+    "forks": 1017,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://grommet.io",
+    "watchers": 127,
+    "stargazers": 8299,
+    "contributors": 338,
+    "size": 333404,
+    "createdAt": "2015-03-24T08:54:10",
+    "pushedAt": "2024-04-25T04:57:45",
+    "updatedAt": "2024-04-26T02:01:24",
+    "totalIssues": 3373,
+    "openIssues": 268,
+    "totalPullRequests": 3824,
+    "openPullRequests": 29,
+    "blankLines": 10052,
+    "codeLines": 96695,
+    "commentLines": 4319,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 447
+        },
+        {
+            "blankLines": 3052,
+            "language": "TypeScript",
+            "commentLines": 594,
+            "codeLines": 25089
+        },
+        {
+            "blankLines": 6863,
+            "language": "JavaScript",
+            "commentLines": 3709,
+            "codeLines": 70359
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 2,
+            "codeLines": 30
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 230
+        },
+        {
+            "blankLines": 0,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 134,
+            "language": "Markdown",
+            "commentLines": 9,
+            "codeLines": 522
+        }
+    ],
+    "lastCommit": "2024-04-25T04:41:18",
+    "lastCommitSHA": "5b9968e605e7b458ef8d38455b2cad0c90835877",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 2194997,
+        "TypeScript": 621052,
+        "HTML": 1013
+    },
+    "labels": [
+        "accessibility",
+        "browser related",
+        "bug",
+        "data and friends",
+        "datatable",
+        "dependencies",
+        "design",
+        "discussion",
+        "documentation",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "i18n",
+        "in progress",
+        "interns",
+        "invalid",
+        "needs attention",
+        "prty",
+        "ready for review",
+        "regression",
+        "research",
+        "stale",
+        "stretch",
+        "stuck",
+        "typescript",
+        "v3-attention",
+        "waiting"
+    ],
+    "topics": [
+        "a11y",
+        "babel",
+        "design-system",
+        "grommet",
+        "hacktoberfest",
+        "javascript",
+        "react",
+        "ux-framework"
+    ]
+}

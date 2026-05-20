@@ -1,0 +1,83 @@
+{
+    "id": 6180895,
+    "name": "elmasse/nextein",
+    "isFork": false,
+    "commits": 770,
+    "branches": 3,
+    "releases": 0,
+    "forks": 50,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "ISC License",
+    "homepage": "https://nextein.elmasse.io",
+    "watchers": 10,
+    "stargazers": 897,
+    "contributors": 9,
+    "size": 2024,
+    "createdAt": "2017-05-29T07:46:23",
+    "pushedAt": "2023-05-31T02:23:31",
+    "updatedAt": "2023-05-31T02:30:28",
+    "totalIssues": 93,
+    "openIssues": 2,
+    "totalPullRequests": 262,
+    "openPullRequests": 1,
+    "blankLines": 615,
+    "codeLines": 22665,
+    "commentLines": 159,
+    "metrics": [
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 266,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 742
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 20565
+        },
+        {
+            "blankLines": 342,
+            "language": "JavaScript",
+            "commentLines": 156,
+            "codeLines": 1327
+        }
+    ],
+    "lastCommit": "2023-01-09T10:43:34",
+    "lastCommitSHA": "0267cddbb9e962a35909248c93b2c46f0b3253ca",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 51691
+    },
+    "labels": [
+        "beta",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "blog-engine",
+        "frontmatter",
+        "markdown",
+        "nextjs",
+        "react",
+        "static-site-generator"
+    ]
+}

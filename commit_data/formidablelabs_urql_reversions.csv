@@ -1,0 +1,4834 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1185,a085142c12af4d28cfb858d35bd478b8365e94bf,f154c943fd8adcd92ca41763d0fadad473a8f5e5,"See #1184 
+
+## Summary
+
+**Note:** More testing is needed before we can safely ship this.
+
+Increase the consistency of when and how the `__typename` field is added to results. Instead of adding it by default and automatically first, the `__typename` field will now be added along with the usual selection set. The `write` operation will issue a warning if it's in the selection but missing in the result, as it should, and the `query` operation will add it as it did before but at the correct position of the result, assuming that it's in all selection sets. The slight change here is that it now won't be added to root results by default and only if it's being queried explicitly.
+
+## Set of changes
+
+- Allow `makeSelectionIterator` to iterate `__typename` field
+- Remove `data.__typename` assignment in `readSelection` and add special logic for `__typename` field assignment
+- Update `query.test.ts` cases to include `__typename` explicitly where needed","Update various test suites
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index 60d0069..a8eee35 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -2,6 +2,7 @@
+ 
+ import gql from 'graphql-tag';
+ import { minifyIntrospectionQuery } from '@urql/introspection';
++import { maskTypename } from '@urql/core';
+ import { mocked } from 'ts-jest/utils';
+ 
+ import { Data, StorageAdapter } from '../types';
+@@ -14,6 +15,7 @@ import { getIntrospectionQuery, parse } from 'graphql';
+ 
+ const Appointment = gql`
+   query appointment($id: String) {
++    __typename
+     appointment(id: $id) {
+       __typename
+       id
+@@ -41,6 +43,7 @@ const Todos = gql`
+ 
+ const TodosWithoutTypename = gql`
+   query {
++    __typename
+     todos {
+       id
+       text
+@@ -87,7 +90,10 @@ describe('Store', () => {
+     // NOTE: This is the query without __typename annotations
+     write(store, { query: TodosWithoutTypename }, todosData);
+     const result = query(store, { query: TodosWithoutTypename });
+-    expect(result.data).toEqual(todosData);
++    expect(result.data).toEqual({
++      ...maskTypename(todosData),
++      __typename: 'Query',
++    });
+   });
+ });
+ 
+@@ -473,6 +479,7 @@ describe('Store with OptimisticMutationConfig', () => {
+           id
+           text
+           complete
++          __typename
+         }
+       `,
+       { id: '0' }
+@@ -714,6 +721,7 @@ describe('Store with storage', () => {
+   it('should be able to persist embedded data', () => {
+     const EmbeddedAppointment = gql`
+       query appointment($id: String) {
++        __typename
+         appointment(id: $id) {
+           __typename
+           info
+",1,OID=OID,10,48,1,11,19,188
+1187,4b186264d2ee907fa060f4398b5cc0753e570850,51b311d5147efbef4ee4f5432c862d1b0afb530f,"## Summary
+
+No RFC, since this is a rather small change that naturally emerged after #1186 
+
+We can merge the functionality of `graphql-tag` into a leaner function in `@urql/core`. Our implementation does not check fragment names globally, so that it works well with `@urql/exchange-graphcache` but mostly checks them in the document that's currently generated.
+
+The output is still compatible with `graphql-tag` and works similarly. There's potential for more optimisations, but the most important optimisation is that the function reuses the key-cache of `request.ts` in the same file.
+
+The size increase is negligible and could be gained back with more refactors potentially (0.1kB gzip)
+","Revert changes / Update snapshot
+",,0,,2,213,1,15,55,1091
+1335,46cbdf4e9c4df77ff36199ef150c5267a80d5033,a7f365ed2f2dea3a8deadd9156d9c5e9a3d6cd59,"Resolve #1332 
+Resolve #1272
+Resolve #1243 (Won't fix, but this stabilises the issue predictably)
+
+## Summary
+
+This swaps out the `useQuery` implementation for a `MutableSource`-like implementation, which has been proven to work by `valtio` (See: https://github.com/pmndrs/valtio/blob/ee4fee75da2054ddfef4cec826c0b9f2e95db4e9/src/useMutableSource.ts)
+
+In this implementation the general behaviour of `useQuery` does not change and preserves the logic as layed out by our previous `useSource` implementation. The hook will first start a temporary subscription to `client.executeQuery` which it'll discard after the mounting process completes. This is facilitated by a call to `getSnapshot` which handles the suspense cache and throwing suspense promises.
+
+Additionally, if the hook uses suspense-mode this function may throw a suspense promise instead of returning a result. This function is used in the `useState` initialiser. The state, besides the currently used `source`, the source's state (the result output), and `getSnapshot` function, also stores a list of dependencies. This list is compared to the state on every render. If it changes this signifies that the current `source` should be swapped out and that the state should again be initialised using `getSnapshot`.
+
+Additionally the results of sources is stored in a ""Suspense cache"" which is an ad-hoc cache layer that is instantiated by `getCacheForClient`. This imitates a primitive version of React's upcoming `getCacheForType` function without any support for splitting the state or keeping it consistent across lanes, as the state is global.
+Instead we facilitate Concurrent Mode support by ensuring that all changes in the functionality of the hook work using state changes, which allow React to branch off lanes on any state change.
+
+This is different from our previous `useSource` hook which kept closure state and effects across suspense triggers and lanes, which causes state to go out of sync.
+
+The suspense cache also protects itself from going stale. Each result in `useQuery` will update the stored state value in the cache. Additionally we can clear the result from the cache when the client tears down a query. This is done by tracking disposed querieson unmounts. Each time a result in the cache is updated a ""dispose claim"" for this operation is cleared. Each time a `useQuery` hook unsubscribes in `useEffect` it creates a ""dispose claim"". When the `Client` sends a `teardown` operation and a ""dispose claim"" exists then the cache is cleared of the stale result.
+This effectively prevents cached values from being cleared inbetween a mount and the first effect run.
+
+## Set of changes
+
+- Delete `useSource`
+- Reimplement `useQuery` with `MutableSource`-like logic, only branch on state
+- Reimplement `useSubscription` without `useSource` similarly
+- Implement `getCacheForClient`","Update tests for useSubscription
+","diff --git a/packages/react-urql/src/hooks/useSubscription.test.tsx b/packages/react-urql/src/hooks/useSubscription.test.tsx
+index d50fef7..31d6f46 100644
+--- a/packages/react-urql/src/hooks/useSubscription.test.tsx
++++ b/packages/react-urql/src/hooks/useSubscription.test.tsx
+@@ -16,7 +16,6 @@ jest.mock('../context', () => {
+ 
+ import React, { FC } from 'react';
+ import renderer, { act } from 'react-test-renderer';
+-import { empty } from 'wonka';
+ import { OperationContext } from '@urql/core';
+ 
+ import { useSubscription, UseSubscriptionState } from './useSubscription';
+@@ -73,24 +72,6 @@ it('should support setting context in useSubscription params', () => {
+   );
+ });
+ 
+-describe('on subscription', () => {
+-  it('forwards client response', () => {
+-    const wrapper = renderer.create(<SubscriptionUser q={query} />);
+-    /**
+-     * Have to call update (without changes) in order to see the
+-     * result of the state change.
+-     */
+-    wrapper.update(<SubscriptionUser q={query} />);
+-    expect(state).toEqual({
+-      data: 1234,
+-      error: 5678,
+-      extensions: undefined,
+-      fetching: true,
+-      stale: false,
+-    });
+-  });
+-});
+-
+ it('calls handler', () => {
+   const handler = jest.fn();
+   const wrapper = renderer.create(
+@@ -100,15 +81,6 @@ it('calls handler', () => {
+   expect(handler).toBeCalledWith(undefined, 1234);
+ });
+ 
+-describe('active teardown', () => {
+-  it('sets fetching to false when the source ends', () => {
+-    client.executeSubscription.mockReturnValueOnce(empty);
+-    renderer.create(<SubscriptionUser q={query} />);
+-    expect(client.executeSubscription).toHaveBeenCalled();
+-    expect(state).toMatchObject({ fetching: false });
+-  });
+-});
+-
+ describe('execute subscription', () => {
+   it('triggers subscription execution', () => {
+     renderer.create(<SubscriptionUser q={query} />);
+",0,,3,91,1,13,12,715
+1357,adba18368ee75051b039c98da713aa6fe3d9d171,54ecce157debb44b08e3da81805c8cbcc2b41120,"Close #1354
+
+## Summary
+
+In #1045 we've deprecated the `Operation.operationName` property as specced out in #1005.
+
+I believe we're now ready to get rid of it as all exchanges that are maintained by us have been migrated over and nothing stops us from switching over as we've given sufficient time for people to adopt this change. The warning is still spurious in `@urql/devtools` and may confuse new users, so the sooner we can remove it the better.
+
+## Set of changes
+
+- Remove `operationName` and associated warning utilities
+- Update test files / snapshots
+- Bump bindings by a minor to force people onto the new `@urql/core` version","Remove deprecated operationName property from Operation
+",,0,,13,118,4,3,14,128
+145,d1cf4fa4ca92ac250f88e2a825ca1f3c0d1b2f1d,d1cf4fa4ca92ac250f88e2a825ca1f3c0d1b2f1d,Fix #144 ,"fix tests
+","diff --git a/src/components/client.test.tsx b/src/components/client.test.tsx
+index 86550f6..5e18200 100755
+--- a/src/components/client.test.tsx
++++ b/src/components/client.test.tsx
+@@ -26,7 +26,7 @@ beforeEach(() => {
+ it('passes snapshot', () => {
+   const wrapper = shallow(
+     // @ts-ignore
+-    <UrqlClient client={client} query={query} mutation={mutations}>
++    <UrqlClient client={client} query={query} mutations={mutations}>
+       {children}
+     </UrqlClient>
+   );
+@@ -38,7 +38,7 @@ describe('on creation', () => {
+   it('calls createInstance', () => {
+     shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -50,7 +50,7 @@ describe('on creation', () => {
+     it('passes snapshot', () => {
+       shallow(
+         // @ts-ignore
+-        <UrqlClient client={client} query={query} mutation={mutations}>
++        <UrqlClient client={client} query={query} mutations={mutations}>
+           {children}
+         </UrqlClient>
+       );
+@@ -61,7 +61,7 @@ describe('on creation', () => {
+     it('fetching = true', () => {
+       shallow(
+         // @ts-ignore
+-        <UrqlClient client={client} query={query} mutation={mutations}>
++        <UrqlClient client={client} query={query} mutations={mutations}>
+           {children}
+         </UrqlClient>
+       );
+@@ -74,7 +74,7 @@ describe('on creation', () => {
+     it('error = undefined', () => {
+       shallow(
+         // @ts-ignore
+-        <UrqlClient client={client} query={query} mutation={mutations}>
++        <UrqlClient client={client} query={query} mutations={mutations}>
+           {children}
+         </UrqlClient>
+       );
+@@ -87,7 +87,7 @@ describe('on creation', () => {
+     it('data = undefined', () => {
+       shallow(
+         // @ts-ignore
+-        <UrqlClient client={client} query={query} mutation={mutations}>
++        <UrqlClient client={client} query={query} mutations={mutations}>
+           {children}
+         </UrqlClient>
+       );
+@@ -100,7 +100,7 @@ describe('on creation', () => {
+     it('mutations = <object>', () => {
+       shallow(
+         // @ts-ignore
+-        <UrqlClient client={client} query={query} mutation={mutations}>
++        <UrqlClient client={client} query={query} mutations={mutations}>
+           {children}
+         </UrqlClient>
+       );
+@@ -143,7 +143,7 @@ describe('componentDidUpdate', () => {
+   it('mutation functions are updated', () => {
+     const wrapper = mount(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -153,7 +153,7 @@ describe('componentDidUpdate', () => {
+     };
+ 
+     children.mockClear();
+-    wrapper.setProps({ mutation: newMutations });
++    wrapper.setProps({ mutations: newMutations });
+ 
+     expect(Object.keys(children.mock.calls[1][0].mutations)).toEqual(
+       Object.keys(newMutations)
+@@ -179,7 +179,7 @@ describe('mutation functions', () => {
+   it('have same properties as mutation argument', () => {
+     const wrapper = shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -192,7 +192,7 @@ describe('mutation functions', () => {
+   it('calls executeMutation', () => {
+     const wrapper = shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -206,7 +206,7 @@ describe('mutation functions', () => {
+   it('passes mutation query to executeMutation', () => {
+     const wrapper = shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -222,7 +222,7 @@ describe('mutation functions', () => {
+   it('passes mutation vars to executeMutation', () => {
+     const wrapper = shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+@@ -241,7 +241,7 @@ describe('on change from client', () => {
+   it('child components are updated', () => {
+     const wrapper = shallow(
+       // @ts-ignore
+-      <UrqlClient client={client} query={query} mutation={mutations}>
++      <UrqlClient client={client} query={query} mutations={mutations}>
+         {children}
+       </UrqlClient>
+     );
+
+diff --git a/src/components/connect-hoc.test.tsx b/src/components/connect-hoc.test.tsx
+index 2d7dc2a..a80dcb1 100644
+--- a/src/components/connect-hoc.test.tsx
++++ b/src/components/connect-hoc.test.tsx
+@@ -9,7 +9,7 @@ const Connect = ConnectMock as jest.Mock;
+ Connect.mockReturnValue(<div />);
+ 
+ const connectOpts = {
+-  mutation: { test: mutationGql },
++  mutations: { test: mutationGql },
+   query: queryGql,
+ };
+ 
+
+diff --git a/src/components/connect.test.tsx b/src/components/connect.test.tsx
+index 5e09cba..ffae475 100644
+--- a/src/components/connect.test.tsx
++++ b/src/components/connect.test.tsx
+@@ -6,7 +6,7 @@ import { queryGql, mutationGql } from '../test-utils';
+ 
+ const children = jest.fn().mockReturnValue(() => <h1>Child component</h1>);
+ const query = queryGql;
+-const mutation = {
++const mutations = {
+   addUser: mutationGql,
+ };
+ 
+@@ -16,7 +16,7 @@ beforeEach(() => {
+ 
+ it('passes snapshot', () => {
+   const wrapper = shallow(
+-    <Connect children={children} mutation={mutation} query={query} />
++    <Connect children={children} mutations={mutations} query={query} />
+   );
+   expect(wrapper).toMatchSnapshot();
+ });
+@@ -46,10 +46,12 @@ describe('UrqlClient', () => {
+   });
+ 
+   it('is passed mutation', () => {
+-    const wrapper = mount(<Connect children={children} mutation={mutation} />);
++    const wrapper = mount(
++      <Connect children={children} mutations={mutations} />
++    );
+     expect(wrapper.find('UrqlClient').props()).toHaveProperty(
+-      'mutation',
+-      mutation
++      'mutations',
++      mutations
+     );
+   });
+ 
+",0,,6,54,3,3,11,175
+149,ad9ab93f5cec90a20f5f37f97af7842a34ee0206,ad9ab93f5cec90a20f5f37f97af7842a34ee0206,Courtesy of @lukejacksonn ,"fix when data response == undefined
+","diff --git a/src/lib/client.test.ts b/src/lib/client.test.ts
+index e504ef9..0791d0f 100755
+--- a/src/lib/client.test.ts
++++ b/src/lib/client.test.ts
+@@ -1,6 +1,6 @@
+ /** NOTE: Testing in this file is designed to test both the client and it's interaction with default Exchanges */
+ import { createClient } from './client';
+-import { queryGql, mutationGql } from '../test-utils';
++import { queryGql, mutationGql, queryResponse } from '../test-utils';
+ import { ClientInstance } from '../types';
+ 
+ const url = 'https://hostname.com';
+@@ -39,6 +39,13 @@ describe('createClient', () => {
+         fetch.mockClear();
+         fetchOptions.mockClear();
+         fetchOptions.mockReturnValue(options);
++        fetch.mockResolvedValue({
++          status: 200,
++          json: () => ({
++            status: 200,
++            data: queryResponse.data,
++          }),
++        });
+       });
+ 
+       it('function is executed', () => {
+@@ -115,7 +122,7 @@ describe('executeQuery', () => {
+       status: 200,
+       json: () => ({
+         status: 200,
+-        data: [],
++        data: queryResponse.data,
+       }),
+     });
+   });
+",0,,3,26,1,2,6,120
+1515,8eb7909dd83b52ddc1bc7da62fe64d61bb8ce624,831bc1506ce10317ed62a9bacb5682b1040338b4,"## Summary
+
+At the risk of being called edgy, this proposed change layers a third cache on top of the `Client`. Apart from the usual exchange cache (default `cacheExchange` or Graphcache) and the React bindings' suspense/concurrent cache, this third cache is just a minor one to share results across all sources.
+
+This change replaces the `Client`'s semaphore with a shared binary semaphore that only stores the result source for a given operation. Hence, an active operation now has a single source that it uses for all subscribers. Apart from the shared source on each subscription it will still emit a new operation. However, all sources for a single subscription now share an underlying source. This source ensures that all operations see the exact same result (which was only implicitly guaranteed before) and each new subscriber will receive the last previously known result if its operation doesn't immediately yield a first result.
+
+This means that it'll be harder to trip up when layering a lot of logic with shared operations that have multiple concurrent subscribers and multiple concurrent uses of `cache-and-network` request policies.
+
+## Set of changes
+
+- Replace `activeOperations` type with a `Map<number, ActiveOperation>`
+- Store a result source for each query/subscription source that's shared and cleans itself up
+- Keep around an ""active cached value"" for each source that's the last known result
+- Clear the `activeOperations` when it ends
+- Use the ""active cached value"" to emit a first value for new subscribers when they start and don't receive a synchronous result immediately
+- Ensure that each new subscriber issues a fresh operation
+
+**The risk associated with this change right now is that the `requestPolicy` may be disregarded. We have to investigate whether a `network-only` operation for instance still shows the expected bindings behaviour. Although, this hasn't been doing what people thought anyway.**
+","Replace operation semaphore with shared behavior source
+
+Replace the client's counting of active operations with a
+single, shared operation result source in a Map. This achieves
+the same semaphore behaviour but replaces it with a binary
+semaphore-like cache, where the cached source remembers the
+last active result.
+",,0,,2,168,1,7,6,388
+1638,ab0a0ac98681815c61264e931d293d0e11fda17c,b45cef38a4d40c264998faa44404e598ccc32d28,"- Create an `interface Client` type with all internals hidden
+- Convert `Client` to an ES5 factory/constructor pattern
+- Ensure that `Client` can both be called with or without `new` (types remain the same)
+- Hide internals in factory function using scoped closure variables as needed
+
+`3.68kB minzipped` to `3.59kB minzipped`","Convert Client implementation to object factory
+","diff --git a/packages/core/src/client.test.ts b/packages/core/src/client.test.ts
+index 5ee56c2..612ed3d 100755
+--- a/packages/core/src/client.test.ts
++++ b/packages/core/src/client.test.ts
+@@ -8,9 +8,12 @@ import {
+   map,
+   pipe,
+   subscribe,
++  publish,
+   filter,
++  share,
+   toArray,
+   toPromise,
++  onPush,
+   tap,
+   take,
+ } from 'wonka';
+@@ -344,19 +347,16 @@ describe('queuing behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    pipe(
+-      client.results$,
+-      subscribe(result => {
+-        output.push(result);
+-      })
+-    );
+-
+-    const results = pipe(
++    const shared = pipe(
+       client.executeRequestOperation(queryOperation),
+-      toArray
++      onPush(result => output.push(result)),
++      share
+     );
+ 
+-    expect(output.length).toBe(4);
++    const results = pipe(shared, toArray);
++    pipe(shared, publish);
++
++    expect(output.length).toBe(8);
+     expect(results.length).toBe(2);
+ 
+     expect(output[0]).toHaveProperty('key', queryOperation.key);
+",0,,4,468,1,7,6,646
+168,5f558d2ba37775e4a12a982ad92b146cec505e21,87ffdbf366ed10f493af6d1ca0b6b58cbb64580d,"Leftover todos:
+
+- [ ] Update tests
+- [ ] Validate new approach and correctness
+- [x] Move example's dependencies into `example/package.json` (And maybe use CRA for simplicity?)
+- [x] Readd TS typings export
+- [x] Check biggest bundlesize contributors
+- [ ] Readd `refetch` (Maybe?)
+- [ ] Fix up `example/`
+- [ ] Readd option to pass in `fetch` ponyfill (to prevent forced polyfilling)","Fix tests for all exchanges except subscription
+","diff --git a/src/exchanges/fetch.test.ts b/src/exchanges/fetch.test.ts
+index 5ea40f0..e3d0268 100755
+--- a/src/exchanges/fetch.test.ts
++++ b/src/exchanges/fetch.test.ts
+@@ -1,6 +1,8 @@
+-import { fromValue, makeSubject, merge, never, pipe, subscribe, toPromise } from 'wonka';
++import { empty, fromValue, makeSubject, merge, never, pipe, Source, subscribe, toPromise } from 'wonka';
++
++import { Client } from '../lib/client';
+ import { queryOperation, subscriptionOperation } from '../test-utils';
+-import { Exchange } from '../types';
++import { Exchange, ExchangeResult } from '../types';
+ import { fetchExchange } from './fetch';
+ 
+ const fetch = (global as any).fetch as jest.Mock;
+@@ -35,9 +37,9 @@ const response = {
+ };
+ 
+ const exchangeArgs = {
+-  forward: jest.fn(),
+-  subject: makeSubject(),
+-} as any;
++  forward: () => (empty as Source<ExchangeResult>),
++  client: ({} as Client)
++};
+ 
+ it('should return response data from fetch', async () => {
+   fetch.mockResolvedValue({
+@@ -69,20 +71,6 @@ it('should return error data from fetch', async () => {
+   expect(data).toMatchSnapshot();
+ });
+ 
+-it('should throw error when operationName is subscription', async () => {
+-  try {
+-    await pipe(
+-      fromValue(subscriptionOperation),
+-      fetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    fail();
+-  } catch (err) {
+-    expect(err).toMatchSnapshot();
+-  }
+-});
+-
+ it('should call cancel when the Observable is cancelled', () => {
+   fetch.mockReturnValue(Promise.reject(abortError));
+ 
+",1,OID=OID,5,66,1,16,52,10203
+171,0459df9a9eb84361d27446f39d6f6bcd67ff6231,ca0f0089bdd9fa2017375b8c78cf616fd7dd9aea,"Todo:
+- [x] Remove ""monolith"" react client (no longer using term client either - woop woop!)
+- [x] Use alternate implementation of hooks for new client lib
+- [x] Add render props implementations for Mutation, Query, and Subscription
+- [x] Remove redundant connecting functions and instead expose Provider/Context
+- [ ] Add functional tests for client utils
+- [ ] Add hooks and render prop implementations to example
+- [ ] Add e2e tests for both react implementations","setup react adapters init
+
+Co-authored-by: blainekasten <blainekasten@gmail.com>
+","diff --git a/src/components/connect-hoc.test.tsx b/src/components/connect-hoc.test.tsx
+deleted file mode 100644
+index a80dcb1..0000000
+--- a/src/components/connect-hoc.test.tsx
++++ /dev/null
+@@ -1,61 +0,0 @@
+-jest.mock('./connect');
+-import { mount } from 'enzyme';
+-import React from 'react';
+-import { Connect as ConnectMock } from './connect';
+-import { ConnectHOC } from './connect-hoc';
+-import { mutationGql, queryGql } from '../test-utils';
+-
+-const Connect = ConnectMock as jest.Mock;
+-Connect.mockReturnValue(<div />);
+-
+-const connectOpts = {
+-  mutations: { test: mutationGql },
+-  query: queryGql,
+-};
+-
+-const TargetComponent = function() {
+-  return <div />;
+-};
+-
+-beforeEach(() => {
+-  Connect.mockClear();
+-});
+-
+-it('passes snapshot', () => {
+-  const Connected = ConnectHOC(connectOpts)(TargetComponent);
+-  const wrapper = mount(<Connected />);
+-
+-  expect(wrapper).toMatchSnapshot();
+-});
+-
+-it('Names connected component Connect(<ChildName>)', () => {
+-  const Connected = ConnectHOC(connectOpts)(TargetComponent);
+-  const wrapper = mount(<Connected />);
+-
+-  expect(wrapper.find('Connect(TargetComponent)').length).toBe(1);
+-});
+-
+-it('Calls Connect component', () => {
+-  const Connected = ConnectHOC(connectOpts)(TargetComponent);
+-  const wrapper = mount(<Connected />);
+-
+-  expect(Connect).toBeCalled();
+-});
+-
+-it('Calls Connect component with opts', () => {
+-  const Connected = ConnectHOC(connectOpts)(TargetComponent);
+-  mount(<Connected />);
+-
+-  expect(Connect.mock.calls[0][0]).toEqual(
+-    expect.objectContaining(connectOpts)
+-  );
+-});
+-
+-it('Calls Connect component with children', () => {
+-  const Connected = ConnectHOC(connectOpts)(TargetComponent);
+-  mount(<Connected />);
+-
+-  expect(Connect.mock.calls[0][0].children.displayName).toEqual(
+-    'TargetComponent'
+-  );
+-});
+
+diff --git a/src/components/connect.test.tsx b/src/components/connect.test.tsx
+deleted file mode 100644
+index 0515f17..0000000
+--- a/src/components/connect.test.tsx
++++ /dev/null
+@@ -1,62 +0,0 @@
+-jest.mock('./client');
+-import { mount, shallow } from 'enzyme';
+-import React from 'react';
+-import { mutationGql, queryGql } from '../test-utils';
+-import { Connect } from './connect';
+-
+-const children = jest.fn().mockReturnValue(() => <h1>Child component</h1>);
+-const query = queryGql;
+-const mutations = {
+-  addUser: mutationGql,
+-};
+-
+-beforeEach(() => {
+-  children.mockClear();
+-});
+-
+-it('passes snapshot', () => {
+-  const wrapper = shallow(
+-    <Connect children={children} mutations={mutations} query={query} />
+-  );
+-  expect(wrapper).toMatchSnapshot();
+-});
+-
+-it('provides context consumer', () => {
+-  const wrapper = shallow(<Connect children={children} />);
+-  expect(wrapper.find('ContextConsumer').length).toBe(1);
+-});
+-
+-describe('UrqlClient', () => {
+-  it('is mounted', () => {
+-    const wrapper = mount(<Connect children={children} />);
+-    expect(wrapper.find('UrqlClient').length).toBe(1);
+-  });
+-
+-  it('is passed children', () => {
+-    const wrapper = mount(<Connect children={children} />);
+-    expect(wrapper.find('UrqlClient').props()).toHaveProperty(
+-      'children',
+-      children
+-    );
+-  });
+-
+-  it('is passed query', () => {
+-    const wrapper = mount(<Connect children={children} query={query} />);
+-    expect(wrapper.find('UrqlClient').props()).toHaveProperty('query', query);
+-  });
+-
+-  it('is passed mutation', () => {
+-    const wrapper = mount(
+-      <Connect children={children} mutations={mutations} />
+-    );
+-    expect(wrapper.find('UrqlClient').props()).toHaveProperty(
+-      'mutations',
+-      mutations
+-    );
+-  });
+-
+-  it('is passed client', () => {
+-    const wrapper = mount(<Connect children={children} />);
+-    expect(wrapper.find('UrqlClient').props()).toHaveProperty('client');
+-  });
+-});
+
+diff --git a/src/components/context.test.tsx b/src/components/context.test.tsx
+deleted file mode 100644
+index 4366013..0000000
+--- a/src/components/context.test.tsx
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import { Consumer, Provider } from './context';
+-
+-describe('ContextConsumer', () => {
+-  it('passes snapshot', () => {
+-    expect(Consumer).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Consumer).toBe('object');
+-  });
+-});
+-
+-describe('ContextProvider', () => {
+-  it('passes snapshot', () => {
+-    expect(Provider).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Provider).toBe('object');
+-  });
+-});
+
+diff --git a/src/react/context.test.tsx b/src/react/context.test.tsx
+new file mode 100644
+index 0000000..4366013
+--- /dev/null
++++ b/src/react/context.test.tsx
+@@ -0,0 +1,21 @@
++import { Consumer, Provider } from './context';
++
++describe('ContextConsumer', () => {
++  it('passes snapshot', () => {
++    expect(Consumer).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Consumer).toBe('object');
++  });
++});
++
++describe('ContextProvider', () => {
++  it('passes snapshot', () => {
++    expect(Provider).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Provider).toBe('object');
++  });
++});
+",0,,28,1235,6,3,25,1294
+172,9c2bc186dd53ff4a23669726bf1e390944031024,ac0bf276020730cca029d4b49565d6c63f2ac4c3,"@kitten would appreciate if you could check out why the `useMutation` response isn't working in test.
+
+Seems to be related to the `delay` operation.","add tests for use* and fix broken linting/pre-lint scripts
+","diff --git a/src/react/context.test.ts b/src/react/context.test.ts
+new file mode 100644
+index 0000000..4366013
+--- /dev/null
++++ b/src/react/context.test.ts
+@@ -0,0 +1,21 @@
++import { Consumer, Provider } from './context';
++
++describe('ContextConsumer', () => {
++  it('passes snapshot', () => {
++    expect(Consumer).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Consumer).toBe('object');
++  });
++});
++
++describe('ContextProvider', () => {
++  it('passes snapshot', () => {
++    expect(Provider).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Provider).toBe('object');
++  });
++});
+
+diff --git a/src/react/context.test.tsx b/src/react/context.test.tsx
+deleted file mode 100644
+index 4366013..0000000
+--- a/src/react/context.test.tsx
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import { Consumer, Provider } from './context';
+-
+-describe('ContextConsumer', () => {
+-  it('passes snapshot', () => {
+-    expect(Consumer).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Consumer).toBe('object');
+-  });
+-});
+-
+-describe('ContextProvider', () => {
+-  it('passes snapshot', () => {
+-    expect(Provider).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Provider).toBe('object');
+-  });
+-});
+
+diff --git a/src/react/useMutation.test.tsx b/src/react/useMutation.test.tsx
+new file mode 100644
+index 0000000..b2f90f3
+--- /dev/null
++++ b/src/react/useMutation.test.tsx
+@@ -0,0 +1,152 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../lib/client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { delay, fromValue, pipe, take } = require('wonka');
++  const mock = {
++    executeMutation: jest.fn(() =>
++      pipe(
++        fromValue({ data: 1, error: 2 }),
++        delay(200),
++        take(1)
++      )
++    ),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer, { act } from 'react-test-renderer'; // tslint:disable-line
++// @ts-ignore - data is imported from mock only
++import { createClient, data } from '../lib/client';
++import { useMutation } from './useMutation';
++
++// @ts-ignore
++const client = createClient() as { executeMutation: jest.Mock };
++const props = {
++  query: 'example query',
++};
++let state: any;
++let execute: any;
++
++const MutationUser: FC<typeof props> = ({ query }) => {
++  const [s, e] = useMutation(query);
++  state = s;
++  execute = e;
++  return <p>{s.data}</p>;
++};
++
++beforeEach(() => {
++  client.executeMutation.mockClear();
++  state = undefined;
++  execute = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<MutationUser {...props} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('does not execute subscription', () => {
++    renderer.create(<MutationUser {...props} />);
++    expect(client.executeMutation).toBeCalledTimes(0);
++  });
++});
++
++describe('on execute', () => {
++  const vars = { test: 1234 };
++
++  it('sets fetching to true', () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(state).toHaveProperty('fetching', true);
++  });
++
++  it('calls executeMutation', () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation).toBeCalledTimes(1);
++  });
++
++  it('calls executeMutation with query', () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
++      'query',
++      props.query
++    );
++  });
++
++  it('calls executeMutation with variables', () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
++      'variables',
++      vars
++    );
++  });
++});
++
++describe('on subscription update', () => {
++  it('forwards data response', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++
++    expect(state).toHaveProperty('data', 1);
++  });
++
++  it('forwards error response', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++
++    expect(state).toHaveProperty('error', 2);
++  });
++
++  it('sets fetching to false', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    wrapper.update(<MutationUser {...props} />);
++
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++    expect(state).toHaveProperty('fetching', false);
++  });
++});
++
++// describe('on change', () => {
++// const q = 'new query';
++
++// it('new query executes subscription', () => {
++// const wrapper = renderer.create(<MutationUser {...props} />);
++
++/**
++ * Have to call update twice for the change to be detected.
++ * Only a single change is detected (updating 5 times still only calls
++ * execute subscription twice).
++ */
++// wrapper.update(<MutationUser {...props} query={q} />);
++// wrapper.update(<MutationUser {...props} query={q} />);
++// expect(client.executeMutation).toBeCalledTimes(2);
++// });
++// });
++
++// describe('execute query', () => {
++// it('triggers query execution', () => {
++// const wrapper = renderer.create(<MutationUser {...props} />);
++// act(() => execute());
++// expect(client.executeMutation).toBeCalledTimes(2);
++// });
++// });
+
+diff --git a/src/react/useQuery.test.tsx b/src/react/useQuery.test.tsx
+new file mode 100644
+index 0000000..6ca6a0f
+--- /dev/null
++++ b/src/react/useQuery.test.tsx
+@@ -0,0 +1,145 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../lib/client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { map, interval, pipe } = require('wonka');
++  const mock = {
++    executeQuery: jest.fn(() =>
++      pipe(
++        interval(200),
++        map(i => ({ data: i, error: i + 1 }))
++      )
++    ),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer, { act } from 'react-test-renderer'; // tslint:disable-line
++// @ts-ignore - data is imported from mock only
++import { createClient, data } from '../lib/client';
++import { useQuery } from './useQuery';
++
++// @ts-ignore
++const client = createClient() as { executeQuery: jest.Mock };
++const props = {
++  query: 'example query',
++  variables: {
++    myVar: 1234,
++  },
++};
++let state: any;
++let execute: any;
++
++const QueryUser: FC<typeof props> = ({ query, variables }) => {
++  const [s, e] = useQuery({ query, variables });
++  state = s;
++  execute = e;
++  return <p>{s.data}</p>;
++};
++
++beforeEach(() => {
++  client.executeQuery.mockClear();
++  state = undefined;
++  execute = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('executes subscription', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(client.executeQuery).toBeCalledTimes(1);
++  });
++
++  it('passes query and vars to executeQuery', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(client.executeQuery).toBeCalledWith(props);
++  });
++});
++
++describe('on subscription', () => {
++  it('sets fetching to true', () => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    wrapper.update(<QueryUser {...props} />);
++    expect(state).toHaveProperty('fetching', true);
++  });
++});
++
++describe('on subscription update', () => {
++  it('forwards data response', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('data', 0);
++      done();
++    }, 400);
++  });
++
++  it('forwards error response', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('error', 1);
++      done();
++    }, 400);
++  });
++
++  it('sets fetching to false', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('fetching', false);
++      done();
++    }, 400);
++  });
++});
++
++describe('on change', () => {
++  const q = 'new query';
++
++  it('new query executes subscription', () => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++
++    /**
++     * Have to call update twice for the change to be detected.
++     * Only a single change is detected (updating 5 times still only calls
++     * execute subscription twice).
++     */
++    wrapper.update(<QueryUser {...props} query={q} />);
++    wrapper.update(<QueryUser {...props} query={q} />);
++    expect(client.executeQuery).toBeCalledTimes(2);
++  });
++});
++
++describe('execute query', () => {
++  it('triggers query execution', () => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    act(() => execute());
++    expect(client.executeQuery).toBeCalledTimes(2);
++  });
++});
+
+diff --git a/src/react/useSubscription.test.tsx b/src/react/useSubscription.test.tsx
+new file mode 100644
+index 0000000..4262b11
+--- /dev/null
++++ b/src/react/useSubscription.test.tsx
+@@ -0,0 +1,81 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../lib/client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { fromArray } = require('wonka');
++  const mock = {
++    executeSubscription: jest.fn(() => fromArray([d])),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer from 'react-test-renderer'; // tslint:disable-line
++// @ts-ignore - data is imported from mock only
++import { createClient, data } from '../lib/client';
++import { useSubscription } from './useSubscription';
++
++// @ts-ignore
++const client = createClient() as { executeSubscription: jest.Mock };
++const query = `example query`;
++let state: any;
++
++const SubscriptionUser: FC<{ q: string }> = ({ q }) => {
++  const [s] = useSubscription({ query: q });
++  state = s;
++  return <p>{s.data}</p>;
++};
++
++beforeEach(() => {
++  client.executeSubscription.mockClear();
++  state = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('executes subscription', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(client.executeSubscription).toBeCalledTimes(1);
++  });
++
++  it('passes query to executeSubscription', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(client.executeSubscription).toBeCalledWith({ query, variables: {} });
++  });
++});
++
++describe('on subscription', () => {
++  it('forwards client response', () => {
++    const wrapper = renderer.create(<SubscriptionUser q={query} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<SubscriptionUser q={query} />);
++    expect(state).toEqual(data);
++  });
++});
++
++describe('on change', () => {
++  const q = 'new query';
++
++  it('executes subscription', () => {
++    const wrapper = renderer.create(<SubscriptionUser q={query} />);
++
++    /**
++     * Have to call update twice for the change to be detected.
++     * Only a single change is detected (updating 5 times still only calls
++     * execute subscription twice).
++     */
++    wrapper.update(<SubscriptionUser q={q} />);
++    wrapper.update(<SubscriptionUser q={q} />);
++    expect(client.executeSubscription).toBeCalledTimes(2);
++  });
++});
+",0,,20,734,5,9,39,930
+177,79738d977a80bdcbc978188fad4fb26dfae5aa56,a5a41f0b7feb684ec85f5732c84ed9871e4c0a0d,,"move hooks
+","diff --git a/src/context.test.ts b/src/context.test.ts
+new file mode 100644
+index 0000000..4366013
+--- /dev/null
++++ b/src/context.test.ts
+@@ -0,0 +1,21 @@
++import { Consumer, Provider } from './context';
++
++describe('ContextConsumer', () => {
++  it('passes snapshot', () => {
++    expect(Consumer).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Consumer).toBe('object');
++  });
++});
++
++describe('ContextProvider', () => {
++  it('passes snapshot', () => {
++    expect(Provider).toMatchSnapshot();
++  });
++
++  it('is exported', () => {
++    expect(typeof Provider).toBe('object');
++  });
++});
+
+diff --git a/src/hooks/useMutation.test.tsx b/src/hooks/useMutation.test.tsx
+new file mode 100644
+index 0000000..b539391
+--- /dev/null
++++ b/src/hooks/useMutation.test.tsx
+@@ -0,0 +1,134 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { delay, fromValue, pipe } = require('wonka');
++  const mock = {
++    executeMutation: jest.fn(() =>
++      pipe(
++        fromValue({ data: 1, error: 2 }),
++        delay(200)
++      )
++    ),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer, { act } from 'react-test-renderer';
++// @ts-ignore - data is imported from mock only
++import { createClient } from '../client';
++import { useMutation } from './useMutation';
++
++// @ts-ignore
++const client = createClient() as { executeMutation: jest.Mock };
++const props = {
++  query: 'example query',
++};
++let state: any;
++let execute: any;
++
++const MutationUser: FC<typeof props> = ({ query }) => {
++  const [s, e] = useMutation(query);
++  state = s;
++  execute = e;
++  return <p>{s.data}</p>;
++};
++
++beforeAll(() => {
++  // tslint:disable-next-line
++  console.log(
++    'supressing console.error output due to react-test-renderer spam (hooks related)'
++  );
++  jest.spyOn(global.console, 'error').mockImplementation();
++});
++
++beforeEach(() => {
++  client.executeMutation.mockClear();
++  state = undefined;
++  execute = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<MutationUser {...props} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('does not execute subscription', () => {
++    renderer.create(<MutationUser {...props} />);
++    expect(client.executeMutation).toBeCalledTimes(0);
++  });
++});
++
++describe('on execute', () => {
++  const vars = { test: 1234 };
++
++  it('sets fetching to true', () => {
++    renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(state).toHaveProperty('fetching', true);
++  });
++
++  it('calls executeMutation', () => {
++    renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation).toBeCalledTimes(1);
++  });
++
++  it('calls executeMutation with query', () => {
++    renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
++      'query',
++      props.query
++    );
++  });
++
++  it('calls executeMutation with variables', () => {
++    renderer.create(<MutationUser {...props} />);
++    act(() => {
++      execute(vars);
++    });
++    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
++      'variables',
++      vars
++    );
++  });
++});
++
++describe('on subscription update', () => {
++  it('forwards data response', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++
++    expect(state).toHaveProperty('data', 1);
++  });
++
++  it('forwards error response', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++
++    expect(state).toHaveProperty('error', 2);
++  });
++
++  it('sets fetching to false', async () => {
++    const wrapper = renderer.create(<MutationUser {...props} />);
++    wrapper.update(<MutationUser {...props} />);
++
++    await execute();
++    wrapper.update(<MutationUser {...props} />);
++    expect(state).toHaveProperty('fetching', false);
++  });
++});
+
+diff --git a/src/hooks/useQuery.test.tsx b/src/hooks/useQuery.test.tsx
+new file mode 100644
+index 0000000..fad0c86
+--- /dev/null
++++ b/src/hooks/useQuery.test.tsx
+@@ -0,0 +1,153 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { map, interval, pipe } = require('wonka');
++  const mock = {
++    executeQuery: jest.fn(() =>
++      pipe(
++        interval(400),
++        map(i => ({ data: i, error: i + 1 }))
++      )
++    ),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer, { act } from 'react-test-renderer';
++// @ts-ignore - data is imported from mock only
++import { createClient } from '../client';
++import { useQuery } from './useQuery';
++
++// @ts-ignore
++const client = createClient() as { executeQuery: jest.Mock };
++const props = {
++  query: 'example query',
++  variables: {
++    myVar: 1234,
++  },
++};
++let state: any;
++let execute: any;
++
++const QueryUser: FC<typeof props> = ({ query, variables }) => {
++  const [s, e] = useQuery({ query, variables });
++  state = s;
++  execute = e;
++  return <p>{s.data}</p>;
++};
++
++beforeAll(() => {
++  // tslint:disable-next-line
++  console.log(
++    'supressing console.error output due to react-test-renderer spam (hooks related)'
++  );
++  jest.spyOn(global.console, 'error').mockImplementation();
++});
++
++beforeEach(() => {
++  client.executeQuery.mockClear();
++  state = undefined;
++  execute = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('executes subscription', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(client.executeQuery).toBeCalledTimes(1);
++  });
++
++  it('passes query and vars to executeQuery', () => {
++    renderer.create(<QueryUser {...props} />);
++    expect(client.executeQuery).toBeCalledWith(props);
++  });
++});
++
++describe('on subscription', () => {
++  it('sets fetching to true', () => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    wrapper.update(<QueryUser {...props} />);
++    expect(state).toHaveProperty('fetching', true);
++  });
++});
++
++describe('on subscription update', () => {
++  it('forwards data response', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('data', 0);
++      done();
++    }, 400);
++  });
++
++  it('forwards error response', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('error', 1);
++      done();
++    }, 400);
++  });
++
++  it('sets fetching to false', done => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<QueryUser {...props} />);
++
++    setTimeout(() => {
++      wrapper.update(<QueryUser {...props} />);
++      expect(state).toHaveProperty('fetching', false);
++      done();
++    }, 400);
++  });
++});
++
++describe('on change', () => {
++  const q = 'new query';
++
++  it('new query executes subscription', () => {
++    const wrapper = renderer.create(<QueryUser {...props} />);
++
++    /**
++     * Have to call update twice for the change to be detected.
++     * Only a single change is detected (updating 5 times still only calls
++     * execute subscription twice).
++     */
++    wrapper.update(<QueryUser {...props} query={q} />);
++    wrapper.update(<QueryUser {...props} query={q} />);
++    expect(client.executeQuery).toBeCalledTimes(2);
++  });
++});
++
++describe('execute query', () => {
++  it('triggers query execution', () => {
++    renderer.create(<QueryUser {...props} />);
++    act(() => execute());
++    expect(client.executeQuery).toBeCalledTimes(2);
++  });
++});
+
+diff --git a/src/hooks/useSubscription.test.tsx b/src/hooks/useSubscription.test.tsx
+new file mode 100644
+index 0000000..c6e3a3d
+--- /dev/null
++++ b/src/hooks/useSubscription.test.tsx
+@@ -0,0 +1,81 @@
++// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
++jest.mock('../client', () => {
++  const d = { data: 1234, error: 5678 };
++  const { fromArray } = require('wonka');
++  const mock = {
++    executeSubscription: jest.fn(() => fromArray([d])),
++  };
++
++  return {
++    createClient: () => mock,
++    data: d,
++  };
++});
++
++import React, { FC } from 'react';
++import renderer from 'react-test-renderer';
++// @ts-ignore - data is imported from mock only
++import { createClient, data } from '../client';
++import { useSubscription } from './useSubscription';
++
++// @ts-ignore
++const client = createClient() as { executeSubscription: jest.Mock };
++const query = `example query`;
++let state: any;
++
++const SubscriptionUser: FC<{ q: string }> = ({ q }) => {
++  const [s] = useSubscription({ query: q });
++  state = s;
++  return <p>{s.data}</p>;
++};
++
++beforeEach(() => {
++  client.executeSubscription.mockClear();
++  state = undefined;
++});
++
++describe('on initial useEffect', () => {
++  it('initialises default state', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(state).toMatchSnapshot();
++  });
++
++  it('executes subscription', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(client.executeSubscription).toBeCalledTimes(1);
++  });
++
++  it('passes query to executeSubscription', () => {
++    renderer.create(<SubscriptionUser q={query} />);
++    expect(client.executeSubscription).toBeCalledWith({ query, variables: {} });
++  });
++});
++
++describe('on subscription', () => {
++  it('forwards client response', () => {
++    const wrapper = renderer.create(<SubscriptionUser q={query} />);
++    /**
++     * Have to call update (without changes) in order to see the
++     * result of the state change.
++     */
++    wrapper.update(<SubscriptionUser q={query} />);
++    expect(state).toEqual(data);
++  });
++});
++
++describe('on change', () => {
++  const q = 'new query';
++
++  it('executes subscription', () => {
++    const wrapper = renderer.create(<SubscriptionUser q={query} />);
++
++    /**
++     * Have to call update twice for the change to be detected.
++     * Only a single change is detected (updating 5 times still only calls
++     * execute subscription twice).
++     */
++    wrapper.update(<SubscriptionUser q={q} />);
++    wrapper.update(<SubscriptionUser q={q} />);
++    expect(client.executeSubscription).toBeCalledTimes(2);
++  });
++});
+
+diff --git a/src/react/context.test.ts b/src/react/context.test.ts
+deleted file mode 100644
+index 4366013..0000000
+--- a/src/react/context.test.ts
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import { Consumer, Provider } from './context';
+-
+-describe('ContextConsumer', () => {
+-  it('passes snapshot', () => {
+-    expect(Consumer).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Consumer).toBe('object');
+-  });
+-});
+-
+-describe('ContextProvider', () => {
+-  it('passes snapshot', () => {
+-    expect(Provider).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Provider).toBe('object');
+-  });
+-});
+
+diff --git a/src/react/useMutation.test.tsx b/src/react/useMutation.test.tsx
+deleted file mode 100644
+index b539391..0000000
+--- a/src/react/useMutation.test.tsx
++++ /dev/null
+@@ -1,134 +0,0 @@
+-// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../client', () => {
+-  const d = { data: 1234, error: 5678 };
+-  const { delay, fromValue, pipe } = require('wonka');
+-  const mock = {
+-    executeMutation: jest.fn(() =>
+-      pipe(
+-        fromValue({ data: 1, error: 2 }),
+-        delay(200)
+-      )
+-    ),
+-  };
+-
+-  return {
+-    createClient: () => mock,
+-    data: d,
+-  };
+-});
+-
+-import React, { FC } from 'react';
+-import renderer, { act } from 'react-test-renderer';
+-// @ts-ignore - data is imported from mock only
+-import { createClient } from '../client';
+-import { useMutation } from './useMutation';
+-
+-// @ts-ignore
+-const client = createClient() as { executeMutation: jest.Mock };
+-const props = {
+-  query: 'example query',
+-};
+-let state: any;
+-let execute: any;
+-
+-const MutationUser: FC<typeof props> = ({ query }) => {
+-  const [s, e] = useMutation(query);
+-  state = s;
+-  execute = e;
+-  return <p>{s.data}</p>;
+-};
+-
+-beforeAll(() => {
+-  // tslint:disable-next-line
+-  console.log(
+-    'supressing console.error output due to react-test-renderer spam (hooks related)'
+-  );
+-  jest.spyOn(global.console, 'error').mockImplementation();
+-});
+-
+-beforeEach(() => {
+-  client.executeMutation.mockClear();
+-  state = undefined;
+-  execute = undefined;
+-});
+-
+-describe('on initial useEffect', () => {
+-  it('initialises default state', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    expect(state).toMatchSnapshot();
+-  });
+-
+-  it('does not execute subscription', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    expect(client.executeMutation).toBeCalledTimes(0);
+-  });
+-});
+-
+-describe('on execute', () => {
+-  const vars = { test: 1234 };
+-
+-  it('sets fetching to true', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    act(() => {
+-      execute(vars);
+-    });
+-    expect(state).toHaveProperty('fetching', true);
+-  });
+-
+-  it('calls executeMutation', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    act(() => {
+-      execute(vars);
+-    });
+-    expect(client.executeMutation).toBeCalledTimes(1);
+-  });
+-
+-  it('calls executeMutation with query', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    act(() => {
+-      execute(vars);
+-    });
+-    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
+-      'query',
+-      props.query
+-    );
+-  });
+-
+-  it('calls executeMutation with variables', () => {
+-    renderer.create(<MutationUser {...props} />);
+-    act(() => {
+-      execute(vars);
+-    });
+-    expect(client.executeMutation.mock.calls[0][0]).toHaveProperty(
+-      'variables',
+-      vars
+-    );
+-  });
+-});
+-
+-describe('on subscription update', () => {
+-  it('forwards data response', async () => {
+-    const wrapper = renderer.create(<MutationUser {...props} />);
+-    await execute();
+-    wrapper.update(<MutationUser {...props} />);
+-
+-    expect(state).toHaveProperty('data', 1);
+-  });
+-
+-  it('forwards error response', async () => {
+-    const wrapper = renderer.create(<MutationUser {...props} />);
+-    await execute();
+-    wrapper.update(<MutationUser {...props} />);
+-
+-    expect(state).toHaveProperty('error', 2);
+-  });
+-
+-  it('sets fetching to false', async () => {
+-    const wrapper = renderer.create(<MutationUser {...props} />);
+-    wrapper.update(<MutationUser {...props} />);
+-
+-    await execute();
+-    wrapper.update(<MutationUser {...props} />);
+-    expect(state).toHaveProperty('fetching', false);
+-  });
+-});
+
+diff --git a/src/react/useQuery.test.tsx b/src/react/useQuery.test.tsx
+deleted file mode 100644
+index fad0c86..0000000
+--- a/src/react/useQuery.test.tsx
++++ /dev/null
+@@ -1,153 +0,0 @@
+-// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../client', () => {
+-  const d = { data: 1234, error: 5678 };
+-  const { map, interval, pipe } = require('wonka');
+-  const mock = {
+-    executeQuery: jest.fn(() =>
+-      pipe(
+-        interval(400),
+-        map(i => ({ data: i, error: i + 1 }))
+-      )
+-    ),
+-  };
+-
+-  return {
+-    createClient: () => mock,
+-    data: d,
+-  };
+-});
+-
+-import React, { FC } from 'react';
+-import renderer, { act } from 'react-test-renderer';
+-// @ts-ignore - data is imported from mock only
+-import { createClient } from '../client';
+-import { useQuery } from './useQuery';
+-
+-// @ts-ignore
+-const client = createClient() as { executeQuery: jest.Mock };
+-const props = {
+-  query: 'example query',
+-  variables: {
+-    myVar: 1234,
+-  },
+-};
+-let state: any;
+-let execute: any;
+-
+-const QueryUser: FC<typeof props> = ({ query, variables }) => {
+-  const [s, e] = useQuery({ query, variables });
+-  state = s;
+-  execute = e;
+-  return <p>{s.data}</p>;
+-};
+-
+-beforeAll(() => {
+-  // tslint:disable-next-line
+-  console.log(
+-    'supressing console.error output due to react-test-renderer spam (hooks related)'
+-  );
+-  jest.spyOn(global.console, 'error').mockImplementation();
+-});
+-
+-beforeEach(() => {
+-  client.executeQuery.mockClear();
+-  state = undefined;
+-  execute = undefined;
+-});
+-
+-describe('on initial useEffect', () => {
+-  it('initialises default state', () => {
+-    renderer.create(<QueryUser {...props} />);
+-    expect(state).toMatchSnapshot();
+-  });
+-
+-  it('executes subscription', () => {
+-    renderer.create(<QueryUser {...props} />);
+-    expect(client.executeQuery).toBeCalledTimes(1);
+-  });
+-
+-  it('passes query and vars to executeQuery', () => {
+-    renderer.create(<QueryUser {...props} />);
+-    expect(client.executeQuery).toBeCalledWith(props);
+-  });
+-});
+-
+-describe('on subscription', () => {
+-  it('sets fetching to true', () => {
+-    const wrapper = renderer.create(<QueryUser {...props} />);
+-    wrapper.update(<QueryUser {...props} />);
+-    expect(state).toHaveProperty('fetching', true);
+-  });
+-});
+-
+-describe('on subscription update', () => {
+-  it('forwards data response', done => {
+-    const wrapper = renderer.create(<QueryUser {...props} />);
+-    /**
+-     * Have to call update (without changes) in order to see the
+-     * result of the state change.
+-     */
+-    wrapper.update(<QueryUser {...props} />);
+-
+-    setTimeout(() => {
+-      wrapper.update(<QueryUser {...props} />);
+-      expect(state).toHaveProperty('data', 0);
+-      done();
+-    }, 400);
+-  });
+-
+-  it('forwards error response', done => {
+-    const wrapper = renderer.create(<QueryUser {...props} />);
+-    /**
+-     * Have to call update (without changes) in order to see the
+-     * result of the state change.
+-     */
+-    wrapper.update(<QueryUser {...props} />);
+-
+-    setTimeout(() => {
+-      wrapper.update(<QueryUser {...props} />);
+-      expect(state).toHaveProperty('error', 1);
+-      done();
+-    }, 400);
+-  });
+-
+-  it('sets fetching to false', done => {
+-    const wrapper = renderer.create(<QueryUser {...props} />);
+-    /**
+-     * Have to call update (without changes) in order to see the
+-     * result of the state change.
+-     */
+-    wrapper.update(<QueryUser {...props} />);
+-
+-    setTimeout(() => {
+-      wrapper.update(<QueryUser {...props} />);
+-      expect(state).toHaveProperty('fetching', false);
+-      done();
+-    }, 400);
+-  });
+-});
+-
+-describe('on change', () => {
+-  const q = 'new query';
+-
+-  it('new query executes subscription', () => {
+-    const wrapper = renderer.create(<QueryUser {...props} />);
+-
+-    /**
+-     * Have to call update twice for the change to be detected.
+-     * Only a single change is detected (updating 5 times still only calls
+-     * execute subscription twice).
+-     */
+-    wrapper.update(<QueryUser {...props} query={q} />);
+-    wrapper.update(<QueryUser {...props} query={q} />);
+-    expect(client.executeQuery).toBeCalledTimes(2);
+-  });
+-});
+-
+-describe('execute query', () => {
+-  it('triggers query execution', () => {
+-    renderer.create(<QueryUser {...props} />);
+-    act(() => execute());
+-    expect(client.executeQuery).toBeCalledTimes(2);
+-  });
+-});
+
+diff --git a/src/react/useSubscription.test.tsx b/src/react/useSubscription.test.tsx
+deleted file mode 100644
+index c6e3a3d..0000000
+--- a/src/react/useSubscription.test.tsx
++++ /dev/null
+@@ -1,81 +0,0 @@
+-// Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../client', () => {
+-  const d = { data: 1234, error: 5678 };
+-  const { fromArray } = require('wonka');
+-  const mock = {
+-    executeSubscription: jest.fn(() => fromArray([d])),
+-  };
+-
+-  return {
+-    createClient: () => mock,
+-    data: d,
+-  };
+-});
+-
+-import React, { FC } from 'react';
+-import renderer from 'react-test-renderer';
+-// @ts-ignore - data is imported from mock only
+-import { createClient, data } from '../client';
+-import { useSubscription } from './useSubscription';
+-
+-// @ts-ignore
+-const client = createClient() as { executeSubscription: jest.Mock };
+-const query = `example query`;
+-let state: any;
+-
+-const SubscriptionUser: FC<{ q: string }> = ({ q }) => {
+-  const [s] = useSubscription({ query: q });
+-  state = s;
+-  return <p>{s.data}</p>;
+-};
+-
+-beforeEach(() => {
+-  client.executeSubscription.mockClear();
+-  state = undefined;
+-});
+-
+-describe('on initial useEffect', () => {
+-  it('initialises default state', () => {
+-    renderer.create(<SubscriptionUser q={query} />);
+-    expect(state).toMatchSnapshot();
+-  });
+-
+-  it('executes subscription', () => {
+-    renderer.create(<SubscriptionUser q={query} />);
+-    expect(client.executeSubscription).toBeCalledTimes(1);
+-  });
+-
+-  it('passes query to executeSubscription', () => {
+-    renderer.create(<SubscriptionUser q={query} />);
+-    expect(client.executeSubscription).toBeCalledWith({ query, variables: {} });
+-  });
+-});
+-
+-describe('on subscription', () => {
+-  it('forwards client response', () => {
+-    const wrapper = renderer.create(<SubscriptionUser q={query} />);
+-    /**
+-     * Have to call update (without changes) in order to see the
+-     * result of the state change.
+-     */
+-    wrapper.update(<SubscriptionUser q={query} />);
+-    expect(state).toEqual(data);
+-  });
+-});
+-
+-describe('on change', () => {
+-  const q = 'new query';
+-
+-  it('executes subscription', () => {
+-    const wrapper = renderer.create(<SubscriptionUser q={query} />);
+-
+-    /**
+-     * Have to call update twice for the change to be detected.
+-     * Only a single change is detected (updating 5 times still only calls
+-     * execute subscription twice).
+-     */
+-    wrapper.update(<SubscriptionUser q={q} />);
+-    wrapper.update(<SubscriptionUser q={q} />);
+-    expect(client.executeSubscription).toBeCalledTimes(2);
+-  });
+-});
+",0,,32,1405,8,5,45,110
+178,64f8ec06cdb67f0a0ae2167c2325bd393f4800b6,a3ee5ec0dbde2c05fa6dd3da1c164df6bfaade88,"This adds `requestPolicy` as a property on operation contexts. It has four modes, like in Apollo:
+
+- `cache-first`: The default. It skips the network request (i.e. the other exchanges) when a result can be retrieved from the cache.
+- `cache-only`: It returns an empty result when the data is not cached but also skips the network request. (With a normalised cache this would return a partial result if possible)
+- `network-only`: This skips the cache entirely and forwards the request on to the other exchanges.
+- `cache-and-network`: If data is cached it is first returned but another operation is then triggered using `network-only`, effectively using the cache and then updating it.
+
+This can now be used as a prop on `useQuery`:
+
+```js
+const [res, executeQuery] = useQuery({ /* ... */ requestPolicy: 'network-only' });
+```
+
+But it can also be used to replace our clunky `refetch` that hasn't been reimplemented yet:
+
+```js
+const [res, executeQuery] = useQuery({ /* ... */ });
+/* ... */
+executeQuery({ requestPolicy: 'network-only' })
+```
+
+It can also be used on the `<Query>` component which now also has an `executeQuery` method
+on the render prop arguments.","Add executeQuery to Query render prop args
+",,0,,2,61,1,5,13,231
+184,c1e6eeaa72a2cb9a5eb44d312577bd333a876710,9bb831d81025a25a093c2556f15f7bed42f0a82b,"Fix #50
+
+- Support `DocumentNode | string` on `GraphQLRequest.query`
+- Switch `Operation.query` to `DocumentNode` only
+- Remove parse/print from `typenames` helper
+- Add new `queryFromKey` helper
+
+This now uses [djb2](http://www.cse.yorku.ca/~oz/hash.html) for hashing which is
+more concise, but might lead to some duplicate keys. This is pretty acceptable, since we're
+not keeping track of a lot of operations at any given time (Not in the magnitude of 10,000s). If we're unhappy with cache collisions we should switch to a simple counter and maps.","Update the rest of the codebase
+","diff --git a/src/exchanges/subscription.test.ts b/src/exchanges/subscription.test.ts
+index f04dbff..93cddd7 100644
+--- a/src/exchanges/subscription.test.ts
++++ b/src/exchanges/subscription.test.ts
+@@ -1,3 +1,4 @@
++import { print } from 'graphql';
+ import { empty, fromValue, pipe, Source, take, toPromise } from 'wonka';
+ import { Client } from '../client';
+ import { subscriptionOperation, subscriptionResult } from '../test-utils';
+@@ -12,8 +13,7 @@ const exchangeArgs = {
+ it('should return response data from forwardSubscription observable', async () => {
+   const unsubscribe = jest.fn();
+   const forwardSubscription: SubscriptionForwarder = operation => {
+-    expect(operation.key).toBe(subscriptionOperation.key);
+-    expect(operation.query).toBe(subscriptionOperation.query);
++    expect(operation.query).toBe(print(subscriptionOperation.query));
+     expect(operation.variables).toBe(subscriptionOperation.variables);
+     expect(operation.context).toEqual(subscriptionOperation.context);
+ 
+
+diff --git a/src/utils/hash.test.ts b/src/utils/hash.test.ts
+deleted file mode 100644
+index dca7c57..0000000
+--- a/src/utils/hash.test.ts
++++ /dev/null
+@@ -1,7 +0,0 @@
+-import { hashString } from './hash';
+-
+-describe('hash', () => {
+-  it('should returned a murmur hashed string from a query string', () => {
+-    expect(hashString(`{ todos { id } }`)).toMatchSnapshot();
+-  });
+-});
+",0,,20,762,3,12,39,1067
+1854,91b66504478b85161c69d89f435f829b0808ac54,0d7404dde421fff63a80f9cef3fad9dfefc8a36c,"Add **experimental** support for `@defer` and `@stream` responses for GraphQL. This implements the [""GraphQL Defer and Stream Directives""](https://github.com/graphql/graphql-spec/blob/4fd39e0/rfcs/DeferStream.md) and [""Incremental Delivery over HTTP""](https://github.com/graphql/graphql-over-http/blob/290b0e2/rfcs/IncrementalDelivery.md) specifications. If a GraphQL API supports `multipart/mixed` responses for deferred and streamed delivery of GraphQL results, `@urql/core` (and all its derived fetch implementations) will attempt to stream results. This is _only supported_ on browsers [supporting streamed fetch responses](https://developer.mozilla.org/en-US/docs/Web/API/Response/body), which excludes IE11.
+
+The implementation of streamed multipart responses is derived from [`meros` by `@maraisr`](https://github.com/maraisr/meros), and is subject to change if the RFCs end up changing.
+
+For more information, read: https://graphql.org/blog/2020-12-08-improving-latency-with-defer-and-stream-directives
+
+On fresh builds with a quick gzip check across all minified files (`$ cat packages/core/dist/*.min.mjs | gzip-size`) we see an increase from `5.32kB` minzipped to `6.02kB` minzipped, meaning a delta of approximately `700B`.
+On Graphcache (`$ cat exchanges/graphcache/dist/*.min.mjs | gzip-size`) we see a change from `9.38kB` to `9.55kB`, a delta of `170B`.
+Therefore we can estimate that the total impact of this feature is limited to `<1kB` minzipped.","Update tests and snapshots
+",,0,,5,8,4,30,37,1629
+199,67a0b330d8fcc391d18501441efeb86ee0580d17,67a0b330d8fcc391d18501441efeb86ee0580d17,,"Update tests
+","diff --git a/src/client.test.ts b/src/client.test.ts
+index 5133ac5..8f4c672 100755
+--- a/src/client.test.ts
++++ b/src/client.test.ts
+@@ -20,21 +20,6 @@ describe('createClient', () => {
+ 
+     expect(c).toMatchSnapshot();
+   });
+-
+-  describe('args', () => {
+-    describe('fetchOptions', () => {
+-      const fetchOptions = jest.fn(() => ({}));
+-
+-      it('function is executed', () => {
+-        createClient({
+-          url,
+-          fetchOptions: fetchOptions as any,
+-        });
+-
+-        expect(fetchOptions).toBeCalled();
+-      });
+-    });
+-  });
+ });
+ 
+ const query = {
+
+diff --git a/src/exchanges/fetch.test.ts b/src/exchanges/fetch.test.ts
+index 8df7f86..da12529 100755
+--- a/src/exchanges/fetch.test.ts
++++ b/src/exchanges/fetch.test.ts
+@@ -46,13 +46,22 @@ it('returns response data from fetch', async () => {
+     json: jest.fn().mockResolvedValue(response),
+   });
+ 
++  const fetchOptions = jest.fn().mockReturnValue({});
++
+   const data = await pipe(
+-    fromValue(queryOperation),
++    fromValue({
++      ...queryOperation,
++      context: {
++        ...queryOperation.context,
++        fetchOptions,
++      },
++    }),
+     fetchExchange(exchangeArgs),
+     toPromise
+   );
+ 
+   expect(data).toMatchSnapshot();
++  expect(fetchOptions).toHaveBeenCalled();
+ });
+ 
+ it('returns error data from fetch', async () => {
+",0,,5,48,3,3,8,72
+200,7a2f742a3d8d192cab9d9bb02e4168f0a52b0d66,7a2f742a3d8d192cab9d9bb02e4168f0a52b0d66,,"Ensure that CombinedError inherits from Error correctly
+","diff --git a/src/utils/error.test.ts b/src/utils/error.test.ts
+index 1af18b7..4593d82 100644
+--- a/src/utils/error.test.ts
++++ b/src/utils/error.test.ts
+@@ -9,6 +9,17 @@ describe('CombinedError', () => {
+     expect(err.name).toBe('CombinedError');
+   });
+ 
++  it('behaves like a normal Error', () => {
++    const err = new CombinedError({
++      networkError: new Error('test'),
++    });
++
++    expect(err instanceof CombinedError).toBe(true);
++    expect(err instanceof Error).toBe(true);
++    expect(Error.prototype.isPrototypeOf(err)).toBe(true);
++    expect('' + err).toMatchSnapshot();
++  });
++
+   it('accepts graphQLError messages and generates a single message from them', () => {
+     const graphQLErrors = ['Error Message A', 'Error Message B'];
+ 
+",0,,4,42,2,2,4,66
+2133,1c97283ee37c37d20023118681b742dcd6f0bb17,31158deb5877d49817bd301ce5fcbd9aa05ff46b,"Resolves #2130 
+
+## Summary
+
+This is fairly quick for us, since we only have to extend the peer dependency range and fix up irrelevant typings issues.
+
+## Set of changes
+
+- Upgrade `devDependencies` for `graphql`
+- Extend `peerDependencies` range for `graphql`
+- Fix minor typings issue related to `ObjMap<unknown>`","Update snapshots
+",,0,,7,336,5,7,36,542
+2456,11d472b3d6b59fd3f71845261cf33a2c266e5c4f,299b413ca87e3a40a735cdfd5cc6458be44db1c7,"Resolve #2442
+Reopen of #2444
+
+## Summary
+
+This adds special handling for `text/*` responses. Optimally, a GraphQL endpoint should _never_ under normal circumstances return a text response.
+Also, adding a separate case for cases where `JSON.parse` fails leads to two things:
+- We'd be assuming that 200 OK responses can return non-JSON (which shouldn't be true)
+- We'd be assuming that we always want the text response as an error when the result is not JSON
+Instead, we can add a special case for `text/*` to explicitly return the result then and otherwise keep our old logic.
+Furthermore, in case `response.statusText` isn't present, we can add another fallback case of passing through the
+original error.
+
+## Set of changes
+
+- Add `text/*` handling to `fetchSource`","fix tests
+","diff --git a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+index 4895c5d..d3c29d8 100644
+--- a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
++++ b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+@@ -31,14 +31,14 @@ afterAll(() => {
+   (global as any).AbortController = undefined;
+ });
+ 
+-const response = {
++const response = JSON.stringify({
+   status: 200,
+   data: {
+     data: {
+       user: 1200,
+     },
+   },
+-};
++});
+ 
+ const exchangeArgs = {
+   forward: () => empty as Source<OperationResult>,
+@@ -50,7 +50,7 @@ describe('on success', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 200,
+-      json: jest.fn().mockResolvedValue(response),
++      text: jest.fn().mockResolvedValue(response),
+     });
+   });
+ 
+@@ -121,7 +121,7 @@ describe('on error', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      json: jest.fn().mockResolvedValue({}),
++      text: jest.fn().mockResolvedValue('{}'),
+     });
+   });
+ 
+@@ -156,7 +156,7 @@ describe('on error', () => {
+   it('ignores the error when a result is available', async () => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      json: jest.fn().mockResolvedValue(response),
++      text: jest.fn().mockResolvedValue(response),
+     });
+ 
+     const data = await pipe(
+@@ -165,7 +165,7 @@ describe('on error', () => {
+       toPromise
+     );
+ 
+-    expect(data.data).toEqual(response.data);
++    expect(data.data).toEqual(JSON.parse(response).data);
+   });
+ });
+ 
+
+diff --git a/packages/core/src/exchanges/fetch.test.ts b/packages/core/src/exchanges/fetch.test.ts
+index 5320af0..5eb5a40 100755
+--- a/packages/core/src/exchanges/fetch.test.ts
++++ b/packages/core/src/exchanges/fetch.test.ts
+@@ -28,14 +28,14 @@ afterAll(() => {
+   (global as any).AbortController = undefined;
+ });
+ 
+-const response = {
++const response = JSON.stringify({
+   status: 200,
+   data: {
+     data: {
+       user: 1200,
+     },
+   },
+-};
++});
+ 
+ const exchangeArgs = {
+   dispatchDebug: jest.fn(),
+@@ -51,7 +51,7 @@ describe('on success', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 200,
+-      json: jest.fn().mockResolvedValue(response),
++      text: jest.fn().mockResolvedValue(response),
+     });
+   });
+ 
+@@ -80,7 +80,7 @@ describe('on error', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      json: jest.fn().mockResolvedValue({}),
++      text: jest.fn().mockResolvedValue(JSON.stringify({})),
+     });
+   });
+ 
+@@ -115,7 +115,7 @@ describe('on error', () => {
+   it('ignores the error when a result is available', async () => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      json: jest.fn().mockResolvedValue(response),
++      text: jest.fn().mockResolvedValue(response),
+     });
+ 
+     const data = await pipe(
+@@ -124,7 +124,7 @@ describe('on error', () => {
+       toPromise
+     );
+ 
+-    expect(data.data).toEqual(response.data);
++    expect(data.data).toEqual(JSON.parse(response).data);
+   });
+ });
+ 
+",0,,8,111,3,5,10,160
+250,364f1d541160d481f4fa836e9db70b3d1ed139df,d069257f701428ef463ce572a1671a9a4b3fecd9,"Fix #245 
+
+Initial stuff that will become necessary for #218
+
+This implements two hooks:
+
+- `useRequest` to simplify the creation of requests while keeping a stable reference, so we don't have to check for `request.key`
+- `useImmediateEffect` to simplify running an effect immediately outside of `useEffect` for SSR/suspense, which then otherwise behaves like a normal `useEffect`.
+
+","Update useQuery tests
+","diff --git a/src/hooks/useQuery.test.tsx b/src/hooks/useQuery.test.tsx
+index 7fe075d..351d9f8 100644
+--- a/src/hooks/useQuery.test.tsx
++++ b/src/hooks/useQuery.test.tsx
+@@ -20,7 +20,7 @@ jest.mock('../client', () => {
+ 
+ import React, { FC } from 'react';
+ import renderer, { act } from 'react-test-renderer';
+-import { pipe, onEnd, interval } from 'wonka';
++import { pipe, onStart, onEnd, interval } from 'wonka';
+ import { createClient } from '../client';
+ import { OperationContext } from '../types';
+ import { useQuery, UseQueryArgs, UseQueryState } from './useQuery';
+@@ -164,21 +164,23 @@ describe('on change', () => {
+ });
+ 
+ describe('on unmount', () => {
++  const start = jest.fn();
+   const unsubscribe = jest.fn();
+ 
+   beforeEach(() => {
+-    client.executeQuery.mockReturnValueOnce(
++    client.executeQuery.mockReturnValue(
+       pipe(
+         interval(400),
++        onStart(start),
+         onEnd(unsubscribe)
+       )
+     );
+   });
+ 
+-  it('unsubscribe is called', () => {
++  it.only('unsubscribe is called', () => {
+     const wrapper = renderer.create(<QueryUser {...props} />);
+     wrapper.unmount();
+-
++    expect(start).toBeCalledTimes(1);
+     expect(unsubscribe).toBeCalledTimes(1);
+   });
+ });
+",0,,2,12,1,12,9,214
+2817,6d744db56010d75d112f4d5f5a10423e370f701d,ee50a73a36eaae4c2de64bea153a29a55b46187d,"## Summary
+
+This is very much a work in progress, I have done an initial pass of converting our repo over to vitest from jest.
+
+TODO:
+
+- [x] find replacement for our `moduleNameMapper` configuration
+- [x] fix failing tests
+- [x] fix running from a workspace folder
+- [x] optimize performance
+- [x] get typings to work properly
+
+The typings are a bit hard currently due to [an exclusion we have in our tsconfig](https://github.com/urql-graphql/urql/blob/main/tsconfig.json#L28-L31)
+
+The performance is now comparable to jest but we are still missing the running tests in parallel so we can add `describe.concurrent`/... in follow-ups to resolve that.","initial pass of migrating to vitest
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index 2f3c8d3..fce001c 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -851,8 +851,8 @@ describe('Store with storage', () => {
+ 
+   it('should be able to store and rehydrate data', () => {
+     const storage: StorageAdapter = {
+-      readData: jest.fn(),
+-      writeData: jest.fn(),
++      readData: vi.fn(),
++      writeData: vi.fn(),
+     };
+ 
+     store.data.storage = storage;
+@@ -906,8 +906,8 @@ describe('Store with storage', () => {
+     } as any;
+ 
+     const storage: StorageAdapter = {
+-      readData: jest.fn(),
+-      writeData: jest.fn(),
++      readData: vi.fn(),
++      writeData: vi.fn(),
+     };
+ 
+     store.data.storage = storage;
+@@ -943,8 +943,8 @@ describe('Store with storage', () => {
+ 
+   it('persists commutative layers and ignores optimistic layers', () => {
+     const storage: StorageAdapter = {
+-      readData: jest.fn(),
+-      writeData: jest.fn(),
++      readData: vi.fn(),
++      writeData: vi.fn(),
+     };
+ 
+     store.data.storage = storage;
+@@ -1005,7 +1005,7 @@ describe('Store with storage', () => {
+   });
+ 
+   it('should use different rootConfigs', function () {
+-    const fakeUpdater = jest.fn();
++    const fakeUpdater = vi.fn();
+ 
+     const store = new Store({
+       schema: {
+
+diff --git a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+index d3c29d8..bf4e743 100644
+--- a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
++++ b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+@@ -9,8 +9,8 @@ import {
+   multipleUploadOperation,
+ } from './test-utils';
+ 
+-const fetch = (global as any).fetch as jest.Mock;
+-const abort = jest.fn();
++const fetch = (global as any).fetch as vi.Mock;
++const abort = vi.fn();
+ 
+ const abortError = new Error();
+ abortError.name = 'AbortError';
+@@ -43,19 +43,19 @@ const response = JSON.stringify({
+ const exchangeArgs = {
+   forward: () => empty as Source<OperationResult>,
+   client: {} as Client,
+-  dispatchDebug: jest.fn(),
++  dispatchDebug: vi.fn(),
+ };
+ 
+ describe('on success', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 200,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+   });
+ 
+   it('uses a file when given', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({});
++    const fetchOptions = vi.fn().mockReturnValue({});
+ 
+     const data = await pipe(
+       fromValue({
+@@ -76,7 +76,7 @@ describe('on success', () => {
+   });
+ 
+   it('uses multiple files when given', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({});
++    const fetchOptions = vi.fn().mockReturnValue({});
+ 
+     const data = await pipe(
+       fromValue({
+@@ -97,7 +97,7 @@ describe('on success', () => {
+   });
+ 
+   it('returns response data', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({});
++    const fetchOptions = vi.fn().mockReturnValue({});
+ 
+     const data = await pipe(
+       fromValue({
+@@ -121,7 +121,7 @@ describe('on error', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      text: jest.fn().mockResolvedValue('{}'),
++      text: vi.fn().mockResolvedValue('{}'),
+     });
+   });
+ 
+@@ -136,7 +136,7 @@ describe('on error', () => {
+   });
+ 
+   it('returns error data with status 400 and manual redirect mode', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({ redirect: 'manual' });
++    const fetchOptions = vi.fn().mockReturnValue({ redirect: 'manual' });
+ 
+     const data = await pipe(
+       fromValue({
+@@ -156,7 +156,7 @@ describe('on error', () => {
+   it('ignores the error when a result is available', async () => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+ 
+     const data = await pipe(
+@@ -170,6 +170,10 @@ describe('on error', () => {
+ });
+ 
+ describe('on teardown', () => {
++  const fail = () => {
++    expect(true).toEqual(false);
++  };
++
+   it('does not start the outgoing request on immediate teardowns', () => {
+     fetch.mockRejectedValueOnce(abortError);
+ 
+
+diff --git a/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts b/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
+index 62bb2cb..3910c08 100644
+--- a/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
++++ b/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
+@@ -1,5 +1,5 @@
+ /**
+- * @jest-environment node
++ * @vitest-environment node
+  */
+ 
+ import { empty, fromValue, fromArray, pipe, Source, toPromise } from 'wonka';
+@@ -11,14 +11,14 @@ import { queryOperation } from './test-utils';
+ import { hash } from './sha256';
+ import { persistedFetchExchange } from './persistedFetchExchange';
+ 
+-const fetch = (global as any).fetch as jest.Mock;
++const fetch = (global as any).fetch as vi.Mock;
+ 
+ const exchangeArgs = {
+-  dispatchDebug: jest.fn(),
++  dispatchDebug: vi.fn(),
+   forward: () => empty as Source<OperationResult>,
+   client: ({
+     debugTarget: {
+-      dispatchEvent: jest.fn(),
++      dispatchEvent: vi.fn(),
+     },
+   } as any) as Client,
+ };
+@@ -195,7 +195,7 @@ it('supports a custom hash function', async () => {
+     text: () => Promise.resolve(expected),
+   });
+ 
+-  const hashFn = jest.fn((_input: string, _doc: DocumentNode) => {
++  const hashFn = vi.fn((_input: string, _doc: DocumentNode) => {
+     return Promise.resolve('hello');
+   });
+ 
+@@ -238,7 +238,7 @@ it('falls back to a non-persisted query if the hash is falsy', async () => {
+     text: () => Promise.resolve(expected),
+   });
+ 
+-  const hashFn = jest.fn(() => Promise.resolve(''));
++  const hashFn = vi.fn(() => Promise.resolve(''));
+ 
+   await pipe(
+     fromValue(queryOperation),
+
+diff --git a/packages/core/src/client.test.ts b/packages/core/src/client.test.ts
+index 060816d..deb8df5 100755
+--- a/packages/core/src/client.test.ts
++++ b/packages/core/src/client.test.ts
+@@ -78,14 +78,14 @@ const subscription = {
+ 
+ let receivedOps: Operation[] = [];
+ let client = createClient({ url: '1234' });
+-const receiveMock = jest.fn((s: Source<Operation>) =>
++const receiveMock = vi.fn((s: Source<Operation>) =>
+   pipe(
+     s,
+     tap(op => (receivedOps = [...receivedOps, op])),
+     map(op => ({ operation: op }))
+   )
+ );
+-const exchangeMock = jest.fn(() => receiveMock);
++const exchangeMock = vi.fn(() => receiveMock);
+ 
+ beforeEach(() => {
+   receivedOps = [];
+@@ -341,11 +341,11 @@ describe('executeSubscription', () => {
+ 
+ describe('queuing behavior', () => {
+   beforeEach(() => {
+-    jest.useFakeTimers();
++    vi.useFakeTimers();
+   });
+ 
+   afterEach(() => {
+-    jest.useRealTimers();
++    vi.useRealTimers();
+   });
+ 
+   it('queues reexecuteOperation, which dispatchOperation consumes', () => {
+@@ -446,7 +446,7 @@ describe('queuing behavior', () => {
+       })
+     );
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(output.length).toBe(1);
+     expect(output[0]).toHaveProperty('data', 1);
+@@ -474,7 +474,7 @@ describe('queuing behavior', () => {
+       'cache-first'
+     );
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(output.length).toBe(3);
+     expect(output[2]).toHaveProperty('data', 2);
+@@ -515,7 +515,7 @@ describe('queuing behavior', () => {
+       })
+     );
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(output.length).toBe(1);
+     expect(output[0]).toHaveProperty('operation.key', queryOperation.key);
+@@ -532,7 +532,7 @@ describe('queuing behavior', () => {
+     );
+ 
+     await Promise.resolve();
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(output.length).toBe(2);
+     expect(output[1]).toHaveProperty('stale', true);
+@@ -548,11 +548,11 @@ describe('queuing behavior', () => {
+ 
+ describe('shared sources behavior', () => {
+   beforeEach(() => {
+-    jest.useFakeTimers();
++    vi.useFakeTimers();
+   });
+ 
+   afterEach(() => {
+-    jest.useRealTimers();
++    vi.useRealTimers();
+   });
+ 
+   it('replays results from prior operation result as needed (cache-first)', async () => {
+@@ -573,14 +573,14 @@ describe('shared sources behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(queryOperation), subscribe(resultOne));
+ 
+     expect(resultOne).toHaveBeenCalledTimes(0);
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultOne).toHaveBeenCalledTimes(1);
+     expect(resultOne).toHaveBeenCalledWith({
+@@ -595,7 +595,7 @@ describe('shared sources behavior', () => {
+       operation: queryOperation,
+     });
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     // With cache-first we don't expect a new operation to be issued
+     expect(resultTwo).toHaveBeenCalledTimes(1);
+@@ -619,8 +619,8 @@ describe('shared sources behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+     const operationOne = makeOperation('query', queryOperation, {
+       ...queryOperation.context,
+       requestPolicy: 'cache-first',
+@@ -634,7 +634,7 @@ describe('shared sources behavior', () => {
+ 
+     expect(resultOne).toHaveBeenCalledTimes(0);
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultOne).toHaveBeenCalledTimes(1);
+     expect(resultOne).toHaveBeenCalledWith({
+@@ -650,7 +650,7 @@ describe('shared sources behavior', () => {
+       stale: true,
+     });
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultTwo).toHaveBeenCalledWith({
+       data: 2,
+@@ -681,14 +681,14 @@ describe('shared sources behavior', () => {
+       requestPolicy: 'network-only',
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(operation), subscribe(resultOne));
+ 
+     expect(resultOne).toHaveBeenCalledTimes(0);
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultOne).toHaveBeenCalledTimes(1);
+     expect(resultOne).toHaveBeenCalledWith({
+@@ -704,7 +704,7 @@ describe('shared sources behavior', () => {
+       stale: true,
+     });
+ 
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     // With network-only we expect a new operation to be issued, hence a new result
+     expect(resultTwo).toHaveBeenCalledTimes(2);
+@@ -736,13 +736,13 @@ describe('shared sources behavior', () => {
+ 
+     // We keep the source in-memory
+     const source = client.executeRequestOperation(queryOperation);
+-    const resultOne = jest.fn();
++    const resultOne = vi.fn();
+     let subscription;
+ 
+     subscription = pipe(source, subscribe(resultOne));
+ 
+     expect(resultOne).toHaveBeenCalledTimes(0);
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultOne).toHaveBeenCalledWith({
+       data: 1,
+@@ -750,11 +750,11 @@ describe('shared sources behavior', () => {
+     });
+ 
+     subscription.unsubscribe();
+-    const resultTwo = jest.fn();
++    const resultTwo = vi.fn();
+     subscription = pipe(source, subscribe(resultTwo));
+ 
+     expect(resultTwo).toHaveBeenCalledTimes(0);
+-    jest.advanceTimersByTime(1);
++    vi.advanceTimersByTime(1);
+ 
+     expect(resultTwo).toHaveBeenCalledWith({
+       data: 2,
+@@ -785,8 +785,8 @@ describe('shared sources behavior', () => {
+       requestPolicy: 'network-only',
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(operation), subscribe(resultOne));
+     pipe(client.executeRequestOperation(operation), subscribe(resultTwo));
+@@ -813,8 +813,8 @@ describe('shared sources behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(queryOperation), subscribe(resultOne));
+ 
+@@ -843,8 +843,8 @@ describe('shared sources behavior', () => {
+       requestPolicy: 'network-only',
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(operation), subscribe(resultOne));
+ 
+@@ -880,8 +880,8 @@ describe('shared sources behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(client.executeRequestOperation(queryOperation), subscribe(resultOne));
+ 
+@@ -917,8 +917,8 @@ describe('shared sources behavior', () => {
+       exchanges: [exchange],
+     });
+ 
+-    const resultOne = jest.fn();
+-    const resultTwo = jest.fn();
++    const resultOne = vi.fn();
++    const resultTwo = vi.fn();
+ 
+     pipe(
+       client.executeRequestOperation(subscriptionOperation),
+
+diff --git a/packages/core/src/exchanges/fetch.test.ts b/packages/core/src/exchanges/fetch.test.ts
+index 5eb5a40..9f73bc7 100755
+--- a/packages/core/src/exchanges/fetch.test.ts
++++ b/packages/core/src/exchanges/fetch.test.ts
+@@ -6,8 +6,8 @@ import { queryOperation } from '../test-utils';
+ import { OperationResult } from '../types';
+ import { fetchExchange } from './fetch';
+ 
+-const fetch = (global as any).fetch as jest.Mock;
+-const abort = jest.fn();
++const fetch = (global as any).fetch as vi.Mock;
++const abort = vi.fn();
+ 
+ const abortError = new Error();
+ abortError.name = 'AbortError';
+@@ -38,11 +38,11 @@ const response = JSON.stringify({
+ });
+ 
+ const exchangeArgs = {
+-  dispatchDebug: jest.fn(),
++  dispatchDebug: vi.fn(),
+   forward: () => empty as Source<OperationResult>,
+   client: ({
+     debugTarget: {
+-      dispatchEvent: jest.fn(),
++      dispatchEvent: vi.fn(),
+     },
+   } as any) as Client,
+ };
+@@ -51,12 +51,12 @@ describe('on success', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 200,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+   });
+ 
+   it('returns response data', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({});
++    const fetchOptions = vi.fn().mockReturnValue({});
+ 
+     const data = await pipe(
+       fromValue({
+@@ -80,7 +80,7 @@ describe('on error', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      text: jest.fn().mockResolvedValue(JSON.stringify({})),
++      text: vi.fn().mockResolvedValue(JSON.stringify({})),
+     });
+   });
+ 
+@@ -95,7 +95,7 @@ describe('on error', () => {
+   });
+ 
+   it('returns error data with status 400 and manual redirect mode', async () => {
+-    const fetchOptions = jest.fn().mockReturnValue({ redirect: 'manual' });
++    const fetchOptions = vi.fn().mockReturnValue({ redirect: 'manual' });
+ 
+     const data = await pipe(
+       fromValue({
+@@ -115,7 +115,7 @@ describe('on error', () => {
+   it('ignores the error when a result is available', async () => {
+     fetch.mockResolvedValue({
+       status: 400,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+ 
+     const data = await pipe(
+@@ -129,6 +129,9 @@ describe('on error', () => {
+ });
+ 
+ describe('on teardown', () => {
++  const fail = () => {
++    expect(true).toEqual(false);
++  };
+   it('does not start the outgoing request on immediate teardowns', () => {
+     fetch.mockRejectedValueOnce(abortError);
+ 
+
+diff --git a/packages/core/src/exchanges/subscription.test.ts b/packages/core/src/exchanges/subscription.test.ts
+index e864268..125554a 100644
+--- a/packages/core/src/exchanges/subscription.test.ts
++++ b/packages/core/src/exchanges/subscription.test.ts
+@@ -15,12 +15,12 @@ import { subscriptionExchange, SubscriptionForwarder } from './subscription';
+ 
+ it('should return response data from forwardSubscription observable', async () => {
+   const exchangeArgs = {
+-    dispatchDebug: jest.fn(),
++    dispatchDebug: vi.fn(),
+     forward: () => empty as Source<OperationResult>,
+     client: {} as Client,
+   };
+ 
+-  const unsubscribe = jest.fn();
++  const unsubscribe = vi.fn();
+   const forwardSubscription: SubscriptionForwarder = operation => {
+     expect(operation.query).toBe(print(subscriptionOperation.query));
+     expect(operation.variables).toBe(subscriptionOperation.variables);
+@@ -49,11 +49,11 @@ it('should return response data from forwardSubscription observable', async () =
+ });
+ 
+ it('should tear down the operation if the source subscription ends', async () => {
+-  const reexecuteOperation = jest.fn();
+-  const unsubscribe = jest.fn();
++  const reexecuteOperation = vi.fn();
++  const unsubscribe = vi.fn();
+ 
+   const exchangeArgs = {
+-    dispatchDebug: jest.fn(),
++    dispatchDebug: vi.fn(),
+     forward: () => empty as Source<OperationResult>,
+     client: { reexecuteOperation: reexecuteOperation as any } as Client,
+   };
+@@ -79,17 +79,17 @@ it('should tear down the operation if the source subscription ends', async () =>
+ 
+ it('should allow providing a custom isSubscriptionOperation implementation', async () => {
+   const exchangeArgs = {
+-    dispatchDebug: jest.fn(),
++    dispatchDebug: vi.fn(),
+     forward: () => empty as Source<OperationResult>,
+     client: {} as Client,
+   };
+ 
+-  const isSubscriptionOperation = jest.fn(() => true);
++  const isSubscriptionOperation = vi.fn(() => true);
+ 
+   const forwardSubscription: SubscriptionForwarder = () => ({
+     subscribe(observer) {
+       observer.next(subscriptionResult);
+-      return { unsubscribe: jest.fn() };
++      return { unsubscribe: vi.fn() };
+     },
+   });
+ 
+
+diff --git a/packages/core/src/internal/fetchSource.test.ts b/packages/core/src/internal/fetchSource.test.ts
+index c2a55f6..33a3ff7 100644
+--- a/packages/core/src/internal/fetchSource.test.ts
++++ b/packages/core/src/internal/fetchSource.test.ts
+@@ -6,8 +6,8 @@ import { gql } from '../gql';
+ import { OperationResult, Operation } from '../types';
+ import { makeOperation } from '../utils';
+ 
+-const fetch = (global as any).fetch as jest.Mock;
+-const abort = jest.fn();
++const fetch = (global as any).fetch as vi.Mock;
++const abort = vi.fn();
+ 
+ const abortError = new Error();
+ abortError.name = 'AbortError';
+@@ -41,7 +41,7 @@ describe('on success', () => {
+   beforeEach(() => {
+     fetch.mockResolvedValue({
+       status: 200,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+   });
+ 
+@@ -61,9 +61,9 @@ describe('on success', () => {
+ 
+   it('uses the mock fetch if given', async () => {
+     const fetchOptions = {};
+-    const fetcher = jest.fn().mockResolvedValue({
++    const fetcher = vi.fn().mockResolvedValue({
+       status: 200,
+-      text: jest.fn().mockResolvedValue(response),
++      text: vi.fn().mockResolvedValue(response),
+     });
+ 
+     const data = await pipe(
+@@ -92,7 +92,7 @@ describe('on error', () => {
+     fetch.mockResolvedValue({
+       status: 400,
+       statusText: 'Forbidden',
+-      text: jest.fn().mockResolvedValue('{}'),
++      text: vi.fn().mockResolvedValue('{}'),
+     });
+   });
+ 
+@@ -132,7 +132,7 @@ describe('on unexpected plain text responses', () => {
+     fetch.mockResolvedValue({
+       status: 200,
+       headers: new Map([['Content-Type', 'text/plain']]),
+-      text: jest.fn().mockResolvedValue('Some Error Message'),
++      text: vi.fn().mockResolvedValue('Some Error Message'),
+     });
+   });
+ 
+@@ -150,6 +150,10 @@ describe('on unexpected plain text responses', () => {
+ });
+ 
+ describe('on teardown', () => {
++  const fail = () => {
++    expect(true).toEqual(false);
++  };
++
+   it('does not start the outgoing request on immediate teardowns', () => {
+     fetch.mockRejectedValue(abortError);
+ 
+
+diff --git a/packages/react-urql/src/hooks/useMutation.test.tsx b/packages/react-urql/src/hooks/useMutation.test.tsx
+index 827b069..3484d0d 100644
+--- a/packages/react-urql/src/hooks/useMutation.test.tsx
++++ b/packages/react-urql/src/hooks/useMutation.test.tsx
+@@ -1,11 +1,11 @@
+ /* eslint-disable react-hooks/rules-of-hooks */
+ 
+ // Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../context', () => {
++vi.mock('../context', () => {
+   // eslint-disable-next-line @typescript-eslint/no-var-requires
+   const { delay, fromValue, pipe } = require('wonka');
+   const mock = {
+-    executeMutation: jest.fn(() =>
++    executeMutation: vi.fn(() =>
+       pipe(fromValue({ data: 1, error: 2, extensions: { i: 1 } }), delay(200))
+     ),
+   };
+@@ -24,7 +24,7 @@ import { useClient } from '../context';
+ import { useMutation } from './useMutation';
+ 
+ // @ts-ignore
+-const client = useClient() as { executeMutation: jest.Mock };
++const client = useClient() as { executeMutation: vi.Mock };
+ 
+ const props = {
+   query: 'mutation Example { example }',
+@@ -42,7 +42,7 @@ const MutationUser = ({ query }: { query: any }) => {
+ 
+ beforeAll(() => {
+   // TODO: Fix use of act()
+-  jest.spyOn(global.console, 'error').mockImplementation();
++  vi.spyOn(global.console, 'error').mockImplementation();
+ });
+ 
+ beforeEach(() => {
+
+diff --git a/packages/react-urql/src/hooks/useQuery.test.tsx b/packages/react-urql/src/hooks/useQuery.test.tsx
+index 8a4c536..3214342 100644
+--- a/packages/react-urql/src/hooks/useQuery.test.tsx
++++ b/packages/react-urql/src/hooks/useQuery.test.tsx
+@@ -1,11 +1,11 @@
+ /* eslint-disable react-hooks/rules-of-hooks */
+ 
+ // Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../context', () => {
++vi.mock('../context', () => {
+   // eslint-disable-next-line @typescript-eslint/no-var-requires
+   const { map, interval, pipe } = require('wonka');
+   const mock = {
+-    executeQuery: jest.fn(() =>
++    executeQuery: vi.fn(() =>
+       pipe(
+         interval(400),
+         map((i: number) => ({ data: i, error: i + 1, extensions: { i: 1 } }))
+@@ -27,7 +27,7 @@ import { useQuery, UseQueryArgs, UseQueryState } from './useQuery';
+ import { useClient } from '../context';
+ 
+ // @ts-ignore
+-const client = useClient() as { executeQuery: jest.Mock };
++const client = useClient() as { executeQuery: vi.Mock };
+ 
+ const props: UseQueryArgs<{ myVar: number }> = {
+   query: '{ example }',
+@@ -53,7 +53,7 @@ const QueryUser = ({
+ 
+ beforeAll(() => {
+   // TODO: Fix use of act()
+-  jest.spyOn(global.console, 'error').mockImplementation();
++  vi.spyOn(global.console, 'error').mockImplementation();
+ });
+ 
+ beforeEach(() => {
+@@ -178,8 +178,8 @@ describe('on change', () => {
+ });
+ 
+ describe('on unmount', () => {
+-  const start = jest.fn();
+-  const unsubscribe = jest.fn();
++  const start = vi.fn();
++  const unsubscribe = vi.fn();
+ 
+   beforeEach(() => {
+     client.executeQuery.mockReturnValue(
+
+diff --git a/packages/react-urql/src/hooks/useSubscription.test.tsx b/packages/react-urql/src/hooks/useSubscription.test.tsx
+index 45657b0..5536856 100644
+--- a/packages/react-urql/src/hooks/useSubscription.test.tsx
++++ b/packages/react-urql/src/hooks/useSubscription.test.tsx
+@@ -1,12 +1,12 @@
+ /* eslint-disable react-hooks/rules-of-hooks */
+ 
+ // Note: Testing for hooks is not yet supported in Enzyme - https://github.com/airbnb/enzyme/issues/2011
+-jest.mock('../context', () => {
++vi.mock('../context', () => {
+   const d = { data: 1234, error: 5678 };
+   // eslint-disable-next-line @typescript-eslint/no-var-requires
+   const { merge, fromValue, never } = require('wonka');
+   const mock = {
+-    executeSubscription: jest.fn(() => merge([fromValue(d), never])),
++    executeSubscription: vi.fn(() => merge([fromValue(d), never])),
+   };
+ 
+   return {
+@@ -22,7 +22,7 @@ import { useSubscription, UseSubscriptionState } from './useSubscription';
+ import { useClient } from '../context';
+ 
+ // @ts-ignore
+-const client = useClient() as { executeSubscription: jest.Mock };
++const client = useClient() as { executeSubscription: vi.Mock };
+ const query = 'subscription Example { example }';
+ 
+ let state: UseSubscriptionState<any> | undefined;
+@@ -78,7 +78,7 @@ it('should support setting context in useSubscription params', () => {
+ });
+ 
+ it('calls handler', () => {
+-  const handler = jest.fn();
++  const handler = vi.fn();
+   const wrapper = renderer.create(
+     <SubscriptionUser q={query} handler={handler} />
+   );
+",0,,69,4026,11,10,108,4810
+2847,ea169df01fd372681a76ea53997251878d392ff6,f5033f2908a7bc879061467e28ce4086addb91ce,"Resolves #2787
+
+## Summary
+
+This changes the internals of `@urql/core` to allow us to reuse `stringifyDocument` in `fetchOptions` and other places, to ensure that printing is memoised whenever possible — including for `formatDocument` outputs.
+
+This means that we had to adjust our hashing slightly to account for the different outputs; that said, sanitisation will still be applied to `stringifyDocument` inputs. However, we will no longer reuse `loc.source` strings when they haven't been printed by `@urql/core`.
+
+## Set of changes
+
+- Replace `phash` hashing function and create opaque type for clarity
+- Refactor `request.ts`' `stringifyDocument` and hashing
+- Reuse `stringifyDocument` in `subscriptionExchange` and `fetchOptions`
+- Update document sanitisation to only remove comments
+- Update hashing to add the operation name only to the hash key, rather than the `stringifyDocument` output","Fix up Svelte tests
+",,0,,4,86,1,7,16,558
+2979,c5c96893a46cbaa2256ec93e6e847c49a1fc5929,5bb2f0de2bf8106ca555ce6c36a4da7a01b554b1,"Resolves #2977 
+
+## Summary
+
+This allows arbitrary `updates` configurations to react to any type and not just `Mutation` and `Subscription`.
+
+Users will now be able to write updaters that react to arbitrary entity field updates. Since this is now permissible, but a very nieche use-case, we currently don't foresee documenting this just yet. It's useful when a schema isn't built to touch on related data invalidating, and when the UI can't compensate for this, but this can also sometimes be a footgun.
+
+**Important Note:** Due to an implementation mistake in the past, we never used `updates[rootName]` and instead normalised `updates.Mutation` and `updates.Subscription` according to the `schema` (partial or not) that is passed to the `cacheExchange`.
+Instead, we now expect that `updates[rootName]` is passed (e.g. `updates.mutation_root` if `mutation_root` is the custom Mutation root type name).
+I've currently ad-hoc decided not to mark this as major/breaking, since a) this is a mistake, and b) it's quite an uncommon use-case and users should get warnings in dev-time.
+
+## Set of changes
+
+- Lift check limitation in `writeSelection`
+- Remove normalisation of `updates` in `Store`
+- Widen `updates` types
+- Update schema predicates warnings appropriately
+- Apply tiny refactor to `writeSelection` root mode switch
+","Update tests
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index 9dea479..2f21526 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -998,7 +998,7 @@ describe('Store with storage', () => {
+     expect(warnMessage).toContain('https://bit.ly/2XbVrpR#24');
+   });
+ 
+-  it('should use different rootConfigs', function () {
++  it('should use different rootConfigs', () => {
+     const fakeUpdater = vi.fn();
+ 
+     const store = new Store({
+@@ -1040,7 +1040,7 @@ describe('Store with storage', () => {
+           }
+         `,
+       },
+-      mutationData
++      mutationData as any
+     );
+ 
+     expect(fakeUpdater).toBeCalledTimes(1);
+",0,,3,44,1,10,10,260
+3057,3ce4cb7160f03105f560e66539c4b8d826ce1029,163caf35bd99c17e60a7295414d0738f96ba06ba,"Resolves #2988
+Resolves #2989
+
+## Summary
+
+This change modifies `@urql/core/internal` to know how to modify `FetchBody` according to the (Automatic) Persisted Queries specification, leaving out `query` as needed.
+
+The `persistedExchange` replaces `persistedFetchExchange` and hence also now works with third-party transports and the `subscriptionExchange`.
+
+Types have been added to `@urql/core` to reflect the `extensions.persistedQuery` spec, with an added `miss?: boolean` field, which is set when `query` must be included again (i.e. when a persisted query ""misses"", via APQ)
+
+The `persistedExchange` must hence now be placed _in front_ of the default fetch exchange, and/or in front of a `subscriptionExchange` that handles queries.
+
+The package has been renamed to `@urql/exchange-persisted` to reflect this.
+
+## Set of changes
+
+- Rename `@urql/exchange-persisted-fetch` to `@urql/exchange-persisted`
+- Add `persistedQuery` types to extensions on `@urql/core`
+- Handle omitting `query` in `makeFetchBody`
+- Implement `persistedExchange` replacing `persistedFetchExchange` with generic retry logic","Rename @urql/exchange-persisted-fetch to @urql/exchange-persisted
+","diff --git a/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts b/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
+deleted file mode 100644
+index 76b81e0..0000000
+--- a/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
++++ /dev/null
+@@ -1,282 +0,0 @@
+-/**
+- * @vitest-environment node
+- */
+-
+-import { empty, fromValue, fromArray, pipe, Source, toPromise } from 'wonka';
+-import { vi, expect, it, afterEach, Mock } from 'vitest';
+-
+-import { DocumentNode, print } from 'graphql';
+-import { Client, OperationResult } from '@urql/core';
+-
+-import { queryOperation } from './test-utils';
+-import { hash } from './sha256';
+-import { persistedFetchExchange } from './persistedFetchExchange';
+-
+-const fetch = (global as any).fetch as Mock;
+-
+-const exchangeArgs = {
+-  dispatchDebug: vi.fn(),
+-  forward: () => empty as Source<OperationResult>,
+-  client: ({
+-    debugTarget: {
+-      dispatchEvent: vi.fn(),
+-    },
+-  } as any) as Client,
+-};
+-
+-afterEach(() => {
+-  fetch.mockClear();
+-});
+-
+-it('accepts successful persisted query responses', async () => {
+-  const expected = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch.mockResolvedValueOnce({
+-    status: 200,
+-    headers: { get: () => 'application/json' },
+-    text: () => Promise.resolve(expected),
+-  });
+-
+-  const actual = await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange()(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(1);
+-  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  expect(actual.data).not.toBeUndefined();
+-});
+-
+-it('supports cache-miss persisted query errors', async () => {
+-  const expectedMiss = JSON.stringify({
+-    errors: [{ message: 'PersistedQueryNotFound' }],
+-  });
+-
+-  const expectedRetry = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedMiss),
+-    })
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedRetry),
+-    });
+-
+-  const actual = await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange()(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(2);
+-  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  expect(fetch.mock.calls[1][1].body).toMatchSnapshot();
+-  expect(actual.data).not.toBeUndefined();
+-});
+-
+-it('supports GET exclusively for persisted queries', async () => {
+-  const expectedMiss = JSON.stringify({
+-    errors: [{ message: 'PersistedQueryNotFound' }],
+-  });
+-
+-  const expectedRetry = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedMiss),
+-    })
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedRetry),
+-    });
+-
+-  const actual = await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange({ preferGetForPersistedQueries: true })(
+-      exchangeArgs
+-    ),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(2);
+-  expect(fetch.mock.calls[0][1].method).toEqual('GET');
+-  expect(fetch.mock.calls[1][1].method).toEqual('POST');
+-  expect(actual.data).not.toBeUndefined();
+-});
+-
+-it('supports unsupported persisted query errors', async () => {
+-  const expectedMiss = JSON.stringify({
+-    errors: [{ message: 'PersistedQueryNotSupported' }],
+-  });
+-
+-  const expectedRetry = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedMiss),
+-    })
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedRetry),
+-    })
+-    .mockResolvedValueOnce({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: () => Promise.resolve(expectedRetry),
+-    });
+-
+-  const actual = await pipe(
+-    fromArray([queryOperation, queryOperation]),
+-    persistedFetchExchange()(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(3);
+-  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  expect(fetch.mock.calls[1][1].body).toEqual(fetch.mock.calls[1][1].body);
+-  expect(actual.data).not.toBeUndefined();
+-});
+-
+-it('correctly generates an SHA256 hash', async () => {
+-  const expected = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch.mockResolvedValue({
+-    text: () => Promise.resolve(expected),
+-  });
+-
+-  const queryHash = await hash(print(queryOperation.query));
+-
+-  await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange()(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(1);
+-
+-  const body = JSON.parse(fetch.mock.calls[0][1].body);
+-
+-  expect(queryHash).toBe(
+-    'b4228e10e04c59def248546d305b710309c1b297423b38eb64f989a89a398cd8'
+-  );
+-
+-  expect(body).toMatchObject({
+-    extensions: {
+-      persistedQuery: {
+-        version: 1,
+-        sha256Hash: queryHash,
+-      },
+-    },
+-  });
+-});
+-
+-it('supports a custom hash function', async () => {
+-  const expected = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch.mockResolvedValueOnce({
+-    text: () => Promise.resolve(expected),
+-  });
+-
+-  const hashFn = vi.fn((_input: string, _doc: DocumentNode) => {
+-    return Promise.resolve('hello');
+-  });
+-
+-  await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange({ generateHash: hashFn })(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(1);
+-
+-  const body = JSON.parse(fetch.mock.calls[0][1].body);
+-
+-  expect(body).toMatchObject({
+-    extensions: {
+-      persistedQuery: {
+-        version: 1,
+-        sha256Hash: 'hello',
+-      },
+-    },
+-  });
+-  const queryString = `query getUser($name: String) {
+-  user(name: $name) {
+-    id
+-    firstName
+-    lastName
+-  }
+-}`;
+-  expect(hashFn).toBeCalledWith(queryString, queryOperation.query);
+-});
+-
+-it('falls back to a non-persisted query if the hash is falsy', async () => {
+-  const expected = JSON.stringify({
+-    data: {
+-      test: true,
+-    },
+-  });
+-
+-  fetch.mockResolvedValueOnce({
+-    text: () => Promise.resolve(expected),
+-  });
+-
+-  const hashFn = vi.fn(() => Promise.resolve(''));
+-
+-  await pipe(
+-    fromValue(queryOperation),
+-    persistedFetchExchange({ generateHash: hashFn })(exchangeArgs),
+-    toPromise
+-  );
+-
+-  expect(fetch).toHaveBeenCalledTimes(1);
+-
+-  const body = JSON.parse(fetch.mock.calls[0][1].body);
+-
+-  expect(body).toMatchObject({
+-    query:
+-      'query getUser($name: String) {\n' +
+-      '  user(name: $name) {\n' +
+-      '    id\n' +
+-      '    firstName\n' +
+-      '    lastName\n' +
+-      '  }\n' +
+-      '}',
+-    operationName: 'getUser',
+-    variables: { name: 'Clara' },
+-  });
+-});
+
+diff --git a/exchanges/persisted/src/persistedFetchExchange.test.ts b/exchanges/persisted/src/persistedFetchExchange.test.ts
+new file mode 100644
+index 0000000..76b81e0
+--- /dev/null
++++ b/exchanges/persisted/src/persistedFetchExchange.test.ts
+@@ -0,0 +1,282 @@
++/**
++ * @vitest-environment node
++ */
++
++import { empty, fromValue, fromArray, pipe, Source, toPromise } from 'wonka';
++import { vi, expect, it, afterEach, Mock } from 'vitest';
++
++import { DocumentNode, print } from 'graphql';
++import { Client, OperationResult } from '@urql/core';
++
++import { queryOperation } from './test-utils';
++import { hash } from './sha256';
++import { persistedFetchExchange } from './persistedFetchExchange';
++
++const fetch = (global as any).fetch as Mock;
++
++const exchangeArgs = {
++  dispatchDebug: vi.fn(),
++  forward: () => empty as Source<OperationResult>,
++  client: ({
++    debugTarget: {
++      dispatchEvent: vi.fn(),
++    },
++  } as any) as Client,
++};
++
++afterEach(() => {
++  fetch.mockClear();
++});
++
++it('accepts successful persisted query responses', async () => {
++  const expected = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch.mockResolvedValueOnce({
++    status: 200,
++    headers: { get: () => 'application/json' },
++    text: () => Promise.resolve(expected),
++  });
++
++  const actual = await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange()(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('supports cache-miss persisted query errors', async () => {
++  const expectedMiss = JSON.stringify({
++    errors: [{ message: 'PersistedQueryNotFound' }],
++  });
++
++  const expectedRetry = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedMiss),
++    })
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedRetry),
++    });
++
++  const actual = await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange()(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(2);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(fetch.mock.calls[1][1].body).toMatchSnapshot();
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('supports GET exclusively for persisted queries', async () => {
++  const expectedMiss = JSON.stringify({
++    errors: [{ message: 'PersistedQueryNotFound' }],
++  });
++
++  const expectedRetry = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedMiss),
++    })
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedRetry),
++    });
++
++  const actual = await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange({ preferGetForPersistedQueries: true })(
++      exchangeArgs
++    ),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(2);
++  expect(fetch.mock.calls[0][1].method).toEqual('GET');
++  expect(fetch.mock.calls[1][1].method).toEqual('POST');
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('supports unsupported persisted query errors', async () => {
++  const expectedMiss = JSON.stringify({
++    errors: [{ message: 'PersistedQueryNotSupported' }],
++  });
++
++  const expectedRetry = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedMiss),
++    })
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedRetry),
++    })
++    .mockResolvedValueOnce({
++      status: 200,
++      headers: { get: () => 'application/json' },
++      text: () => Promise.resolve(expectedRetry),
++    });
++
++  const actual = await pipe(
++    fromArray([queryOperation, queryOperation]),
++    persistedFetchExchange()(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(3);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(fetch.mock.calls[1][1].body).toEqual(fetch.mock.calls[1][1].body);
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('correctly generates an SHA256 hash', async () => {
++  const expected = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch.mockResolvedValue({
++    text: () => Promise.resolve(expected),
++  });
++
++  const queryHash = await hash(print(queryOperation.query));
++
++  await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange()(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++
++  const body = JSON.parse(fetch.mock.calls[0][1].body);
++
++  expect(queryHash).toBe(
++    'b4228e10e04c59def248546d305b710309c1b297423b38eb64f989a89a398cd8'
++  );
++
++  expect(body).toMatchObject({
++    extensions: {
++      persistedQuery: {
++        version: 1,
++        sha256Hash: queryHash,
++      },
++    },
++  });
++});
++
++it('supports a custom hash function', async () => {
++  const expected = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch.mockResolvedValueOnce({
++    text: () => Promise.resolve(expected),
++  });
++
++  const hashFn = vi.fn((_input: string, _doc: DocumentNode) => {
++    return Promise.resolve('hello');
++  });
++
++  await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange({ generateHash: hashFn })(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++
++  const body = JSON.parse(fetch.mock.calls[0][1].body);
++
++  expect(body).toMatchObject({
++    extensions: {
++      persistedQuery: {
++        version: 1,
++        sha256Hash: 'hello',
++      },
++    },
++  });
++  const queryString = `query getUser($name: String) {
++  user(name: $name) {
++    id
++    firstName
++    lastName
++  }
++}`;
++  expect(hashFn).toBeCalledWith(queryString, queryOperation.query);
++});
++
++it('falls back to a non-persisted query if the hash is falsy', async () => {
++  const expected = JSON.stringify({
++    data: {
++      test: true,
++    },
++  });
++
++  fetch.mockResolvedValueOnce({
++    text: () => Promise.resolve(expected),
++  });
++
++  const hashFn = vi.fn(() => Promise.resolve(''));
++
++  await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange({ generateHash: hashFn })(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++
++  const body = JSON.parse(fetch.mock.calls[0][1].body);
++
++  expect(body).toMatchObject({
++    query:
++      'query getUser($name: String) {\n' +
++      '  user(name: $name) {\n' +
++      '    id\n' +
++      '    firstName\n' +
++      '    lastName\n' +
++      '  }\n' +
++      '}',
++    operationName: 'getUser',
++    variables: { name: 'Clara' },
++  });
++});
+",1,None=None,22,1881,2,10,28,1237
+3061,9433741bf73c05908f80dc69f7ae2a6bcdf3e84e,fad3af67ce0ca03607dbb521d2b9e0b4105f9443,"## Summary
+
+Since `OperationResult.hasNext` is now important to determine whether operations should be deduplicated (as before, to be fair), and `OperationResult.stale` is important for `toPromise` to find the right result, it's a little dangerous not to have them be required.
+
+Hence, the thinking here is to make them required and to ensure that for `@defer`/`@stream` we won't run into cases where those never reset to `false` or where deferred/streamed responses are duplicated.
+
+## Set of changes
+
+- Update `hasNext` and `stale` to be required
+- Update tests and types","Update failing tests
+",,0,,7,64,4,6,23,322
+3119,15eb47addac6f756bf3ce76fea8f7f355df6ed07,15eb47addac6f756bf3ce76fea8f7f355df6ed07,"## Summary
+
+Removing the deprecated `multipart-fetch` exchange folder.
+
+## Set of changes
+
+- n/a
+","chore(multipart): Delete multipart-fetch exchange folder
+","diff --git a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+deleted file mode 100644
+index f336ce6..0000000
+--- a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
++++ /dev/null
+@@ -1,180 +0,0 @@
+-import { Client, OperationResult } from '@urql/core';
+-import { empty, fromValue, pipe, Source, toPromise } from 'wonka';
+-
+-import {
+-  vi,
+-  expect,
+-  it,
+-  beforeEach,
+-  describe,
+-  beforeAll,
+-  Mock,
+-  afterEach,
+-  afterAll,
+-} from 'vitest';
+-
+-import { multipartFetchExchange } from './multipartFetchExchange';
+-
+-import {
+-  uploadOperation,
+-  queryOperation,
+-  multipleUploadOperation,
+-} from './test-utils';
+-
+-const fetch = (global as any).fetch as Mock;
+-const abort = vi.fn();
+-
+-beforeAll(() => {
+-  (global as any).AbortController = function AbortController() {
+-    this.signal = undefined;
+-    this.abort = abort;
+-  };
+-});
+-
+-afterEach(() => {
+-  fetch.mockClear();
+-  abort.mockClear();
+-});
+-
+-afterAll(() => {
+-  (global as any).AbortController = undefined;
+-});
+-
+-const response = JSON.stringify({
+-  status: 200,
+-  data: {
+-    data: {
+-      user: 1200,
+-    },
+-  },
+-});
+-
+-const exchangeArgs = {
+-  forward: () => empty as Source<OperationResult>,
+-  client: {} as Client,
+-  dispatchDebug: vi.fn(),
+-};
+-
+-describe('on success', () => {
+-  beforeEach(() => {
+-    fetch.mockResolvedValue({
+-      status: 200,
+-      headers: { get: () => 'application/json' },
+-      text: vi.fn().mockResolvedValue(response),
+-    });
+-  });
+-
+-  it('uses a file when given', async () => {
+-    const fetchOptions = vi.fn().mockReturnValue({});
+-
+-    const data = await pipe(
+-      fromValue({
+-        ...uploadOperation,
+-        context: {
+-          ...uploadOperation.context,
+-          fetchOptions,
+-        },
+-      }),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data).toMatchSnapshot();
+-    expect(fetchOptions).toHaveBeenCalled();
+-    expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  });
+-
+-  it('uses multiple files when given', async () => {
+-    const fetchOptions = vi.fn().mockReturnValue({});
+-
+-    const data = await pipe(
+-      fromValue({
+-        ...multipleUploadOperation,
+-        context: {
+-          ...multipleUploadOperation.context,
+-          fetchOptions,
+-        },
+-      }),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data).toMatchSnapshot();
+-    expect(fetchOptions).toHaveBeenCalled();
+-    expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  });
+-
+-  it('returns response data', async () => {
+-    const fetchOptions = vi.fn().mockReturnValue({});
+-
+-    const data = await pipe(
+-      fromValue({
+-        ...queryOperation,
+-        context: {
+-          ...queryOperation.context,
+-          fetchOptions,
+-        },
+-      }),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data).toMatchSnapshot();
+-    expect(fetchOptions).toHaveBeenCalled();
+-    expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+-  });
+-});
+-
+-describe('on error', () => {
+-  beforeEach(() => {
+-    fetch.mockResolvedValue({
+-      status: 400,
+-      headers: { get: () => 'application/json' },
+-      text: vi.fn().mockResolvedValue('{}'),
+-    });
+-  });
+-
+-  it('returns error data', async () => {
+-    const data = await pipe(
+-      fromValue(queryOperation),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data).toMatchSnapshot();
+-  });
+-
+-  it('returns error data with status 400 and manual redirect mode', async () => {
+-    const fetchOptions = vi.fn().mockReturnValue({ redirect: 'manual' });
+-
+-    const data = await pipe(
+-      fromValue({
+-        ...queryOperation,
+-        context: {
+-          ...queryOperation.context,
+-          fetchOptions,
+-        },
+-      }),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data).toMatchSnapshot();
+-  });
+-
+-  it('ignores the error when a result is available', async () => {
+-    fetch.mockResolvedValue({
+-      status: 400,
+-      headers: { get: () => 'application/json' },
+-      text: vi.fn().mockResolvedValue(response),
+-    });
+-
+-    const data = await pipe(
+-      fromValue(queryOperation),
+-      multipartFetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data.data).toEqual(JSON.parse(response).data);
+-  });
+-});
+",0,,9,1380,1,1,9,1380
+3395,838cfa96abedf21ee3f9cc0789a626822b0ce4f1,838cfa96abedf21ee3f9cc0789a626822b0ce4f1,"Fixes #3394 
+
+## Summary
+
+When an API returns `errors` as a non-array we have to still return the error, however we try to cast this to a `GraphQLError` which does not work out. We add an additional check whether we are actually dealing with an array of errors so we can support this case.","support non-spec errors
+","diff --git a/packages/core/src/internal/fetchSource.test.ts b/packages/core/src/internal/fetchSource.test.ts
+index 3693156..1600477 100644
+--- a/packages/core/src/internal/fetchSource.test.ts
++++ b/packages/core/src/internal/fetchSource.test.ts
+@@ -172,6 +172,27 @@ describe('on unexpected plain text responses', () => {
+   });
+ });
+ 
++describe('on error with non spec-compliant body', () => {
++  beforeEach(() => {
++    fetch.mockResolvedValue({
++      status: 400,
++      statusText: 'Forbidden',
++      headers: { get: () => 'application/json' },
++      text: vi.fn().mockResolvedValue('{""errors"":{""detail"":""Bad Request""}}'),
++    });
++  });
++
++  it('handles network errors', async () => {
++    const data = await pipe(
++      makeFetchSource(queryOperation, 'https://test.com/graphql', {}),
++      toPromise
++    );
++
++    expect(data).toMatchSnapshot();
++    expect(data).toHaveProperty('error.networkError.message', 'Forbidden');
++  });
++});
++
+ describe('on teardown', () => {
+   const fail = () => {
+     expect(true).toEqual(false);
+",0,,4,178,1,1,4,178
+348,756b2a0ef591b25e961b8cd356d533e33150c8e3,756b2a0ef591b25e961b8cd356d533e33150c8e3,Fixes #341.,"Fix bounds checking of HTTP status codes in fetchExchange
+
+Fixes #341.
+","diff --git a/src/exchanges/fetch.test.ts b/src/exchanges/fetch.test.ts
+index fc7d30f..f6142c3 100755
+--- a/src/exchanges/fetch.test.ts
++++ b/src/exchanges/fetch.test.ts
+@@ -120,6 +120,24 @@ describe('on error', () => {
+ 
+     expect(data.operation.context).toHaveProperty('meta.networkLatency', 100);
+   });
++
++  it('returns error data with status 400 and manual redirect mode', async () => {
++    const fetchOptions = jest.fn().mockReturnValue({ redirect: 'manual' });
++
++    const data = await pipe(
++      fromValue({
++        ...queryOperation,
++        context: {
++          ...queryOperation.context,
++          fetchOptions,
++        },
++      }),
++      fetchExchange(exchangeArgs),
++      toPromise
++    );
++
++    expect(data).toMatchSnapshot();
++  });
+ });
+ 
+ describe('on teardown', () => {
+",0,,3,161,1,1,3,161
+3679,ddb99bdd6d94b2380b4e8b26d6077b710924d106,3e20aea6a5a43c53fd79c9e92799254cff80e637,Tried again to get vitest workspaces running but solid seems to refuse to cooperate here 😅 ,"Bump vitest individually and change command
+",,0,,27,1096,3,3,27,1545
+376,77528a2eda4df423c2b4bb6351b3f79baaa55e23,77528a2eda4df423c2b4bb6351b3f79baaa55e23,"Allow the consumers of the urql package to define a default requestPolicy this will be used in all operation creation and can be overriden on a per-query basis.
+
+resolves: https://github.com/FormidableLabs/urql/issues/211","(chore) - update snapshots
+",,0,,2,5,2,3,4,42
+388,b3a8a22928e16e4d22561bd87b566315da61a2e4,0ac46efb783723760f400f2da543d60d71228d1a,Related: https://github.com/FormidableLabs/urql-devtools-exchange/pull/2,"(chore) - remove tests revolving around networkLatency
+","diff --git a/src/exchanges/fetch.test.ts b/src/exchanges/fetch.test.ts
+index f6142c3..162a34d 100755
+--- a/src/exchanges/fetch.test.ts
++++ b/src/exchanges/fetch.test.ts
+@@ -71,21 +71,6 @@ describe('on success', () => {
+     expect(data).toMatchSnapshot();
+     expect(fetchOptions).toHaveBeenCalled();
+   });
+-
+-  it('adds latency info to the context', async () => {
+-    const data = await pipe(
+-      fromValue({
+-        ...queryOperation,
+-        context: {
+-          ...queryOperation.context,
+-        },
+-      }),
+-      fetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data.operation.context).toHaveProperty('meta.networkLatency', 100);
+-  });
+ });
+ 
+ describe('on error', () => {
+@@ -111,16 +96,6 @@ describe('on error', () => {
+     expect(data).toMatchSnapshot();
+   });
+ 
+-  it('returns error data', async () => {
+-    const data = await pipe(
+-      fromValue(queryOperation),
+-      fetchExchange(exchangeArgs),
+-      toPromise
+-    );
+-
+-    expect(data.operation.context).toHaveProperty('meta.networkLatency', 100);
+-  });
+-
+   it('returns error data with status 400 and manual redirect mode', async () => {
+     const fetchOptions = jest.fn().mockReturnValue({ redirect: 'manual' });
+ 
+",0,,2,34,1,4,4,50
+401,e6dc80644efbc38a7a5bb510cfb9028eff77c840,e6dc80644efbc38a7a5bb510cfb9028eff77c840,Resolve #400,"Add operationName field to fetch request
+","diff --git a/src/exchanges/fetch.test.ts b/src/exchanges/fetch.test.ts
+index 162a34d..cd05aa8 100755
+--- a/src/exchanges/fetch.test.ts
++++ b/src/exchanges/fetch.test.ts
+@@ -70,6 +70,7 @@ describe('on success', () => {
+ 
+     expect(data).toMatchSnapshot();
+     expect(fetchOptions).toHaveBeenCalled();
++    expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
+   });
+ });
+ 
+",0,,3,37,1,1,3,37
+410,c8c7e05c2e5a28b97bf87b39d30cb2f1dea211f2,8e7d7f422ee7554129aebdbda12358e3ccb5ba3b,"Resolve #407 
+
+I think the idea of adding ""active teardowns"" is pretty valuable. It may be required in the future for someone to actively cancel ongoing queries from exchanges. This is already necessary to correctly implement ending subscriptions.
+
+This hence also adds missing features to the `useSubscription` hook, like `executeSubscription` and `args.pause`. It also ensures that the `handler` arg is a constant ref, since reexecuting subscriptions when it changes wouldn't make much sense.
+
+Wonka had a slight bug in `onEnd`. The operator wasn't propagating `Close` signals correctly, so the use of `onEnd` would prevent unsubscriptions from propagating upwards.","Fix immediate state initialisation for useSubscription
+",,0,,2,13,1,12,11,248
+449,6e087b8fb14f8cd075b7d95f39e4818edb6bbe7c,7d82e7ff439c41df628fd698f1583ad4dc26e19b,"This adds a new `stale?: boolean` flag to `OperationResult` that exchanges can use to indicate whether they're still fetching more data in the background (like with `cache-and-network` or graphcache's partial results)
+
+Hooks will normalise this flag to `stale: boolean` and pass it through to their results.
+
+This supersedes: https://github.com/FormidableLabs/urql/pull/444","Update tests to include stale flag
+","diff --git a/src/hooks/useSubscription.test.tsx b/src/hooks/useSubscription.test.tsx
+index c3ca907..80da947 100644
+--- a/src/hooks/useSubscription.test.tsx
++++ b/src/hooks/useSubscription.test.tsx
+@@ -80,7 +80,12 @@ describe('on subscription', () => {
+      * result of the state change.
+      */
+     wrapper.update(<SubscriptionUser q={query} />);
+-    expect(state).toEqual({ ...data, fetching: true });
++    expect(state).toEqual({
++      ...data,
++      extensions: undefined,
++      fetching: true,
++      stale: false,
++    });
+   });
+ });
+ 
+",0,,5,14,3,3,11,76
+519,6871c97fa1b98f3e7401dd2f02bfe73fac88d677,02bf36d4e56f67fad06b934ddd7220b369df4e7f,The only uncertainty (no documentation anywhere) is how to use fragments for this.,"update snapshots
+",,0,,2,5,2,10,7,83
+662,a4ed32799c64a5f8accbd227544485a4a23823f1,a4ed32799c64a5f8accbd227544485a4a23823f1,"Fix #661
+
+Previously any call that dispatches an operation could
+lead to a queued dispatch, which stops peeking from working
+since the effect (exchange pipeline) isn't actually executed
+on the spot. In such a case the queue is flushed later which
+can lead to undefined behaviour, e.g. looping onOperationEnd,
+which means that we think a query is active while it's not.
+
+Instead we want to apply the operation queuing only to
+client.reexecuteOperation, which is what's called from inside
+exchanges.
+
+The new behaviour: We now queue up operations from
+reexecuteOperation when we're currently dispatching another
+operation. Otherwise every operation executes immediately.","Update snapshot tests
+","diff --git a/packages/react-urql/src/context.test.ts b/packages/react-urql/src/context.test.ts
+deleted file mode 100644
+index 4366013..0000000
+--- a/packages/react-urql/src/context.test.ts
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import { Consumer, Provider } from './context';
+-
+-describe('ContextConsumer', () => {
+-  it('passes snapshot', () => {
+-    expect(Consumer).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Consumer).toBe('object');
+-  });
+-});
+-
+-describe('ContextProvider', () => {
+-  it('passes snapshot', () => {
+-    expect(Provider).toMatchSnapshot();
+-  });
+-
+-  it('is exported', () => {
+-    expect(typeof Provider).toBe('object');
+-  });
+-});
+",0,,3,141,2,2,5,167
+669,7dce9f5b66231719b46530652c4f7a149acec161,75216b0eeef58cbe94ca8aa6977f615ef16a14ab,"Fix #668 
+
+## Summary
+
+This fixes an edge case that was missed in #662.
+
+The queue wasn't marked as being started by the first `client.dispatchOperation`, which means that the queue is then emptied by the first `client.rexecuteOperation` call instead. This doesn't cause any issues usually, but with the `dedupExchange` we'll accidentally deduplicate reissued operations, which are usually used to implement fetching for `stale` results or `cache-and-network` operations.
+
+## Set of changes
+
+- Fix queuing behavior in `client.dispatchOperation`
+- Add test for operation & result ordering
+- Remove `client.exchange` (private variable)
+","Add client test for dispatching order
+","diff --git a/packages/core/src/client.test.ts b/packages/core/src/client.test.ts
+index 80f1862..e1d2114 100755
+--- a/packages/core/src/client.test.ts
++++ b/packages/core/src/client.test.ts
+@@ -3,8 +3,10 @@ import gql from 'graphql-tag';
+ 
+ /** NOTE: Testing in this file is designed to test both the client and it's interaction with default Exchanges */
+ 
+-import { map, pipe, subscribe, tap } from 'wonka';
++import { map, pipe, subscribe, filter, toArray, tap } from 'wonka';
++import { Exchange, Operation, OperationResult } from './types';
+ import { createClient } from './client';
++import { queryOperation } from './test-utils';
+ 
+ const url = 'https://hostname.com';
+ 
+@@ -302,3 +304,76 @@ describe('executeSubscription', () => {
+     expect(receivedOps[0]).toHaveProperty('operationName', 'subscription');
+   });
+ });
++
++describe('queuing behavior', () => {
++  it('queues reexecuteOperation, which dispatchOperation consumes', () => {
++    const output: Array<Operation | OperationResult> = [];
++
++    const exchange: Exchange = ({ client }) => ops$ => {
++      return pipe(
++        ops$,
++        filter(op => op.operationName !== 'teardown'),
++        tap(op => {
++          output.push(op);
++          if (
++            op.key === queryOperation.key &&
++            op.context.requestPolicy === 'cache-first'
++          ) {
++            client.reexecuteOperation({
++              ...op,
++              context: {
++                ...op.context,
++                requestPolicy: 'network-only',
++              },
++            });
++          }
++        }),
++        map(op => ({
++          data: op.key,
++          operation: op,
++        }))
++      );
++    };
++
++    const client = createClient({
++      url: 'test',
++      exchanges: [exchange],
++    });
++
++    pipe(
++      client.results$,
++      subscribe(result => {
++        output.push(result);
++      })
++    );
++
++    const results = pipe(
++      client.executeRequestOperation(queryOperation),
++      toArray
++    );
++
++    expect(output.length).toBe(4);
++    expect(results.length).toBe(2);
++
++    expect(output[0]).toHaveProperty('key', queryOperation.key);
++    expect(output[0]).toHaveProperty('context.requestPolicy', 'cache-first');
++
++    expect(output[1]).toHaveProperty('operation.key', queryOperation.key);
++    expect(output[1]).toHaveProperty(
++      'operation.context.requestPolicy',
++      'cache-first'
++    );
++
++    expect(output[2]).toHaveProperty('key', queryOperation.key);
++    expect(output[2]).toHaveProperty('context.requestPolicy', 'network-only');
++
++    expect(output[3]).toHaveProperty('operation.key', queryOperation.key);
++    expect(output[3]).toHaveProperty(
++      'operation.context.requestPolicy',
++      'network-only'
++    );
++
++    expect(output[1]).toBe(results[0]);
++    expect(output[3]).toBe(results[1]);
++  });
++});
+",0,,2,78,1,4,5,98
+674,095566804b34145d85af0bee0a664d79394d17a9,28ea22a6e27b994693f6199d47e681a6661c7f00,"## Summary
+
+This contains a stable implementation of persistence that combines its run with the garbage collection run and takes commutativity into account using a new approach that squashes layers on-the-fly.
+
+## Set of changes
+
+- [x] Refactor to remove the old persistence logic
+- [x] Refactor GC code to use data state
+- [x] Add joined key batch to flag persistence
+- [x] Implement new persistence deferred run next to `gc`
+- [x] Implement new rehydration logic
+","Remove PoC-stage persistence implementation
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index 912c80b..d34287c 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -453,7 +453,8 @@ describe('Store with OptimisticMutationConfig', () => {
+   });
+ });
+ 
+-describe('Store with storage', () => {
++// TODO: Implement persistence
++describe.skip('Store with storage', () => {
+   const expectedData = {
+     __typename: 'Query',
+     appointment: {
+@@ -503,38 +504,4 @@ describe('Store with storage', () => {
+ 
+     expect(data).toEqual(expectedData);
+   });
+-
+-  it('writes removals based on GC to storage', () => {
+-    const storage: StorageAdapter = {
+-      read: jest.fn(),
+-      write: jest.fn(),
+-    };
+-
+-    const store = new Store();
+-    InMemoryData.hydrateData(store.data, storage, Object.create(null));
+-
+-    write(
+-      store,
+-      {
+-        query: Appointment,
+-        variables: { id: '1' },
+-      },
+-      expectedData
+-    );
+-
+-    InMemoryData.initDataState(store.data, null);
+-    InMemoryData.writeLink(
+-      'Query',
+-      store.keyOfField('appointment', { id: '1' }),
+-      undefined
+-    );
+-    InMemoryData.gc(store.data);
+-    InMemoryData.clearDataState();
+-
+-    jest.runAllTimers();
+-
+-    expect(storage.write).toHaveBeenCalled();
+-    const serialisedStore = (storage.write as any).mock.calls[0][0];
+-    expect(serialisedStore).toMatchSnapshot();
+-  });
+ });
+",0,,4,125,1,8,11,392
+710,0842331dd21cb3062e8f8d1e101d983ccb3a450a,fb7aebb6aea7a8d1228af3e97c96db144b87ad66,"## About
+
+Use subject implementation and API for debug events","Use source for debug events
+","diff --git a/packages/core/src/client.test.ts b/packages/core/src/client.test.ts
+index e1d2114..e5a1769 100755
+--- a/packages/core/src/client.test.ts
++++ b/packages/core/src/client.test.ts
+@@ -377,3 +377,25 @@ describe('queuing behavior', () => {
+     expect(output[3]).toBe(results[1]);
+   });
+ });
++
++describe('debugSource', () => {
++  it('publishes debug events', () => {
++    const client = createClient({
++      url: 'test',
++      exchanges: [],
++    });
++
++    const event = {
++      type: 'DEBUG',
++      message: 'Hello',
++    } as any;
++    const subscriber = jest.fn();
++
++    pipe(client.debugSource as any, subscribe(subscriber));
++
++    client.debugSubject!.next(event);
++
++    expect(subscriber).toBeCalledTimes(1);
++    expect(subscriber).toBeCalledWith(event);
++  });
++});
+
+diff --git a/packages/core/src/utils/Target.test.ts b/packages/core/src/utils/Target.test.ts
+deleted file mode 100644
+index ae8d2e0..0000000
+--- a/packages/core/src/utils/Target.test.ts
++++ /dev/null
+@@ -1,42 +0,0 @@
+-import { Target } from './Target';
+-
+-describe('on construct', () => {
+-  it('matches snapshot', () => {
+-    expect(new Target()).toMatchSnapshot();
+-  });
+-});
+-
+-describe('on addEventListener -> dispatchEvent', () => {
+-  it('calls event listeners with event', () => {
+-    const t = new Target();
+-    const listeners = [jest.fn(), jest.fn(), jest.fn()];
+-    const event = { type: 'DEBUG_TEST' } as any;
+-
+-    listeners.forEach(t.addEventListener);
+-    t.dispatchEvent(event);
+-
+-    listeners.forEach(l => {
+-      expect(l).toBeCalledTimes(1);
+-      expect(l).toBeCalledWith(event);
+-    });
+-  });
+-});
+-
+-describe('on removeEventListener -> dispatchEvent', () => {
+-  it('does not call removed event listeners', () => {
+-    const t = new Target();
+-    const listeners = [jest.fn(), jest.fn(), jest.fn()];
+-    const excludedListener = jest.fn();
+-    const event = { type: 'DEBUG_TEST' } as any;
+-
+-    t.addEventListener(excludedListener);
+-    listeners.forEach(t.addEventListener);
+-    t.removeEventListener(excludedListener);
+-    t.dispatchEvent(event);
+-
+-    expect(excludedListener).toBeCalledTimes(0);
+-    listeners.forEach(l => {
+-      expect(l).toBeCalledTimes(1);
+-    });
+-  });
+-});
+",0,,9,130,2,3,7,119
+715,d75c74adb175e063a0e5ca7ae1d13dc781fbf311,ed5f1e63f5b0086e89c8b261622026eb27b9a16b,"## Summary
+
+- ~Avoid illegal character \t which seems to be sometimes stripped in IDB~ (This turned out to be untrue and our example was simply broken. That being said, I think this is still a safer alternative)
+- Move deserialization to keys.ts
+- Add string sanitization
+","Refactor key serialization for persistence
+
+- Avoid illegal character \t which is often stripped in IDB
+- Move deserialization to keys.ts
+- Add string sanitization
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index f95ada5..6f221e2 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -568,7 +568,7 @@ describe('Store with storage', () => {
+     const serialisedStore = (storage.write as any).mock.calls[0][0];
+ 
+     expect(serialisedStore).toEqual({
+-      'Query\tbase': 'true',
++      'Query.base': 'true',
+     });
+ 
+     store = new Store();
+",0,,5,63,1,3,7,80
+722,dfc7efac8761f2ed7a40705635070acbd57750a8,0282814791894684543850454c357a489b212b41,,"Update multipartFetchExchange to use @urql/core/internal
+","diff --git a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+index 3b188b6..1b24d09 100644
+--- a/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
++++ b/exchanges/multipart-fetch/src/multipartFetchExchange.test.ts
+@@ -1,9 +1,8 @@
+ import { Client, OperationResult, OperationType } from '@urql/core';
+ import { empty, fromValue, pipe, Source, subscribe, toPromise } from 'wonka';
+-import gql from 'graphql-tag';
+-import { print } from 'graphql';
+ 
+-import { multipartFetchExchange, convertToGet } from './multipartFetchExchange';
++import { multipartFetchExchange } from './multipartFetchExchange';
++
+ import {
+   uploadOperation,
+   queryOperation,
+@@ -215,39 +214,3 @@ describe('on teardown', () => {
+     expect(abort).toHaveBeenCalledTimes(0);
+   });
+ });
+-
+-describe('convert for GET', () => {
+-  it('should do a basic conversion', () => {
+-    const query = `query ($id: ID!) { node(id: $id) { id } }`;
+-    const variables = { id: 2 };
+-    expect(convertToGet('http://localhost:3000', { query, variables })).toBe(
+-      `http://localhost:3000?query=${encodeURIComponent(
+-        query
+-      )}&variables=${encodeURIComponent(JSON.stringify(variables))}`
+-    );
+-  });
+-
+-  it('should do a basic conversion with fragments', () => {
+-    const nodeFragment = gql`
+-      fragment nodeFragment on Node {
+-        id
+-      }
+-    `;
+-
+-    const variables = { id: 2 };
+-    const query = print(gql`
+-      query($id: ID!) {
+-        node(id: $id) {
+-          ...nodeFragment
+-        }
+-      }
+-      ${nodeFragment}
+-    `);
+-
+-    expect(convertToGet('http://localhost:3000', { query, variables })).toBe(
+-      `http://localhost:3000?query=${encodeURIComponent(
+-        query
+-      )}&variables=${encodeURIComponent(JSON.stringify(variables))}`
+-    );
+-  });
+-});
+",0,,5,357,1,15,26,1623
+727,2cb8812bea22b6335af3d7eac15586078d264640,2cb8812bea22b6335af3d7eac15586078d264640,"Fix #725 
+Regressed in #715","Fix data persistence for embedded fields
+","diff --git a/exchanges/graphcache/src/store/store.test.ts b/exchanges/graphcache/src/store/store.test.ts
+index 6f221e2..3a08503 100644
+--- a/exchanges/graphcache/src/store/store.test.ts
++++ b/exchanges/graphcache/src/store/store.test.ts
+@@ -541,6 +541,60 @@ describe('Store with storage', () => {
+     expect(data).toEqual(expectedData);
+   });
+ 
++  it('should be able to persist embedded data', () => {
++    const EmbeddedAppointment = gql`
++      query appointment($id: String) {
++        appointment(id: $id) {
++          __typename
++          info
++        }
++      }
++    `;
++
++    const embeddedData = {
++      ...expectedData,
++      appointment: {
++        ...expectedData.appointment,
++        id: undefined,
++      },
++    } as any;
++
++    const storage: StorageAdapter = {
++      read: jest.fn(),
++      write: jest.fn(),
++    };
++
++    store.data.storage = storage;
++
++    write(
++      store,
++      {
++        query: EmbeddedAppointment,
++        variables: { id: '1' },
++      },
++      embeddedData
++    );
++
++    InMemoryData.initDataState(store.data, null);
++    InMemoryData.persistData();
++    InMemoryData.clearDataState();
++
++    expect(storage.write).toHaveBeenCalled();
++
++    const serialisedStore = (storage.write as any).mock.calls[0][0];
++    expect(serialisedStore).toMatchSnapshot();
++
++    store = new Store();
++    InMemoryData.hydrateData(store.data, storage, serialisedStore);
++
++    const { data } = query(store, {
++      query: EmbeddedAppointment,
++      variables: { id: '1' },
++    });
++
++    expect(data).toEqual(embeddedData);
++  });
++
+   it('persists commutative layers and ignores optimistic layers', () => {
+     const storage: StorageAdapter = {
+       read: jest.fn(),
+",0,,4,71,1,1,4,71
+739,bd3ea3a8582616484fbabda8117a551f844d01ba,26886f59e70194c73e57e3ef51b17aaf3f3dfd05,"Resolve #196
+
+This package implements Persisted Queries support and is a `persistedFetchExchange` that can be added in front of a regular `fetchExchange`.
+
+The `persistedFetchExchange` only handles queries and sends an extra persisted `extensions` entry with a SHA-256 hash. The hash is generated minimally depending on the environment and a replacement library is only included (when possible) in Node.js environments, where size doesn't quite matter.","Add test suite for persistedFetchExchange
+","diff --git a/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts b/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
+new file mode 100644
+index 0000000..5f41ac9
+--- /dev/null
++++ b/exchanges/persisted-fetch/src/persistedFetchExchange.test.ts
+@@ -0,0 +1,166 @@
++/**
++ * @jest-environment node
++ */
++
++import {
++  empty,
++  fromValue,
++  fromArray,
++  pipe,
++  Source,
++  subscribe,
++  toPromise,
++} from 'wonka';
++
++import { print } from 'graphql';
++import { Client, OperationResult } from '@urql/core';
++
++import { queryOperation, mutationOperation } from './test-utils';
++import { hash } from './sha256';
++import { persistedFetchExchange } from './persistedFetchExchange';
++
++const fetch = (global as any).fetch as jest.Mock;
++
++const exchangeArgs = {
++  dispatchDebug: jest.fn(),
++  forward: () => empty as Source<OperationResult>,
++  client: ({
++    debugTarget: {
++      dispatchEvent: jest.fn(),
++    },
++  } as any) as Client,
++};
++
++afterEach(() => {
++  fetch.mockClear();
++});
++
++it('accepts successful persisted query responses', async () => {
++  const expected = {
++    data: {
++      test: true,
++    },
++  };
++
++  fetch.mockResolvedValueOnce({
++    json: () => expected,
++  });
++
++  const actual = await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('supports cache-miss persisted query errors', async () => {
++  const expectedMiss = {
++    errors: [{ message: 'PersistedQueryNotFound' }],
++  };
++
++  const expectedRetry = {
++    data: {
++      test: true,
++    },
++  };
++
++  fetch
++    .mockResolvedValueOnce({ json: () => expectedMiss })
++    .mockResolvedValueOnce({ json: () => expectedRetry });
++
++  const actual = await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(2);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(fetch.mock.calls[1][1].body).toMatchSnapshot();
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('supports unsupported persisted query errors', async () => {
++  const expectedMiss = {
++    errors: [{ message: 'PersistedQueryNotSupported' }],
++  };
++
++  const expectedRetry = {
++    data: {
++      test: true,
++    },
++  };
++
++  fetch
++    .mockResolvedValueOnce({ json: () => expectedMiss })
++    .mockResolvedValueOnce({ json: () => expectedRetry })
++    .mockResolvedValueOnce({ json: () => expectedRetry });
++
++  const actual = await pipe(
++    fromArray([queryOperation, queryOperation]),
++    persistedFetchExchange(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(3);
++  expect(fetch.mock.calls[0][1].body).toMatchSnapshot();
++  expect(fetch.mock.calls[1][1].body).toEqual(fetch.mock.calls[1][1].body);
++  expect(actual.data).not.toBeUndefined();
++});
++
++it('ignores mutations', async () => {
++  const result = jest.fn();
++  fetch.mockResolvedValueOnce(undefined);
++
++  pipe(
++    fromValue(mutationOperation),
++    persistedFetchExchange(exchangeArgs),
++    subscribe(result)
++  );
++
++  await Promise.resolve();
++
++  expect(result).toHaveBeenCalledTimes(0);
++  expect(fetch).toHaveBeenCalledTimes(0);
++});
++
++it('correctly generates an SHA256 hash', async () => {
++  const expected = {
++    data: {
++      test: true,
++    },
++  };
++
++  fetch.mockResolvedValueOnce({
++    json: () => expected,
++  });
++
++  const queryHash = await hash(print(queryOperation.query));
++
++  await pipe(
++    fromValue(queryOperation),
++    persistedFetchExchange(exchangeArgs),
++    toPromise
++  );
++
++  expect(fetch).toHaveBeenCalledTimes(1);
++
++  const body = JSON.parse(fetch.mock.calls[0][1].body);
++
++  expect(queryHash).toMatchInlineSnapshot(
++    `""bfa84414672fe625d36f2d2a52e1d3c1e71c5a01e79599c320db7656d6f014d4""`
++  );
++
++  expect(body).toMatchObject({
++    extensions: {
++      persistedQuery: {
++        version: 1,
++        sha256Hash: queryHash,
++      },
++    },
++  });
++});
+",0,,3,229,1,17,14,579

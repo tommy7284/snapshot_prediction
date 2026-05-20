@@ -1,0 +1,168 @@
+{
+    "id": 94689424,
+    "name": "grafana/grafana-infinity-datasource",
+    "isFork": false,
+    "commits": 524,
+    "branches": 101,
+    "releases": 74,
+    "forks": 89,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://grafana.com/docs/plugins/yesoreyeram-infinity-datasource",
+    "watchers": 102,
+    "stargazers": 643,
+    "contributors": 10,
+    "size": 29551,
+    "createdAt": "2020-09-04T05:28:52",
+    "pushedAt": "2024-05-03T11:30:20",
+    "updatedAt": "2024-05-03T07:54:46",
+    "totalIssues": 212,
+    "openIssues": 13,
+    "totalPullRequests": 145,
+    "openPullRequests": 5,
+    "blankLines": 1721,
+    "codeLines": 29627,
+    "commentLines": 435,
+    "metrics": [
+        {
+            "language": "CSV",
+            "commentLines": 0,
+            "codeLines": 108,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 208,
+            "codeLines": 486,
+            "blankLines": 103
+        },
+        {
+            "language": "YAML",
+            "commentLines": 16,
+            "codeLines": 419,
+            "blankLines": 14
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 60,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 7,
+            "codeLines": 2818,
+            "blankLines": 942
+        },
+        {
+            "language": "make",
+            "commentLines": 12,
+            "codeLines": 87,
+            "blankLines": 23
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 1201,
+            "blankLines": 3
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 8066,
+            "blankLines": 0
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 1,
+            "codeLines": 37,
+            "blankLines": 3
+        },
+        {
+            "language": "CSS",
+            "commentLines": 13,
+            "codeLines": 163,
+            "blankLines": 50
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 66,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 659,
+            "blankLines": 0
+        },
+        {
+            "language": "Go",
+            "commentLines": 26,
+            "codeLines": 5481,
+            "blankLines": 237
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 147,
+            "codeLines": 9976,
+            "blankLines": 346
+        }
+    ],
+    "lastCommit": "2024-04-29T01:02:43",
+    "lastCommitSHA": "6a56bd2488bfc42db770a4fae5e7416d801be2eb",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 407873,
+        "Go": 209511,
+        "MDX": 104679,
+        "JavaScript": 42137,
+        "CSS": 4196,
+        "Dockerfile": 725
+    },
+    "labels": [
+        "auth",
+        "aws",
+        "azure",
+        "cloud",
+        "cloudwatch",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "epic",
+        "filter",
+        "go",
+        "good first issue",
+        "graphql",
+        "groq",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "json",
+        "jsonata",
+        "oauth",
+        "provisioning",
+        "question",
+        "showcase",
+        "transformation",
+        "type/bug",
+        "type/enhancement",
+        "type/feature-request",
+        "uql",
+        "variables",
+        "wontfix",
+        "xml"
+    ],
+    "topics": [
+        "grafana",
+        "grafana-datasource",
+        "grafana-json-datasource",
+        "grafana-plugin",
+        "grafana-plugins",
+        "grafana-utils"
+    ]
+}

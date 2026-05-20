@@ -1,0 +1,2117 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+1022,f1c938ae8644ec9519adc2b710a8a459864a75c9,f1c938ae8644ec9519adc2b710a8a459864a75c9,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,,"test(jest): update snapshots
+",,0,
+1022,f1c938ae8644ec9519adc2b710a8a459864a75c9,f1c938ae8644ec9519adc2b710a8a459864a75c9,src/__snapshots__/main.test.ts.snap,src/main.test.ts,,"test(jest): update snapshots
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index d46f1fc..ad0bec8 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -546,11 +546,26 @@ describe('visually compares generated images with', () => {
+           path.parse(snapshot).name === path.parse(savedImage.path).name,
+       );
+ 
+-      const looksSame = doFilesLookSimilar(
+-        savedImage.path,
+-        path.join(SNAPSHOT_PATH, testSuite, matchedSnapshot as string),
+-        testSuite,
+-      );
++      let looksSame = true;
++
++      try {
++        looksSame = doFilesLookSimilar(
++          savedImage.path,
++          path.join(SNAPSHOT_PATH, testSuite, matchedSnapshot as string),
++          testSuite,
++        );
++      } catch (error) {
++        // eslint-disable-next-line no-console
++        console.log(
++          'looksSame check failed on',
++          savedImage.path,
++          SNAPSHOT_PATH,
++          testSuite,
++          matchedSnapshot as string,
++          testSuite,
++        );
++        throw error;
++      }
+ 
+       if (!looksSame) {
+         // eslint-disable-next-line no-console
+",0,
+1022,f1c938ae8644ec9519adc2b710a8a459864a75c9,f1c938ae8644ec9519adc2b710a8a459864a75c9,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,,"test(jest): update snapshots
+",,0,
+1022,f1c938ae8644ec9519adc2b710a8a459864a75c9,f1c938ae8644ec9519adc2b710a8a459864a75c9,src/__snapshots__/main.test.ts.snap,src/main.test.ts,,"test(jest): update snapshots
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index d46f1fc..ad0bec8 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -546,11 +546,26 @@ describe('visually compares generated images with', () => {
+           path.parse(snapshot).name === path.parse(savedImage.path).name,
+       );
+ 
+-      const looksSame = doFilesLookSimilar(
+-        savedImage.path,
+-        path.join(SNAPSHOT_PATH, testSuite, matchedSnapshot as string),
+-        testSuite,
+-      );
++      let looksSame = true;
++
++      try {
++        looksSame = doFilesLookSimilar(
++          savedImage.path,
++          path.join(SNAPSHOT_PATH, testSuite, matchedSnapshot as string),
++          testSuite,
++        );
++      } catch (error) {
++        // eslint-disable-next-line no-console
++        console.log(
++          'looksSame check failed on',
++          savedImage.path,
++          SNAPSHOT_PATH,
++          testSuite,
++          matchedSnapshot as string,
++          testSuite,
++        );
++        throw error;
++      }
+ 
+       if (!looksSame) {
+         // eslint-disable-next-line no-console
+",0,
+1027,cca43e22a9c3e667c25b487eb9e286e7ea102838,cca43e22a9c3e667c25b487eb9e286e7ea102838,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"* Update all project dependencies to their latest versions
+* Migrate the project from cjs to esm
+* Migrate from jest to vitest
+* Migrate from older node and typescript to the latest versions, refactor deprecated use cases
+* Add type safety to the CLI flags
+* Update apple fallback data with latest Apple HIG specs","feat(core): migrate project to esm and modernize deps
+
+BREAKING CHANGE: esm migration is a breaking change for module use of the lib.
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 5ba4a79..5438dfb 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -1,16 +1,53 @@
+-import execa from 'execa';
+-import constants from './config/constants';
++import { execa, execaSync } from 'execa';
++import constants from './config/constants.js';
++import { vi, describe, test, expect, beforeEach, afterEach } from 'vitest';
++
++// Mock modules for browser tests
++const mockInstaller = {
++  getPreferredBrowserRevisionInfo: vi.fn().mockResolvedValue({
++    folderPath: '/mock/chrome',
++    executablePath: '/mock/chrome/chrome',
++    local: true,
++    revision: '134.0.6998.35',
++  }),
++  installPreferredBrowserRevision: vi.fn().mockResolvedValue({
++    folderPath: '/mock/chrome',
++    executablePath: '/mock/chrome/chrome',
++    local: true,
++    revision: '134.0.6998.35',
++  }),
++};
++
++const mockBrowser = {
++  getBrowserInstance: vi.fn().mockResolvedValue({
++    browser: { close: vi.fn() },
++    chrome: undefined,
++  }),
++  killBrowser: vi.fn(),
++};
++
++vi.mock('./helpers/installer.js', () => {
++  return {
++    default: mockInstaller,
++  };
++});
++
++vi.mock('./helpers/browser.js', () => {
++  return {
++    default: mockBrowser,
++  };
++});
+ 
+ describe('CLI', () => {
+   test('does not throw when there is not any arg', async () => {
+-    expect(() => execa.sync('./bin/cli', [])).not.toThrow();
++    expect(() => execaSync('./bin/cli.js', [])).not.toThrow();
+   });
+ 
+   test('integrates with main API and creates an output with generated meta', async () => {
+     let response = { stdout: '', stderr: '' };
+     try {
+       response = await execa(
+-        './bin/cli',
++        './bin/cli.js',
+         [
+           './static/logo.png',
+           './temp',
+@@ -26,17 +63,16 @@ describe('CLI', () => {
+         { env: { PAG_TEST_MODE: '1' } },
+       );
+     } catch (e) {
+-      // eslint-disable-next-line no-console
+       console.error(e);
+     }
+     expect(response.stdout).toMatchSnapshot();
+   });
+ 
+   test('does not have any conflicting shorthand options', () => {
+-    const flagShorthands = Object.values(constants.FLAGS).map(
+-      (flag) => flag.alias,
++    const shortFlags = Object.values(constants.FLAGS).map(
++      (flag) => flag.shortFlag,
+     );
+-    expect(new Set(flagShorthands).size).toBe(flagShorthands.length);
++    expect(new Set(shortFlags).size).toBe(shortFlags.length);
+   });
+ 
+   test('integrates with npx', async () => {
+@@ -61,7 +97,6 @@ describe('CLI', () => {
+         { env: { PAG_TEST_MODE: '1' } },
+       );
+     } catch (e) {
+-      // eslint-disable-next-line no-console
+       console.error(e);
+     }
+     expect(response.stdout).toMatchSnapshot();
+@@ -70,73 +105,45 @@ describe('CLI', () => {
+ 
+ describe('CLI with local chromium revision', () => {
+   beforeEach(() => {
+-    jest.resetModules();
+-
+-    jest.mock('./helpers/installer', () => ({
+-      getPreferredBrowserRevisionInfo: jest.fn().mockResolvedValue({
+-        folderPath: '/mock/chrome',
+-        executablePath: '/mock/chrome/chrome',
+-        local: true,
+-        revision: '134.0.6998.35',
+-      }),
+-      installPreferredBrowserRevision: jest.fn().mockResolvedValue({
+-        folderPath: '/mock/chrome',
+-        executablePath: '/mock/chrome/chrome',
+-        local: true,
+-        revision: '134.0.6998.35',
+-      }),
+-    }));
+-
+-    jest.mock('./helpers/browser', () => ({
+-      getBrowserInstance: jest.fn().mockResolvedValue({
+-        browser: { close: jest.fn() },
+-        chrome: undefined,
+-      }),
+-      killBrowser: jest.fn(),
+-    }));
++    vi.resetModules();
+   });
+ 
+   afterEach(() => {
+-    jest.restoreAllMocks();
++    vi.restoreAllMocks();
+   });
+ 
+   test('should use browser.getBrowserInstance when PAG_USE_LOCAL_REV is set', async () => {
+     const originalValue = process.env.PAG_USE_LOCAL_REV;
+     process.env.PAG_USE_LOCAL_REV = '1';
+ 
+-    const browser = require('./helpers/browser');
+-    await browser.getBrowserInstance({}, false);
+-    expect(browser.getBrowserInstance).toHaveBeenCalledTimes(1);
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockBrowser.getBrowserInstance).toHaveBeenCalledTimes(1);
+ 
+     process.env.PAG_USE_LOCAL_REV = originalValue;
+   });
+ 
+   test('should handle system browser fallback', async () => {
+-    const browser = require('./helpers/browser');
+-    const installer = require('./helpers/installer');
+-
+-    browser.getBrowserInstance.mockImplementationOnce(async () => {
++    mockBrowser.getBrowserInstance.mockImplementationOnce(async () => {
+       // Simulate that system browser launch failed
+       // This would trigger fallback to local Chromium
+-      await installer.installPreferredBrowserRevision();
++      await mockInstaller.installPreferredBrowserRevision();
+ 
+       return {
+-        browser: { close: jest.fn() },
++        browser: { close: vi.fn() },
+         chrome: undefined,
+       };
+     });
+ 
+-    await browser.getBrowserInstance({}, false);
+-    expect(installer.installPreferredBrowserRevision).toHaveBeenCalled();
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockInstaller.installPreferredBrowserRevision).toHaveBeenCalled();
+   });
+ 
+   test('should download Chrome when needed', async () => {
+-    const installer = require('./helpers/installer');
+-    const logSpy = jest.spyOn(console, 'log').mockImplementation();
++    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+ 
+-    await installer.installPreferredBrowserRevision();
++    await mockInstaller.installPreferredBrowserRevision();
+ 
+-    expect(installer.installPreferredBrowserRevision).toHaveBeenCalled();
++    expect(mockInstaller.installPreferredBrowserRevision).toHaveBeenCalled();
+     logSpy.mockRestore();
+   });
+ 
+@@ -144,11 +151,10 @@ describe('CLI with local chromium revision', () => {
+     const originalValue = process.env.PAG_USE_LOCAL_REV;
+     process.env.PAG_USE_LOCAL_REV = '1';
+ 
+-    const browser = require('./helpers/browser');
+-    const logSpy = jest.spyOn(console, 'log').mockImplementation();
++    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+ 
+-    await browser.getBrowserInstance({}, false);
+-    expect(browser.getBrowserInstance).toHaveBeenCalledWith({}, false);
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockBrowser.getBrowserInstance).toHaveBeenCalledWith({}, false);
+ 
+     process.env.PAG_USE_LOCAL_REV = originalValue;
+     logSpy.mockRestore();
+",0,
+1027,cca43e22a9c3e667c25b487eb9e286e7ea102838,cca43e22a9c3e667c25b487eb9e286e7ea102838,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"* Update all project dependencies to their latest versions
+* Migrate the project from cjs to esm
+* Migrate from jest to vitest
+* Migrate from older node and typescript to the latest versions, refactor deprecated use cases
+* Add type safety to the CLI flags
+* Update apple fallback data with latest Apple HIG specs","feat(core): migrate project to esm and modernize deps
+
+BREAKING CHANGE: esm migration is a breaking change for module use of the lib.
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index ad0bec8..bb3d065 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,11 +1,12 @@
+ import path from 'path';
+-import { generateImages } from './main';
+-import file from './helpers/file';
+-import constants from './config/constants';
+-import { ManifestJsonIcon, Result } from './models/result';
+-import { CLIOptions } from './models/options';
+-import { HTMLMetaNames } from './models/meta';
+-import { SavedImage } from './models/image';
++import { generateImages } from './main.js';
++import file from './helpers/file.js';
++import constants from './config/constants.js';
++import { ManifestJsonIcon, Result } from './models/result.js';
++import { CLIOptions } from './models/options.js';
++import { HTMLMetaNames } from './models/meta.js';
++import { SavedImage } from './models/image.js';
++import { describe, test, expect, beforeEach } from 'vitest';
+ 
+ const generateTempImages = (
+   options: CLIOptions,
+@@ -178,7 +179,6 @@ describe('generates meta', () => {
+         .then((resp) => JSON.parse(resp as unknown as string));
+ 
+     test('creating icons array', async () => {
+-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       const { icons, ...manifestJsonMock } = MANIFEST_JSON_MOCK;
+       await saveManifest(manifestJsonMock);
+       await saveImagesToManifest();
+@@ -348,7 +348,6 @@ describe('generates meta', () => {
+           .split('\n')
+           .forEach((entry) => expect(output).toContain(entry.trim()));
+ 
+-      // eslint-disable-next-line jest/expect-expect
+       test('with default html output', async () => {
+         const result = await generateTempImages({
+           scrape: false,
+@@ -370,7 +369,6 @@ describe('generates meta', () => {
+         );
+       });
+ 
+-      // eslint-disable-next-line jest/expect-expect
+       test('with dark mode html output', async () => {
+         const resultLight = await generateTempImages({
+           scrape: false,
+@@ -435,14 +433,14 @@ describe('generates meta', () => {
+   });
+ });
+ 
+-describe('visually compares generated images with', () => {
+-  const pixelmatch = require('pixelmatch');
+-  const { PNG } = require('pngjs');
+-  const JPEG = require('jpeg-js');
++describe('visually compares generated images with', async () => {
++  const pixelmatch = await import('pixelmatch').then((m) => m.default);
++  const { PNG } = await import('pngjs');
++  const JPEG = await import('jpeg-js').then((m) => m.default);
+ 
+   interface VisualDiffResult {
+     numDiffPixels: number;
+-    diff: boolean;
++    diff: unknown;
+     width: number;
+     height: number;
+   }
+@@ -516,16 +514,16 @@ describe('visually compares generated images with', () => {
+     const acceptablePixedDiff = 0.25 * visualDiff.width * visualDiff.height;
+ 
+     if (visualDiff.numDiffPixels >= acceptablePixedDiff) {
+-      /* eslint-disable no-console */
+       console.log(`There's a diff between file ${fileAPath} and ${fileBPath}`);
+       console.log(`numDiffPixels: ${visualDiff.numDiffPixels}`);
+-      /* eslint-enable no-console */
+ 
+-      saveVisualDiff(
+-        fileAPath,
+-        PNG.sync.write(visualDiff.diff, { colorType: 6 }),
+-        testSuite,
+-      );
++      if (visualDiff.diff instanceof PNG) {
++        saveVisualDiff(
++          fileAPath,
++          PNG.sync.write(visualDiff.diff, { colorType: 6 }),
++          testSuite,
++        );
++      }
+     }
+ 
+     return visualDiff.numDiffPixels < acceptablePixedDiff;
+@@ -555,7 +553,6 @@ describe('visually compares generated images with', () => {
+           testSuite,
+         );
+       } catch (error) {
+-        // eslint-disable-next-line no-console
+         console.log(
+           'looksSame check failed on',
+           savedImage.path,
+@@ -568,7 +565,6 @@ describe('visually compares generated images with', () => {
+       }
+ 
+       if (!looksSame) {
+-        // eslint-disable-next-line no-console
+         console.log('looksSame failed on', savedImage.path);
+       }
+ 
+@@ -677,7 +673,6 @@ describe('visually compares generated images with', () => {
+ 
+   // Somehow flaky tests, occasionally failing on windows-latest
+   // TODO: inspect the root cause of the failure
+-  // eslint-disable-next-line jest/no-disabled-tests
+   describe.skip('using a remote input', () => {
+     test('in png format', async () => {
+       const testSuite = 'input-png';
+",0,
+1027,cca43e22a9c3e667c25b487eb9e286e7ea102838,cca43e22a9c3e667c25b487eb9e286e7ea102838,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"* Update all project dependencies to their latest versions
+* Migrate the project from cjs to esm
+* Migrate from jest to vitest
+* Migrate from older node and typescript to the latest versions, refactor deprecated use cases
+* Add type safety to the CLI flags
+* Update apple fallback data with latest Apple HIG specs","feat(core): migrate project to esm and modernize deps
+
+BREAKING CHANGE: esm migration is a breaking change for module use of the lib.
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 5ba4a79..5438dfb 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -1,16 +1,53 @@
+-import execa from 'execa';
+-import constants from './config/constants';
++import { execa, execaSync } from 'execa';
++import constants from './config/constants.js';
++import { vi, describe, test, expect, beforeEach, afterEach } from 'vitest';
++
++// Mock modules for browser tests
++const mockInstaller = {
++  getPreferredBrowserRevisionInfo: vi.fn().mockResolvedValue({
++    folderPath: '/mock/chrome',
++    executablePath: '/mock/chrome/chrome',
++    local: true,
++    revision: '134.0.6998.35',
++  }),
++  installPreferredBrowserRevision: vi.fn().mockResolvedValue({
++    folderPath: '/mock/chrome',
++    executablePath: '/mock/chrome/chrome',
++    local: true,
++    revision: '134.0.6998.35',
++  }),
++};
++
++const mockBrowser = {
++  getBrowserInstance: vi.fn().mockResolvedValue({
++    browser: { close: vi.fn() },
++    chrome: undefined,
++  }),
++  killBrowser: vi.fn(),
++};
++
++vi.mock('./helpers/installer.js', () => {
++  return {
++    default: mockInstaller,
++  };
++});
++
++vi.mock('./helpers/browser.js', () => {
++  return {
++    default: mockBrowser,
++  };
++});
+ 
+ describe('CLI', () => {
+   test('does not throw when there is not any arg', async () => {
+-    expect(() => execa.sync('./bin/cli', [])).not.toThrow();
++    expect(() => execaSync('./bin/cli.js', [])).not.toThrow();
+   });
+ 
+   test('integrates with main API and creates an output with generated meta', async () => {
+     let response = { stdout: '', stderr: '' };
+     try {
+       response = await execa(
+-        './bin/cli',
++        './bin/cli.js',
+         [
+           './static/logo.png',
+           './temp',
+@@ -26,17 +63,16 @@ describe('CLI', () => {
+         { env: { PAG_TEST_MODE: '1' } },
+       );
+     } catch (e) {
+-      // eslint-disable-next-line no-console
+       console.error(e);
+     }
+     expect(response.stdout).toMatchSnapshot();
+   });
+ 
+   test('does not have any conflicting shorthand options', () => {
+-    const flagShorthands = Object.values(constants.FLAGS).map(
+-      (flag) => flag.alias,
++    const shortFlags = Object.values(constants.FLAGS).map(
++      (flag) => flag.shortFlag,
+     );
+-    expect(new Set(flagShorthands).size).toBe(flagShorthands.length);
++    expect(new Set(shortFlags).size).toBe(shortFlags.length);
+   });
+ 
+   test('integrates with npx', async () => {
+@@ -61,7 +97,6 @@ describe('CLI', () => {
+         { env: { PAG_TEST_MODE: '1' } },
+       );
+     } catch (e) {
+-      // eslint-disable-next-line no-console
+       console.error(e);
+     }
+     expect(response.stdout).toMatchSnapshot();
+@@ -70,73 +105,45 @@ describe('CLI', () => {
+ 
+ describe('CLI with local chromium revision', () => {
+   beforeEach(() => {
+-    jest.resetModules();
+-
+-    jest.mock('./helpers/installer', () => ({
+-      getPreferredBrowserRevisionInfo: jest.fn().mockResolvedValue({
+-        folderPath: '/mock/chrome',
+-        executablePath: '/mock/chrome/chrome',
+-        local: true,
+-        revision: '134.0.6998.35',
+-      }),
+-      installPreferredBrowserRevision: jest.fn().mockResolvedValue({
+-        folderPath: '/mock/chrome',
+-        executablePath: '/mock/chrome/chrome',
+-        local: true,
+-        revision: '134.0.6998.35',
+-      }),
+-    }));
+-
+-    jest.mock('./helpers/browser', () => ({
+-      getBrowserInstance: jest.fn().mockResolvedValue({
+-        browser: { close: jest.fn() },
+-        chrome: undefined,
+-      }),
+-      killBrowser: jest.fn(),
+-    }));
++    vi.resetModules();
+   });
+ 
+   afterEach(() => {
+-    jest.restoreAllMocks();
++    vi.restoreAllMocks();
+   });
+ 
+   test('should use browser.getBrowserInstance when PAG_USE_LOCAL_REV is set', async () => {
+     const originalValue = process.env.PAG_USE_LOCAL_REV;
+     process.env.PAG_USE_LOCAL_REV = '1';
+ 
+-    const browser = require('./helpers/browser');
+-    await browser.getBrowserInstance({}, false);
+-    expect(browser.getBrowserInstance).toHaveBeenCalledTimes(1);
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockBrowser.getBrowserInstance).toHaveBeenCalledTimes(1);
+ 
+     process.env.PAG_USE_LOCAL_REV = originalValue;
+   });
+ 
+   test('should handle system browser fallback', async () => {
+-    const browser = require('./helpers/browser');
+-    const installer = require('./helpers/installer');
+-
+-    browser.getBrowserInstance.mockImplementationOnce(async () => {
++    mockBrowser.getBrowserInstance.mockImplementationOnce(async () => {
+       // Simulate that system browser launch failed
+       // This would trigger fallback to local Chromium
+-      await installer.installPreferredBrowserRevision();
++      await mockInstaller.installPreferredBrowserRevision();
+ 
+       return {
+-        browser: { close: jest.fn() },
++        browser: { close: vi.fn() },
+         chrome: undefined,
+       };
+     });
+ 
+-    await browser.getBrowserInstance({}, false);
+-    expect(installer.installPreferredBrowserRevision).toHaveBeenCalled();
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockInstaller.installPreferredBrowserRevision).toHaveBeenCalled();
+   });
+ 
+   test('should download Chrome when needed', async () => {
+-    const installer = require('./helpers/installer');
+-    const logSpy = jest.spyOn(console, 'log').mockImplementation();
++    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+ 
+-    await installer.installPreferredBrowserRevision();
++    await mockInstaller.installPreferredBrowserRevision();
+ 
+-    expect(installer.installPreferredBrowserRevision).toHaveBeenCalled();
++    expect(mockInstaller.installPreferredBrowserRevision).toHaveBeenCalled();
+     logSpy.mockRestore();
+   });
+ 
+@@ -144,11 +151,10 @@ describe('CLI with local chromium revision', () => {
+     const originalValue = process.env.PAG_USE_LOCAL_REV;
+     process.env.PAG_USE_LOCAL_REV = '1';
+ 
+-    const browser = require('./helpers/browser');
+-    const logSpy = jest.spyOn(console, 'log').mockImplementation();
++    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+ 
+-    await browser.getBrowserInstance({}, false);
+-    expect(browser.getBrowserInstance).toHaveBeenCalledWith({}, false);
++    await mockBrowser.getBrowserInstance({}, false);
++    expect(mockBrowser.getBrowserInstance).toHaveBeenCalledWith({}, false);
+ 
+     process.env.PAG_USE_LOCAL_REV = originalValue;
+     logSpy.mockRestore();
+",0,
+1027,cca43e22a9c3e667c25b487eb9e286e7ea102838,cca43e22a9c3e667c25b487eb9e286e7ea102838,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"* Update all project dependencies to their latest versions
+* Migrate the project from cjs to esm
+* Migrate from jest to vitest
+* Migrate from older node and typescript to the latest versions, refactor deprecated use cases
+* Add type safety to the CLI flags
+* Update apple fallback data with latest Apple HIG specs","feat(core): migrate project to esm and modernize deps
+
+BREAKING CHANGE: esm migration is a breaking change for module use of the lib.
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index ad0bec8..bb3d065 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,11 +1,12 @@
+ import path from 'path';
+-import { generateImages } from './main';
+-import file from './helpers/file';
+-import constants from './config/constants';
+-import { ManifestJsonIcon, Result } from './models/result';
+-import { CLIOptions } from './models/options';
+-import { HTMLMetaNames } from './models/meta';
+-import { SavedImage } from './models/image';
++import { generateImages } from './main.js';
++import file from './helpers/file.js';
++import constants from './config/constants.js';
++import { ManifestJsonIcon, Result } from './models/result.js';
++import { CLIOptions } from './models/options.js';
++import { HTMLMetaNames } from './models/meta.js';
++import { SavedImage } from './models/image.js';
++import { describe, test, expect, beforeEach } from 'vitest';
+ 
+ const generateTempImages = (
+   options: CLIOptions,
+@@ -178,7 +179,6 @@ describe('generates meta', () => {
+         .then((resp) => JSON.parse(resp as unknown as string));
+ 
+     test('creating icons array', async () => {
+-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       const { icons, ...manifestJsonMock } = MANIFEST_JSON_MOCK;
+       await saveManifest(manifestJsonMock);
+       await saveImagesToManifest();
+@@ -348,7 +348,6 @@ describe('generates meta', () => {
+           .split('\n')
+           .forEach((entry) => expect(output).toContain(entry.trim()));
+ 
+-      // eslint-disable-next-line jest/expect-expect
+       test('with default html output', async () => {
+         const result = await generateTempImages({
+           scrape: false,
+@@ -370,7 +369,6 @@ describe('generates meta', () => {
+         );
+       });
+ 
+-      // eslint-disable-next-line jest/expect-expect
+       test('with dark mode html output', async () => {
+         const resultLight = await generateTempImages({
+           scrape: false,
+@@ -435,14 +433,14 @@ describe('generates meta', () => {
+   });
+ });
+ 
+-describe('visually compares generated images with', () => {
+-  const pixelmatch = require('pixelmatch');
+-  const { PNG } = require('pngjs');
+-  const JPEG = require('jpeg-js');
++describe('visually compares generated images with', async () => {
++  const pixelmatch = await import('pixelmatch').then((m) => m.default);
++  const { PNG } = await import('pngjs');
++  const JPEG = await import('jpeg-js').then((m) => m.default);
+ 
+   interface VisualDiffResult {
+     numDiffPixels: number;
+-    diff: boolean;
++    diff: unknown;
+     width: number;
+     height: number;
+   }
+@@ -516,16 +514,16 @@ describe('visually compares generated images with', () => {
+     const acceptablePixedDiff = 0.25 * visualDiff.width * visualDiff.height;
+ 
+     if (visualDiff.numDiffPixels >= acceptablePixedDiff) {
+-      /* eslint-disable no-console */
+       console.log(`There's a diff between file ${fileAPath} and ${fileBPath}`);
+       console.log(`numDiffPixels: ${visualDiff.numDiffPixels}`);
+-      /* eslint-enable no-console */
+ 
+-      saveVisualDiff(
+-        fileAPath,
+-        PNG.sync.write(visualDiff.diff, { colorType: 6 }),
+-        testSuite,
+-      );
++      if (visualDiff.diff instanceof PNG) {
++        saveVisualDiff(
++          fileAPath,
++          PNG.sync.write(visualDiff.diff, { colorType: 6 }),
++          testSuite,
++        );
++      }
+     }
+ 
+     return visualDiff.numDiffPixels < acceptablePixedDiff;
+@@ -555,7 +553,6 @@ describe('visually compares generated images with', () => {
+           testSuite,
+         );
+       } catch (error) {
+-        // eslint-disable-next-line no-console
+         console.log(
+           'looksSame check failed on',
+           savedImage.path,
+@@ -568,7 +565,6 @@ describe('visually compares generated images with', () => {
+       }
+ 
+       if (!looksSame) {
+-        // eslint-disable-next-line no-console
+         console.log('looksSame failed on', savedImage.path);
+       }
+ 
+@@ -677,7 +673,6 @@ describe('visually compares generated images with', () => {
+ 
+   // Somehow flaky tests, occasionally failing on windows-latest
+   // TODO: inspect the root cause of the failure
+-  // eslint-disable-next-line jest/no-disabled-tests
+   describe.skip('using a remote input', () => {
+     test('in png format', async () => {
+       const testSuite = 'input-png';
+",0,
+117,dba5599d3de78420417e3921de77ee83f9b9fbb4,dba5599d3de78420417e3921de77ee83f9b9fbb4,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"Added jpg extension in addition to jpeg as an output type
+
+fix #116","feat(main): added jpg extension as an output type
+
+Added jpg extension in addition to jpeg as an output type
+
+fix #116
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index fa47cd3..62148ab 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -105,6 +105,17 @@ describe('generates meta', () => {
+ 
+       expect(result).toMatchSnapshot();
+     });
++
++    test('jpg extension', async () => {
++      const result = await generateTempImages({
++        scrape: false,
++        favicon: true,
++        type: 'jpg',
++        log: false,
++      });
++
++      expect(result).toMatchSnapshot();
++    });
+   });
+ 
+   describe('saving meta to manifest.json', () => {
+@@ -443,7 +454,7 @@ describe('visually compares generated images with', () => {
+       });
+     });
+ 
+-    test('with JPG format as output', async () => {
++    test('with JPEG format as output', async () => {
+       const testSuite = 'output-jpeg';
+       const result = await generateTempImages(
+         {
+@@ -462,6 +473,26 @@ describe('visually compares generated images with', () => {
+         expect(mr.looksSame).toBeTruthy();
+       });
+     });
++
++    test('with JPG format as output', async () => {
++      const testSuite = 'output-jpg';
++      const result = await generateTempImages(
++        {
++          scrape: false,
++          log: false,
++          background: 'coral',
++          type: 'jpg',
++          quality: 80,
++        },
++        './static/logo.svg',
++        `./temp/local/${testSuite}`,
++      );
++
++      const matchResult = await getAllSnapshotsMatchStatus(result, testSuite);
++      matchResult.forEach((mr: MatchResult) => {
++        expect(mr.looksSame).toBeTruthy();
++      });
++    });
+   });
+ 
+   describe('using a remote input', () => {
+",0,
+117,dba5599d3de78420417e3921de77ee83f9b9fbb4,dba5599d3de78420417e3921de77ee83f9b9fbb4,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"Added jpg extension in addition to jpeg as an output type
+
+fix #116","feat(main): added jpg extension as an output type
+
+Added jpg extension in addition to jpeg as an output type
+
+fix #116
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index fa47cd3..62148ab 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -105,6 +105,17 @@ describe('generates meta', () => {
+ 
+       expect(result).toMatchSnapshot();
+     });
++
++    test('jpg extension', async () => {
++      const result = await generateTempImages({
++        scrape: false,
++        favicon: true,
++        type: 'jpg',
++        log: false,
++      });
++
++      expect(result).toMatchSnapshot();
++    });
+   });
+ 
+   describe('saving meta to manifest.json', () => {
+@@ -443,7 +454,7 @@ describe('visually compares generated images with', () => {
+       });
+     });
+ 
+-    test('with JPG format as output', async () => {
++    test('with JPEG format as output', async () => {
+       const testSuite = 'output-jpeg';
+       const result = await generateTempImages(
+         {
+@@ -462,6 +473,26 @@ describe('visually compares generated images with', () => {
+         expect(mr.looksSame).toBeTruthy();
+       });
+     });
++
++    test('with JPG format as output', async () => {
++      const testSuite = 'output-jpg';
++      const result = await generateTempImages(
++        {
++          scrape: false,
++          log: false,
++          background: 'coral',
++          type: 'jpg',
++          quality: 80,
++        },
++        './static/logo.svg',
++        `./temp/local/${testSuite}`,
++      );
++
++      const matchResult = await getAllSnapshotsMatchStatus(result, testSuite);
++      matchResult.forEach((mr: MatchResult) => {
++        expect(mr.looksSame).toBeTruthy();
++      });
++    });
+   });
+ 
+   describe('using a remote input', () => {
+",0,
+230,16601353c591295a366d749047d015ea8a295269,fb569a1d6fcc794ed736ab57012cf2fec08c92ba,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #30
+fixes #192
+fixes #194 
+fixes #227
+fixes #229
+fixes #231
+fixes #234
+fixes #248
+fixes #263
+fixes #278
+fixes #280","feat(meta): added xhtml option to introduce self-closing meta tags
+
+Added xhtml option to introduce self-closing xhtml tags. This will be especially handy in JSX
+context.
+
+fix #192
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 1941f20..dab67aa 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -260,86 +260,126 @@ describe('generates meta', () => {
+       await saveIndex();
+     });
+ 
+-    test('creating a favicon meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        favicon: true,
+-        iconOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating a favicon meta', () => {
++      test('with html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          favicon: true,
++          iconOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(result.htmlMeta[HTMLMetaNames.favicon]);
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          favicon: true,
++          iconOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(result.htmlMeta[HTMLMetaNames.favicon]);
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+-    test('creating apple icons meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        iconOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating apple icons meta', () => {
++      test('with html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          iconOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleTouchIcon],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          iconOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleTouchIcon],
+-      );
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+-    test('creating splash screens meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating splash screens meta', () => {
++      test('with default html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleLaunchImage],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with dark mode html output', async () => {
++        const resultLight = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleLaunchImage],
+-      );
+-    });
++        const resultDark = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          darkMode: true,
++          log: false,
++          index: './temp/index.html',
++        });
+ 
+-    test('creating splash screens meta with dark mode enabled', async () => {
+-      const resultLight = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        log: false,
+-        index: './temp/index.html',
+-      });
++        const savedIndex = await readIndex();
+ 
+-      const resultDark = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        darkMode: true,
+-        log: false,
+-        index: './temp/index.html',
++        expect(savedIndex).toContain(
++          resultDark.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          resultLight.htmlMeta[HTMLMetaNames.appleLaunchImage],
++        );
++        expect(savedIndex).toContain(
++          resultDark.htmlMeta[HTMLMetaNames.appleLaunchImageDarkMode],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        resultDark.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        resultLight.htmlMeta[HTMLMetaNames.appleLaunchImage],
+-      );
+-      expect(savedIndex).toContain(
+-        resultDark.htmlMeta[HTMLMetaNames.appleLaunchImageDarkMode],
+-      );
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+     test('using a path override', async () => {
+",0,
+230,16601353c591295a366d749047d015ea8a295269,3e470d4cb8fdfd1c677fe6ab14b498ab86529aa4,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #30
+fixes #192
+fixes #194 
+fixes #227
+fixes #229
+fixes #231
+fixes #234
+fixes #248
+fixes #263
+fixes #278
+fixes #280","feat(main): switched to JPG as default output type
+
+Due to the large carbon footprint that PNG assets create, it's better to use JPG with compression by
+default.
+
+BREAKING CHANGE: Due to the large carbon footprint that PNG assets create, switched over using JPG
+output with compression by default.
+
+fix #278
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index ae4eb77..f077737 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -20,7 +20,7 @@ describe('CLI', () => {
+           '--favicon',
+           '--path=""%PUBLIC_URL%""',
+           '--dark-mode',
+-          '--type=jpeg',
++          '--type=jpg',
+           '--quality=20',
+         ],
+         { env: { PAG_TEST_MODE: '1' } },
+",0,
+230,16601353c591295a366d749047d015ea8a295269,fb569a1d6fcc794ed736ab57012cf2fec08c92ba,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #30
+fixes #192
+fixes #194 
+fixes #227
+fixes #229
+fixes #231
+fixes #234
+fixes #248
+fixes #263
+fixes #278
+fixes #280","feat(meta): added xhtml option to introduce self-closing meta tags
+
+Added xhtml option to introduce self-closing xhtml tags. This will be especially handy in JSX
+context.
+
+fix #192
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 1941f20..dab67aa 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -260,86 +260,126 @@ describe('generates meta', () => {
+       await saveIndex();
+     });
+ 
+-    test('creating a favicon meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        favicon: true,
+-        iconOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating a favicon meta', () => {
++      test('with html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          favicon: true,
++          iconOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(result.htmlMeta[HTMLMetaNames.favicon]);
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          favicon: true,
++          iconOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(result.htmlMeta[HTMLMetaNames.favicon]);
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+-    test('creating apple icons meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        iconOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating apple icons meta', () => {
++      test('with html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          iconOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleTouchIcon],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          iconOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleTouchIcon],
+-      );
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+-    test('creating splash screens meta', async () => {
+-      const result = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        log: false,
+-        index: './temp/index.html',
++    describe('creating splash screens meta', () => {
++      test('with default html output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
++
++        const savedIndex = await readIndex();
++
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          result.htmlMeta[HTMLMetaNames.appleLaunchImage],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with dark mode html output', async () => {
++        const resultLight = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          index: './temp/index.html',
++        });
+ 
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        result.htmlMeta[HTMLMetaNames.appleLaunchImage],
+-      );
+-    });
++        const resultDark = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          darkMode: true,
++          log: false,
++          index: './temp/index.html',
++        });
+ 
+-    test('creating splash screens meta with dark mode enabled', async () => {
+-      const resultLight = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        log: false,
+-        index: './temp/index.html',
+-      });
++        const savedIndex = await readIndex();
+ 
+-      const resultDark = await generateTempImages({
+-        scrape: false,
+-        splashOnly: true,
+-        darkMode: true,
+-        log: false,
+-        index: './temp/index.html',
++        expect(savedIndex).toContain(
++          resultDark.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
++        );
++        expect(savedIndex).toContain(
++          resultLight.htmlMeta[HTMLMetaNames.appleLaunchImage],
++        );
++        expect(savedIndex).toContain(
++          resultDark.htmlMeta[HTMLMetaNames.appleLaunchImageDarkMode],
++        );
+       });
+ 
+-      const savedIndex = await readIndex();
++      test('with xhtml output', async () => {
++        const result = await generateTempImages({
++          scrape: false,
++          splashOnly: true,
++          log: false,
++          xhtml: true,
++        });
+ 
+-      expect(savedIndex).toContain(
+-        resultDark.htmlMeta[HTMLMetaNames.appleMobileWebAppCapable],
+-      );
+-      expect(savedIndex).toContain(
+-        resultLight.htmlMeta[HTMLMetaNames.appleLaunchImage],
+-      );
+-      expect(savedIndex).toContain(
+-        resultDark.htmlMeta[HTMLMetaNames.appleLaunchImageDarkMode],
+-      );
++        expect(result).toMatchSnapshot();
++      });
+     });
+ 
+     test('using a path override', async () => {
+",0,
+230,16601353c591295a366d749047d015ea8a295269,3e470d4cb8fdfd1c677fe6ab14b498ab86529aa4,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #30
+fixes #192
+fixes #194 
+fixes #227
+fixes #229
+fixes #231
+fixes #234
+fixes #248
+fixes #263
+fixes #278
+fixes #280","feat(main): switched to JPG as default output type
+
+Due to the large carbon footprint that PNG assets create, it's better to use JPG with compression by
+default.
+
+BREAKING CHANGE: Due to the large carbon footprint that PNG assets create, switched over using JPG
+output with compression by default.
+
+fix #278
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index ae4eb77..f077737 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -20,7 +20,7 @@ describe('CLI', () => {
+           '--favicon',
+           '--path=""%PUBLIC_URL%""',
+           '--dark-mode',
+-          '--type=jpeg',
++          '--type=jpg',
+           '--quality=20',
+         ],
+         { env: { PAG_TEST_MODE: '1' } },
+",0,
+463,828c18be95e9669d287df489ef90055a804c22e4,620d2be33e7fabcf80b487973ecd7ade23ddc977,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #389 
+fixes #364 
+fixes #309 
+fixes #433 
+fixes #454 ","feat(main): add iPhone 12 specs to fallback data
+
+Add iPhone 12 specs to fallback data for offline use.
+
+fix #454
+",,0,
+463,828c18be95e9669d287df489ef90055a804c22e4,620d2be33e7fabcf80b487973ecd7ade23ddc977,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #389 
+fixes #364 
+fixes #309 
+fixes #433 
+fixes #454 ","feat(main): add iPhone 12 specs to fallback data
+
+Add iPhone 12 specs to fallback data for offline use.
+
+fix #454
+",,0,
+463,828c18be95e9669d287df489ef90055a804c22e4,620d2be33e7fabcf80b487973ecd7ade23ddc977,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #389 
+fixes #364 
+fixes #309 
+fixes #433 
+fixes #454 ","feat(main): add iPhone 12 specs to fallback data
+
+Add iPhone 12 specs to fallback data for offline use.
+
+fix #454
+",,0,
+463,828c18be95e9669d287df489ef90055a804c22e4,620d2be33e7fabcf80b487973ecd7ade23ddc977,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #389 
+fixes #364 
+fixes #309 
+fixes #433 
+fixes #454 ","feat(main): add iPhone 12 specs to fallback data
+
+Add iPhone 12 specs to fallback data for offline use.
+
+fix #454
+",,0,
+55,2ff4924906efe177e03a4a9683a5910a34ba83b4,1aff176ef4a8892c7ad739a76fd05f8cb8949e25,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #47
+fixes #49
+fixes #50 
+fixes #51 
+fixes #52 
+fixes #53 
+
+Sorry for relatively large review. I hope you can reserve some time for it asap.","feat(main): added dark mode support for iOS
+
+Generate iOS splash screen meta with (prefers-color-scheme: dark) media attr  [default: false]
+
+BREAKING CHANGE: generateImages method from the module API now returns HTMLMeta object with the
+chunks of HTML content, instead of one big HTML string
+
+fix #51
+",,0,
+55,2ff4924906efe177e03a4a9683a5910a34ba83b4,1aff176ef4a8892c7ad739a76fd05f8cb8949e25,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #47
+fixes #49
+fixes #50 
+fixes #51 
+fixes #52 
+fixes #53 
+
+Sorry for relatively large review. I hope you can reserve some time for it asap.","feat(main): added dark mode support for iOS
+
+Generate iOS splash screen meta with (prefers-color-scheme: dark) media attr  [default: false]
+
+BREAKING CHANGE: generateImages method from the module API now returns HTMLMeta object with the
+chunks of HTML content, instead of one big HTML string
+
+fix #51
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 3703832..fdb1cc2 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,6 +1,6 @@
+ import { generateImages } from './main';
+ 
+-const TEST_TIMEOUT_IN_MILLIS = 90000;
++const TEST_TIMEOUT_IN_MILLIS = 120000;
+ 
+ test('generates icons and splash screens when called via function', async () => {
+   jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
+@@ -15,3 +15,31 @@ test('generates icons and splash screens when called via function', async () => 
+ 
+   expect(result).toMatchSnapshot();
+ });
++
++test('generates favicon html as part of htmlMeta', async () => {
++  jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
++
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    iconOnly: true,
++    favicon: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates dark mode splash screen html as part of htmlMeta', async () => {
++  jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
++
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    type: 'jpeg',
++    quality: 80,
++    darkMode: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
+",0,
+55,2ff4924906efe177e03a4a9683a5910a34ba83b4,1aff176ef4a8892c7ad739a76fd05f8cb8949e25,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"fixes #47
+fixes #49
+fixes #50 
+fixes #51 
+fixes #52 
+fixes #53 
+
+Sorry for relatively large review. I hope you can reserve some time for it asap.","feat(main): added dark mode support for iOS
+
+Generate iOS splash screen meta with (prefers-color-scheme: dark) media attr  [default: false]
+
+BREAKING CHANGE: generateImages method from the module API now returns HTMLMeta object with the
+chunks of HTML content, instead of one big HTML string
+
+fix #51
+",,0,
+55,2ff4924906efe177e03a4a9683a5910a34ba83b4,1aff176ef4a8892c7ad739a76fd05f8cb8949e25,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"fixes #47
+fixes #49
+fixes #50 
+fixes #51 
+fixes #52 
+fixes #53 
+
+Sorry for relatively large review. I hope you can reserve some time for it asap.","feat(main): added dark mode support for iOS
+
+Generate iOS splash screen meta with (prefers-color-scheme: dark) media attr  [default: false]
+
+BREAKING CHANGE: generateImages method from the module API now returns HTMLMeta object with the
+chunks of HTML content, instead of one big HTML string
+
+fix #51
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 3703832..fdb1cc2 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,6 +1,6 @@
+ import { generateImages } from './main';
+ 
+-const TEST_TIMEOUT_IN_MILLIS = 90000;
++const TEST_TIMEOUT_IN_MILLIS = 120000;
+ 
+ test('generates icons and splash screens when called via function', async () => {
+   jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
+@@ -15,3 +15,31 @@ test('generates icons and splash screens when called via function', async () => 
+ 
+   expect(result).toMatchSnapshot();
+ });
++
++test('generates favicon html as part of htmlMeta', async () => {
++  jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
++
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    iconOnly: true,
++    favicon: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates dark mode splash screen html as part of htmlMeta', async () => {
++  jest.setTimeout(TEST_TIMEOUT_IN_MILLIS);
++
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    type: 'jpeg',
++    quality: 80,
++    darkMode: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
+",0,
+63,ff3229de98da14ddaec9894defd7f38580cd4021,57e4a87b5f7caf2c5f9b6a68990bfd2c3e0184c2,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58","feat(main): upgraded to pptr v2 and optimized chrome launcher
+
+Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 1b29f94..5c9617d 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -1,6 +1,4 @@
+-// TODO: replace execa with exec/execFile of child_process as it doesn't support node < 8.3.0
+ import execa from 'execa';
+-import file from './helpers/file';
+ 
+ test('throws error when input is not provided', async () => {
+   try {
+@@ -10,55 +8,7 @@ test('throws error when input is not provided', async () => {
+   }
+ });
+ 
+-test('creates an output folder when output path does not exist', async () => {
+-  const tempFolderName = './temp';
+-
+-  await execa.sync('./bin/cli', [
+-    './static/logo.png',
+-    tempFolderName,
+-    '-s=false',
+-    '--icon-only',
+-  ]);
+-  expect(await file.pathExists(tempFolderName)).toBe(true);
+-});
+-
+-test('generates icons only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--icon-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates splash screens only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--splash-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates portrait splash screens only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    [
+-      './static/logo.png',
+-      './temp',
+-      '-s=false',
+-      '--splash-only',
+-      '--portrait-only',
+-    ],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates landscape splash screens only', async () => {
++test('integrates with main API and creates an output with generated meta', async () => {
+   const { stdout } = await execa(
+     './bin/cli',
+     [
+@@ -67,29 +17,14 @@ test('generates landscape splash screens only', async () => {
+       '-s=false',
+       '--splash-only',
+       '--landscape-only',
++      '--favicon',
++      '-a=""%PUBLIC_URL%""',
++      '--dark-mode',
++      '--type=jpeg',
++      '-q=20',
+     ],
+     { env: { PAG_TEST_MODE: '1' } },
+   );
+ 
+   expect(stdout).toMatchSnapshot();
+ });
+-
+-test('generates icons and splash screens when both only flags exist', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--splash-only', '--icon-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates icons and splash screens with path prefix', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--path=%PUBLIC_URL%'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+",0,
+63,ff3229de98da14ddaec9894defd7f38580cd4021,57e4a87b5f7caf2c5f9b6a68990bfd2c3e0184c2,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58","feat(main): upgraded to pptr v2 and optimized chrome launcher
+
+Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 22ec63c..1b2d1f0 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,12 +1,63 @@
+ import { generateImages } from './main';
+ 
+-test('generates icons and splash screens when called via function', async () => {
++test('generates icons only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    iconOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates portrait splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    portraitOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates landscape splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    landscapeOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates icons and splash screens when both only flags exist', async () => {
+   const result = await generateImages('./static/logo.png', './temp', {
+     scrape: false,
+     iconOnly: true,
+     splashOnly: true,
+     log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates icons and splash screens with path prefix', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
+     path: '%PUBLIC_URL%',
++    log: false,
+   });
+ 
+   expect(result).toMatchSnapshot();
+",0,
+63,ff3229de98da14ddaec9894defd7f38580cd4021,57e4a87b5f7caf2c5f9b6a68990bfd2c3e0184c2,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,"Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58","feat(main): upgraded to pptr v2 and optimized chrome launcher
+
+Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 1b29f94..5c9617d 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -1,6 +1,4 @@
+-// TODO: replace execa with exec/execFile of child_process as it doesn't support node < 8.3.0
+ import execa from 'execa';
+-import file from './helpers/file';
+ 
+ test('throws error when input is not provided', async () => {
+   try {
+@@ -10,55 +8,7 @@ test('throws error when input is not provided', async () => {
+   }
+ });
+ 
+-test('creates an output folder when output path does not exist', async () => {
+-  const tempFolderName = './temp';
+-
+-  await execa.sync('./bin/cli', [
+-    './static/logo.png',
+-    tempFolderName,
+-    '-s=false',
+-    '--icon-only',
+-  ]);
+-  expect(await file.pathExists(tempFolderName)).toBe(true);
+-});
+-
+-test('generates icons only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--icon-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates splash screens only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--splash-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates portrait splash screens only', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    [
+-      './static/logo.png',
+-      './temp',
+-      '-s=false',
+-      '--splash-only',
+-      '--portrait-only',
+-    ],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates landscape splash screens only', async () => {
++test('integrates with main API and creates an output with generated meta', async () => {
+   const { stdout } = await execa(
+     './bin/cli',
+     [
+@@ -67,29 +17,14 @@ test('generates landscape splash screens only', async () => {
+       '-s=false',
+       '--splash-only',
+       '--landscape-only',
++      '--favicon',
++      '-a=""%PUBLIC_URL%""',
++      '--dark-mode',
++      '--type=jpeg',
++      '-q=20',
+     ],
+     { env: { PAG_TEST_MODE: '1' } },
+   );
+ 
+   expect(stdout).toMatchSnapshot();
+ });
+-
+-test('generates icons and splash screens when both only flags exist', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--splash-only', '--icon-only'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+-
+-test('generates icons and splash screens with path prefix', async () => {
+-  const { stdout } = await execa(
+-    './bin/cli',
+-    ['./static/logo.png', './temp', '-s=false', '--path=%PUBLIC_URL%'],
+-    { env: { PAG_TEST_MODE: '1' } },
+-  );
+-
+-  expect(stdout).toMatchSnapshot();
+-});
+",0,
+63,ff3229de98da14ddaec9894defd7f38580cd4021,57e4a87b5f7caf2c5f9b6a68990bfd2c3e0184c2,src/__snapshots__/main.test.ts.snap,src/main.test.ts,"Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58","feat(main): upgraded to pptr v2 and optimized chrome launcher
+
+Upgraded to pptr v2 to limit number of total running instances to 1. Optimized chrome launcher flags
+to fix the connection error issues.
+
+fix #62 fix #58
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index 22ec63c..1b2d1f0 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -1,12 +1,63 @@
+ import { generateImages } from './main';
+ 
+-test('generates icons and splash screens when called via function', async () => {
++test('generates icons only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    iconOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates portrait splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    portraitOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates landscape splash screens only', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
++    splashOnly: true,
++    landscapeOnly: true,
++    log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates icons and splash screens when both only flags exist', async () => {
+   const result = await generateImages('./static/logo.png', './temp', {
+     scrape: false,
+     iconOnly: true,
+     splashOnly: true,
+     log: false,
++  });
++
++  expect(result).toMatchSnapshot();
++});
++
++test('generates icons and splash screens with path prefix', async () => {
++  const result = await generateImages('./static/logo.png', './temp', {
++    scrape: false,
+     path: '%PUBLIC_URL%',
++    log: false,
+   });
+ 
+   expect(result).toMatchSnapshot();
+",0,
+632,de5a54c3d01b30c8aac996888986ccc7b02ff3df,1460aa2ce890de6ddd20266a58d764bc8486952b,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,fixes #631 ,"fix(main): revert --disable-dev-shm-usage chrome launch arg
+
+Revert Chrome's --disable-dev-shm-usage launch arg that prevents npx commands fail on linux systems
+
+fix #631
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 1154188..378972a 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -38,4 +38,32 @@ describe('CLI', () => {
+     );
+     expect(new Set(flagShorthands).size).toBe(flagShorthands.length);
+   });
++
++  test('integrates with npx', async () => {
++    let response = { stdout: '', stderr: '' };
++    try {
++      response = await execa(
++        'npx',
++        [
++          '-p .',
++          'pwa-asset-generator',
++          './static/logo.png',
++          './temp',
++          '--scrape=false',
++          '--splash-only',
++          '--landscape-only',
++          '--favicon',
++          '--path=""%PUBLIC_URL%""',
++          '--dark-mode',
++          '--type=jpg',
++          '--quality=20',
++        ],
++        { env: { PAG_TEST_MODE: '1' } },
++      );
++    } catch (e) {
++      // eslint-disable-next-line no-console
++      console.error(e);
++    }
++    expect(response.stdout).toMatchSnapshot();
++  });
+ });
+",0,
+632,de5a54c3d01b30c8aac996888986ccc7b02ff3df,1460aa2ce890de6ddd20266a58d764bc8486952b,src/__snapshots__/cli.test.ts.snap,src/cli.test.ts,fixes #631 ,"fix(main): revert --disable-dev-shm-usage chrome launch arg
+
+Revert Chrome's --disable-dev-shm-usage launch arg that prevents npx commands fail on linux systems
+
+fix #631
+","diff --git a/src/cli.test.ts b/src/cli.test.ts
+index 1154188..378972a 100644
+--- a/src/cli.test.ts
++++ b/src/cli.test.ts
+@@ -38,4 +38,32 @@ describe('CLI', () => {
+     );
+     expect(new Set(flagShorthands).size).toBe(flagShorthands.length);
+   });
++
++  test('integrates with npx', async () => {
++    let response = { stdout: '', stderr: '' };
++    try {
++      response = await execa(
++        'npx',
++        [
++          '-p .',
++          'pwa-asset-generator',
++          './static/logo.png',
++          './temp',
++          '--scrape=false',
++          '--splash-only',
++          '--landscape-only',
++          '--favicon',
++          '--path=""%PUBLIC_URL%""',
++          '--dark-mode',
++          '--type=jpg',
++          '--quality=20',
++        ],
++        { env: { PAG_TEST_MODE: '1' } },
++      );
++    } catch (e) {
++      // eslint-disable-next-line no-console
++      console.error(e);
++    }
++    expect(response.stdout).toMatchSnapshot();
++  });
+ });
+",0,
+700,948e1477dd6ccc30c43b7cf62b37676ba530dce0,ebe6e948eeee6d11a0be074a4f71ec73992b5ab0,src/__snapshots__/main.test.ts.snap,src/main.test.ts,,"feat(main): use either 'maskable' or 'any' as a purpose
+
+It's not recommended to use the maskable and any purposes together anymore. This setting also raises
+issues with the new lighthouse audit. With this fix, when maskable is provided as an option to the
+library, it will be only setting maskable as a purpose in the manifest.
+
+BREAKING CHANGE: Instead of setting 'maskable any' as a purpose, the library will be setting
+'maskable' value only when provided the maskable option.
+
+fix #679
+",,0,
+700,948e1477dd6ccc30c43b7cf62b37676ba530dce0,ebe6e948eeee6d11a0be074a4f71ec73992b5ab0,src/__snapshots__/main.test.ts.snap,src/main.test.ts,,"feat(main): use either 'maskable' or 'any' as a purpose
+
+It's not recommended to use the maskable and any purposes together anymore. This setting also raises
+issues with the new lighthouse audit. With this fix, when maskable is provided as an option to the
+library, it will be only setting maskable as a purpose in the manifest.
+
+BREAKING CHANGE: Instead of setting 'maskable any' as a purpose, the library will be setting
+'maskable' value only when provided the maskable option.
+
+fix #679
+",,0,
+735,56adf2da1113955496af9efefeb49e2c49046a26,0fd44dee70444f768e33e5303d29cd101c9529f6,src/__snapshots__/main.test.ts.snap,src/main.test.ts,Fixes #723 and #725,"fix(main): add both 'any' and 'maskable' icons to manifest by default
+
+Chrome and Lighthouse audits expect both icons with any and maskable purposes to be present in the
+manifest file.
+
+BREAKING CHANGE: In addition to 2 icons with `maskable` purpose in the manifest file, 2 more icon
+entries of the same icons with `any` purpose is added to the manifest output.
+
+fix #725
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index b8404b8..bb0c709 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -186,7 +186,7 @@ describe('generates meta', () => {
+       const manifestJson = await readManifest();
+ 
+       expect(manifestJson.icons).toBeDefined();
+-      expect(manifestJson.icons.length).toBe(2);
++      expect(manifestJson.icons.length).toBe(4);
+     });
+ 
+     test('extending icons array', async () => {
+@@ -202,7 +202,7 @@ describe('generates meta', () => {
+           ),
+         ).toBeDefined();
+       });
+-      expect(manifestJson.icons.length).toBe(4);
++      expect(manifestJson.icons.length).toBe(6);
+     });
+ 
+     test('replacing items with target size in icons array', async () => {
+@@ -233,7 +233,7 @@ describe('generates meta', () => {
+           ),
+         ).toBeUndefined();
+       });
+-      expect(manifestJson.icons.length).toBe(2);
++      expect(manifestJson.icons.length).toBe(4);
+     });
+ 
+     test('using a path override', async () => {
+",0,
+735,56adf2da1113955496af9efefeb49e2c49046a26,0fd44dee70444f768e33e5303d29cd101c9529f6,src/__snapshots__/main.test.ts.snap,src/main.test.ts,Fixes #723 and #725,"fix(main): add both 'any' and 'maskable' icons to manifest by default
+
+Chrome and Lighthouse audits expect both icons with any and maskable purposes to be present in the
+manifest file.
+
+BREAKING CHANGE: In addition to 2 icons with `maskable` purpose in the manifest file, 2 more icon
+entries of the same icons with `any` purpose is added to the manifest output.
+
+fix #725
+","diff --git a/src/main.test.ts b/src/main.test.ts
+index b8404b8..bb0c709 100644
+--- a/src/main.test.ts
++++ b/src/main.test.ts
+@@ -186,7 +186,7 @@ describe('generates meta', () => {
+       const manifestJson = await readManifest();
+ 
+       expect(manifestJson.icons).toBeDefined();
+-      expect(manifestJson.icons.length).toBe(2);
++      expect(manifestJson.icons.length).toBe(4);
+     });
+ 
+     test('extending icons array', async () => {
+@@ -202,7 +202,7 @@ describe('generates meta', () => {
+           ),
+         ).toBeDefined();
+       });
+-      expect(manifestJson.icons.length).toBe(4);
++      expect(manifestJson.icons.length).toBe(6);
+     });
+ 
+     test('replacing items with target size in icons array', async () => {
+@@ -233,7 +233,7 @@ describe('generates meta', () => {
+           ),
+         ).toBeUndefined();
+       });
+-      expect(manifestJson.icons.length).toBe(2);
++      expect(manifestJson.icons.length).toBe(4);
+     });
+ 
+     test('using a path override', async () => {
+",0,

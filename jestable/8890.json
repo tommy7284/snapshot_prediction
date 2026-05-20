@@ -1,0 +1,82 @@
+{
+    "id": 6783598,
+    "name": "tabrindle/envinfo",
+    "isFork": false,
+    "commits": 362,
+    "branches": 31,
+    "releases": 34,
+    "forks": 54,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 735,
+    "contributors": 36,
+    "size": 1674,
+    "createdAt": "2017-06-19T06:36:29",
+    "pushedAt": "2024-04-06T06:53:43",
+    "updatedAt": "2024-03-30T07:28:27",
+    "totalIssues": 113,
+    "openIssues": 30,
+    "totalPullRequests": 140,
+    "openPullRequests": 7,
+    "blankLines": 307,
+    "codeLines": 2927,
+    "commentLines": 61,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 124
+        },
+        {
+            "blankLines": 218,
+            "language": "JavaScript",
+            "commentLines": 52,
+            "codeLines": 2443
+        },
+        {
+            "blankLines": 4,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 15,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 90
+        },
+        {
+            "blankLines": 69,
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 256
+        }
+    ],
+    "lastCommit": "2024-04-06T06:53:32",
+    "lastCommitSHA": "25572bf2765d73e55407b9f5aeac74c45d353872",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 85423
+    },
+    "labels": [
+        "autorelease: pending",
+        "autorelease: tagged",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,107 @@
+{
+    "id": 18186048,
+    "name": "getlift/lift",
+    "isFork": false,
+    "commits": 744,
+    "branches": 24,
+    "releases": 86,
+    "forks": 102,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 20,
+    "stargazers": 885,
+    "contributors": 35,
+    "size": 6345,
+    "createdAt": "2020-08-28T07:10:45",
+    "pushedAt": "2024-01-24T11:21:21",
+    "updatedAt": "2024-01-15T10:27:50",
+    "totalIssues": 159,
+    "openIssues": 75,
+    "totalPullRequests": 163,
+    "openPullRequests": 20,
+    "blankLines": 1258,
+    "codeLines": 7341,
+    "commentLines": 1228,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 5,
+            "codeLines": 1593,
+            "blankLines": 650
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1211,
+            "codeLines": 5156,
+            "blankLines": 564
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 49,
+            "blankLines": 2
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 12,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 154,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 371,
+            "blankLines": 40
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2024-01-24T11:21:21",
+    "lastCommitSHA": "43cfe67ccb990c1f91900ae73b7bd2b029c16942",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 265438,
+        "JavaScript": 428,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "custom property",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "aws",
+        "aws-cdk",
+        "serverless",
+        "serverless-framework",
+        "serverless-plugin"
+    ]
+}

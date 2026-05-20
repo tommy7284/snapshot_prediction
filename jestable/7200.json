@@ -1,0 +1,116 @@
+{
+    "id": 6597665,
+    "name": "ytakkar/react-instagram-clone-2.0",
+    "isFork": false,
+    "commits": 217,
+    "branches": 8,
+    "releases": 0,
+    "forks": 449,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 66,
+    "stargazers": 960,
+    "contributors": 3,
+    "size": 40588,
+    "createdAt": "2018-02-07T04:26:57",
+    "pushedAt": "2023-12-09T07:21:48",
+    "updatedAt": "2024-01-04T04:47:04",
+    "totalIssues": 87,
+    "openIssues": 23,
+    "totalPullRequests": 18,
+    "openPullRequests": 10,
+    "blankLines": 7590,
+    "codeLines": 54086,
+    "commentLines": 4200,
+    "metrics": [
+        {
+            "blankLines": 1182,
+            "language": "Sass",
+            "commentLines": 130,
+            "codeLines": 4705
+        },
+        {
+            "blankLines": 119,
+            "language": "SQL",
+            "commentLines": 261,
+            "codeLines": 804
+        },
+        {
+            "blankLines": 3,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 2689
+        },
+        {
+            "blankLines": 6210,
+            "language": "JavaScript",
+            "commentLines": 3807,
+            "codeLines": 31817
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 31,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 102
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 13694
+        },
+        {
+            "blankLines": 43,
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 263
+        },
+        {
+            "blankLines": 1,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 2
+        }
+    ],
+    "lastCommit": "2021-12-27T11:48:10",
+    "lastCommitSHA": "0b862f3aac8b2b0453100b817d19de1f9350a34d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 878127,
+        "SCSS": 99208,
+        "Handlebars": 9844
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "expressjs",
+        "instagram",
+        "instagram-clone",
+        "mern-stack",
+        "messaging",
+        "nodejs",
+        "react",
+        "redux",
+        "social-network"
+    ]
+}

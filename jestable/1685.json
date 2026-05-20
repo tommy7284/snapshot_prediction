@@ -1,0 +1,82 @@
+{
+    "id": 4854031,
+    "name": "micro-analytics/micro-analytics-cli",
+    "isFork": false,
+    "commits": 257,
+    "branches": 5,
+    "releases": 27,
+    "forks": 53,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 10,
+    "stargazers": 741,
+    "contributors": 11,
+    "size": 456,
+    "createdAt": "2017-01-07T12:12:28",
+    "pushedAt": "2018-07-16T09:17:56",
+    "updatedAt": "2021-01-24T07:47:19",
+    "totalIssues": 37,
+    "openIssues": 16,
+    "totalPullRequests": 46,
+    "openPullRequests": 1,
+    "blankLines": 473,
+    "codeLines": 13644,
+    "commentLines": 14,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12085
+        },
+        {
+            "blankLines": 211,
+            "language": "JavaScript",
+            "commentLines": 13,
+            "codeLines": 1057
+        },
+        {
+            "blankLines": 253,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 471
+        },
+        {
+            "blankLines": 9,
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 15
+        }
+    ],
+    "lastCommit": "2018-07-16T09:17:55",
+    "lastCommitSHA": "65a2f302747ad650fb1363b961e5a69552d631d1",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37660,
+        "Shell": 515
+    },
+    "labels": [
+        "adapter-tests",
+        "bug",
+        "discussion",
+        "documentation",
+        "enhancement",
+        "feature",
+        "help wanted",
+        "question",
+        "tests",
+        "work in progress"
+    ],
+    "topics": []
+}

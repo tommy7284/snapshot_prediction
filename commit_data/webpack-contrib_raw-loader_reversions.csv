@@ -1,0 +1,438 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+68,12a7296c8008fe000c32287525ffb517343a7e5c,12a7296c8008fe000c32287525ffb517343a7e5c,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+","chore: integrate babel
+","diff --git a/test/errors.test.js b/test/errors.test.js
+deleted file mode 100644
+index a35934e..0000000
+--- a/test/errors.test.js
++++ /dev/null
+@@ -1,18 +0,0 @@
+-import loader from '../index';
+-
+-it('validation', () => {
+-  const validate = (options) =>
+-    loader.call(
+-      Object.assign(
+-        {},
+-        {
+-          query: options,
+-        }
+-      ),
+-      'Text'
+-    );
+-
+-  expect(() => validate({})).not.toThrow();
+-  expect(() => validate(true)).not.toThrow();
+-  expect(() => validate({ unknown: true })).toThrowErrorMatchingSnapshot();
+-});
+
+diff --git a/test/loader.test.js b/test/loader.test.js
+index 41d41bb..0086268 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -4,10 +4,12 @@ describe('loader', () => {
+   it('should works', async () => {
+     const stats = await webpack('basic.js');
+     const { modules } = stats.toJson();
+-    const [, file, separator] = modules;
++    const [inline, , file, separator] = modules;
+ 
++    expect(inline.source).toMatchSnapshot('inline');
+     expect(file.source).toMatchSnapshot('file');
+     expect(separator.source).toMatchSnapshot('separator');
++
+     expect(stats.compilation.warnings).toMatchSnapshot('warnings');
+     expect(stats.compilation.errors).toMatchSnapshot('errors');
+   });
+
+diff --git a/test/validation.test.js b/test/validation.test.js
+new file mode 100644
+index 0000000..6c2ad2e
+--- /dev/null
++++ b/test/validation.test.js
+@@ -0,0 +1,18 @@
++import loader from '../src';
++
++it('validation', () => {
++  const validate = (options) =>
++    loader.call(
++      Object.assign(
++        {},
++        {
++          query: options,
++        }
++      ),
++      'Text'
++    );
++
++  expect(() => validate({})).not.toThrow();
++  expect(() => validate(true)).not.toThrow();
++  expect(() => validate({ unknown: true })).toThrowErrorMatchingSnapshot();
++});
+",0,,15,135,3,1,12,75
+85,845377eb1bd4c42beef81ac3ef7e285c21c16430,845377eb1bd4c42beef81ac3ef7e285c21c16430,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+better validation error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..e31c6bd
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,18 @@
++import loader from '../src';
++
++it('validate options', () => {
++  const validate = (options) =>
++    loader.call(
++      Object.assign(
++        {},
++        {
++          query: options,
++        }
++      ),
++      'Text'
++    );
++
++  expect(() => validate({})).not.toThrow();
++  expect(() => validate(true)).not.toThrow();
++  expect(() => validate({ unknown: true })).toThrowErrorMatchingSnapshot();
++});
+
+diff --git a/test/validation.test.js b/test/validation.test.js
+deleted file mode 100644
+index 6c2ad2e..0000000
+--- a/test/validation.test.js
++++ /dev/null
+@@ -1,18 +0,0 @@
+-import loader from '../src';
+-
+-it('validation', () => {
+-  const validate = (options) =>
+-    loader.call(
+-      Object.assign(
+-        {},
+-        {
+-          query: options,
+-        }
+-      ),
+-      'Text'
+-    );
+-
+-  expect(() => validate({})).not.toThrow();
+-  expect(() => validate(true)).not.toThrow();
+-  expect(() => validate({ unknown: true })).toThrowErrorMatchingSnapshot();
+-});
+",0,,9,90,2,1,8,596
+88,336e662e9cc1c7ed65b732315e458cfd76643f75,336e662e9cc1c7ed65b732315e458cfd76643f75,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Update code base
+
+### Breaking Changes
+
+Yes, drop node@8 support
+
+### Additional Info
+
+No","refactor: next
+","diff --git a/test/esModule-option.test.js b/test/esModule-option.test.js
+new file mode 100644
+index 0000000..ed7ab6a
+--- /dev/null
++++ b/test/esModule-option.test.js
+@@ -0,0 +1,52 @@
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
++
++describe('""esModule"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++
++  it('should work with ""Boolean"" value equal ""true""', async () => {
++    const compiler = getCompiler('simple.js', {
++      esModule: true,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++
++  it('should work with ""Boolean"" value equal ""false""', async () => {
++    const compiler = getCompiler('simple.js', {
++      esModule: false,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++});
+
+diff --git a/test/loader.test.js b/test/loader.test.js
+index 0086268..ae3425f 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,16 +1,66 @@
+-import { webpack } from './helpers';
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
+ 
+ describe('loader', () => {
+-  it('should works', async () => {
+-    const stats = await webpack('basic.js');
+-    const { modules } = stats.toJson();
+-    const [inline, , file, separator] = modules;
++  it('should work', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
+ 
+-    expect(inline.source).toMatchSnapshot('inline');
+-    expect(file.source).toMatchSnapshot('file');
+-    expect(separator.source).toMatchSnapshot('separator');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++
++  it('should work with inline loader', async () => {
++    const compiler = getCompiler('inline.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++
++  it('should work with ""ModuleConcatenationPlugin"" plugin', async () => {
++    const compiler = getCompiler(
++      'simple.js',
++      {},
++      {
++        mode: 'production',
++        optimization: {
++          minimize: false,
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+ 
+-    expect(stats.compilation.warnings).toMatchSnapshot('warnings');
+-    expect(stats.compilation.errors).toMatchSnapshot('errors');
++    if (stats.compilation.modules.size) {
++      expect(stats.compilation.modules.size).toBe(1);
++    } else {
++      expect(stats.compilation.modules.length).toBe(1);
++    }
+   });
+ });
+
+diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index e31c6bd..d794838 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -1,18 +1,60 @@
+-import loader from '../src';
+-
+-it('validate options', () => {
+-  const validate = (options) =>
+-    loader.call(
+-      Object.assign(
+-        {},
+-        {
+-          query: options,
++import { getCompiler, compile } from './helpers';
++
++describe('validate options', () => {
++  const tests = {
++    esModule: {
++      success: [true, false],
++      failure: ['true'],
++    },
++    unknown: {
++      success: [],
++      failure: [1, true, false, 'test', /test/, [], {}, { foo: 'bar' }],
++    },
++  };
++
++  function stringifyValue(value) {
++    if (
++      Array.isArray(value) ||
++      (value && typeof value === 'object' && value.constructor === Object)
++    ) {
++      return JSON.stringify(value);
++    }
++
++    return value;
++  }
++
++  async function createTestCase(key, value, type) {
++    it(`should ${
++      type === 'success' ? 'successfully validate' : 'throw an error on'
++    } the ""${key}"" option with ""${stringifyValue(value)}"" value`, async () => {
++      const compiler = getCompiler('simple.js', { [key]: value });
++
++      let stats;
++
++      try {
++        stats = await compile(compiler);
++      } finally {
++        if (type === 'success') {
++          expect(stats.hasErrors()).toBe(false);
++        } else if (type === 'failure') {
++          const {
++            compilation: { errors },
++          } = stats;
++
++          expect(errors).toHaveLength(1);
++          expect(() => {
++            throw new Error(errors[0].error.message);
++          }).toThrowErrorMatchingSnapshot();
+         }
+-      ),
+-      'Text'
+-    );
++      }
++    });
++  }
+ 
+-  expect(() => validate({})).not.toThrow();
+-  expect(() => validate(true)).not.toThrow();
+-  expect(() => validate({ unknown: true })).toThrowErrorMatchingSnapshot();
++  for (const [key, values] of Object.entries(tests)) {
++    for (const type of Object.keys(values)) {
++      for (const value of values[type]) {
++        createTestCase(key, value, type);
++      }
++    }
++  }
+ });
+",0,,27,803,3,1,27,4781

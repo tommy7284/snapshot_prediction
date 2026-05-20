@@ -1,0 +1,80 @@
+{
+    "id": 5695778,
+    "name": "trysound/rollup-plugin-terser",
+    "isFork": false,
+    "commits": 86,
+    "branches": 2,
+    "releases": 15,
+    "forks": 60,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 4,
+    "stargazers": 604,
+    "contributors": 14,
+    "size": 360,
+    "createdAt": "2018-05-17T02:44:17",
+    "pushedAt": "2022-10-17T06:36:01",
+    "updatedAt": "2022-11-08T07:25:29",
+    "totalIssues": 84,
+    "openIssues": 17,
+    "totalPullRequests": 39,
+    "openPullRequests": 8,
+    "blankLines": 85,
+    "codeLines": 701,
+    "commentLines": 16,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 53,
+            "language": "JavaScript",
+            "commentLines": 13,
+            "codeLines": 565
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 49
+        },
+        {
+            "blankLines": 30,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 76
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        }
+    ],
+    "lastCommit": "2020-09-26T10:02:31",
+    "lastCommitSHA": "6b50b7fadbe8812d13452def82c36133f58581fd",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 16035
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

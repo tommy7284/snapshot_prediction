@@ -1,0 +1,106 @@
+{
+    "id": 6850414,
+    "name": "matteogabriele/vue-gtag",
+    "isFork": false,
+    "commits": 259,
+    "branches": 15,
+    "releases": 36,
+    "forks": 62,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://matteo-gabriele.gitbook.io/vue-gtag/",
+    "watchers": 7,
+    "stargazers": 826,
+    "contributors": 17,
+    "size": 3367,
+    "createdAt": "2017-11-04T09:18:09",
+    "pushedAt": "2024-01-01T05:00:11",
+    "updatedAt": "2024-01-05T05:04:38",
+    "totalIssues": 203,
+    "openIssues": 25,
+    "totalPullRequests": 340,
+    "openPullRequests": 16,
+    "blankLines": 562,
+    "codeLines": 2471,
+    "commentLines": 85,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 114
+        },
+        {
+            "blankLines": 34,
+            "language": "TypeScript",
+            "commentLines": 85,
+            "codeLines": 199
+        },
+        {
+            "blankLines": 485,
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 1964
+        },
+        {
+            "blankLines": 13,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 145
+        },
+        {
+            "blankLines": 30,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 49
+        }
+    ],
+    "lastCommit": "2023-12-18T05:45:45",
+    "lastCommitSHA": "5081e1a1ede840dd23d464ea95d2c53a3c308cc0",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 46183
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "in confirm",
+        "invalid",
+        "major release",
+        "need more info",
+        "on hold",
+        "p0: critical",
+        "p1: urgent",
+        "p2: very important",
+        "p3: important",
+        "p4: nice to have",
+        "question",
+        "refactor",
+        "released",
+        "reproduction needed",
+        "security",
+        "stale",
+        "typescrip support",
+        "typescript",
+        "v1.0.0",
+        "wontfix"
+    ],
+    "topics": [
+        "analytics",
+        "google-analytics",
+        "gtags",
+        "tracking",
+        "vue",
+        "vue-gtag"
+    ]
+}

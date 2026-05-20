@@ -1,0 +1,75 @@
+{
+    "id": 5551771,
+    "name": "agraboso/redux-api-middleware",
+    "isFork": false,
+    "commits": 295,
+    "branches": 15,
+    "releases": 25,
+    "forks": 204,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 19,
+    "stargazers": 1492,
+    "contributors": 28,
+    "size": 2157,
+    "createdAt": "2015-08-18T02:02:16",
+    "pushedAt": "2023-01-03T06:59:46",
+    "updatedAt": "2023-01-15T06:09:21",
+    "totalIssues": 164,
+    "openIssues": 38,
+    "totalPullRequests": 112,
+    "openPullRequests": 15,
+    "blankLines": 573,
+    "codeLines": 16891,
+    "commentLines": 185,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 287,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 747
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 14100
+        },
+        {
+            "blankLines": 286,
+            "language": "JavaScript",
+            "commentLines": 185,
+            "codeLines": 2033
+        }
+    ],
+    "lastCommit": "2021-06-15T05:01:28",
+    "lastCommitSHA": "1833da30d5c55596eab210abd23b7155b7a6e612",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 59391
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

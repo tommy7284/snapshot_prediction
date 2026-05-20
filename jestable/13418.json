@@ -1,0 +1,122 @@
+{
+    "id": 4017272,
+    "name": "react-navigation/navigation-ex",
+    "isFork": false,
+    "commits": 900,
+    "branches": 11,
+    "releases": 436,
+    "forks": 47,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://reactnavigation.org",
+    "watchers": 15,
+    "stargazers": 511,
+    "contributors": 51,
+    "size": 6487,
+    "createdAt": "2019-06-09T02:45:26",
+    "pushedAt": "2020-02-07T11:13:10",
+    "updatedAt": "2020-12-16T06:04:27",
+    "totalIssues": 0,
+    "openIssues": 0,
+    "totalPullRequests": 188,
+    "openPullRequests": 0,
+    "blankLines": 6041,
+    "codeLines": 24357,
+    "commentLines": 2277,
+    "metrics": [
+        {
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16,
+            "blankLines": 2
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 22,
+            "codeLines": 129,
+            "blankLines": 21
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 113,
+            "codeLines": 114,
+            "blankLines": 18
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 14,
+            "codeLines": 48,
+            "blankLines": 16
+        },
+        {
+            "language": "XML",
+            "commentLines": 5,
+            "codeLines": 547,
+            "blankLines": 7
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2065,
+            "codeLines": 20247,
+            "blankLines": 2727
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 978,
+            "blankLines": 0
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 59,
+            "blankLines": 23
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0,
+            "blankLines": 1
+        },
+        {
+            "language": "Java",
+            "commentLines": 16,
+            "codeLines": 75,
+            "blankLines": 12
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 6,
+            "codeLines": 8,
+            "blankLines": 4
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 191,
+            "blankLines": 22
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1759,
+            "blankLines": 3149
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 23,
+            "codeLines": 186,
+            "blankLines": 39
+        }
+    ],
+    "lastCommit": "2020-02-07T11:13:09",
+    "lastCommitSHA": "5a9845ed0a29fc8b88bc7bfcb04d9ebfae9764e0",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {},
+    "labels": [],
+    "topics": []
+}

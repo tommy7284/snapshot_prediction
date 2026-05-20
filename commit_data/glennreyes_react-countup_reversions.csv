@@ -1,0 +1,636 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+509,c1ccbc2ef2a50a81bb05b126ebc123e524cc5c3b,0bfc29da881f9b243a7e231c0933dff21a7bd776,,"Migrate to new countup version
+","diff --git a/src/__tests__/CountUp.test.js b/src/__tests__/CountUp.test.js
+index ee2e504..f34a97a 100644
+--- a/src/__tests__/CountUp.test.js
++++ b/src/__tests__/CountUp.test.js
+@@ -1,317 +1,317 @@
+-'use strict';
+-
+ import React from 'react';
+ import { cleanup, fireEvent, render } from '@testing-library/react';
+ import CountUp from '../index';
+ 
+ afterEach(cleanup);
+ 
+-it('renders start value correctly', () => {
+-  const { container } = render(<CountUp end={10} />);
+-
+-  expect(container).toMatchSnapshot();
+-});
+-
+-it('re-renders change of start value correctly', () => {
+-  const { container, rerender } = render(<CountUp end={10} />);
+-
+-  rerender(<CountUp start={5} end={10} />);
+-
+-  expect(container).toMatchSnapshot();
+-});
+-
+-it('re-renders change of duration value correctly', () => {
+-  const { container, rerender } = render(<CountUp duration={1} end={10} />);
+-
+-  rerender(<CountUp duration={2} end={10} />);
+-
+-  expect(container).toMatchSnapshot();
+-});
+-
+-it('clear previous counter when duration changed', (done) => {
+-  const { container, rerender } = render(<CountUp duration={1} end={100} />);
+-
+-  rerender(<CountUp duration={0.5} end={10} />);
+-
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('10');
+-    done();
+-  }, 1200);
+-});
+-
+-it('re-renders when suffix changes', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={1} suffix=""second"" />,
+-  );
+-
+-  rerender(<CountUp duration={1} end={30} suffix="" seconds"" />);
+-
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('30 seconds');
+-    done();
+-  }, 1200);
+-});
+-
+-it('re-renders when the separator changes', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={1} separator="""" />,
+-  );
+-
+-  rerender(<CountUp duration={1} end={3000} separator="" "" />);
+-
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('3 000');
+-    done();
+-  }, 1200);
+-});
+-
+-it('re-renders when the decimals changes', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={1} decimals={0} />,
+-  );
+-
+-  rerender(<CountUp duration={1} end={10.5} decimals={1} />);
+-
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('10.5');
+-    done();
+-  }, 1200);
+-});
++describe('CountUp component', () => {
++  it('renders start value correctly', () => {
++    const { container } = render(<CountUp end={10}/>);
+ 
+-it('re-renders when the decimal changes', (done) => {
+-  const { container, rerender } = render(<CountUp duration={1} end={1} />);
++    expect(container).toMatchSnapshot();
++  });
+ 
+-  rerender(<CountUp duration={1} end={10.5} decimals={1} decimal=""."" />);
++  it('re-renders change of start value correctly', () => {
++    const { container, rerender } = render(<CountUp end={10}/>);
+ 
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('10.5');
+-    done();
+-  }, 1200);
+-});
++    rerender(<CountUp start={5} end={10}/>);
+ 
+-it('re-renders when the prefix changes', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={1} prefix="""" />,
+-  );
++    expect(container).toMatchSnapshot();
++  });
+ 
+-  rerender(<CountUp duration={1} end={30} prefix=""->"" />);
++  it('re-renders change of duration value correctly', () => {
++    const { container, rerender } = render(<CountUp duration={1} end={10}/>);
+ 
+-  setTimeout(() => {
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('->30');
+-    done();
+-  }, 1200);
+-});
++    rerender(<CountUp duration={2} end={10}/>);
+ 
+-it('re-renders change of end value correctly', () => {
+-  const { container, rerender } = render(<CountUp end={10} />);
++    expect(container).toMatchSnapshot();
++  });
+ 
+-  rerender(<CountUp end={5} />);
++  it('clear previous counter when duration changed', (done) => {
++    const { container, rerender } = render(<CountUp duration={1} end={100}/>);
+ 
+-  expect(container).toMatchSnapshot();
+-});
++    rerender(<CountUp duration={0.5} end={10}/>);
+ 
+-it('re-renders with redraw={false} correctly', () => {
+-  const { container, rerender } = render(<CountUp redraw={false} end={10} />);
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('10');
++      done();
++    }, 1200);
++  });
+ 
+-  rerender(<CountUp redraw={false} end={10} />);
++  it('re-renders when suffix changes', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={1}/>,
++    );
+ 
+-  expect(container).toMatchSnapshot();
+-});
++    rerender(<CountUp duration={1} end={30} suffix="" sec""/>);
+ 
+-it('renders with delay correctly', () => {
+-  const { container } = render(<CountUp delay={1} end={10} />);
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('30 sec');
++      done();
++    }, 1200);
++  });
+ 
+-  expect(container).toMatchSnapshot();
+-});
++  it('re-renders when the separator changes', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={1} separator=""""/>,
++    );
+ 
+-it('renders with delay as a render prop component correctly', () => {
+-  const { container } = render(
+-    <CountUp delay={1} end={10}>
+-      {({ countUpRef }) => <div ref={countUpRef} />}
+-    </CountUp>,
+-  );
++    rerender(<CountUp duration={1} end={3000} separator="" ""/>);
+ 
+-  expect(container).toMatchSnapshot();
+-});
+-
+-it('renders with delay as a render prop component correctly', () => {
+-  console.error = jest.fn();
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('3 000');
++      done();
++    }, 1200);
++  });
+ 
+-  const { container } = render(
+-    <CountUp delay={1} end={10}>
+-      {({ countUpRef }) => <rect ref={countUpRef} />}
+-    </CountUp>,
+-  );
++  it('re-renders when the decimals changes', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={1} decimals={0}/>,
++    );
+ 
+-  expect(console.error).toHaveBeenCalled();
+-});
++    rerender(<CountUp duration={1} end={10.5} decimals={1}/>);
+ 
+-it('renders as a render prop component correctly', () => {
+-  const { container } = render(
+-    <CountUp end={10}>{({ countUpRef }) => <div ref={countUpRef} />}</CountUp>,
+-  );
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('10.5');
++      done();
++    }, 1200);
++  });
+ 
+-  expect(container).toMatchSnapshot();
+-});
++  it('re-renders when the decimal changes', (done) => {
++    const { container, rerender } = render(<CountUp duration={1} end={1}/>);
+ 
+-it('renders with autostart correctly', () => {
+-  const { container } = render(
+-    <CountUp autostart end={10}>
+-      {({ countUpRef }) => <div ref={countUpRef} />}
+-    </CountUp>,
+-  );
++    rerender(<CountUp duration={1} end={10.5} decimals={1} decimal="".""/>);
+ 
+-  expect(container).toMatchSnapshot();
+-});
+-
+-it('re-renders with redraw={true} correctly', () => {
+-  const componentRender = jest.spyOn(CountUp.prototype, 'render');
+-  const { rerender } = render(<CountUp end={10} redraw />);
+-
+-  rerender(<CountUp end={10} />);
+-  expect(componentRender).toHaveBeenCalledTimes(2);
+-});
+-
+-it('does not reset if preserveValue is true', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={10} preserveValue />,
+-  );
+-
+-  setTimeout(() => {
+-    rerender(<CountUp duration={1} end={20} preserveValue />);
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('10');
+-    done();
+-  }, 1000);
+-});
+-
+-it('does not reset if preserveValue is true and suffix is set', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={10} suffix=""%"" preserveValue />,
+-  );
+-
+-  setTimeout(() => {
+-    rerender(<CountUp duration={1} end={20} suffix=""%"" preserveValue />);
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('10%');
+-    done();
+-  }, 1000);
+-});
+-
+-it('does not reset if preserveValue is true and prefix is set', (done) => {
+-  const { container, rerender } = render(
+-    <CountUp duration={1} end={10} prefix=""->"" preserveValue />,
+-  );
+-
+-  setTimeout(() => {
+-    rerender(<CountUp duration={1} end={20} prefix=""->"" preserveValue />);
+-    const span = container.firstChild;
+-    expect(span.textContent).toEqual('->10');
+-    done();
+-  }, 1000);
+-});
+-
+-it('calls start correctly', () => {
+-  const spy = {};
+-
+-  const { container } = render(
+-    <CountUp end={10}>
+-      {({ countUpRef, start }) => {
+-        spy.start = start;
+-        jest.spyOn(spy, 'start');
+-        return <button onClick={spy.start} ref={countUpRef} />;
+-      }}
+-    </CountUp>,
+-  );
+-
+-  fireEvent.click(container.firstElementChild);
+-
+-  expect(spy.start).toHaveBeenCalled();
+-});
+-
+-it('calls pauseResume correctly', () => {
+-  const spy = {};
+-
+-  const { container } = render(
+-    <CountUp end={10}>
+-      {({ countUpRef, pauseResume }) => {
+-        spy.pauseResume = pauseResume;
+-        jest.spyOn(spy, 'pauseResume');
+-        return <button onClick={spy.pauseResume} ref={countUpRef} />;
+-      }}
+-    </CountUp>,
+-  );
+-
+-  fireEvent.click(container.firstElementChild);
+-
+-  expect(spy.pauseResume).toHaveBeenCalled();
+-});
+-
+-it('calls update correctly', () => {
+-  const spy = {};
+-
+-  const { container } = render(
+-    <CountUp end={10}>
+-      {({ countUpRef, update }) => {
+-        spy.update = update;
+-        jest.spyOn(spy, 'update');
+-        return <button onClick={spy.update} ref={countUpRef} />;
+-      }}
+-    </CountUp>,
+-  );
+-
+-  fireEvent.click(container.firstElementChild);
+-
+-  expect(spy.update).toHaveBeenCalled();
+-});
+-
+-it('calls reset correctly', () => {
+-  const spy = {};
+-
+-  const { container } = render(
+-    <CountUp end={10}>
+-      {({ countUpRef, reset }) => {
+-        spy.reset = reset;
+-        jest.spyOn(spy, 'reset');
+-        return <button onClick={spy.reset} ref={countUpRef} />;
+-      }}
+-    </CountUp>,
+-  );
+-
+-  fireEvent.click(container.firstElementChild);
+-
+-  expect(spy.reset).toHaveBeenCalled();
+-});
+-
+-it('calls pauseResume in onStart callback correctly', () => {
+-  const spy = {};
+-
+-  render(
+-    <CountUp
+-      end={10}
+-      onStart={({ pauseResume }) => {
+-        spy.pauseResume = pauseResume;
+-        jest.spyOn(spy, 'pauseResume');
+-      }}
+-    />,
+-  );
+-
+-  spy.pauseResume();
+-
+-  expect(spy.pauseResume).toHaveBeenCalled();
+-});
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('10.5');
++      done();
++    }, 1200);
++  });
+ 
+-it('throws warning if ref not attached to a component', () => {
+-  console.error = jest.fn();
+-  jest.spyOn(console, 'error');
++  it('re-renders when the prefix changes', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={1} prefix=""""/>,
++    );
+ 
+-  render(<CountUp end={10}>{({ countUpRef }) => <div />}</CountUp>);
++    rerender(<CountUp duration={1} end={30} prefix=""->""/>);
+ 
+-  expect(console.error).toBeCalled();
++    setTimeout(() => {
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('->30');
++      done();
++    }, 1200);
++  });
++
++  it('re-renders change of end value correctly', () => {
++    const { container, rerender } = render(<CountUp end={10}/>);
++
++    rerender(<CountUp end={5}/>);
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('re-renders with redraw={false} correctly', () => {
++    const { container, rerender } = render(<CountUp redraw={false} end={10}/>);
++
++    rerender(<CountUp redraw={false} end={10}/>);
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('renders with delay correctly', () => {
++    const { container } = render(<CountUp delay={1} end={10}/>);
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('renders with delay as a render prop component correctly', () => {
++    const { container } = render(
++      <CountUp delay={1} end={10}>
++        {({ countUpRef }) => <div ref={countUpRef}/>}
++      </CountUp>,
++    );
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('renders with delay as a render prop component correctly', () => {
++    console.error = jest.fn();
++
++    const { container } = render(
++      <CountUp delay={1} end={10}>
++        {({ countUpRef }) => <rect ref={countUpRef}/>}
++      </CountUp>,
++    );
++
++    expect(console.error).toHaveBeenCalled();
++  });
++
++  it('renders as a render prop component correctly', () => {
++    const { container } = render(
++      <CountUp end={10}>{({ countUpRef }) => <div ref={countUpRef}/>}</CountUp>,
++    );
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('renders with autostart correctly', () => {
++    const { container } = render(
++      <CountUp autostart end={10}>
++        {({ countUpRef }) => <div ref={countUpRef}/>}
++      </CountUp>,
++    );
++
++    expect(container).toMatchSnapshot();
++  });
++
++  it('re-renders with redraw={true} correctly', () => {
++    const componentRender = jest.spyOn(CountUp.prototype, 'render');
++    const { rerender } = render(<CountUp end={10} redraw/>);
++
++    rerender(<CountUp end={10}/>);
++    expect(componentRender).toHaveBeenCalledTimes(2);
++  });
++
++  it('does not reset if preserveValue is true', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={10} preserveValue/>,
++    );
++
++    setTimeout(() => {
++      rerender(<CountUp duration={1} end={20} preserveValue/>);
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('10');
++      done();
++    }, 1000);
++  });
++
++  it('does not reset if preserveValue is true and suffix is set', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={10} suffix=""%"" preserveValue/>,
++    );
++
++    setTimeout(() => {
++      rerender(<CountUp duration={1} end={20} suffix=""%"" preserveValue/>);
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('10%');
++      done();
++    }, 1000);
++  });
++
++  it('does not reset if preserveValue is true and prefix is set', (done) => {
++    const { container, rerender } = render(
++      <CountUp duration={1} end={10} prefix=""->"" preserveValue/>,
++    );
++
++    setTimeout(() => {
++      rerender(<CountUp duration={1} end={20} prefix=""->"" preserveValue/>);
++      const span = container.firstChild;
++      expect(span.textContent).toEqual('->10');
++      done();
++    }, 1000);
++  });
++
++  it('calls start correctly', () => {
++    const spy = {};
++
++    const { container } = render(
++      <CountUp end={10}>
++        {({ countUpRef, start }) => {
++          spy.start = start;
++          jest.spyOn(spy, 'start');
++          return <button onClick={spy.start} ref={countUpRef}/>;
++        }}
++      </CountUp>,
++    );
++
++    fireEvent.click(container.firstElementChild);
++
++    expect(spy.start).toHaveBeenCalled();
++  });
++
++  it('calls pauseResume correctly', () => {
++    const spy = {};
++
++    const { container } = render(
++      <CountUp end={10}>
++        {({ countUpRef, pauseResume }) => {
++          spy.pauseResume = pauseResume;
++          jest.spyOn(spy, 'pauseResume');
++          return <button onClick={spy.pauseResume} ref={countUpRef}/>;
++        }}
++      </CountUp>,
++    );
++
++    fireEvent.click(container.firstElementChild);
++
++    expect(spy.pauseResume).toHaveBeenCalled();
++  });
++
++  it('calls update correctly', () => {
++    const spy = {};
++
++    const { container } = render(
++      <CountUp end={10}>
++        {({ countUpRef, update }) => {
++          spy.update = update;
++          jest.spyOn(spy, 'update');
++          return <button onClick={spy.update} ref={countUpRef}/>;
++        }}
++      </CountUp>,
++    );
++
++    fireEvent.click(container.firstElementChild);
++
++    expect(spy.update).toHaveBeenCalled();
++  });
++
++  it('calls reset correctly', () => {
++    const spy = {};
++
++    const { container } = render(
++      <CountUp end={10}>
++        {({ countUpRef, reset }) => {
++          spy.reset = reset;
++          jest.spyOn(spy, 'reset');
++          return <button onClick={spy.reset} ref={countUpRef}/>;
++        }}
++      </CountUp>,
++    );
++
++    fireEvent.click(container.firstElementChild);
++
++    expect(spy.reset).toHaveBeenCalled();
++  });
++
++  it('calls pauseResume in onStart callback correctly', () => {
++    const spy = {};
++
++    render(
++      <CountUp
++        end={10}
++        onStart={({ pauseResume }) => {
++          spy.pauseResume = pauseResume;
++          jest.spyOn(spy, 'pauseResume');
++        }}
++      />,
++    );
++
++    spy.pauseResume();
++
++    expect(spy.pauseResume).toHaveBeenCalled();
++  });
++
++  it('throws warning if ref not attached to a component', () => {
++    console.error = jest.fn();
++    jest.spyOn(console, 'error');
++
++    render(<CountUp end={10}>{({ countUpRef }) => <div/>}</CountUp>);
++
++    expect(console.error).toBeCalled();
++  });
+ });
+",0,,12,1945,1,3,12,1881
+81,1d792b36fa19bdb3696c86b5f19b891f60c22360,1d792b36fa19bdb3696c86b5f19b891f60c22360,,"fix: init render use formattingFn
+","diff --git a/src/__tests__/index.test.js b/src/__tests__/index.test.js
+index 00a449d..f8a56e7 100644
+--- a/src/__tests__/index.test.js
++++ b/src/__tests__/index.test.js
+@@ -23,6 +23,19 @@ it('renders correctly with wrong onStart type', () => {
+   expect(tree).toMatchSnapshot();
+ });
+ 
++it('renders correctly with formattingFn', () => {
++  const createNodeMock = () => ({ startAnimation });
++  const tree = renderer
++    .create(
++      <CountUp start={0} end={10} formattingFn={v => `formated:${v}`} />,
++      {
++        createNodeMock,
++      },
++    )
++    .toJSON();
++  expect(tree).toMatchSnapshot();
++});
++
+ it('should update on new duration', () => {
+   const node = document.createElement('div');
+   const instance = render(<CountUp duration={1} />, node);
+",0,,3,41,1,1,3,41

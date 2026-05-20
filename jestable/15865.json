@@ -1,0 +1,104 @@
+{
+    "id": 4098410,
+    "name": "quramy/ts-graphql-plugin",
+    "isFork": false,
+    "commits": 2880,
+    "branches": 6,
+    "releases": 29,
+    "forks": 26,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 710,
+    "contributors": 15,
+    "size": 10541,
+    "createdAt": "2017-04-06T01:28:11",
+    "pushedAt": "2024-05-10T03:12:52",
+    "updatedAt": "2024-05-10T03:12:55",
+    "totalIssues": 52,
+    "openIssues": 20,
+    "totalPullRequests": 1270,
+    "openPullRequests": 5,
+    "blankLines": 7493,
+    "codeLines": 37389,
+    "commentLines": 21795,
+    "metrics": [
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 17,
+            "blankLines": 4
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 134,
+            "blankLines": 14
+        },
+        {
+            "language": "GraphQL",
+            "commentLines": 21371,
+            "codeLines": 8918,
+            "blankLines": 5970
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 418,
+            "codeLines": 11398,
+            "blankLines": 1148
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 595,
+            "blankLines": 78
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 15434,
+            "blankLines": 7
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 6,
+            "codeLines": 890,
+            "blankLines": 271
+        }
+    ],
+    "lastCommit": "2024-05-10T03:12:51",
+    "lastCommitSHA": "5b3879901564e15ca3ced7a63c2f03c86e598c82",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 425667,
+        "JavaScript": 24552,
+        "Shell": 68
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "graphql",
+        "language-server",
+        "plugin",
+        "typescript"
+    ]
+}

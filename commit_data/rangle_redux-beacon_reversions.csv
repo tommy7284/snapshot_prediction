@@ -1,0 +1,1534 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+143,9b54e87b937192ffff069928351ac53b8d2d9d72,9b54e87b937192ffff069928351ac53b8d2d9d72,,"Update segment target to accept settings/options
+","diff --git a/src/targets/segment/__tests__/segment.test.js b/src/targets/segment/__tests__/segment.test.js
+index a1e4ed5..59b5691 100644
+--- a/src/targets/segment/__tests__/segment.test.js
++++ b/src/targets/segment/__tests__/segment.test.js
+@@ -1,19 +1,20 @@
+-const { Segment } = require('../');
++import { Segment } from '../';
+ 
+-describe('Target: Segment.io', () => {
+-  window.analytics = {
+-    identify: jest.fn(),
+-    group: jest.fn(),
+-    page: jest.fn(),
+-    track: jest.fn(),
+-    alias: jest.fn(),
+-  };
++window.analytics = {
++  identify: jest.fn(),
++  group: jest.fn(),
++  page: jest.fn(),
++  track: jest.fn(),
++  alias: jest.fn(),
++};
++const target = Segment();
+ 
++describe('Target: Segment.io', () => {
+   it('does not call any service when hitType is undefined', () => {
+     const events = [{
+       hitType: undefined,
+     }];
+-    Segment(events);
++    target(events);
+     Object.keys(window.analytics).forEach((key) => {
+       expect(window.analytics[key]).not.toHaveBeenCalled();
+     });
+@@ -24,7 +25,7 @@ describe('Target: Segment.io', () => {
+       hitType: 'pageview',
+       page: 'random page',
+     }];
+-    Segment(events);
++    target(events);
+     expect(window.analytics.page).toHaveBeenCalledWith(events[0].page);
+   });
+ 
+@@ -33,7 +34,7 @@ describe('Target: Segment.io', () => {
+       hitType: 'event',
+       eventAction: 'random event action',
+     }];
+-    Segment(events);
++    target(events);
+     expect(window.analytics.track).toHaveBeenCalledWith(events[0].eventAction, events[0]);
+   });
+ 
+@@ -42,7 +43,7 @@ describe('Target: Segment.io', () => {
+       hitType: 'identify',
+       userId: 'random user id',
+     }];
+-    Segment(events);
++    target(events);
+     expect(window.analytics.identify).toHaveBeenCalledWith(events[0].userId, events[0]);
+   });
+ 
+@@ -51,7 +52,7 @@ describe('Target: Segment.io', () => {
+       hitType: 'group',
+       groupId: 'random group id',
+     }];
+-    Segment(events);
++    target(events);
+     expect(window.analytics.group).toHaveBeenCalledWith(events[0].groupId, events[0]);
+   });
+ 
+@@ -60,7 +61,7 @@ describe('Target: Segment.io', () => {
+       hitType: 'alias',
+       userId: 'random user id',
+     }];
+-    Segment(events);
++    target(events);
+     expect(window.analytics.alias).toHaveBeenCalledWith(events[0].userId);
+   });
+ });
+@@ -68,6 +69,6 @@ describe('Target: Segment.io', () => {
+ describe('When Segment is not defined', () => {
+   it('should throw an error informing the user.', () => {
+     window.analytics = undefined;
+-    expect(() => Segment()).toThrow('window.analytics is not defined, Have you forgotten to include the Segment tracking snippet?');
++    expect(() => target()).toThrowErrorMatchingSnapshot();
+   });
+ });
+",0,,7,78,1,1,7,78
+159,204d879e6329c9a8385b9a18f2b872d7709a530f,98ccd9c67d5e56babebfda369a9df95c6e148fe7,,"Replace string.prototype.repeat in logger ext.
+","diff --git a/src/extensions/logger/__tests__/logger.test.js b/src/extensions/logger/__tests__/logger.test.js
+index 5fcdd90..1acc3bd 100644
+--- a/src/extensions/logger/__tests__/logger.test.js
++++ b/src/extensions/logger/__tests__/logger.test.js
+@@ -3,61 +3,73 @@ import { logger, getTimestamp } from '../';
+ 
+ beforeAll(() => {
+   /* eslint-disable no-global-assign */
+-  console = makeConsoleMock();
++  console = makeConsoleMock(console);
+ });
+ 
+ /* eslint-disable no-console */
+-describe('logger()', () => {
+-  afterEach(() => {
+-    console.clearHistory();
+-  });
++afterEach(() => {
++  console.clearHistory();
++});
+ 
+-  Date.now = jest.fn(() => 1489105897006);
+-  // toTimeString will return the time in the machine's timezone.
+-  // The following stub ensures that the tests will work from any
+-  // timezone. This is especially needed to make the tests pass on
+-  // circle-ci.
+-  /* eslint-disable no-extend-native */
+-  Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
++Date.now = jest.fn(() => 1489105897006);
++// toTimeString will return the time in the machine's timezone.
++// The following stub ensures that the tests will work from any
++// timezone. This is especially needed to make the tests pass on
++// circle-ci.
++/* eslint-disable no-extend-native */
++Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
+ 
+-  const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
+ 
+-  it('logs actions and any resulting analytics event', () => {
+-    const events = [{ hitType: 'pageview', page: '/home' }];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
++it('1. logs actions and any resulting analytics event', () => {
++  const events = [{ hitType: 'pageview', page: '/home' }];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
+ 
+-  it('logs actions and any resulting analytics events', () => {
+-    const events = [
+-      { hitType: 'pageview', page: '/' },
+-      { hitType: 'pageview', page: '/home' },
+-    ];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
++it('2. logs actions and any resulting analytics events', () => {
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
+ 
+-  it('logs events that are saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action, {}, true);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
++it('3. logs events that are saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  const action = makeAction();
++  logger(events, action, {}, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
+ 
+-  it('logs events that were saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    logger(events, null, null, false, true);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
++it('4. logs events that were saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  logger(events, null, null, false, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
+ 
+-  it('logs nothing when there are no events', () => {
+-    const events = [];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
++it('5. logs nothing when there are no events', () => {
++  const events = [];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('6. logs events correctly even if console.group is undefined (RN)', () => {
++  console.group = undefined;
++  console.groupEnd = undefined;
++
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
+ });
+ 
+ describe('getTimestamp(date)', () => {
+",0,,5,193,1,2,5,202
+199,9af15d2b6a91d12d62699df59546114d0213667f,9af15d2b6a91d12d62699df59546114d0213667f,,"Split redux-beacon into separate packages
+","diff --git a/packages/logger/src/__tests__/logger.test.js b/packages/logger/src/__tests__/logger.test.js
+new file mode 100644
+index 0000000..1acc3bd
+--- /dev/null
++++ b/packages/logger/src/__tests__/logger.test.js
+@@ -0,0 +1,79 @@
++import makeConsoleMock from 'consolemock';
++import { logger, getTimestamp } from '../';
++
++beforeAll(() => {
++  /* eslint-disable no-global-assign */
++  console = makeConsoleMock(console);
++});
++
++/* eslint-disable no-console */
++afterEach(() => {
++  console.clearHistory();
++});
++
++Date.now = jest.fn(() => 1489105897006);
++// toTimeString will return the time in the machine's timezone.
++// The following stub ensures that the tests will work from any
++// timezone. This is especially needed to make the tests pass on
++// circle-ci.
++/* eslint-disable no-extend-native */
++Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
++
++const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++
++it('1. logs actions and any resulting analytics event', () => {
++  const events = [{ hitType: 'pageview', page: '/home' }];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('2. logs actions and any resulting analytics events', () => {
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('3. logs events that are saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  const action = makeAction();
++  logger(events, action, {}, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('4. logs events that were saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  logger(events, null, null, false, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('5. logs nothing when there are no events', () => {
++  const events = [];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('6. logs events correctly even if console.group is undefined (RN)', () => {
++  console.group = undefined;
++  console.groupEnd = undefined;
++
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++describe('getTimestamp(date)', () => {
++  it('returns a timestamp', () => {
++    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
++  });
++});
+
+diff --git a/packages/segment/src/__tests__/segment.test.js b/packages/segment/src/__tests__/segment.test.js
+new file mode 100644
+index 0000000..63957c4
+--- /dev/null
++++ b/packages/segment/src/__tests__/segment.test.js
+@@ -0,0 +1,45 @@
++import { Segment } from '../';
++
++window.analytics = {
++  identify: jest.fn(),
++  group: jest.fn(),
++  page: jest.fn(),
++  track: jest.fn(),
++  alias: jest.fn(),
++};
++const target = Segment();
++
++describe('Target: Segment.io', () => {
++  it('does not call any service when hitType is undefined', () => {
++    const events = [
++      {
++        hitType: undefined,
++      },
++    ];
++    target(events);
++    Object.keys(window.analytics).forEach(key => {
++      expect(window.analytics[key]).not.toHaveBeenCalled();
++    });
++  });
++
++  it('calls track service when hitType is event', () => {
++    const events = [
++      {
++        hitType: 'event',
++        eventAction: 'random event action',
++      },
++    ];
++    target(events);
++    expect(window.analytics.track).toHaveBeenCalledWith(
++      events[0].eventAction,
++      events[0]
++    );
++  });
++});
++
++describe('When Segment is not defined', () => {
++  it('should throw an error informing the user.', () => {
++    window.analytics = undefined;
++    expect(() => target()).toThrowErrorMatchingSnapshot();
++  });
++});
+
+diff --git a/src/extensions/logger/__tests__/logger.test.js b/src/extensions/logger/__tests__/logger.test.js
+deleted file mode 100644
+index 1acc3bd..0000000
+--- a/src/extensions/logger/__tests__/logger.test.js
++++ /dev/null
+@@ -1,79 +0,0 @@
+-import makeConsoleMock from 'consolemock';
+-import { logger, getTimestamp } from '../';
+-
+-beforeAll(() => {
+-  /* eslint-disable no-global-assign */
+-  console = makeConsoleMock(console);
+-});
+-
+-/* eslint-disable no-console */
+-afterEach(() => {
+-  console.clearHistory();
+-});
+-
+-Date.now = jest.fn(() => 1489105897006);
+-// toTimeString will return the time in the machine's timezone.
+-// The following stub ensures that the tests will work from any
+-// timezone. This is especially needed to make the tests pass on
+-// circle-ci.
+-/* eslint-disable no-extend-native */
+-Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
+-
+-const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
+-
+-it('1. logs actions and any resulting analytics event', () => {
+-  const events = [{ hitType: 'pageview', page: '/home' }];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('2. logs actions and any resulting analytics events', () => {
+-  const events = [
+-    { hitType: 'pageview', page: '/' },
+-    { hitType: 'pageview', page: '/home' },
+-  ];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('3. logs events that are saved offline with a helpful message', () => {
+-  const events = [{ hitType: 'pageview', page: '/' }];
+-  const action = makeAction();
+-  logger(events, action, {}, true);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('4. logs events that were saved offline with a helpful message', () => {
+-  const events = [{ hitType: 'pageview', page: '/' }];
+-  logger(events, null, null, false, true);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('5. logs nothing when there are no events', () => {
+-  const events = [];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('6. logs events correctly even if console.group is undefined (RN)', () => {
+-  console.group = undefined;
+-  console.groupEnd = undefined;
+-
+-  const events = [
+-    { hitType: 'pageview', page: '/' },
+-    { hitType: 'pageview', page: '/home' },
+-  ];
+-
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-describe('getTimestamp(date)', () => {
+-  it('returns a timestamp', () => {
+-    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
+-  });
+-});
+
+diff --git a/src/targets/segment/__tests__/segment.test.js b/src/targets/segment/__tests__/segment.test.js
+deleted file mode 100644
+index 63957c4..0000000
+--- a/src/targets/segment/__tests__/segment.test.js
++++ /dev/null
+@@ -1,45 +0,0 @@
+-import { Segment } from '../';
+-
+-window.analytics = {
+-  identify: jest.fn(),
+-  group: jest.fn(),
+-  page: jest.fn(),
+-  track: jest.fn(),
+-  alias: jest.fn(),
+-};
+-const target = Segment();
+-
+-describe('Target: Segment.io', () => {
+-  it('does not call any service when hitType is undefined', () => {
+-    const events = [
+-      {
+-        hitType: undefined,
+-      },
+-    ];
+-    target(events);
+-    Object.keys(window.analytics).forEach(key => {
+-      expect(window.analytics[key]).not.toHaveBeenCalled();
+-    });
+-  });
+-
+-  it('calls track service when hitType is event', () => {
+-    const events = [
+-      {
+-        hitType: 'event',
+-        eventAction: 'random event action',
+-      },
+-    ];
+-    target(events);
+-    expect(window.analytics.track).toHaveBeenCalledWith(
+-      events[0].eventAction,
+-      events[0]
+-    );
+-  });
+-});
+-
+-describe('When Segment is not defined', () => {
+-  it('should throw an error informing the user.', () => {
+-    window.analytics = undefined;
+-    expect(() => target()).toThrowErrorMatchingSnapshot();
+-  });
+-});
+",0,,179,12429,4,1,110,4457
+203,bd9e738b1fcbdd04726d8230ae829beeb5f0c79f,cd80eb30cab2e040d537512a0ff110ad9f438777,It just doesn't make much sense not to.,"Rename remaing files and fix failing tests
+","diff --git a/packages/logger/src/__tests__/logger.test.js b/packages/logger/src/__tests__/logger.test.js
+deleted file mode 100644
+index 1acc3bd..0000000
+--- a/packages/logger/src/__tests__/logger.test.js
++++ /dev/null
+@@ -1,79 +0,0 @@
+-import makeConsoleMock from 'consolemock';
+-import { logger, getTimestamp } from '../';
+-
+-beforeAll(() => {
+-  /* eslint-disable no-global-assign */
+-  console = makeConsoleMock(console);
+-});
+-
+-/* eslint-disable no-console */
+-afterEach(() => {
+-  console.clearHistory();
+-});
+-
+-Date.now = jest.fn(() => 1489105897006);
+-// toTimeString will return the time in the machine's timezone.
+-// The following stub ensures that the tests will work from any
+-// timezone. This is especially needed to make the tests pass on
+-// circle-ci.
+-/* eslint-disable no-extend-native */
+-Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
+-
+-const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
+-
+-it('1. logs actions and any resulting analytics event', () => {
+-  const events = [{ hitType: 'pageview', page: '/home' }];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('2. logs actions and any resulting analytics events', () => {
+-  const events = [
+-    { hitType: 'pageview', page: '/' },
+-    { hitType: 'pageview', page: '/home' },
+-  ];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('3. logs events that are saved offline with a helpful message', () => {
+-  const events = [{ hitType: 'pageview', page: '/' }];
+-  const action = makeAction();
+-  logger(events, action, {}, true);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('4. logs events that were saved offline with a helpful message', () => {
+-  const events = [{ hitType: 'pageview', page: '/' }];
+-  logger(events, null, null, false, true);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('5. logs nothing when there are no events', () => {
+-  const events = [];
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-it('6. logs events correctly even if console.group is undefined (RN)', () => {
+-  console.group = undefined;
+-  console.groupEnd = undefined;
+-
+-  const events = [
+-    { hitType: 'pageview', page: '/' },
+-    { hitType: 'pageview', page: '/home' },
+-  ];
+-
+-  const action = makeAction();
+-  logger(events, action);
+-  expect(console.printHistory()).toMatchSnapshot();
+-});
+-
+-describe('getTimestamp(date)', () => {
+-  it('returns a timestamp', () => {
+-    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
+-  });
+-});
+
+diff --git a/packages/logger/src/__tests__/logger.test.ts b/packages/logger/src/__tests__/logger.test.ts
+new file mode 100644
+index 0000000..05d5d05
+--- /dev/null
++++ b/packages/logger/src/__tests__/logger.test.ts
+@@ -0,0 +1,78 @@
++import * as makeConsoleMock from 'consolemock';
++import { logger, getTimestamp } from '../';
++
++beforeAll(() => {
++  console = makeConsoleMock(console);
++});
++
++/* eslint-disable no-console */
++afterEach(() => {
++  console.clearHistory();
++});
++
++Date.now = jest.fn(() => 1489105897006);
++// toTimeString will return the time in the machine's timezone.
++// The following stub ensures that the tests will work from any
++// timezone. This is especially needed to make the tests pass on
++// circle-ci.
++/* eslint-disable no-extend-native */
++Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
++
++const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++
++it('1. logs actions and any resulting analytics event', () => {
++  const events = [{ hitType: 'pageview', page: '/home' }];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('2. logs actions and any resulting analytics events', () => {
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('3. logs events that are saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  const action = makeAction();
++  logger(events, action, {}, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('4. logs events that were saved offline with a helpful message', () => {
++  const events = [{ hitType: 'pageview', page: '/' }];
++  logger(events, null, null, false, true);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('5. logs nothing when there are no events', () => {
++  const events = [];
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++it('6. logs events correctly even if console.group is undefined (RN)', () => {
++  console.group = undefined;
++  console.groupEnd = undefined;
++
++  const events = [
++    { hitType: 'pageview', page: '/' },
++    { hitType: 'pageview', page: '/home' },
++  ];
++
++  const action = makeAction();
++  logger(events, action);
++  expect(console.printHistory()).toMatchSnapshot();
++});
++
++describe('getTimestamp(date)', () => {
++  it('returns a timestamp', () => {
++    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
++  });
++});
+
+diff --git a/packages/segment/src/__tests__/segment.test.js b/packages/segment/src/__tests__/segment.test.js
+deleted file mode 100644
+index 63957c4..0000000
+--- a/packages/segment/src/__tests__/segment.test.js
++++ /dev/null
+@@ -1,45 +0,0 @@
+-import { Segment } from '../';
+-
+-window.analytics = {
+-  identify: jest.fn(),
+-  group: jest.fn(),
+-  page: jest.fn(),
+-  track: jest.fn(),
+-  alias: jest.fn(),
+-};
+-const target = Segment();
+-
+-describe('Target: Segment.io', () => {
+-  it('does not call any service when hitType is undefined', () => {
+-    const events = [
+-      {
+-        hitType: undefined,
+-      },
+-    ];
+-    target(events);
+-    Object.keys(window.analytics).forEach(key => {
+-      expect(window.analytics[key]).not.toHaveBeenCalled();
+-    });
+-  });
+-
+-  it('calls track service when hitType is event', () => {
+-    const events = [
+-      {
+-        hitType: 'event',
+-        eventAction: 'random event action',
+-      },
+-    ];
+-    target(events);
+-    expect(window.analytics.track).toHaveBeenCalledWith(
+-      events[0].eventAction,
+-      events[0]
+-    );
+-  });
+-});
+-
+-describe('When Segment is not defined', () => {
+-  it('should throw an error informing the user.', () => {
+-    window.analytics = undefined;
+-    expect(() => target()).toThrowErrorMatchingSnapshot();
+-  });
+-});
+
+diff --git a/packages/segment/src/__tests__/segment.test.ts b/packages/segment/src/__tests__/segment.test.ts
+new file mode 100644
+index 0000000..63957c4
+--- /dev/null
++++ b/packages/segment/src/__tests__/segment.test.ts
+@@ -0,0 +1,45 @@
++import { Segment } from '../';
++
++window.analytics = {
++  identify: jest.fn(),
++  group: jest.fn(),
++  page: jest.fn(),
++  track: jest.fn(),
++  alias: jest.fn(),
++};
++const target = Segment();
++
++describe('Target: Segment.io', () => {
++  it('does not call any service when hitType is undefined', () => {
++    const events = [
++      {
++        hitType: undefined,
++      },
++    ];
++    target(events);
++    Object.keys(window.analytics).forEach(key => {
++      expect(window.analytics[key]).not.toHaveBeenCalled();
++    });
++  });
++
++  it('calls track service when hitType is event', () => {
++    const events = [
++      {
++        hitType: 'event',
++        eventAction: 'random event action',
++      },
++    ];
++    target(events);
++    expect(window.analytics.track).toHaveBeenCalledWith(
++      events[0].eventAction,
++      events[0]
++    );
++  });
++});
++
++describe('When Segment is not defined', () => {
++  it('should throw an error informing the user.', () => {
++    window.analytics = undefined;
++    expect(() => target()).toThrowErrorMatchingSnapshot();
++  });
++});
+",0,,139,7392,4,7,132,4217
+334,5fe4236d3612932a8dd0c813ed88b2a27e736dde,741655253cd56cd3f53f30edd1708beee888e7ce,"Checklist
+----
+
+_Put an x in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. We're here to help! This is simply a reminder of what we are going to look for before merging your code._
+
+ - [x] I have added tests that prove my fix is effective or that my feature works.
+ - [x] I have added all necessary documentation (if appropriate)
+
+What was done
+----
+
+![image](https://user-images.githubusercontent.com/7446702/54482206-78856800-4816-11e9-97da-b867439c847d.png)
+
+Associated Issues
+----
+
+@bertrandk 
+","Fail gracefully when window.gtag is undefined
+","diff --git a/packages/google-analytics-gtag/src/__tests__/google-analytics-gtag.test.ts b/packages/google-analytics-gtag/src/__tests__/google-analytics-gtag.test.ts
+index 11d2eee..a3ec4aa 100644
+--- a/packages/google-analytics-gtag/src/__tests__/google-analytics-gtag.test.ts
++++ b/packages/google-analytics-gtag/src/__tests__/google-analytics-gtag.test.ts
+@@ -1,9 +1,19 @@
++import * as makeConsoleMock from 'consolemock';
+ import GoogleAnalyticsGtag from '../';
+ 
++beforeAll(() => {
++  console = makeConsoleMock(console);
++});
++
+ beforeEach(() => {
+   window.gtag = jest.fn();
+ });
+ 
++/* tslint:disable: no-console */
++afterEach(() => {
++  console.clearHistory();
++});
++
+ it('configures the Google Analytics property with the tracking ID', () => {
+   GoogleAnalyticsGtag('GA_TRACKING_ID');
+   expect(window.gtag).toHaveBeenCalledWith('config', 'GA_TRACKING_ID', {
+@@ -150,9 +160,24 @@ describe('Undefined Event Type', () => {
+ });
+ 
+ describe('When window.gtag is not defined', () => {
+-  it('throws an error informing the developer', () => {
++  it('does not throw an error', () => {
++    window.gtag = undefined;
++
++    expect(() => GoogleAnalyticsGtag('GA_TRACKING_ID')).not.toThrow();
++  });
++  it('does nothing when events are pushed to the target', () => {
+     window.gtag = undefined;
+ 
+-    expect(() => GoogleAnalyticsGtag('GA_TRACKING_ID')).toThrow();
++    const events = [{ type: 'event', action: 'click' }];
++    const target = GoogleAnalyticsGtag('GA_TRACKING_ID');
++
++    expect(() => target(events)).not.toThrow();
++  });
++  it('logs an error informing the developer that no analytics are being tracked', () => {
++    window.gtag = undefined;
++
++    GoogleAnalyticsGtag('GA_TRACKING_ID');
++
++    expect(console.printHistory()).toMatchSnapshot();
+   });
+ });
+",0,,3,48,1,2,3,49
+343,ffa3da87101e64b67b9afe738a97c4c2ce8e39ce,ffa3da87101e64b67b9afe738a97c4c2ce8e39ce,"Throwing an error here breaks subsequent redux store actions in some cases. It should just be a warning as any underlying React app can function without Google Analytics. .....and GA snippets can easily be removed by careless sysadmins.
+
+Checklist
+----
+
+_Put an x in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. We're here to help! This is simply a reminder of what we are going to look for before merging your code._
+
+ - [ ] I have added tests that prove my fix is effective or that my feature works.
+ - [ ] I have added all necessary documentation (if appropriate)
+
+What was done
+----
+
+Changed `throw` to `console.warn` so this module doesn't break a whole app when GA isn't loaded :-)
+
+
+Associated Issues
+----
+N/A
+
+:heart: Thanks
+----
+Thanks for taking the time to help out with the project, it's much appreciated :slightly_smiling_face:
+","Refactor target and update tests
+","diff --git a/packages/google-analytics/src/__tests__/google-analytics.test.ts b/packages/google-analytics/src/__tests__/google-analytics.test.ts
+index 9e9f849..82d86b2 100644
+--- a/packages/google-analytics/src/__tests__/google-analytics.test.ts
++++ b/packages/google-analytics/src/__tests__/google-analytics.test.ts
+@@ -14,10 +14,8 @@ afterEach(() => {
+   console.clearHistory();
+ });
+ 
+-const target = GoogleAnalytics();
+-
+ describe('GoogleAnalytics(events)', () => {
+-  it('calls window.ga(""send"", <event>) for each event', () => {
++  it.only('calls window.ga(""send"", <event>) for each event', () => {
+     const events = [
+       {
+         hitType: 'pageview',
+@@ -35,6 +33,9 @@ describe('GoogleAnalytics(events)', () => {
+     ];
+ 
+     window.ga = jest.fn();
++
++    const target = GoogleAnalytics();
++
+     target(events);
+ 
+     expect(window.ga).toHaveBeenCalledWith('send', events[0]);
+@@ -62,6 +63,9 @@ describe('GoogleAnalytics(events)', () => {
+       ];
+ 
+       window.ga = jest.fn();
++
++      const target = GoogleAnalytics();
++
+       target(events);
+ 
+       expect(window.ga).toHaveBeenCalledWith(
+@@ -87,6 +91,9 @@ describe('GoogleAnalytics(events)', () => {
+       ];
+ 
+       window.ga = jest.fn();
++
++      const target = GoogleAnalytics();
++
+       target(events);
+ 
+       expect(window.ga).toHaveBeenCalledWith('testHub.send', events[0]);
+@@ -104,6 +111,9 @@ describe('GoogleAnalytics(events)', () => {
+       ];
+ 
+       window.ga = jest.fn();
++
++      const target = GoogleAnalytics();
++
+       target(events);
+ 
+       expect(window.ga).toHaveBeenCalledWith('set', 'page', '/home');
+@@ -121,6 +131,9 @@ describe('GoogleAnalytics(events)', () => {
+       ];
+ 
+       window.ga = jest.fn();
++
++      const target = GoogleAnalytics();
++
+       target(events);
+ 
+       const hit = window.ga.mock.calls[1][1];
+@@ -150,7 +163,7 @@ describe('GoogleAnalytics(events)', () => {
+       expect(console.printHistory()).toMatchSnapshot();
+     });
+   });
+-  
++
+   describe('when ga:ecommerce is being used', () => {
+     beforeEach(() => {
+       window.ga = jest.fn();
+@@ -167,6 +180,8 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
+ 
+       expect(window.ga).toHaveBeenCalledWith('ecommerce:addItem', {
+@@ -186,7 +201,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith('ecommerce:addTransaction', {
+         id,
+         revenue,
+@@ -200,7 +218,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith('ecommerce:clear');
+     });
+ 
+@@ -215,7 +236,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith(
+         `${customTrackerId}.ecommerce:addTransaction`,
+         {
+@@ -231,7 +255,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith('ecommerce:send');
+     });
+   });
+@@ -249,7 +276,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith('ec:clear');
+     });
+ 
+@@ -261,7 +291,11 @@ describe('GoogleAnalytics(events)', () => {
+             ecommType: 'enhanced',
+           },
+         ];
++
++        const target = GoogleAnalytics();
++
+         target(events);
++
+         expect(window.ga).toHaveBeenCalledWith(`ec:${hitType}`, {});
+       });
+     });
+@@ -275,7 +309,10 @@ describe('GoogleAnalytics(events)', () => {
+         },
+       ];
+ 
++      const target = GoogleAnalytics();
++
+       target(events);
++
+       expect(window.ga).toHaveBeenCalledWith('ec:setAction', 'click', {});
+     });
+   });
+",0,,3,175,1,6,3,220
+55,0c51cc5e633ede071cb9114d1269d51fa0ae7330,735532fb5e41c5351092c5c27034af1c3494271a,,"Add consolemock, update logger tests
+","diff --git a/src/extensions/__tests__/logger.js b/src/extensions/__tests__/logger.js
+deleted file mode 100644
+index b1b63f0..0000000
+--- a/src/extensions/__tests__/logger.js
++++ /dev/null
+@@ -1,55 +0,0 @@
+-const { logger } = require('../logger');
+-const { makeStrConsole } = require('../../utils/str-console');
+-
+-beforeEach(() => {
+-  /* eslint-disable no-global-assign */
+-  console = makeStrConsole();
+-});
+-
+-const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/' });
+-
+-/* eslint-disable no-console */
+-describe('logger()', () => {
+-  it('logs actions and any resulting analytics event', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action);
+-    const output = console.getOutput();
+-    expect(output).toMatchSnapshot();
+-  });
+-
+-  it('logs actions and any resulting analytics events', () => {
+-    const events = [
+-      { hitType: 'pageview', page: '/' },
+-      { hitType: 'pageview', page: '/home' },
+-    ];
+-    const action = makeAction();
+-    logger(events, action);
+-    const output = console.getOutput();
+-    expect(output).toMatchSnapshot();
+-  });
+-
+-  it('logs events that are saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action, {}, true);
+-    const output = console.getOutput();
+-    expect(output).toMatchSnapshot();
+-  });
+-
+-  it('logs events that were saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action, {}, false, true);
+-    const output = console.getOutput();
+-    expect(output).toMatchSnapshot();
+-  });
+-
+-  it('logs nothing when there are no events', () => {
+-    const events = [];
+-    const action = makeAction();
+-    logger(events, action);
+-    const output = console.getOutput();
+-    expect(output).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/extensions/__tests__/logger.test.js b/src/extensions/__tests__/logger.test.js
+new file mode 100644
+index 0000000..cd32955
+--- /dev/null
++++ b/src/extensions/__tests__/logger.test.js
+@@ -0,0 +1,50 @@
++const { logger } = require('../logger');
++const { makeConsoleMock } = require('consolemock');
++
++beforeEach(() => {
++  /* eslint-disable no-global-assign */
++  console = makeConsoleMock();
++});
++
++const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++
++/* eslint-disable no-console */
++describe('logger()', () => {
++  it('logs actions and any resulting analytics event', () => {
++    const events = [{ hitType: 'pageview', page: '/home' }];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs actions and any resulting analytics events', () => {
++    const events = [
++      { hitType: 'pageview', page: '/' },
++      { hitType: 'pageview', page: '/home' },
++    ];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs events that are saved offline with a helpful message', () => {
++    const events = [{ hitType: 'pageview', page: '/' }];
++    const action = makeAction();
++    logger(events, action, {}, true);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs events that were saved offline with a helpful message', () => {
++    const events = [{ hitType: 'pageview', page: '/' }];
++    const action = makeAction();
++    logger(events, action, {}, false, true);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs nothing when there are no events', () => {
++    const events = [];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++});
+",0,,10,936,2,2,10,855
+56,f27fa0904ad9b4a679ce15e43e91f74a8bf51b88,a8232c9ff2cd28c7242d03c625a603a922273300,,"Add timestamp to logger
+","diff --git a/src/extensions/__tests__/logger.test.js b/src/extensions/__tests__/logger.test.js
+index d13fc89..568b211 100644
+--- a/src/extensions/__tests__/logger.test.js
++++ b/src/extensions/__tests__/logger.test.js
+@@ -1,18 +1,17 @@
+-const {
+-  logger,
+-  getTimestamp,
+-} = require('../logger');
+ const { makeConsoleMock } = require('consolemock');
+-
+-beforeEach(() => {
+-  /* eslint-disable no-global-assign */
+-  console = makeConsoleMock();
+-});
+-
+-const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++const { logger, getTimestamp } = require('../logger');
+ 
+ /* eslint-disable no-console */
+ describe('logger()', () => {
++  beforeEach(() => {
++    /* eslint-disable no-global-assign */
++    console = makeConsoleMock();
++  });
++
++  Date.now = jest.fn(() => 1489105897006);
++
++  const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++
+   it('logs actions and any resulting analytics event', () => {
+     const events = [{ hitType: 'pageview', page: '/home' }];
+     const action = makeAction();
+@@ -53,8 +52,7 @@ describe('logger()', () => {
+ });
+ 
+ describe('getTimestamp(date)', () => {
+-  it('...', () => {
+-    const date = new Date(1489105897606);
+-    expect(getTimestamp(date)).toEqual('19:31:37.606');
++  it('returns a timestamp', () => {
++    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
+   });
+ });
+",0,,4,55,1,3,4,61
+83,3a72b2b62f331f6b69418366ce9574ba7c859c98,3a72b2b62f331f6b69418366ce9574ba7c859c98,,"Fix logger error when purging offline events
+","diff --git a/src/extensions/__tests__/logger.test.js b/src/extensions/__tests__/logger.test.js
+index 7c5f1e3..6cf634b 100644
+--- a/src/extensions/__tests__/logger.test.js
++++ b/src/extensions/__tests__/logger.test.js
+@@ -44,8 +44,7 @@ describe('logger()', () => {
+ 
+   it('logs events that were saved offline with a helpful message', () => {
+     const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action, {}, false, true);
++    logger(events, null, null, false, true);
+     expect(console.printHistory()).toMatchSnapshot();
+   });
+ 
+",0,,4,17,1,1,4,17
+86,04685697c3d18a96d4a0919cec8778edb1f18c41,7ea30a33f84a0bd10af68702c960407cb9a23a54,"Fixes #81 
+- [x] there should be no tests under `tests`, this folder doesn't need to exist
+- [x] tests should have a `.test.js` or `.spec.js` file extension (for `.eslintrc`)
+- [x] all tests should be under `__tests__` sub folders in `src`
+- [x] tests should not be included in the build
+
+## Now
+
+```
+src
+├── extensions
+│   ├── logger
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   ├── logger.js
+│   │   └── __tests__
+│   │       ├── logger.test.js
+│   │       └── __snapshots__
+│   │           └── logger.test.js.snap
+│   ├── offline-react-native
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   ├── offline-react-native.js
+│   │   └── __tests__
+│   │       └── offline-react-native.test.js
+│   └── offline-web
+│       ├── index.d.ts
+│       ├── index.js
+│       ├── offline-web.js
+│       └── __tests__
+│           └── offline-web.test.js
+├── main
+│   ├── create-events.js
+│   ├── create-meta-reducer.js
+│   ├── create-middleware.js
+│   ├── index.js
+│   ├── register-events.js
+│   └── __tests__
+│       ├── api.test.js
+│       ├── api.ts
+│       ├── create-events.test.js
+│       ├── create-meta-reducer.test.js
+│       ├── create-middleware.test.js
+│       ├── register-events.test.js
+│       └── ts-types.js
+├── targets
+│   ├── amplitude
+│   │   ├── amplitude.js
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   └── __tests__
+│   │       ├── amplitude.test.js
+│   │       ├── amplitude.ts
+│   │       └── ts-types.js
+│   ├── cordova-google-analytics
+│   │   ├── cordova-google-analytics.js
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   └── __tests__
+│   │       └── cordova-google-analytics.test.js
+│   ├── google-analytics
+│   │   ├── google-analytics.js
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   └── __tests__
+│   │       ├── google-analytics-node-env.test.js
+│   │       ├── google-analytics.test.js
+│   │       ├── google-analytics.ts
+│   │       └── ts-types.js
+│   ├── google-tag-manager
+│   │   ├── google-tag-manager.js
+│   │   ├── index.d.ts
+│   │   ├── index.js
+│   │   └── __tests__
+│   │       ├── google-tag-manager-node-env.test.js
+│   │       └── google-tag-manager.test.js
+│   ├── react-native
+│   │   ├── google-analytics
+│   │   │   ├── google-analytics.js
+│   │   │   ├── index.d.ts
+│   │   │   ├── index.js
+│   │   │   └── __tests__
+│   │   │       └── google-analytics.test.js
+│   │   └── google-tag-manager
+│   │       ├── google-tag-manager.js
+│   │       ├── index.d.ts
+│   │       ├── index.js
+│   │       └── __tests__
+│   │           └── google-tag-manager.test.js
+│   └── segment
+│       ├── index.d.ts
+│       ├── index.js
+│       ├── segment.js
+│       └── __tests__
+│           └── segment.test.js
+└── utils
+    ├── add-timestamp.js
+    ├── __tests__
+    │   └── add-timestamp.test.js
+    └── ts-types-tester.js
+```
+
+## Before
+**`/src`**
+```
+src
+├── extensions
+│   ├── logger
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   ├── offline-react-native
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   ├── offline-web
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   └── __tests__
+│       ├── logger.test.js
+│       ├── offline-web.test.js
+│       └── __snapshots__
+│           └── logger.test.js.snap
+├── main
+│   ├── create-events.js
+│   ├── create-meta-reducer.js
+│   ├── create-middleware.js
+│   ├── index.js
+│   ├── register-events.js
+│   └── __tests__
+│       └── create-events.js
+├── targets
+│   ├── amplitude
+│   │   ├── amplitude.js
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   ├── google-analytics
+│   │   ├── google-analytics.js
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   ├── google-tag-manager
+│   │   ├── google-tag-manager.js
+│   │   ├── index.d.ts
+│   │   └── index.js
+│   ├── react-native
+│   │   ├── google-analytics.d.ts
+│   │   ├── google-analytics.js
+│   │   ├── google-tag-manager.d.ts
+│   │   ├── google-tag-manager.js
+│   │   └── index.js
+│   └── segment
+│       ├── index.d.ts
+│       ├── index.js
+│       └── segment.js
+└── utils
+    └── add-timestamp.js
+```
+**`/test`**
+```
+test
+├── extensions
+│   └── offline-react-native.js
+├── main
+│   ├── api.js
+│   ├── create-meta-reducer.js
+│   ├── create-middleware.js
+│   └── register-events.js
+├── targets
+│   ├── amplitude.js
+│   ├── google-analytics.js
+│   ├── google-analytics-node-env.js
+│   ├── google-tag-manager.js
+│   ├── google-tag-manager-node-env.js
+│   ├── react-native
+│   │   └── google-tag-manager.js
+│   ├── react-native-google-analytics.js
+│   └── segment.js
+├── typescript
+│   ├── api.ts
+│   └── targets
+│       ├── amplitude.ts
+│       ├── google-analytics.ts
+│       └── react-native
+│           └── google-tag-manager.ts
+├── typings.js
+└── utils
+    └── add-timestamp.js
+```","Organize test files
+","diff --git a/src/extensions/__tests__/logger.test.js b/src/extensions/__tests__/logger.test.js
+deleted file mode 100644
+index 6cf634b..0000000
+--- a/src/extensions/__tests__/logger.test.js
++++ /dev/null
+@@ -1,63 +0,0 @@
+-const { makeConsoleMock } = require('consolemock');
+-const { logger, getTimestamp } = require('../logger');
+-
+-/* eslint-disable no-console */
+-describe('logger()', () => {
+-  beforeEach(() => {
+-    /* eslint-disable no-global-assign */
+-    console = makeConsoleMock();
+-  });
+-
+-  Date.now = jest.fn(() => 1489105897006);
+-  // toTimeString will return the time in the machine's timezone.
+-  // The following stub ensures that the tests will work from any
+-  // timezone. This is especially needed to make the tests pass on
+-  // circle-ci.
+-  /* eslint-disable no-extend-native */
+-  Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
+-
+-  const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
+-
+-  it('logs actions and any resulting analytics event', () => {
+-    const events = [{ hitType: 'pageview', page: '/home' }];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
+-
+-  it('logs actions and any resulting analytics events', () => {
+-    const events = [
+-      { hitType: 'pageview', page: '/' },
+-      { hitType: 'pageview', page: '/home' },
+-    ];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
+-
+-  it('logs events that are saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    const action = makeAction();
+-    logger(events, action, {}, true);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
+-
+-  it('logs events that were saved offline with a helpful message', () => {
+-    const events = [{ hitType: 'pageview', page: '/' }];
+-    logger(events, null, null, false, true);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
+-
+-  it('logs nothing when there are no events', () => {
+-    const events = [];
+-    const action = makeAction();
+-    logger(events, action);
+-    expect(console.printHistory()).toMatchSnapshot();
+-  });
+-});
+-
+-describe('getTimestamp(date)', () => {
+-  it('returns a timestamp', () => {
+-    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
+-  });
+-});
+
+diff --git a/src/extensions/logger/__tests__/logger.test.js b/src/extensions/logger/__tests__/logger.test.js
+new file mode 100644
+index 0000000..6cf634b
+--- /dev/null
++++ b/src/extensions/logger/__tests__/logger.test.js
+@@ -0,0 +1,63 @@
++const { makeConsoleMock } = require('consolemock');
++const { logger, getTimestamp } = require('../logger');
++
++/* eslint-disable no-console */
++describe('logger()', () => {
++  beforeEach(() => {
++    /* eslint-disable no-global-assign */
++    console = makeConsoleMock();
++  });
++
++  Date.now = jest.fn(() => 1489105897006);
++  // toTimeString will return the time in the machine's timezone.
++  // The following stub ensures that the tests will work from any
++  // timezone. This is especially needed to make the tests pass on
++  // circle-ci.
++  /* eslint-disable no-extend-native */
++  Date.prototype.toTimeString = jest.fn(() => '19:31:37 GMT-0500 (EST)');
++
++  const makeAction = () => ({ type: 'ROUTE_CHANGED', payload: '/home' });
++
++  it('logs actions and any resulting analytics event', () => {
++    const events = [{ hitType: 'pageview', page: '/home' }];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs actions and any resulting analytics events', () => {
++    const events = [
++      { hitType: 'pageview', page: '/' },
++      { hitType: 'pageview', page: '/home' },
++    ];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs events that are saved offline with a helpful message', () => {
++    const events = [{ hitType: 'pageview', page: '/' }];
++    const action = makeAction();
++    logger(events, action, {}, true);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs events that were saved offline with a helpful message', () => {
++    const events = [{ hitType: 'pageview', page: '/' }];
++    logger(events, null, null, false, true);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++
++  it('logs nothing when there are no events', () => {
++    const events = [];
++    const action = makeAction();
++    logger(events, action);
++    expect(console.printHistory()).toMatchSnapshot();
++  });
++});
++
++describe('getTimestamp(date)', () => {
++  it('returns a timestamp', () => {
++    expect(getTimestamp(1489105897606)).toEqual('19:31:37.606');
++  });
++});
+",0,,68,3353,2,4,48,568

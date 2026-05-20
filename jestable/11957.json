@@ -1,0 +1,87 @@
+{
+    "id": 48308773,
+    "name": "ai/nanocolors",
+    "isFork": false,
+    "commits": 458,
+    "branches": 1,
+    "releases": 0,
+    "forks": 26,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 5,
+    "stargazers": 932,
+    "contributors": 22,
+    "size": 1847,
+    "createdAt": "2021-09-21T02:32:09",
+    "pushedAt": "2021-10-09T12:14:47",
+    "updatedAt": "2021-10-14T01:14:55",
+    "totalIssues": 12,
+    "openIssues": 0,
+    "totalPullRequests": 14,
+    "openPullRequests": 0,
+    "blankLines": 117,
+    "codeLines": 905,
+    "commentLines": 7,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 182
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 62
+        },
+        {
+            "blankLines": 73,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 174
+        },
+        {
+            "blankLines": 9,
+            "language": "TypeScript",
+            "commentLines": 7,
+            "codeLines": 110
+        },
+        {
+            "blankLines": 35,
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 376
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1
+        }
+    ],
+    "lastCommit": "2021-10-09T12:14:46",
+    "lastCommitSHA": "5b4ec8b250d589fc5331aed6925885a5e9afceea",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 15938,
+        "TypeScript": 2099
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

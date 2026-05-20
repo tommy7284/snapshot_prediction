@@ -1,0 +1,100 @@
+{
+    "id": 5575740,
+    "name": "vkbansal/react-contextmenu",
+    "isFork": false,
+    "commits": 465,
+    "branches": 3,
+    "releases": 52,
+    "forks": 306,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 28,
+    "stargazers": 1355,
+    "contributors": 68,
+    "size": 1633,
+    "createdAt": "2015-07-04T05:26:13",
+    "pushedAt": "2020-08-11T04:39:01",
+    "updatedAt": "2021-02-09T03:05:58",
+    "totalIssues": 214,
+    "openIssues": 1,
+    "totalPullRequests": 127,
+    "openPullRequests": 0,
+    "blankLines": 447,
+    "codeLines": 2609,
+    "commentLines": 37,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "Bourne Shell",
+            "commentLines": 2,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 7,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 65
+        },
+        {
+            "blankLines": 309,
+            "language": "JavaScript",
+            "commentLines": 28,
+            "codeLines": 1926
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 61
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 109
+        },
+        {
+            "blankLines": 109,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 296
+        },
+        {
+            "blankLines": 5,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 9,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 70
+        }
+    ],
+    "lastCommit": "2020-08-11T04:37:58",
+    "lastCommitSHA": "d9018dbfbd6e21423cb2b753b3762adf5a6d77b0",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 48544,
+        "Shell": 515
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "not an issue",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

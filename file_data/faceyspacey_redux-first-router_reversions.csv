@@ -1,0 +1,43 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,0ab612efa2beb0dccdeca99bc783e1daf547900b,__tests__/integration/browser/actionsInCallbacks/__snapshots__/jump2N.js.snap,__tests__/integration/browser/actionsInCallbacks/jump2N.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,0ab612efa2beb0dccdeca99bc783e1daf547900b,__tests__/integration/browser/history/__snapshots__/jumpAction.js.snap,__tests__/integration/browser/history/jumpAction.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,e144a585f9818a11f5b21862bf8f88bf0d17b70d,__tests__/integration/actions/__snapshots__/history.js.snap,__tests__/integration/actions/history.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,0ab612efa2beb0dccdeca99bc783e1daf547900b,__tests__/integration/browser/actionsInCallbacks/__snapshots__/jump2N.js.snap,__tests__/integration/browser/actionsInCallbacks/jump2N.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,0ab612efa2beb0dccdeca99bc783e1daf547900b,__tests__/integration/browser/history/__snapshots__/jumpAction.js.snap,__tests__/integration/browser/history/jumpAction.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,
+251,e144a585f9818a11f5b21862bf8f88bf0d17b70d,e144a585f9818a11f5b21862bf8f88bf0d17b70d,__tests__/integration/actions/__snapshots__/history.js.snap,__tests__/integration/actions/history.js,"* Linting and some changes till we update Link and such. I fixed a basename import to history/utils
+which no longer had those exports
+
+* Updated gitignore, added and amended flow-types
+
+Combination of #247 and #248 ","cleaning up old tests
+",,0,

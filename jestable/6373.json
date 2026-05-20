@@ -1,0 +1,73 @@
+{
+    "id": 6259634,
+    "name": "arackaf/customize-cra",
+    "isFork": false,
+    "commits": 148,
+    "branches": 22,
+    "releases": 1,
+    "forks": 279,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 2745,
+    "contributors": 37,
+    "size": 691,
+    "createdAt": "2018-09-28T02:42:33",
+    "pushedAt": "2023-10-06T08:33:24",
+    "updatedAt": "2023-12-08T08:09:23",
+    "totalIssues": 212,
+    "openIssues": 70,
+    "totalPullRequests": 130,
+    "openPullRequests": 45,
+    "blankLines": 362,
+    "codeLines": 11117,
+    "commentLines": 87,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 9639
+        },
+        {
+            "blankLines": 178,
+            "language": "JavaScript",
+            "commentLines": 87,
+            "codeLines": 949
+        },
+        {
+            "blankLines": 184,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 529
+        }
+    ],
+    "lastCommit": "2020-05-28T08:42:21",
+    "lastCommitSHA": "7e97127e530cc6827af66061525e29925e347670",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 35101
+    },
+    "labels": [
+        ":book: documentation",
+        ":bug: bug",
+        ":building_construction: enhancement",
+        ":bulb: examples",
+        ":clock1: waiting on upstream",
+        ":no_entry: wontfix",
+        ":no_entry_sign: invalid",
+        ":octocat: good first issue",
+        ":question: question",
+        ":wrench: dx",
+        ":writing_hand: help wanted",
+        "dependencies",
+        "duplicate",
+        "\ud83d\udca3 breaking change"
+    ],
+    "topics": []
+}

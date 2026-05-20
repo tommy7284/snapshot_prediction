@@ -1,0 +1,89 @@
+{
+    "id": 7483563,
+    "name": "frontend-collective/react-sortable-tree",
+    "isFork": false,
+    "commits": 554,
+    "branches": 34,
+    "releases": 3,
+    "forks": 913,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://frontend-collective.github.io/react-sortable-tree/",
+    "watchers": 65,
+    "stargazers": 4739,
+    "contributors": 34,
+    "size": 15756,
+    "createdAt": "2016-07-22T08:36:25",
+    "pushedAt": "2023-05-03T02:59:44",
+    "updatedAt": "2023-05-08T03:03:33",
+    "totalIssues": 597,
+    "openIssues": 296,
+    "totalPullRequests": 345,
+    "openPullRequests": 44,
+    "blankLines": 965,
+    "codeLines": 7151,
+    "commentLines": 724,
+    "metrics": [
+        {
+            "blankLines": 56,
+            "language": "CSS",
+            "commentLines": 86,
+            "codeLines": 544
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 132
+        },
+        {
+            "blankLines": 661,
+            "language": "JavaScript",
+            "commentLines": 638,
+            "codeLines": 6069
+        },
+        {
+            "blankLines": 248,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 401
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        }
+    ],
+    "lastCommit": "2023-05-03T02:59:44",
+    "lastCommitSHA": "f482bc7f2853c698cad08fc75bb6fd3e36f2f79a",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 168798,
+        "CSS": 13478
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "investigate",
+        "possible bug (need more info)",
+        "question",
+        "resolved",
+        "security",
+        "todo",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": []
+}

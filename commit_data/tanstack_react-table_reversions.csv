@@ -1,0 +1,1233 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1444,0c2df5fce1b06e5fdb06e115b0a0332dfbc443e9,0c2df5fce1b06e5fdb06e115b0a0332dfbc443e9,"Selecting a row that has subRows will now also select the subRows. It makes sense to select subRows if the parent row is selected but this functionality may not be desired for react-table.
+
+Parent rows are also updated according to the subRows selection.
+
+Let me know if any optimisations can be made.","Updated useRowSelect snapshot tests to test subRow selection.
+","diff --git a/src/plugin-hooks/tests/useRowSelect.test.js b/src/plugin-hooks/tests/useRowSelect.test.js
+index 4e8ce39..d4e8de0 100644
+--- a/src/plugin-hooks/tests/useRowSelect.test.js
++++ b/src/plugin-hooks/tests/useRowSelect.test.js
+@@ -2,6 +2,7 @@ import React from 'react'
+ import { render, fireEvent } from '@testing-library/react'
+ import { useTable } from '../../hooks/useTable'
+ import { useRowSelect } from '../useRowSelect'
++import { useExpanded } from '../useExpanded'
+ 
+ const data = [
+   {
+@@ -27,6 +28,25 @@ const data = [
+     visits: 20,
+     status: 'Complicated',
+     progress: 10,
++    expanded: true,
++    subRows: [
++      {
++        firstName: 'bob',
++        lastName: 'ross',
++        age: 52,
++        visits: 40,
++        status: 'In Relationship',
++        progress: 30,
++      },
++      {
++        firstName: 'john',
++        lastName: 'smith',
++        age: 21,
++        visits: 30,
++        status: 'Single',
++        progress: 60,
++      },
++    ],
+   },
+   {
+     firstName: 'jaylen',
+@@ -51,7 +71,8 @@ function Table({ columns, data }) {
+       columns,
+       data,
+     },
+-    useRowSelect
++    useRowSelect,
++    useExpanded
+   )
+ 
+   // Render the UI for your table
+@@ -164,7 +185,7 @@ function App() {
+   return <Table columns={columns} data={data} />
+ }
+ 
+-test('renders a table with seletable rows', () => {
++test('renders a table with selectable rows', () => {
+   const { getByLabelText, getAllByLabelText, asFragment } = render(<App />)
+ 
+   const fragment1 = asFragment()
+@@ -182,7 +203,27 @@ test('renders a table with seletable rows', () => {
+ 
+   const fragment4 = asFragment()
+ 
++  fireEvent.click(getAllByLabelText('Select Row')[2])
++
++  const fragment5 = asFragment()
++
++  fireEvent.click(getAllByLabelText('Select Row')[3])
++
++  const fragment6 = asFragment()
++  fireEvent.click(getAllByLabelText('Select Row')[4])
++
++  const fragment7 = asFragment()
++
++  fireEvent.click(getAllByLabelText('Select Row')[4])
++
++  const fragment8 = asFragment()
++
++
+   expect(fragment1).toMatchDiffSnapshot(fragment2)
+   expect(fragment2).toMatchDiffSnapshot(fragment3)
+   expect(fragment3).toMatchDiffSnapshot(fragment4)
++  expect(fragment4).toMatchDiffSnapshot(fragment5)
++  expect(fragment5).toMatchDiffSnapshot(fragment6)
++  expect(fragment6).toMatchDiffSnapshot(fragment7)
++  expect(fragment7).toMatchDiffSnapshot(fragment8)
+ })
+",0,,2,371,1,3,3,397
+4079,b9fd60b30ce2f1b3ea479be1f0ea96bed4486b5d,f106f02fce70e3159adc57df7b5b4631ff20f7d3,,"fix: renaming + docs
+","diff --git a/packages/react-table/__tests__/features/Visibility.test.tsx b/packages/react-table/__tests__/features/Visibility.test.tsx
+index 130a563..b3dc6cf 100644
+--- a/packages/react-table/__tests__/features/Visibility.test.tsx
++++ b/packages/react-table/__tests__/features/Visibility.test.tsx
+@@ -98,7 +98,7 @@ const defaultColumns: ColumnDef<Person>[] = [
+   },
+ ]
+ 
+-describe('useTableInstance', () => {
++describe('useReactTable', () => {
+   it('can toggle column visibility', () => {
+     const Table = () => {
+       const [data] = React.useState<Person[]>(() => [...defaultData])
+",0,,78,2812,1,16,138,19093
+5615,edcd1796d22342aaa6ea85702434b1186483674a,edcd1796d22342aaa6ea85702434b1186483674a,"`createTable`, `useTable`, `injectTable`, etc.
+New `tableOptions` function for making sharing common table options among multiple table instances easier","feat: follow other tanstack naming conventions
+","diff --git a/packages/react-table/__tests__/features/Visibility.test.tsx b/packages/react-table/__tests__/features/Visibility.test.tsx
+index e121a94..c0a2fba 100644
+--- a/packages/react-table/__tests__/features/Visibility.test.tsx
++++ b/packages/react-table/__tests__/features/Visibility.test.tsx
+@@ -3,12 +3,7 @@ import * as React from 'react'
+ // import { renderHook } from '@testing-library/react-hooks'
+ import * as RTL from '@testing-library/react'
+ import '@testing-library/jest-dom'
+-import {
+-  useReactTable,
+-  getCoreRowModel,
+-  ColumnDef,
+-  flexRender,
+-} from '../../src'
++import { useTable, getCoreRowModel, ColumnDef, flexRender } from '../../src'
+ 
+ type Person = {
+   firstName: string
+@@ -98,7 +93,7 @@ const defaultColumns: ColumnDef<Person>[] = [
+   },
+ ]
+ 
+-describe('useReactTable', () => {
++describe('useTable', () => {
+   it('can toggle column visibility', () => {
+     const Table = () => {
+       const [data] = React.useState<Person[]>(() => [...defaultData])
+@@ -109,7 +104,7 @@ describe('useReactTable', () => {
+ 
+       const rerender = React.useReducer(() => ({}), {})[1]
+ 
+-      const table = useReactTable({
++      const table = useTable({
+         data,
+         columns,
+         onColumnVisibilityChange: setColumnVisibility,
+",0,,140,991,1,1,140,991
+5634,0054758bbd2828d1fa8b2022df2b7c921d0206da,abeb5aaad09c540aebba6d7a2822b971fa59c2ab,"- Match project structure of Form and Store repos
+- Merging to main to minimise diffs with alpha","Move remaining folders
+","diff --git a/packages/react-table/__tests__/core/core.test.tsx b/packages/react-table/__tests__/core/core.test.tsx
+deleted file mode 100644
+index 042fcb6..0000000
+--- a/packages/react-table/__tests__/core/core.test.tsx
++++ /dev/null
+@@ -1,266 +0,0 @@
+-import * as React from 'react'
+-
+-import { act, renderHook } from '@testing-library/react-hooks'
+-import * as RTL from '@testing-library/react'
+-import {
+-  useReactTable,
+-  getCoreRowModel,
+-  ColumnDef,
+-  flexRender,
+-} from '../../src'
+-
+-type Person = {
+-  firstName: string
+-  lastName: string
+-  age: number
+-  visits: number
+-  status: string
+-  progress: number
+-}
+-
+-const defaultData: Person[] = [
+-  {
+-    firstName: 'tanner',
+-    lastName: 'linsley',
+-    age: 29,
+-    visits: 100,
+-    status: 'In Relationship',
+-    progress: 50,
+-  },
+-  {
+-    firstName: 'derek',
+-    lastName: 'perkins',
+-    age: 40,
+-    visits: 40,
+-    status: 'Single',
+-    progress: 80,
+-  },
+-  {
+-    firstName: 'joe',
+-    lastName: 'bergevin',
+-    age: 45,
+-    visits: 20,
+-    status: 'Complicated',
+-    progress: 10,
+-  },
+-]
+-
+-const defaultColumns: ColumnDef<Person>[] = [
+-  {
+-    header: 'Name',
+-    footer: props => props.column.id,
+-    columns: [
+-      {
+-        accessorKey: 'firstName',
+-        cell: info => info.renderValue(),
+-        footer: props => props.column.id,
+-      },
+-      {
+-        accessorFn: row => row.lastName,
+-        id: 'lastName',
+-        cell: info => info.renderValue(),
+-        header: () => <span>Last Name</span>,
+-        footer: props => props.column.id,
+-      },
+-    ],
+-  },
+-  {
+-    header: 'Info',
+-    footer: props => props.column.id,
+-    columns: [
+-      {
+-        accessorKey: 'age',
+-        header: () => 'Age',
+-        footer: props => props.column.id,
+-      },
+-      {
+-        header: 'More Info',
+-        columns: [
+-          {
+-            accessorKey: 'visits',
+-            header: () => <span>Visits</span>,
+-            footer: props => props.column.id,
+-          },
+-          {
+-            accessorKey: 'status',
+-            header: 'Status',
+-            footer: props => props.column.id,
+-          },
+-          {
+-            accessorKey: 'progress',
+-            header: 'Profile Progress',
+-            footer: props => props.column.id,
+-          },
+-        ],
+-      },
+-    ],
+-  },
+-]
+-
+-describe('core', () => {
+-  it('renders a table with markup', () => {
+-    const Table = () => {
+-      const [data] = React.useState<Person[]>(() => [...defaultData])
+-      const [columns] = React.useState<typeof defaultColumns>(() => [
+-        ...defaultColumns,
+-      ])
+-      const [columnVisibility, setColumnVisibility] = React.useState({})
+-
+-      const rerender = React.useReducer(() => ({}), {})[1]
+-
+-      const table = useReactTable({
+-        data,
+-        columns,
+-        onColumnVisibilityChange: setColumnVisibility,
+-        state: {
+-          columnVisibility,
+-        },
+-        getCoreRowModel: getCoreRowModel(),
+-        // debug: true,
+-      })
+-
+-      return (
+-        <div className=""p-2"">
+-          <table>
+-            <thead>
+-              {table.getHeaderGroups().map(headerGroup => (
+-                <tr key={headerGroup.id}>
+-                  {headerGroup.headers.map(header => (
+-                    <th key={header.id} colSpan={header.colSpan}>
+-                      {header.isPlaceholder
+-                        ? null
+-                        : flexRender(
+-                            header.column.columnDef.header,
+-                            header.getContext()
+-                          )}
+-                    </th>
+-                  ))}
+-                </tr>
+-              ))}
+-            </thead>
+-            <tbody>
+-              {table.getRowModel().rows.map(row => (
+-                <tr key={row.id}>
+-                  {row.getVisibleCells().map(cell => (
+-                    <td key={cell.id}>
+-                      {flexRender(
+-                        cell.column.columnDef.cell,
+-                        cell.getContext()
+-                      )}
+-                    </td>
+-                  ))}
+-                </tr>
+-              ))}
+-            </tbody>
+-            <tfoot>
+-              {table.getFooterGroups().map(footerGroup => (
+-                <tr key={footerGroup.id}>
+-                  {footerGroup.headers.map(header => (
+-                    <th key={header.id} colSpan={header.colSpan}>
+-                      {header.isPlaceholder
+-                        ? null
+-                        : flexRender(
+-                            header.column.columnDef.footer,
+-                            header.getContext()
+-                          )}
+-                    </th>
+-                  ))}
+-                </tr>
+-              ))}
+-            </tfoot>
+-          </table>
+-          <div className=""h-4"" />
+-          <button onClick={() => rerender()} className=""border p-2"">
+-            Rerender
+-          </button>
+-        </div>
+-      )
+-    }
+-
+-    // let api: any;
+-
+-    const rendered = RTL.render(<Table />)
+-
+-    // RTL.screen.logTestingPlaygroundURL()
+-
+-    RTL.screen.getByRole('table')
+-    expect(RTL.screen.getAllByRole('rowgroup').length).toEqual(3)
+-    expect(RTL.screen.getAllByRole('row').length).toEqual(9)
+-    expect(RTL.screen.getAllByRole('columnheader').length).toEqual(24)
+-    expect(RTL.screen.getAllByRole('cell').length).toEqual(18)
+-
+-    expect(
+-      Array.from(rendered.container.querySelectorAll('thead > tr')).map(d =>
+-        Array.from(d.querySelectorAll('th')).map(d => [
+-          d.innerHTML,
+-          d.getAttribute('colspan'),
+-        ])
+-      )
+-    ).toMatchSnapshot()
+-
+-    expect(
+-      Array.from(rendered.container.querySelectorAll('tbody > tr')).map(d =>
+-        Array.from(d.querySelectorAll('td')).map(d => d.innerHTML)
+-      )
+-    ).toMatchSnapshot()
+-
+-    expect(
+-      Array.from(rendered.container.querySelectorAll('tfoot > tr')).map(d =>
+-        Array.from(d.querySelectorAll('th')).map(d => [
+-          d.innerHTML,
+-          d.getAttribute('colspan'),
+-        ])
+-      )
+-    ).toMatchSnapshot()
+-  })
+-
+-  it('has a stable api', () => {
+-    const { result } = renderHook(() => {
+-      const rerender = React.useReducer(() => ({}), {})[1]
+-
+-      const table = useReactTable({
+-        data: defaultData,
+-        columns: defaultColumns,
+-        getCoreRowModel: getCoreRowModel(),
+-      })
+-
+-      return {
+-        table,
+-        rerender,
+-      }
+-    })
+-
+-    const prev = result.current
+-
+-    act(() => {
+-      result.current.rerender()
+-    })
+-
+-    const next = result.current
+-
+-    expect(prev).toStrictEqual(next)
+-  })
+-
+-  it('can return the rowModel', () => {
+-    const { result } = renderHook(() => {
+-      const rerender = React.useReducer(() => ({}), {})[1]
+-
+-      const table = useReactTable({
+-        data: defaultData,
+-        columns: defaultColumns,
+-        getCoreRowModel: getCoreRowModel(),
+-      })
+-
+-      return {
+-        table,
+-        rerender,
+-      }
+-    })
+-
+-    const rowModel = result.current.table.getRowModel()
+-
+-    expect(rowModel.rows.length).toEqual(3)
+-    expect(rowModel.flatRows.length).toEqual(3)
+-    expect(rowModel.rowsById['2']?.original).toEqual(defaultData[2])
+-  })
+-})
+
+diff --git a/packages/react-table/__tests__/features/Visibility.test.tsx b/packages/react-table/__tests__/features/Visibility.test.tsx
+deleted file mode 100644
+index e121a94..0000000
+--- a/packages/react-table/__tests__/features/Visibility.test.tsx
++++ /dev/null
+@@ -1,263 +0,0 @@
+-import * as React from 'react'
+-
+-// import { renderHook } from '@testing-library/react-hooks'
+-import * as RTL from '@testing-library/react'
+-import '@testing-library/jest-dom'
+-import {
+-  useReactTable,
+-  getCoreRowModel,
+-  ColumnDef,
+-  flexRender,
+-} from '../../src'
+-
+-type Person = {
+-  firstName: string
+-  lastName: string
+-  age: number
+-  visits: number
+-  status: string
+-  progress: number
+-}
+-
+-const defaultData: Person[] = [
+-  {
+-    firstName: 'tanner',
+-    lastName: 'linsley',
+-    age: 29,
+-    visits: 100,
+-    status: 'In Relationship',
+-    progress: 50,
+-  },
+-  {
+-    firstName: 'derek',
+-    lastName: 'perkins',
+-    age: 40,
+-    visits: 40,
+-    status: 'Single',
+-    progress: 80,
+-  },
+-  {
+-    firstName: 'joe',
+-    lastName: 'bergevin',
+-    age: 45,
+-    visits: 20,
+-    status: 'Complicated',
+-    progress: 10,
+-  },
+-]
+-
+-const defaultColumns: ColumnDef<Person>[] = [
+-  {
+-    header: 'Name',
+-    footer: props => props.column.id,
+-    columns: [
+-      {
+-        accessorKey: 'firstName',
+-        cell: props => props.renderValue(),
+-        footer: props => props.column.id,
+-      },
+-      {
+-        accessorFn: row => row.lastName,
+-        id: 'lastName',
+-        cell: props => props.renderValue(),
+-        header: () => <span>Last Name</span>,
+-        footer: props => props.column.id,
+-      },
+-    ],
+-  },
+-  {
+-    header: 'Info',
+-    footer: props => props.column.id,
+-    columns: [
+-      {
+-        accessorKey: 'age',
+-        header: () => 'Age',
+-        footer: props => props.column.id,
+-      },
+-      {
+-        header: 'More Info',
+-        columns: [
+-          {
+-            accessorKey: 'visits',
+-            header: () => <span>Visits</span>,
+-            footer: props => props.column.id,
+-          },
+-          {
+-            accessorKey: 'status',
+-            header: 'Status',
+-            footer: props => props.column.id,
+-          },
+-          {
+-            accessorKey: 'progress',
+-            header: 'Profile Progress',
+-            footer: props => props.column.id,
+-          },
+-        ],
+-      },
+-    ],
+-  },
+-]
+-
+-describe('useReactTable', () => {
+-  it('can toggle column visibility', () => {
+-    const Table = () => {
+-      const [data] = React.useState<Person[]>(() => [...defaultData])
+-      const [columns] = React.useState<typeof defaultColumns>(() => [
+-        ...defaultColumns,
+-      ])
+-      const [columnVisibility, setColumnVisibility] = React.useState({})
+-
+-      const rerender = React.useReducer(() => ({}), {})[1]
+-
+-      const table = useReactTable({
+-        data,
+-        columns,
+-        onColumnVisibilityChange: setColumnVisibility,
+-        state: {
+-          columnVisibility,
+-        },
+-        getCoreRowModel: getCoreRowModel(),
+-        // debug: true,
+-      })
+-
+-      return (
+-        <div className=""p-2"">
+-          <div className=""inline-block border border-black shadow rounded"">
+-            <div className=""px-1 border-b border-black"">
+-              <label>
+-                <input
+-                  {...{
+-                    type: 'checkbox',
+-                    checked: table.getIsAllColumnsVisible(),
+-                    onChange: table.getToggleAllColumnsVisibilityHandler(),
+-                  }}
+-                />{' '}
+-                Toggle All
+-              </label>
+-            </div>
+-            {table.getAllLeafColumns().map(column => {
+-              return (
+-                <div key={column.id} className=""px-1"">
+-                  <label>
+-                    <input
+-                      {...{
+-                        type: 'checkbox',
+-                        checked: column.getIsVisible(),
+-                        onChange: column.getToggleVisibilityHandler(),
+-                      }}
+-                    />{' '}
+-                    {column.id}
+-                  </label>
+-                </div>
+-              )
+-            })}
+-          </div>
+-          <div className=""h-4"" />
+-          <table>
+-            <thead>
+-              {table.getHeaderGroups().map(headerGroup => (
+-                <tr key={headerGroup.id}>
+-                  {headerGroup.headers.map(header => (
+-                    <th key={header.id} colSpan={header.colSpan}>
+-                      {header.isPlaceholder
+-                        ? null
+-                        : flexRender(
+-                            header.column.columnDef.header,
+-                            header.getContext()
+-                          )}
+-                    </th>
+-                  ))}
+-                </tr>
+-              ))}
+-            </thead>
+-            <tbody>
+-              {table.getRowModel().rows.map(row => (
+-                <tr key={row.id}>
+-                  {row.getVisibleCells().map(cell => (
+-                    <td key={cell.id}>
+-                      {flexRender(
+-                        cell.column.columnDef.cell,
+-                        cell.getContext()
+-                      )}
+-                    </td>
+-                  ))}
+-                </tr>
+-              ))}
+-            </tbody>
+-            <tfoot>
+-              {table.getFooterGroups().map(footerGroup => (
+-                <tr key={footerGroup.id}>
+-                  {footerGroup.headers.map(header => (
+-                    <th key={header.id} colSpan={header.colSpan}>
+-                      {header.isPlaceholder
+-                        ? null
+-                        : flexRender(
+-                            header.column.columnDef.footer,
+-                            header.getContext()
+-                          )}
+-                    </th>
+-                  ))}
+-                </tr>
+-              ))}
+-            </tfoot>
+-          </table>
+-          <div className=""h-4"" />
+-          <button onClick={() => rerender()} className=""border p-2"">
+-            Rerender
+-          </button>
+-        </div>
+-      )
+-    }
+-
+-    // let api: any;
+-
+-    const rendered = RTL.render(<Table />)
+-
+-    // RTL.screen.logTestingPlaygroundURL()
+-
+-    let snapIndex = 0
+-
+-    const snap = (name: string) => {
+-      expect({
+-        headers: Array.from(
+-          rendered.container.querySelectorAll('thead > tr')
+-        ).map(d =>
+-          Array.from(d.querySelectorAll('th')).map(d => [
+-            d.innerHTML,
+-            d.getAttribute('colspan'),
+-          ])
+-        ),
+-        rows: Array.from(rendered.container.querySelectorAll('tbody > tr')).map(
+-          d => Array.from(d.querySelectorAll('td')).map(d => d.innerHTML)
+-        ),
+-        footers: Array.from(
+-          rendered.container.querySelectorAll('tfoot > tr')
+-        ).map(d =>
+-          Array.from(d.querySelectorAll('th')).map(d => [
+-            d.innerHTML,
+-            d.getAttribute('colspan'),
+-          ])
+-        ),
+-      }).toMatchSnapshot(`${snapIndex++} - ${name}`)
+-    }
+-
+-    RTL.fireEvent.click(rendered.getByLabelText('Toggle All'))
+-
+-    snap('after toggling all off')
+-
+-    RTL.fireEvent.click(rendered.getByLabelText('Toggle All'))
+-
+-    snap('after toggling all on')
+-
+-    RTL.fireEvent.click(rendered.getByLabelText('firstName'))
+-
+-    snap('after toggling firstName off')
+-
+-    RTL.fireEvent.click(rendered.getByLabelText('firstName'))
+-    RTL.fireEvent.click(rendered.getByLabelText('visits'))
+-    RTL.fireEvent.click(rendered.getByLabelText('status'))
+-    RTL.fireEvent.click(rendered.getByLabelText('progress'))
+-
+-    snap('after toggling More Info off')
+-  })
+-})
+
+diff --git a/packages/react-table/tests/core/core.test.tsx b/packages/react-table/tests/core/core.test.tsx
+new file mode 100644
+index 0000000..d6f8e76
+--- /dev/null
++++ b/packages/react-table/tests/core/core.test.tsx
+@@ -0,0 +1,266 @@
++import * as React from 'react'
++import { describe, expect, it } from 'vitest'
++import { act, renderHook } from '@testing-library/react-hooks'
++import * as RTL from '@testing-library/react'
++import {
++  useReactTable,
++  getCoreRowModel,
++  ColumnDef,
++  flexRender,
++} from '../../src'
++
++type Person = {
++  firstName: string
++  lastName: string
++  age: number
++  visits: number
++  status: string
++  progress: number
++}
++
++const defaultData: Person[] = [
++  {
++    firstName: 'tanner',
++    lastName: 'linsley',
++    age: 29,
++    visits: 100,
++    status: 'In Relationship',
++    progress: 50,
++  },
++  {
++    firstName: 'derek',
++    lastName: 'perkins',
++    age: 40,
++    visits: 40,
++    status: 'Single',
++    progress: 80,
++  },
++  {
++    firstName: 'joe',
++    lastName: 'bergevin',
++    age: 45,
++    visits: 20,
++    status: 'Complicated',
++    progress: 10,
++  },
++]
++
++const defaultColumns: ColumnDef<Person>[] = [
++  {
++    header: 'Name',
++    footer: props => props.column.id,
++    columns: [
++      {
++        accessorKey: 'firstName',
++        cell: info => info.renderValue(),
++        footer: props => props.column.id,
++      },
++      {
++        accessorFn: row => row.lastName,
++        id: 'lastName',
++        cell: info => info.renderValue(),
++        header: () => <span>Last Name</span>,
++        footer: props => props.column.id,
++      },
++    ],
++  },
++  {
++    header: 'Info',
++    footer: props => props.column.id,
++    columns: [
++      {
++        accessorKey: 'age',
++        header: () => 'Age',
++        footer: props => props.column.id,
++      },
++      {
++        header: 'More Info',
++        columns: [
++          {
++            accessorKey: 'visits',
++            header: () => <span>Visits</span>,
++            footer: props => props.column.id,
++          },
++          {
++            accessorKey: 'status',
++            header: 'Status',
++            footer: props => props.column.id,
++          },
++          {
++            accessorKey: 'progress',
++            header: 'Profile Progress',
++            footer: props => props.column.id,
++          },
++        ],
++      },
++    ],
++  },
++]
++
++describe('core', () => {
++  it('renders a table with markup', () => {
++    const Table = () => {
++      const [data] = React.useState<Person[]>(() => [...defaultData])
++      const [columns] = React.useState<typeof defaultColumns>(() => [
++        ...defaultColumns,
++      ])
++      const [columnVisibility, setColumnVisibility] = React.useState({})
++
++      const rerender = React.useReducer(() => ({}), {})[1]
++
++      const table = useReactTable({
++        data,
++        columns,
++        onColumnVisibilityChange: setColumnVisibility,
++        state: {
++          columnVisibility,
++        },
++        getCoreRowModel: getCoreRowModel(),
++        // debug: true,
++      })
++
++      return (
++        <div className=""p-2"">
++          <table>
++            <thead>
++              {table.getHeaderGroups().map(headerGroup => (
++                <tr key={headerGroup.id}>
++                  {headerGroup.headers.map(header => (
++                    <th key={header.id} colSpan={header.colSpan}>
++                      {header.isPlaceholder
++                        ? null
++                        : flexRender(
++                            header.column.columnDef.header,
++                            header.getContext()
++                          )}
++                    </th>
++                  ))}
++                </tr>
++              ))}
++            </thead>
++            <tbody>
++              {table.getRowModel().rows.map(row => (
++                <tr key={row.id}>
++                  {row.getVisibleCells().map(cell => (
++                    <td key={cell.id}>
++                      {flexRender(
++                        cell.column.columnDef.cell,
++                        cell.getContext()
++                      )}
++                    </td>
++                  ))}
++                </tr>
++              ))}
++            </tbody>
++            <tfoot>
++              {table.getFooterGroups().map(footerGroup => (
++                <tr key={footerGroup.id}>
++                  {footerGroup.headers.map(header => (
++                    <th key={header.id} colSpan={header.colSpan}>
++                      {header.isPlaceholder
++                        ? null
++                        : flexRender(
++                            header.column.columnDef.footer,
++                            header.getContext()
++                          )}
++                    </th>
++                  ))}
++                </tr>
++              ))}
++            </tfoot>
++          </table>
++          <div className=""h-4"" />
++          <button onClick={() => rerender()} className=""border p-2"">
++            Rerender
++          </button>
++        </div>
++      )
++    }
++
++    // let api: any;
++
++    const rendered = RTL.render(<Table />)
++
++    // RTL.screen.logTestingPlaygroundURL()
++
++    RTL.screen.getByRole('table')
++    expect(RTL.screen.getAllByRole('rowgroup').length).toEqual(3)
++    expect(RTL.screen.getAllByRole('row').length).toEqual(9)
++    expect(RTL.screen.getAllByRole('columnheader').length).toEqual(24)
++    expect(RTL.screen.getAllByRole('cell').length).toEqual(18)
++
++    expect(
++      Array.from(rendered.container.querySelectorAll('thead > tr')).map(d =>
++        Array.from(d.querySelectorAll('th')).map(d => [
++          d.innerHTML,
++          d.getAttribute('colspan'),
++        ])
++      )
++    ).toMatchSnapshot()
++
++    expect(
++      Array.from(rendered.container.querySelectorAll('tbody > tr')).map(d =>
++        Array.from(d.querySelectorAll('td')).map(d => d.innerHTML)
++      )
++    ).toMatchSnapshot()
++
++    expect(
++      Array.from(rendered.container.querySelectorAll('tfoot > tr')).map(d =>
++        Array.from(d.querySelectorAll('th')).map(d => [
++          d.innerHTML,
++          d.getAttribute('colspan'),
++        ])
++      )
++    ).toMatchSnapshot()
++  })
++
++  it('has a stable api', () => {
++    const { result } = renderHook(() => {
++      const rerender = React.useReducer(() => ({}), {})[1]
++
++      const table = useReactTable({
++        data: defaultData,
++        columns: defaultColumns,
++        getCoreRowModel: getCoreRowModel(),
++      })
++
++      return {
++        table,
++        rerender,
++      }
++    })
++
++    const prev = result.current
++
++    act(() => {
++      result.current.rerender()
++    })
++
++    const next = result.current
++
++    expect(prev).toStrictEqual(next)
++  })
++
++  it('can return the rowModel', () => {
++    const { result } = renderHook(() => {
++      const rerender = React.useReducer(() => ({}), {})[1]
++
++      const table = useReactTable({
++        data: defaultData,
++        columns: defaultColumns,
++        getCoreRowModel: getCoreRowModel(),
++      })
++
++      return {
++        table,
++        rerender,
++      }
++    })
++
++    const rowModel = result.current.table.getRowModel()
++
++    expect(rowModel.rows.length).toEqual(3)
++    expect(rowModel.flatRows.length).toEqual(3)
++    expect(rowModel.rowsById['2']?.original).toEqual(defaultData[2])
++  })
++})
+
+diff --git a/packages/react-table/tests/features/Visibility.test.tsx b/packages/react-table/tests/features/Visibility.test.tsx
+new file mode 100644
+index 0000000..7d13d78
+--- /dev/null
++++ b/packages/react-table/tests/features/Visibility.test.tsx
+@@ -0,0 +1,262 @@
++import * as React from 'react'
++import { describe, expect, it } from 'vitest'
++// import { renderHook } from '@testing-library/react-hooks'
++import * as RTL from '@testing-library/react'
++import {
++  useReactTable,
++  getCoreRowModel,
++  ColumnDef,
++  flexRender,
++} from '../../src'
++
++type Person = {
++  firstName: string
++  lastName: string
++  age: number
++  visits: number
++  status: string
++  progress: number
++}
++
++const defaultData: Person[] = [
++  {
++    firstName: 'tanner',
++    lastName: 'linsley',
++    age: 29,
++    visits: 100,
++    status: 'In Relationship',
++    progress: 50,
++  },
++  {
++    firstName: 'derek',
++    lastName: 'perkins',
++    age: 40,
++    visits: 40,
++    status: 'Single',
++    progress: 80,
++  },
++  {
++    firstName: 'joe',
++    lastName: 'bergevin',
++    age: 45,
++    visits: 20,
++    status: 'Complicated',
++    progress: 10,
++  },
++]
++
++const defaultColumns: ColumnDef<Person>[] = [
++  {
++    header: 'Name',
++    footer: props => props.column.id,
++    columns: [
++      {
++        accessorKey: 'firstName',
++        cell: props => props.renderValue(),
++        footer: props => props.column.id,
++      },
++      {
++        accessorFn: row => row.lastName,
++        id: 'lastName',
++        cell: props => props.renderValue(),
++        header: () => <span>Last Name</span>,
++        footer: props => props.column.id,
++      },
++    ],
++  },
++  {
++    header: 'Info',
++    footer: props => props.column.id,
++    columns: [
++      {
++        accessorKey: 'age',
++        header: () => 'Age',
++        footer: props => props.column.id,
++      },
++      {
++        header: 'More Info',
++        columns: [
++          {
++            accessorKey: 'visits',
++            header: () => <span>Visits</span>,
++            footer: props => props.column.id,
++          },
++          {
++            accessorKey: 'status',
++            header: 'Status',
++            footer: props => props.column.id,
++          },
++          {
++            accessorKey: 'progress',
++            header: 'Profile Progress',
++            footer: props => props.column.id,
++          },
++        ],
++      },
++    ],
++  },
++]
++
++describe('useReactTable', () => {
++  it('can toggle column visibility', () => {
++    const Table = () => {
++      const [data] = React.useState<Person[]>(() => [...defaultData])
++      const [columns] = React.useState<typeof defaultColumns>(() => [
++        ...defaultColumns,
++      ])
++      const [columnVisibility, setColumnVisibility] = React.useState({})
++
++      const rerender = React.useReducer(() => ({}), {})[1]
++
++      const table = useReactTable({
++        data,
++        columns,
++        onColumnVisibilityChange: setColumnVisibility,
++        state: {
++          columnVisibility,
++        },
++        getCoreRowModel: getCoreRowModel(),
++        // debug: true,
++      })
++
++      return (
++        <div className=""p-2"">
++          <div className=""inline-block border border-black shadow rounded"">
++            <div className=""px-1 border-b border-black"">
++              <label>
++                <input
++                  {...{
++                    type: 'checkbox',
++                    checked: table.getIsAllColumnsVisible(),
++                    onChange: table.getToggleAllColumnsVisibilityHandler(),
++                  }}
++                />{' '}
++                Toggle All
++              </label>
++            </div>
++            {table.getAllLeafColumns().map(column => {
++              return (
++                <div key={column.id} className=""px-1"">
++                  <label>
++                    <input
++                      {...{
++                        type: 'checkbox',
++                        checked: column.getIsVisible(),
++                        onChange: column.getToggleVisibilityHandler(),
++                      }}
++                    />{' '}
++                    {column.id}
++                  </label>
++                </div>
++              )
++            })}
++          </div>
++          <div className=""h-4"" />
++          <table>
++            <thead>
++              {table.getHeaderGroups().map(headerGroup => (
++                <tr key={headerGroup.id}>
++                  {headerGroup.headers.map(header => (
++                    <th key={header.id} colSpan={header.colSpan}>
++                      {header.isPlaceholder
++                        ? null
++                        : flexRender(
++                            header.column.columnDef.header,
++                            header.getContext()
++                          )}
++                    </th>
++                  ))}
++                </tr>
++              ))}
++            </thead>
++            <tbody>
++              {table.getRowModel().rows.map(row => (
++                <tr key={row.id}>
++                  {row.getVisibleCells().map(cell => (
++                    <td key={cell.id}>
++                      {flexRender(
++                        cell.column.columnDef.cell,
++                        cell.getContext()
++                      )}
++                    </td>
++                  ))}
++                </tr>
++              ))}
++            </tbody>
++            <tfoot>
++              {table.getFooterGroups().map(footerGroup => (
++                <tr key={footerGroup.id}>
++                  {footerGroup.headers.map(header => (
++                    <th key={header.id} colSpan={header.colSpan}>
++                      {header.isPlaceholder
++                        ? null
++                        : flexRender(
++                            header.column.columnDef.footer,
++                            header.getContext()
++                          )}
++                    </th>
++                  ))}
++                </tr>
++              ))}
++            </tfoot>
++          </table>
++          <div className=""h-4"" />
++          <button onClick={() => rerender()} className=""border p-2"">
++            Rerender
++          </button>
++        </div>
++      )
++    }
++
++    // let api: any;
++
++    const rendered = RTL.render(<Table />)
++
++    // RTL.screen.logTestingPlaygroundURL()
++
++    let snapIndex = 0
++
++    const snap = (name: string) => {
++      expect({
++        headers: Array.from(
++          rendered.container.querySelectorAll('thead > tr')
++        ).map(d =>
++          Array.from(d.querySelectorAll('th')).map(d => [
++            d.innerHTML,
++            d.getAttribute('colspan'),
++          ])
++        ),
++        rows: Array.from(rendered.container.querySelectorAll('tbody > tr')).map(
++          d => Array.from(d.querySelectorAll('td')).map(d => d.innerHTML)
++        ),
++        footers: Array.from(
++          rendered.container.querySelectorAll('tfoot > tr')
++        ).map(d =>
++          Array.from(d.querySelectorAll('th')).map(d => [
++            d.innerHTML,
++            d.getAttribute('colspan'),
++          ])
++        ),
++      }).toMatchSnapshot(`${snapIndex++} - ${name}`)
++    }
++
++    RTL.fireEvent.click(rendered.getByLabelText('Toggle All'))
++
++    snap('after toggling all off')
++
++    RTL.fireEvent.click(rendered.getByLabelText('Toggle All'))
++
++    snap('after toggling all on')
++
++    RTL.fireEvent.click(rendered.getByLabelText('firstName'))
++
++    snap('after toggling firstName off')
++
++    RTL.fireEvent.click(rendered.getByLabelText('firstName'))
++    RTL.fireEvent.click(rendered.getByLabelText('visits'))
++    RTL.fireEvent.click(rendered.getByLabelText('status'))
++    RTL.fireEvent.click(rendered.getByLabelText('progress'))
++
++    snap('after toggling More Info off')
++  })
++})
+",0,,62,10163,4,5,45,301

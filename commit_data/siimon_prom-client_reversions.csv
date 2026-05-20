@@ -1,0 +1,3852 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+149,a6290af975aac1634fb3c850a4f9c32c64cea393,a6290af975aac1634fb3c850a4f9c32c64cea393,"`Error` only expects one argument, the `message`, which means that the invalid values were lost in the second argument.","Include invalid values in the error messages
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index c57b5e9..d35f74a 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -34,19 +34,25 @@ describe('counter', () => {
+ 				const fn = function() {
+ 					instance.inc(1, 'blah');
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 			it('should not allow invalid date as timestamp', () => {
+ 				const fn = function() {
+ 					instance.inc(1, new Date('blah'));
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 			it('should not be possible to decrease a counter', () => {
+ 				const fn = function() {
+ 					instance.inc(-100);
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
++			});
++			it('should throw an error when the value is not a number', () => {
++				const fn = () => {
++					instance.inc('3ms');
++				};
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 			it('should handle incrementing with 0', () => {
+ 				instance.inc(0);
+@@ -86,7 +92,7 @@ describe('counter', () => {
+ 					const fn = function() {
+ 						instance.labels('GET').inc();
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 
+ 				it('should increment label value with provided value', () => {
+@@ -125,19 +131,25 @@ describe('counter', () => {
+ 			const fn = function() {
+ 				instance.inc(1, 'blah');
+ 			};
+-			expect(fn).toThrowError(Error);
++			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 		it('should not allow invalid date as timestamp', () => {
+ 			const fn = function() {
+ 				instance.inc(1, new Date('blah'));
+ 			};
+-			expect(fn).toThrowError(Error);
++			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 		it('should not be possible to decrease a counter', () => {
+ 			const fn = function() {
+ 				instance.inc(-100);
+ 			};
+-			expect(fn).toThrowError(Error);
++			expect(fn).toThrowErrorMatchingSnapshot();
++		});
++		it('should throw an error when the value is not a number', () => {
++			const fn = () => {
++				instance.inc('3ms');
++			};
++			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 		it('should handle incrementing with 0', () => {
+ 			instance.inc(0);
+@@ -178,14 +190,14 @@ describe('counter', () => {
+ 				const fn = function() {
+ 					instance.labels('GET').inc();
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should throw error if label lengths does not match', () => {
+ 				const fn = function() {
+ 					instance.labels('GET').inc();
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should increment label value with provided value', () => {
+
+diff --git a/test/gaugeTest.js b/test/gaugeTest.js
+index 54bf6df..b69b1c2 100644
+--- a/test/gaugeTest.js
++++ b/test/gaugeTest.js
+@@ -61,7 +61,7 @@ describe('gauge', () => {
+ 				const fn = function() {
+ 					instance.set('asd');
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			describe('with labels', () => {
+@@ -131,13 +131,13 @@ describe('gauge', () => {
+ 					const fn = function() {
+ 						instance.labels('200').set(500, 'blah');
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 				it('should not allow invalid dates', () => {
+ 					const fn = function() {
+ 						instance.labels('200').set(500, new Date('blah'));
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 				it('should be able to increment', () => {
+ 					instance.labels('200').inc(1, 1485392700000);
+@@ -200,7 +200,7 @@ describe('gauge', () => {
+ 				const fn = function() {
+ 					instance.set('asd');
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should init to 0', () => {
+@@ -286,13 +286,13 @@ describe('gauge', () => {
+ 					const fn = function() {
+ 						instance.labels('200').set(500, 'blah');
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 				it('should not allow invalid dates', () => {
+ 					const fn = function() {
+ 						instance.labels('200').set(500, new Date('blah'));
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 				it('should be able to increment', () => {
+ 					instance.labels('200').inc(1, 1485392700000);
+@@ -357,13 +357,13 @@ describe('gauge', () => {
+ 				const fn = function() {
+ 					instance.labels('200').set(500, 'blah');
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 			it('should not allow invalid dates', () => {
+ 				const fn = function() {
+ 					instance.labels('200').set(500, new Date('blah'));
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 			it('should be able to increment', () => {
+ 				instance.labels('200').inc(1, 1485392700000);
+
+diff --git a/test/histogramTest.js b/test/histogramTest.js
+index 957e893..cf2419f 100644
+--- a/test/histogramTest.js
++++ b/test/histogramTest.js
+@@ -96,7 +96,7 @@ describe('histogram', () => {
+ 			const fn = function() {
+ 				instance.observe('asd');
+ 			};
+-			expect(fn).toThrowError(Error);
++			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 
+ 		it('should allow custom labels', () => {
+@@ -110,7 +110,7 @@ describe('histogram', () => {
+ 			const fn = function() {
+ 				new Histogram('name', 'help', ['le']);
+ 			};
+-			expect(fn).toThrowError(Error);
++			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 
+ 		it('should observe value if outside most upper bound', () => {
+@@ -156,7 +156,7 @@ describe('histogram', () => {
+ 				const fn = function() {
+ 					instance.labels('get', '500').observe(4);
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should start a timer', () => {
+@@ -309,7 +309,7 @@ describe('histogram', () => {
+ 				const fn = function() {
+ 					instance.observe('asd');
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should allow custom labels', () => {
+@@ -327,7 +327,7 @@ describe('histogram', () => {
+ 				const fn = function() {
+ 					new Histogram({ name: 'name', help: 'help', labelNames: ['le'] });
+ 				};
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrowErrorMatchingSnapshot();
+ 			});
+ 
+ 			it('should observe value if outside most upper bound', () => {
+@@ -382,7 +382,7 @@ describe('histogram', () => {
+ 					const fn = function() {
+ 						instance.labels('get', '500').observe(4);
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 
+ 				it('should start a timer', () => {
+
+diff --git a/test/summaryTest.js b/test/summaryTest.js
+index 12a1187..39dd400 100644
+--- a/test/summaryTest.js
++++ b/test/summaryTest.js
+@@ -136,6 +136,13 @@ describe('summary', () => {
+ 				});
+ 			});
+ 
++			it('should throw an error when the value is not a number', () => {
++				const fn = () => {
++					instance.observe('3ms');
++				};
++				expect(fn).toThrowErrorMatchingSnapshot();
++			});
++
+ 			describe('labels', () => {
+ 				beforeEach(() => {
+ 					globalRegistry.clear();
+@@ -188,7 +195,7 @@ describe('summary', () => {
+ 					const fn = function() {
+ 						instance.labels('GET').observe();
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 
+ 				it('should start a timer', () => {
+@@ -444,7 +451,7 @@ describe('summary', () => {
+ 					const fn = function() {
+ 						instance.labels('GET').observe();
+ 					};
+-					expect(fn).toThrowError(Error);
++					expect(fn).toThrowErrorMatchingSnapshot();
+ 				});
+ 
+ 				it('should start a timer', () => {
+",0,,14,201,4,1,14,201
+190,c1c1179bcfffc0a0964ac2ea84c1ee5666ab24de,9df31104f7d059417cd30e6f603633c2f9d74e26,"This is the fix for #189 
+
+fixes #189","Validate labels when inc is called on counter
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index 9454a9b..2b37b41 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -88,6 +88,13 @@ describe('counter', () => {
+ 					expect(values).toHaveLength(2);
+ 				});
+ 
++				it(""should throw error if one of lables isn't in labelNames list provided to constructor"", () => {
++					const fn = function() {
++						instance.inc({ method: 'GET', endpoint: '/test', status: 500 });
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++
+ 				it('should throw error if label lengths does not match', () => {
+ 					const fn = function() {
+ 						instance.labels('GET').inc();
+",0,,3,12,1,4,4,13
+242,444e7d01be748a5ad0c66cd6083ce99506f7f4e0,bfc7eb1d7f8afaefd1150150cb8c06372844e886,"This addresses #187
+
+This implements a `remove()` method on each metric type, based on [Prometheus ""Writing Client Libraries"" section on labels](https://prometheus.io/docs/instrumenting/writing_clientlibs/#labels)","Add remove() method for handling dynamic labels
+
+Fixes #187
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index 2b37b41..fbc185e 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -109,6 +109,46 @@ describe('counter', () => {
+ 				});
+ 			});
+ 
++			describe('remove', () => {
++				beforeEach(() => {
++					instance = new Counter('gauge_test_3', 'help', [
++						'method',
++						'endpoint'
++					]);
++					instance.labels('GET', '/test').inc();
++					instance.labels('POST', '/test').inc();
++				});
++
++				afterEach(() => {
++					globalRegistry.clear();
++				});
++
++				it('should remove matching label', () => {
++					instance.remove('POST', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(1);
++					expect(values[0].value).toEqual(1);
++					expect(values[0].labels.method).toEqual('GET');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].timestamp).toEqual(undefined);
++				});
++
++				it('should remove all labels', () => {
++					instance.remove('GET', '/test');
++					instance.remove('POST', '/test');
++
++					expect(instance.get().values).toHaveLength(0);
++				});
++
++				it('should throw error if label lengths does not match', () => {
++					const fn = function() {
++						instance.remove('GET');
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++			});
++
+ 			describe('empty labels', () => {
+ 				beforeEach(() => {
+ 					instance = new Counter('gauge_test_3', 'test');
+@@ -232,6 +272,48 @@ describe('counter', () => {
+ 			});
+ 		});
+ 	});
++
++	describe('remove', () => {
++		beforeEach(() => {
++			instance = new Counter({
++				name: 'gauge_test_3',
++				help: 'help',
++				labelNames: ['method', 'endpoint']
++			});
++			instance.inc({ method: 'GET', endpoint: '/test' });
++			instance.inc({ method: 'POST', endpoint: '/test' });
++		});
++
++		afterEach(() => {
++			globalRegistry.clear();
++		});
++
++		it('should remove matching label', () => {
++			instance.remove('POST', '/test');
++
++			const values = instance.get().values;
++			expect(values).toHaveLength(1);
++			expect(values[0].value).toEqual(1);
++			expect(values[0].labels.method).toEqual('GET');
++			expect(values[0].labels.endpoint).toEqual('/test');
++			expect(values[0].timestamp).toEqual(undefined);
++		});
++
++		it('should remove all labels', () => {
++			instance.remove('GET', '/test');
++			instance.remove('POST', '/test');
++
++			expect(instance.get().values).toHaveLength(0);
++		});
++
++		it('should throw error if label lengths does not match', () => {
++			const fn = function() {
++				instance.remove('GET');
++			};
++			expect(fn).toThrowErrorMatchingSnapshot();
++		});
++	});
++
+ 	describe('without registry', () => {
+ 		beforeEach(() => {
+ 			instance = new Counter({
+
+diff --git a/test/gaugeTest.js b/test/gaugeTest.js
+index 721970a..2bc3701 100644
+--- a/test/gaugeTest.js
++++ b/test/gaugeTest.js
+@@ -135,6 +135,32 @@ describe('gauge', () => {
+ 				});
+ 			});
+ 
++			describe('with remove', () => {
++				beforeEach(() => {
++					instance = new Gauge('name', 'help', ['code']);
++					instance.set({ code: '200' }, 20);
++					instance.set({ code: '400' }, 0);
++				});
++				it('should be able to remove matching label', () => {
++					instance.remove('200');
++					const values = instance.get().values;
++					expect(values.length).toEqual(1);
++					expect(values[0].labels.code).toEqual('400');
++					expect(values[0].value).toEqual(0);
++				});
++				it('should be able to remove all labels', () => {
++					instance.remove('200');
++					instance.remove('400');
++					expect(instance.get().values.length).toEqual(0);
++				});
++				it('should throw error if label lengths does not match', () => {
++					const fn = function() {
++						instance.remove('200', 'GET');
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++			});
++
+ 			describe('with timestamp', () => {
+ 				beforeEach(() => {
+ 					instance = new Gauge('name', 'help', ['code']);
+@@ -296,6 +322,30 @@ describe('gauge', () => {
+ 				});
+ 			});
+ 
++			describe('with remove', () => {
++				beforeEach(() => {
++					instance = new Gauge({
++						name: 'name',
++						help: 'help',
++						labelNames: ['code']
++					});
++					instance.set({ code: '200' }, 20);
++					instance.set({ code: '400' }, 0);
++				});
++				it('should be able to remove matching label', () => {
++					instance.remove('200');
++					const values = instance.get().values;
++					expect(values.length).toEqual(1);
++					expect(values[0].labels.code).toEqual('400');
++					expect(values[0].value).toEqual(0);
++				});
++				it('should be able to remove all labels', () => {
++					instance.remove('200');
++					instance.remove('400');
++					expect(instance.get().values.length).toEqual(0);
++				});
++			});
++
+ 			describe('with timestamp', () => {
+ 				beforeEach(() => {
+ 					instance = new Gauge('name', 'help', ['code']);
+
+diff --git a/test/histogramTest.js b/test/histogramTest.js
+index b639668..06989b3 100644
+--- a/test/histogramTest.js
++++ b/test/histogramTest.js
+@@ -223,6 +223,96 @@ describe('histogram', () => {
+ 				expect(startLabels).toEqual({ method: 'GET' });
+ 			});
+ 		});
++
++		describe('remove', () => {
++			beforeEach(() => {
++				instance = new Histogram(
++					'histogram_labels',
++					'Histogram with labels fn',
++					['method']
++				);
++			});
++
++			it('should remove matching label', () => {
++				instance.labels('POST').observe(3);
++				instance.labels('GET').observe(4);
++				instance.remove('POST');
++
++				const res = getValueByLeAndLabel(
++					5,
++					'method',
++					'GET',
++					instance.get().values
++				);
++				expect(res.value).toEqual(1);
++			});
++
++			it('should remove all labels', () => {
++				instance.labels('POST').observe(3);
++				instance.labels('GET').observe(4);
++				instance.remove('POST');
++				instance.remove('GET');
++
++				expect(instance.get().values).toHaveLength(0);
++			});
++
++			it('should throw error if label lengths does not match', () => {
++				const fn = function() {
++					instance.remove('GET', '/foo');
++				};
++				expect(fn).toThrowErrorMatchingSnapshot();
++			});
++
++			it('should remove timer labels', () => {
++				const clock = lolex.install();
++				const getEnd = instance.labels('GET').startTimer();
++				const postEnd = instance.labels('POST').startTimer();
++				clock.tick(500);
++				postEnd();
++				getEnd();
++				instance.remove('POST');
++				const res1 = getValueByLeAndLabel(
++					0.5,
++					'method',
++					'GET',
++					instance.get().values
++				);
++				const res2 = getValueByLeAndLabel(
++					0.5,
++					'method',
++					'POST',
++					instance.get().values
++				);
++				expect(res1.value).toEqual(1);
++				expect(res2.value).toEqual(undefined);
++				clock.uninstall();
++			});
++
++			it('should remove timer labels when labels are set afterwards', () => {
++				const clock = lolex.install();
++				const end = instance.startTimer();
++				clock.tick(500);
++				end({ method: 'GET' });
++				instance.remove('GET');
++				expect(instance.get().values).toHaveLength(0);
++				clock.uninstall();
++			});
++
++			it('should remove labels before and after timers', () => {
++				instance = new Histogram({
++					name: 'histogram_labels_2',
++					help: 'Histogram with labels fn',
++					labelNames: ['method', 'success']
++				});
++				const clock = lolex.install();
++				const end = instance.startTimer({ method: 'GET' });
++				clock.tick(500);
++				end({ success: 'SUCCESS' });
++				instance.remove('GET', 'SUCCESS');
++				expect(instance.get().values).toHaveLength(0);
++				clock.uninstall();
++			});
++		});
+ 	});
+ 
+ 	describe('with object as params', () => {
+@@ -456,7 +546,91 @@ describe('histogram', () => {
+ 					expect(startLabels).toEqual({ method: 'GET' });
+ 				});
+ 			});
++
++			describe('remove', () => {
++				beforeEach(() => {
++					instance = new Histogram({
++						name: 'histogram_labels',
++						help: 'Histogram with labels fn',
++						labelNames: ['method']
++					});
++				});
++
++				it('should remove matching label', () => {
++					instance.labels('POST').observe(3);
++					instance.labels('GET').observe(4);
++					instance.remove('POST');
++
++					const res = getValueByLeAndLabel(
++						5,
++						'method',
++						'GET',
++						instance.get().values
++					);
++					expect(res.value).toEqual(1);
++				});
++
++				it('should remove all labels', () => {
++					instance.labels('POST').observe(3);
++					instance.labels('GET').observe(4);
++					instance.remove('POST');
++					instance.remove('GET');
++
++					expect(instance.get().values).toHaveLength(0);
++				});
++
++				it('should throw error if label lengths does not match', () => {
++					const fn = function() {
++						instance.remove('GET', '/foo');
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++
++				it('should remove timer labels', () => {
++					const clock = lolex.install();
++					const getEnd = instance.labels('GET').startTimer();
++					const postEnd = instance.labels('POST').startTimer();
++					clock.tick(500);
++					postEnd();
++					getEnd();
++					instance.remove('POST');
++					const res = getValueByLeAndLabel(
++						0.5,
++						'method',
++						'GET',
++						instance.get().values
++					);
++					expect(res.value).toEqual(1);
++					clock.uninstall();
++				});
++
++				it('should remove timer labels when labels are set afterwards', () => {
++					const clock = lolex.install();
++					const end = instance.startTimer();
++					clock.tick(500);
++					end({ method: 'GET' });
++					instance.remove('GET');
++					expect(instance.get().values).toHaveLength(0);
++					clock.uninstall();
++				});
++
++				it('should remove labels before and after timers', () => {
++					instance = new Histogram({
++						name: 'histogram_labels_2',
++						help: 'Histogram with labels fn',
++						labelNames: ['method', 'success']
++					});
++					const clock = lolex.install();
++					const end = instance.startTimer({ method: 'GET' });
++					clock.tick(500);
++					end({ success: 'SUCCESS' });
++					instance.remove('GET', 'SUCCESS');
++					expect(instance.get().values).toHaveLength(0);
++					clock.uninstall();
++				});
++			});
+ 		});
++
+ 		describe('without registry', () => {
+ 			beforeEach(() => {
+ 				instance = new Histogram({
+
+diff --git a/test/summaryTest.js b/test/summaryTest.js
+index 19e2c92..a8786e5 100644
+--- a/test/summaryTest.js
++++ b/test/summaryTest.js
+@@ -280,6 +280,137 @@ describe('summary', () => {
+ 					expect(startLabels).toEqual({ method: 'GET' });
+ 				});
+ 			});
++
++			describe('remove', () => {
++				beforeEach(() => {
++					globalRegistry.clear();
++					instance = new Summary(
++						'summary_test',
++						'help',
++						['method', 'endpoint'],
++						{ percentiles: [0.9] }
++					);
++
++					instance.labels('GET', '/test').observe(50);
++					instance.labels('POST', '/test').observe(100);
++				});
++
++				it('should remove matching label', () => {
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++				});
++
++				it('should remove all labels', () => {
++					instance.remove('GET', '/test');
++					instance.remove('POST', '/test');
++
++					expect(instance.get().values).toHaveLength(0);
++				});
++
++				it('should throw error if label lengths does not match', () => {
++					const fn = function() {
++						instance.remove('GET');
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++
++				it('should remove timer values', () => {
++					const clock = lolex.install();
++					const end = instance.labels('GET', '/test').startTimer();
++					clock.tick(1000);
++					end();
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++
++				it('should remove timer values when labels are set afterwards', () => {
++					const clock = lolex.install();
++					const end = instance.startTimer();
++					clock.tick(1000);
++					end({ method: 'GET', endpoint: '/test' });
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++
++				it('should remove timer values with before and after labels', () => {
++					const clock = lolex.install();
++					const end = instance.startTimer({ method: 'GET' });
++					clock.tick(1000);
++					end({ endpoint: '/test' });
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++			});
+ 		});
+ 
+ 		describe('with param as object', () => {
+@@ -543,6 +674,137 @@ describe('summary', () => {
+ 					expect(startLabels).toEqual({ method: 'GET' });
+ 				});
+ 			});
++
++			describe('remove', () => {
++				beforeEach(() => {
++					globalRegistry.clear();
++					instance = new Summary({
++						name: 'summary_test',
++						help: 'help',
++						labelNames: ['method', 'endpoint'],
++						percentiles: [0.9]
++					});
++
++					instance.labels('GET', '/test').observe(50);
++					instance.labels('POST', '/test').observe(100);
++				});
++
++				it('should remove matching label', () => {
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++				});
++
++				it('should remove all labels', () => {
++					instance.remove('GET', '/test');
++					instance.remove('POST', '/test');
++
++					expect(instance.get().values).toHaveLength(0);
++				});
++
++				it('should throw error if label lengths does not match', () => {
++					const fn = function() {
++						instance.remove('GET');
++					};
++					expect(fn).toThrowErrorMatchingSnapshot();
++				});
++
++				it('should remove timer values', () => {
++					const clock = lolex.install();
++					const end = instance.labels('GET', '/test').startTimer();
++					clock.tick(1000);
++					end();
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++
++				it('should remove timer values when labels are set afterwards', () => {
++					const clock = lolex.install();
++					const end = instance.startTimer();
++					clock.tick(1000);
++					end({ method: 'GET', endpoint: '/test' });
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++
++				it('should remove timer values with before and after labels', () => {
++					const clock = lolex.install();
++					const end = instance.startTimer({ method: 'GET' });
++					clock.tick(1000);
++					end({ endpoint: '/test' });
++					instance.remove('GET', '/test');
++
++					const values = instance.get().values;
++					expect(values).toHaveLength(3);
++					expect(values[0].labels.quantile).toEqual(0.9);
++					expect(values[0].labels.method).toEqual('POST');
++					expect(values[0].labels.endpoint).toEqual('/test');
++					expect(values[0].value).toEqual(100);
++
++					expect(values[1].metricName).toEqual('summary_test_sum');
++					expect(values[1].labels.method).toEqual('POST');
++					expect(values[1].labels.endpoint).toEqual('/test');
++					expect(values[1].value).toEqual(100);
++
++					expect(values[2].metricName).toEqual('summary_test_count');
++					expect(values[2].labels.method).toEqual('POST');
++					expect(values[2].labels.endpoint).toEqual('/test');
++					expect(values[2].value).toEqual(1);
++
++					clock.uninstall();
++				});
++			});
+ 		});
+ 	});
+ 	describe('without registry', () => {
+",0,,13,619,4,3,15,645
+330,7dff2225c30f2467b22cf0684c84bc5753839785,7dff2225c30f2467b22cf0684c84bc5753839785,"Metric constructors and startDefaultMetrics() all had deprecated support
+for positional arguments. That support is removed, only config objects
+are now supported. Since there are no deprecations, the deprecation code
+is removed as well.
+","fix: remove deprecated non-config object support
+
+Metric constructors and startDefaultMetrics() all had deprecated support
+for positional arguments. That support is removed, only config objects
+are now supported. Since there are no deprecations, the deprecation code
+is removed as well.
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index fbc185e..2a27397 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -6,169 +6,6 @@ describe('counter', () => {
+ 	const globalRegistry = require('../index').register;
+ 	let instance;
+ 
+-	describe('global registry', () => {
+-		describe('with a parameter for each variable', () => {
+-			beforeEach(() => {
+-				instance = new Counter('gauge_test', 'test');
+-			});
+-
+-			afterEach(() => {
+-				globalRegistry.clear();
+-			});
+-			it('should increment counter', () => {
+-				instance.inc();
+-				expect(instance.get().values[0].value).toEqual(1);
+-				expect(instance.get().values[0].timestamp).toEqual(undefined);
+-			});
+-			it('should increment with a provided value', () => {
+-				instance.inc(100);
+-				expect(instance.get().values[0].value).toEqual(100);
+-				expect(instance.get().values[0].timestamp).toEqual(undefined);
+-			});
+-			it('should increment with a provided value and timestamp', () => {
+-				instance.inc(100, 1485392700000);
+-				expect(instance.get().values[0].value).toEqual(100);
+-				expect(instance.get().values[0].timestamp).toEqual(1485392700000);
+-			});
+-			it('should not allow non number as timestamp', () => {
+-				const fn = function() {
+-					instance.inc(1, 'blah');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should not allow invalid date as timestamp', () => {
+-				const fn = function() {
+-					instance.inc(1, new Date('blah'));
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should not be possible to decrease a counter', () => {
+-				const fn = function() {
+-					instance.inc(-100);
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should throw an error when the value is not a number', () => {
+-				const fn = () => {
+-					instance.inc('3ms');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should handle incrementing with 0', () => {
+-				instance.inc(0);
+-				expect(instance.get().values[0].value).toEqual(0);
+-			});
+-
+-			describe('labels', () => {
+-				beforeEach(() => {
+-					instance = new Counter('gauge_test_2', 'help', [
+-						'method',
+-						'endpoint'
+-					]);
+-				});
+-
+-				it('should increment counter', () => {
+-					instance.inc();
+-					expect(instance.get().values[0].value).toEqual(1);
+-					expect(instance.get().values[0].timestamp).toEqual(undefined);
+-				});
+-				it('should handle 1 value per label', () => {
+-					instance.labels('GET', '/test').inc();
+-					instance.labels('POST', '/test').inc();
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(2);
+-				});
+-
+-				it('should handle labels which are provided as arguments to inc()', () => {
+-					instance.inc({ method: 'GET', endpoint: '/test' });
+-					instance.inc({ method: 'POST', endpoint: '/test' });
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(2);
+-				});
+-
+-				it(""should throw error if one of lables isn't in labelNames list provided to constructor"", () => {
+-					const fn = function() {
+-						instance.inc({ method: 'GET', endpoint: '/test', status: 500 });
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-
+-				it('should throw error if label lengths does not match', () => {
+-					const fn = function() {
+-						instance.labels('GET').inc();
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-
+-				it('should increment label value with provided value', () => {
+-					instance.labels('GET', '/test').inc(100);
+-					const values = instance.get().values;
+-					expect(values[0].value).toEqual(100);
+-				});
+-			});
+-
+-			describe('remove', () => {
+-				beforeEach(() => {
+-					instance = new Counter('gauge_test_3', 'help', [
+-						'method',
+-						'endpoint'
+-					]);
+-					instance.labels('GET', '/test').inc();
+-					instance.labels('POST', '/test').inc();
+-				});
+-
+-				afterEach(() => {
+-					globalRegistry.clear();
+-				});
+-
+-				it('should remove matching label', () => {
+-					instance.remove('POST', '/test');
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(1);
+-					expect(values[0].value).toEqual(1);
+-					expect(values[0].labels.method).toEqual('GET');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].timestamp).toEqual(undefined);
+-				});
+-
+-				it('should remove all labels', () => {
+-					instance.remove('GET', '/test');
+-					instance.remove('POST', '/test');
+-
+-					expect(instance.get().values).toHaveLength(0);
+-				});
+-
+-				it('should throw error if label lengths does not match', () => {
+-					const fn = function() {
+-						instance.remove('GET');
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-			});
+-
+-			describe('empty labels', () => {
+-				beforeEach(() => {
+-					instance = new Counter('gauge_test_3', 'test');
+-				});
+-
+-				it('should increment counter', () => {
+-					instance.inc({});
+-					expect(instance.get().values[0].value).toEqual(1);
+-					expect(instance.get().values[0].timestamp).toBeUndefined();
+-				});
+-
+-				it('should increment with a provided value', () => {
+-					instance.inc({}, 100);
+-					expect(instance.get().values[0].value).toEqual(100);
+-					expect(instance.get().values[0].timestamp).toBeUndefined();
+-				});
+-			});
+-		});
+-	});
+-
+ 	describe('with params as object', () => {
+ 		beforeEach(() => {
+ 			instance = new Counter({ name: 'gauge_test', help: 'test' });
+
+diff --git a/test/gaugeTest.js b/test/gaugeTest.js
+index 2bc3701..91f14ea 100644
+--- a/test/gaugeTest.js
++++ b/test/gaugeTest.js
+@@ -11,191 +11,6 @@ describe('gauge', () => {
+ 		afterEach(() => {
+ 			globalRegistry.clear();
+ 		});
+-		describe('with a parameter for each variable', () => {
+-			beforeEach(() => {
+-				instance = new Gauge('gauge_test', 'help');
+-				instance.set(10);
+-			});
+-
+-			it('should set a gauge to provided value', () => {
+-				expectValue(10);
+-			});
+-
+-			it('should increase with 1 if no param provided', () => {
+-				instance.inc();
+-				expectValue(11);
+-			});
+-
+-			it('should increase with param value if provided', () => {
+-				instance.inc(5);
+-				expectValue(15);
+-			});
+-
+-			it('should decrease with 1 if no param provided', () => {
+-				instance.dec();
+-				expectValue(9);
+-			});
+-
+-			it('should decrease with param if provided', () => {
+-				instance.dec(5);
+-				expectValue(5);
+-			});
+-
+-			it('should start a timer and set a gauge to elapsed in seconds', () => {
+-				const clock = lolex.install();
+-				const doneFn = instance.startTimer();
+-				clock.tick(500);
+-				doneFn();
+-				expectValue(0.5);
+-				clock.uninstall();
+-			});
+-
+-			it('should set to current time', () => {
+-				const clock = lolex.install();
+-				instance.setToCurrentTime();
+-				expectValue(Date.now());
+-				clock.uninstall();
+-			});
+-
+-			it('should not allow non numbers', () => {
+-				const fn = function() {
+-					instance.set('asd');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-
+-			it('should allow NaN as a value', () => {
+-				instance.set(NaN);
+-				expectValue(NaN);
+-			});
+-
+-			it('should allow +Inf as a value', () => {
+-				instance.set(Infinity);
+-				expectValue(Infinity);
+-			});
+-
+-			it('should allow -Inf as a value', () => {
+-				instance.set(-Infinity);
+-				expectValue(-Infinity);
+-			});
+-
+-			describe('with labels', () => {
+-				beforeEach(() => {
+-					instance = new Gauge('name', 'help', ['code']);
+-					instance.set({ code: '200' }, 20);
+-				});
+-				it('should be able to increment', () => {
+-					instance.labels('200').inc();
+-					expectValue(21);
+-				});
+-				it('should be able to decrement', () => {
+-					instance.labels('200').dec();
+-					expectValue(19);
+-				});
+-				it('should be able to set value', () => {
+-					instance.labels('200').set(500);
+-					expectValue(500);
+-				});
+-				it('should be able to set value to current time', () => {
+-					const clock = lolex.install();
+-					instance.labels('200').setToCurrentTime();
+-					expectValue(Date.now());
+-					clock.uninstall();
+-				});
+-				it('should be able to start a timer', () => {
+-					const clock = lolex.install();
+-					const end = instance.labels('200').startTimer();
+-					clock.tick(1000);
+-					end();
+-					expectValue(1);
+-					clock.uninstall();
+-				});
+-				it('should be able to start a timer and set labels afterwards', () => {
+-					const clock = lolex.install();
+-					const end = instance.startTimer();
+-					clock.tick(1000);
+-					end({ code: 200 });
+-					expectValue(1);
+-					clock.uninstall();
+-				});
+-				it('should allow labels before and after timers', () => {
+-					instance = new Gauge('name_2', 'help', ['code', 'success']);
+-					const clock = lolex.install();
+-					const end = instance.startTimer({ code: 200 });
+-					clock.tick(1000);
+-					end({ success: 'SUCCESS' });
+-					expectValue(1);
+-					clock.uninstall();
+-				});
+-				it('should not mutate passed startLabels', () => {
+-					const startLabels = { code: '200' };
+-					const end = instance.startTimer(startLabels);
+-					end({ code: '400' });
+-					expect(startLabels).toEqual({ code: '200' });
+-				});
+-			});
+-
+-			describe('with remove', () => {
+-				beforeEach(() => {
+-					instance = new Gauge('name', 'help', ['code']);
+-					instance.set({ code: '200' }, 20);
+-					instance.set({ code: '400' }, 0);
+-				});
+-				it('should be able to remove matching label', () => {
+-					instance.remove('200');
+-					const values = instance.get().values;
+-					expect(values.length).toEqual(1);
+-					expect(values[0].labels.code).toEqual('400');
+-					expect(values[0].value).toEqual(0);
+-				});
+-				it('should be able to remove all labels', () => {
+-					instance.remove('200');
+-					instance.remove('400');
+-					expect(instance.get().values.length).toEqual(0);
+-				});
+-				it('should throw error if label lengths does not match', () => {
+-					const fn = function() {
+-						instance.remove('200', 'GET');
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-			});
+-
+-			describe('with timestamp', () => {
+-				beforeEach(() => {
+-					instance = new Gauge('name', 'help', ['code']);
+-					instance.set({ code: '200' }, 20);
+-				});
+-				it('should be able to set value and timestamp as Date', () => {
+-					instance.labels('200').set(500, new Date('2017-01-26T01:05Z'));
+-					expectValue(500, 1485392700000);
+-				});
+-				it('should be able to set value and timestamp as number', () => {
+-					instance.labels('200').set(500, 1485392700000);
+-					expectValue(500, 1485392700000);
+-				});
+-				it('should not allow non numbers', () => {
+-					const fn = function() {
+-						instance.labels('200').set(500, 'blah');
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-				it('should not allow invalid dates', () => {
+-					const fn = function() {
+-						instance.labels('200').set(500, new Date('blah'));
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-				it('should be able to increment', () => {
+-					instance.labels('200').inc(1, 1485392700000);
+-					expectValue(21, 1485392700000);
+-				});
+-				it('should be able to decrement', () => {
+-					instance.labels('200').dec(1, 1485392700000);
+-					expectValue(19, 1485392700000);
+-				});
+-			});
+-		});
+ 
+ 		describe('with parameters as object', () => {
+ 			beforeEach(() => {
+@@ -348,7 +163,11 @@ describe('gauge', () => {
+ 
+ 			describe('with timestamp', () => {
+ 				beforeEach(() => {
+-					instance = new Gauge('name', 'help', ['code']);
++					instance = new Gauge({
++						name: 'name',
++						help: 'help',
++						labelNames: ['code']
++					});
+ 					instance.set({ code: '200' }, 20);
+ 				});
+ 				it('should be able to set value and timestamp as Date', () => {
+
+diff --git a/test/histogramTest.js b/test/histogramTest.js
+index 044a593..d4041d9 100644
+--- a/test/histogramTest.js
++++ b/test/histogramTest.js
+@@ -12,309 +12,6 @@ describe('histogram', () => {
+ 		globalRegistry.clear();
+ 	});
+ 
+-	describe('with a parameter for each variable', () => {
+-		beforeEach(() => {
+-			instance = new Histogram('test_histogram', 'test');
+-		});
+-
+-		it('should increase count', () => {
+-			instance.observe(0.5);
+-			const valuePair = getValueByName(
+-				'test_histogram_count',
+-				instance.get().values
+-			);
+-			expect(valuePair.value).toEqual(1);
+-		});
+-		it('should be able to observe 0s', () => {
+-			instance.observe(0);
+-			const valuePair = getValueByLabel(0.005, instance.get().values);
+-			expect(valuePair.value).toEqual(1);
+-		});
+-		it('should increase sum', () => {
+-			instance.observe(0.5);
+-			const valuePair = getValueByName(
+-				'test_histogram_sum',
+-				instance.get().values
+-			);
+-			expect(valuePair.value).toEqual(0.5);
+-		});
+-		it('should add item in upper bound bucket', () => {
+-			instance.observe(1);
+-			const valuePair = getValueByLabel(1, instance.get().values);
+-			expect(valuePair.value).toEqual(1);
+-		});
+-
+-		it('should be able to monitor more than one item', () => {
+-			instance.observe(0.05);
+-			instance.observe(5);
+-			const firstValuePair = getValueByLabel(0.05, instance.get().values);
+-			const secondValuePair = getValueByLabel(5, instance.get().values);
+-			expect(firstValuePair.value).toEqual(1);
+-			expect(secondValuePair.value).toEqual(2);
+-		});
+-
+-		it('should add a +Inf bucket with the same value as count', () => {
+-			instance.observe(10);
+-			const countValuePair = getValueByName(
+-				'test_histogram_count',
+-				instance.get().values
+-			);
+-			const infValuePair = getValueByLabel('+Inf', instance.get().values);
+-			expect(infValuePair.value).toEqual(countValuePair.value);
+-		});
+-
+-		it('should add buckets in increasing numerical order', () => {
+-			const histogram = new Histogram('test_histogram_2', 'test', {
+-				buckets: [1, 5]
+-			});
+-			histogram.observe(1.5);
+-			const values = histogram.get().values;
+-			expect(values[0].labels.le).toEqual(1);
+-			expect(values[1].labels.le).toEqual(5);
+-			expect(values[2].labels.le).toEqual('+Inf');
+-		});
+-		it('should group counts on each label set', () => {
+-			const histogram = new Histogram('test_histogram_2', 'test', ['code']);
+-			histogram.observe({ code: '200' }, 1);
+-			histogram.observe({ code: '300' }, 1);
+-			const values = getValuesByLabel(1, histogram.get().values);
+-			expect(values[0].value).toEqual(1);
+-			expect(values[1].value).toEqual(1);
+-		});
+-
+-		it('should time requests', () => {
+-			const clock = lolex.install();
+-			const doneFn = instance.startTimer();
+-			clock.tick(500);
+-			doneFn();
+-			const valuePair = getValueByLabel(0.5, instance.get().values);
+-			expect(valuePair.value).toEqual(1);
+-			clock.uninstall();
+-		});
+-
+-		it('should not allow non numbers', () => {
+-			const fn = function() {
+-				instance.observe('asd');
+-			};
+-			expect(fn).toThrowErrorMatchingSnapshot();
+-		});
+-
+-		it('should allow custom labels', () => {
+-			const i = new Histogram('histo', 'help', ['code']);
+-			i.observe({ code: 'test' }, 1);
+-			const pair = getValueByLeAndLabel(1, 'code', 'test', i.get().values);
+-			expect(pair.value).toEqual(1);
+-		});
+-
+-		it('should not allow le as a custom label', () => {
+-			const fn = function() {
+-				new Histogram('name', 'help', ['le']);
+-			};
+-			expect(fn).toThrowErrorMatchingSnapshot();
+-		});
+-
+-		it('should observe value if outside most upper bound', () => {
+-			instance.observe(100000);
+-			const values = instance.get().values;
+-			const count = getValueByLabel('+Inf', values, 'le');
+-			expect(count.value).toEqual(1);
+-		});
+-
+-		it('should allow to be reset itself', () => {
+-			instance.observe(0.5);
+-			let valuePair = getValueByName(
+-				'test_histogram_count',
+-				instance.get().values
+-			);
+-			expect(valuePair.value).toEqual(1);
+-			instance.reset();
+-			valuePair = getValueByName('test_histogram_count', instance.get().values);
+-			expect(valuePair.value).toEqual(undefined);
+-		});
+-
+-		describe('labels', () => {
+-			beforeEach(() => {
+-				instance = new Histogram(
+-					'histogram_labels',
+-					'Histogram with labels fn',
+-					['method']
+-				);
+-			});
+-
+-			it('should observe', () => {
+-				instance.labels('get').observe(4);
+-				const res = getValueByLeAndLabel(
+-					5,
+-					'method',
+-					'get',
+-					instance.get().values
+-				);
+-				expect(res.value).toEqual(1);
+-			});
+-
+-			it('should not allow different number of labels', () => {
+-				const fn = function() {
+-					instance.labels('get', '500').observe(4);
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-
+-			it('should start a timer', () => {
+-				const clock = lolex.install();
+-				const end = instance.labels('get').startTimer();
+-				clock.tick(500);
+-				end();
+-				const res = getValueByLeAndLabel(
+-					0.5,
+-					'method',
+-					'get',
+-					instance.get().values
+-				);
+-				expect(res.value).toEqual(1);
+-				clock.uninstall();
+-			});
+-
+-			it('should start a timer and set labels afterwards', () => {
+-				const clock = lolex.install();
+-				const end = instance.startTimer();
+-				clock.tick(500);
+-				end({ method: 'get' });
+-				const res = getValueByLeAndLabel(
+-					0.5,
+-					'method',
+-					'get',
+-					instance.get().values
+-				);
+-				expect(res.value).toEqual(1);
+-				clock.uninstall();
+-			});
+-
+-			it('should allow labels before and after timers', () => {
+-				instance = new Histogram(
+-					'histogram_labels_2',
+-					'Histogram with labels fn',
+-					['method', 'success']
+-				);
+-				const clock = lolex.install();
+-				const end = instance.startTimer({ method: 'get' });
+-				clock.tick(500);
+-				end({ success: 'SUCCESS' });
+-				const res1 = getValueByLeAndLabel(
+-					0.5,
+-					'method',
+-					'get',
+-					instance.get().values
+-				);
+-				const res2 = getValueByLeAndLabel(
+-					0.5,
+-					'success',
+-					'SUCCESS',
+-					instance.get().values
+-				);
+-				expect(res1.value).toEqual(1);
+-				expect(res2.value).toEqual(1);
+-				clock.uninstall();
+-			});
+-
+-			it('should not mutate passed startLabels', () => {
+-				const startLabels = { method: 'GET' };
+-				const end = instance.startTimer(startLabels);
+-				end({ method: 'POST' });
+-				expect(startLabels).toEqual({ method: 'GET' });
+-			});
+-		});
+-
+-		describe('remove', () => {
+-			beforeEach(() => {
+-				instance = new Histogram(
+-					'histogram_labels',
+-					'Histogram with labels fn',
+-					['method']
+-				);
+-			});
+-
+-			it('should remove matching label', () => {
+-				instance.labels('POST').observe(3);
+-				instance.labels('GET').observe(4);
+-				instance.remove('POST');
+-
+-				const res = getValueByLeAndLabel(
+-					5,
+-					'method',
+-					'GET',
+-					instance.get().values
+-				);
+-				expect(res.value).toEqual(1);
+-			});
+-
+-			it('should remove all labels', () => {
+-				instance.labels('POST').observe(3);
+-				instance.labels('GET').observe(4);
+-				instance.remove('POST');
+-				instance.remove('GET');
+-
+-				expect(instance.get().values).toHaveLength(0);
+-			});
+-
+-			it('should throw error if label lengths does not match', () => {
+-				const fn = function() {
+-					instance.remove('GET', '/foo');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-
+-			it('should remove timer labels', () => {
+-				const clock = lolex.install();
+-				const getEnd = instance.labels('GET').startTimer();
+-				const postEnd = instance.labels('POST').startTimer();
+-				clock.tick(500);
+-				postEnd();
+-				getEnd();
+-				instance.remove('POST');
+-				const res1 = getValueByLeAndLabel(
+-					0.5,
+-					'method',
+-					'GET',
+-					instance.get().values
+-				);
+-				const res2 = getValueByLeAndLabel(
+-					0.5,
+-					'method',
+-					'POST',
+-					instance.get().values
+-				);
+-				expect(res1.value).toEqual(1);
+-				expect(res2.value).toEqual(undefined);
+-				clock.uninstall();
+-			});
+-
+-			it('should remove timer labels when labels are set afterwards', () => {
+-				const clock = lolex.install();
+-				const end = instance.startTimer();
+-				clock.tick(500);
+-				end({ method: 'GET' });
+-				instance.remove('GET');
+-				expect(instance.get().values).toHaveLength(0);
+-				clock.uninstall();
+-			});
+-
+-			it('should remove labels before and after timers', () => {
+-				instance = new Histogram({
+-					name: 'histogram_labels_2',
+-					help: 'Histogram with labels fn',
+-					labelNames: ['method', 'success']
+-				});
+-				const clock = lolex.install();
+-				const end = instance.startTimer({ method: 'GET' });
+-				clock.tick(500);
+-				end({ success: 'SUCCESS' });
+-				instance.remove('GET', 'SUCCESS');
+-				expect(instance.get().values).toHaveLength(0);
+-				clock.uninstall();
+-			});
+-		});
+-	});
+-
+ 	describe('with object as params', () => {
+ 		describe('with global registry', () => {
+ 			beforeEach(() => {
+
+diff --git a/test/summaryTest.js b/test/summaryTest.js
+index a8786e5..963a37f 100644
+--- a/test/summaryTest.js
++++ b/test/summaryTest.js
+@@ -12,407 +12,6 @@ describe('summary', () => {
+ 			globalRegistry.clear();
+ 		});
+ 
+-		describe('with a parameter for each variable', () => {
+-			beforeEach(() => {
+-				instance = new Summary('summary_test', 'test');
+-			});
+-
+-			it('should add a value to the summary', () => {
+-				instance.observe(100);
+-				expect(instance.get().values[0].labels.quantile).toEqual(0.01);
+-				expect(instance.get().values[0].value).toEqual(100);
+-				expect(instance.get().values[7].metricName).toEqual('summary_test_sum');
+-				expect(instance.get().values[7].value).toEqual(100);
+-				expect(instance.get().values[8].metricName).toEqual(
+-					'summary_test_count'
+-				);
+-				expect(instance.get().values[8].value).toEqual(1);
+-			});
+-
+-			it('should be able to observe 0s', () => {
+-				instance.observe(0);
+-				expect(instance.get().values[8].value).toEqual(1);
+-			});
+-
+-			it('should correctly calculate percentiles when more values are added to the summary', () => {
+-				instance.observe(100);
+-				instance.observe(100);
+-				instance.observe(100);
+-				instance.observe(50);
+-				instance.observe(50);
+-
+-				expect(instance.get().values.length).toEqual(9);
+-
+-				expect(instance.get().values[0].labels.quantile).toEqual(0.01);
+-				expect(instance.get().values[0].value).toEqual(50);
+-
+-				expect(instance.get().values[1].labels.quantile).toEqual(0.05);
+-				expect(instance.get().values[1].value).toEqual(50);
+-
+-				expect(instance.get().values[2].labels.quantile).toEqual(0.5);
+-				expect(instance.get().values[2].value).toEqual(80);
+-
+-				expect(instance.get().values[3].labels.quantile).toEqual(0.9);
+-				expect(instance.get().values[3].value).toEqual(100);
+-
+-				expect(instance.get().values[4].labels.quantile).toEqual(0.95);
+-				expect(instance.get().values[4].value).toEqual(100);
+-
+-				expect(instance.get().values[5].labels.quantile).toEqual(0.99);
+-				expect(instance.get().values[5].value).toEqual(100);
+-
+-				expect(instance.get().values[6].labels.quantile).toEqual(0.999);
+-				expect(instance.get().values[6].value).toEqual(100);
+-
+-				expect(instance.get().values[7].metricName).toEqual('summary_test_sum');
+-				expect(instance.get().values[7].value).toEqual(400);
+-
+-				expect(instance.get().values[8].metricName).toEqual(
+-					'summary_test_count'
+-				);
+-				expect(instance.get().values[8].value).toEqual(5);
+-			});
+-
+-			it('should correctly use calculate other percentiles when configured', () => {
+-				globalRegistry.clear();
+-				instance = new Summary('summary_test', 'test', {
+-					percentiles: [0.5, 0.9]
+-				});
+-				instance.observe(100);
+-				instance.observe(100);
+-				instance.observe(100);
+-				instance.observe(50);
+-				instance.observe(50);
+-
+-				expect(instance.get().values.length).toEqual(4);
+-
+-				expect(instance.get().values[0].labels.quantile).toEqual(0.5);
+-				expect(instance.get().values[0].value).toEqual(80);
+-
+-				expect(instance.get().values[1].labels.quantile).toEqual(0.9);
+-				expect(instance.get().values[1].value).toEqual(100);
+-
+-				expect(instance.get().values[2].metricName).toEqual('summary_test_sum');
+-				expect(instance.get().values[2].value).toEqual(400);
+-
+-				expect(instance.get().values[3].metricName).toEqual(
+-					'summary_test_count'
+-				);
+-				expect(instance.get().values[3].value).toEqual(5);
+-			});
+-
+-			it('should allow to reset itself', () => {
+-				globalRegistry.clear();
+-				instance = new Summary('summary_test', 'test', { percentiles: [0.5] });
+-				instance.observe(100);
+-				expect(instance.get().values[0].labels.quantile).toEqual(0.5);
+-				expect(instance.get().values[0].value).toEqual(100);
+-
+-				expect(instance.get().values[1].metricName).toEqual('summary_test_sum');
+-				expect(instance.get().values[1].value).toEqual(100);
+-
+-				expect(instance.get().values[2].metricName).toEqual(
+-					'summary_test_count'
+-				);
+-				expect(instance.get().values[2].value).toEqual(1);
+-
+-				instance.reset();
+-
+-				expect(instance.get().values[0].labels.quantile).toEqual(0.5);
+-				expect(instance.get().values[0].value).toEqual(0);
+-
+-				expect(instance.get().values[1].metricName).toEqual('summary_test_sum');
+-				expect(instance.get().values[1].value).toEqual(0);
+-
+-				expect(instance.get().values[2].metricName).toEqual(
+-					'summary_test_count'
+-				);
+-				expect(instance.get().values[2].value).toEqual(0);
+-			});
+-
+-			it('should init to 0', () => {
+-				instance.get().values.forEach(percentile => {
+-					expect(percentile.value).toEqual(0);
+-				});
+-			});
+-
+-			it('should throw an error when the value is not a number', () => {
+-				const fn = () => {
+-					instance.observe('3ms');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-
+-			describe('labels', () => {
+-				beforeEach(() => {
+-					globalRegistry.clear();
+-					instance = new Summary(
+-						'summary_test',
+-						'help',
+-						['method', 'endpoint'],
+-						{ percentiles: [0.9] }
+-					);
+-				});
+-
+-				it('should record and calculate the correct values per label', () => {
+-					instance.labels('GET', '/test').observe(50);
+-					instance.labels('POST', '/test').observe(100);
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(6);
+-					expect(values[0].labels.method).toEqual('GET');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].value).toEqual(50);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('GET');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(50);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('GET');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					expect(values[3].labels.quantile).toEqual(0.9);
+-					expect(values[3].labels.method).toEqual('POST');
+-					expect(values[3].labels.endpoint).toEqual('/test');
+-					expect(values[3].value).toEqual(100);
+-
+-					expect(values[4].metricName).toEqual('summary_test_sum');
+-					expect(values[4].labels.method).toEqual('POST');
+-					expect(values[4].labels.endpoint).toEqual('/test');
+-					expect(values[4].value).toEqual(100);
+-
+-					expect(values[5].metricName).toEqual('summary_test_count');
+-					expect(values[5].labels.method).toEqual('POST');
+-					expect(values[5].labels.endpoint).toEqual('/test');
+-					expect(values[5].value).toEqual(1);
+-				});
+-
+-				it('should throw error if label lengths does not match', () => {
+-					const fn = function() {
+-						instance.labels('GET').observe();
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-
+-				it('should start a timer', () => {
+-					const clock = lolex.install();
+-					const end = instance.labels('GET', '/test').startTimer();
+-					clock.tick(1000);
+-					end();
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.method).toEqual('GET');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].value).toEqual(1);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('GET');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(1);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('GET');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-
+-				it('should start a timer and set labels afterwards', () => {
+-					const clock = lolex.install();
+-					const end = instance.startTimer();
+-					clock.tick(1000);
+-					end({ method: 'GET', endpoint: '/test' });
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.method).toEqual('GET');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].value).toEqual(1);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('GET');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(1);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('GET');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-
+-				it('should allow labels before and after timers', () => {
+-					const clock = lolex.install();
+-					const end = instance.startTimer({ method: 'GET' });
+-					clock.tick(1000);
+-					end({ endpoint: '/test' });
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.method).toEqual('GET');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].value).toEqual(1);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('GET');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(1);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('GET');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-
+-				it('should not mutate passed startLabels', () => {
+-					const startLabels = { method: 'GET' };
+-					const end = instance.startTimer(startLabels);
+-					end({ endpoint: '/test' });
+-					expect(startLabels).toEqual({ method: 'GET' });
+-				});
+-			});
+-
+-			describe('remove', () => {
+-				beforeEach(() => {
+-					globalRegistry.clear();
+-					instance = new Summary(
+-						'summary_test',
+-						'help',
+-						['method', 'endpoint'],
+-						{ percentiles: [0.9] }
+-					);
+-
+-					instance.labels('GET', '/test').observe(50);
+-					instance.labels('POST', '/test').observe(100);
+-				});
+-
+-				it('should remove matching label', () => {
+-					instance.remove('GET', '/test');
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].labels.method).toEqual('POST');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].value).toEqual(100);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('POST');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(100);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('POST');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-				});
+-
+-				it('should remove all labels', () => {
+-					instance.remove('GET', '/test');
+-					instance.remove('POST', '/test');
+-
+-					expect(instance.get().values).toHaveLength(0);
+-				});
+-
+-				it('should throw error if label lengths does not match', () => {
+-					const fn = function() {
+-						instance.remove('GET');
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-
+-				it('should remove timer values', () => {
+-					const clock = lolex.install();
+-					const end = instance.labels('GET', '/test').startTimer();
+-					clock.tick(1000);
+-					end();
+-					instance.remove('GET', '/test');
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].labels.method).toEqual('POST');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].value).toEqual(100);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('POST');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(100);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('POST');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-
+-				it('should remove timer values when labels are set afterwards', () => {
+-					const clock = lolex.install();
+-					const end = instance.startTimer();
+-					clock.tick(1000);
+-					end({ method: 'GET', endpoint: '/test' });
+-					instance.remove('GET', '/test');
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].labels.method).toEqual('POST');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].value).toEqual(100);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('POST');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(100);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('POST');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-
+-				it('should remove timer values with before and after labels', () => {
+-					const clock = lolex.install();
+-					const end = instance.startTimer({ method: 'GET' });
+-					clock.tick(1000);
+-					end({ endpoint: '/test' });
+-					instance.remove('GET', '/test');
+-
+-					const values = instance.get().values;
+-					expect(values).toHaveLength(3);
+-					expect(values[0].labels.quantile).toEqual(0.9);
+-					expect(values[0].labels.method).toEqual('POST');
+-					expect(values[0].labels.endpoint).toEqual('/test');
+-					expect(values[0].value).toEqual(100);
+-
+-					expect(values[1].metricName).toEqual('summary_test_sum');
+-					expect(values[1].labels.method).toEqual('POST');
+-					expect(values[1].labels.endpoint).toEqual('/test');
+-					expect(values[1].value).toEqual(100);
+-
+-					expect(values[2].metricName).toEqual('summary_test_count');
+-					expect(values[2].labels.method).toEqual('POST');
+-					expect(values[2].labels.endpoint).toEqual('/test');
+-					expect(values[2].value).toEqual(1);
+-
+-					clock.uninstall();
+-				});
+-			});
+-		});
+-
+ 		describe('with param as object', () => {
+ 			beforeEach(() => {
+ 				instance = new Summary({ name: 'summary_test', help: 'test' });
+",0,,19,1462,4,1,19,1462
+333,7127482f3d87ba41527bccaa63e87c8650893cd4,7127482f3d87ba41527bccaa63e87c8650893cd4,"Fixes:                                                                           
+- https://github.com/siimon/prom-client/issues/310                               
+- https://github.com/siimon/prom-client/issues/177                               
+- https://github.com/siimon/prom-client/issues/289  ","feature: remove all timestamp support
+
+Fixes:
+- https://github.com/siimon/prom-client/issues/310
+- https://github.com/siimon/prom-client/issues/177
+- https://github.com/siimon/prom-client/issues/289
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index 2a27397..72f9431 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -17,29 +17,14 @@ describe('counter', () => {
+ 		it('should increment counter', () => {
+ 			instance.inc();
+ 			expect(instance.get().values[0].value).toEqual(1);
+-			expect(instance.get().values[0].timestamp).toEqual(undefined);
++			instance.inc();
++			expect(instance.get().values[0].value).toEqual(2);
++			instance.inc(0);
++			expect(instance.get().values[0].value).toEqual(2);
+ 		});
+ 		it('should increment with a provided value', () => {
+ 			instance.inc(100);
+ 			expect(instance.get().values[0].value).toEqual(100);
+-			expect(instance.get().values[0].timestamp).toEqual(undefined);
+-		});
+-		it('should increment with a provided value and timestamp', () => {
+-			instance.inc(100, 1485392700000);
+-			expect(instance.get().values[0].value).toEqual(100);
+-			expect(instance.get().values[0].timestamp).toEqual(1485392700000);
+-		});
+-		it('should not allow non number as timestamp', () => {
+-			const fn = function() {
+-				instance.inc(1, 'blah');
+-			};
+-			expect(fn).toThrowErrorMatchingSnapshot();
+-		});
+-		it('should not allow invalid date as timestamp', () => {
+-			const fn = function() {
+-				instance.inc(1, new Date('blah'));
+-			};
+-			expect(fn).toThrowErrorMatchingSnapshot();
+ 		});
+ 		it('should not be possible to decrease a counter', () => {
+ 			const fn = function() {
+
+diff --git a/test/gaugeTest.js b/test/gaugeTest.js
+index 91f14ea..ff362a0 100644
+--- a/test/gaugeTest.js
++++ b/test/gaugeTest.js
+@@ -160,45 +160,6 @@ describe('gauge', () => {
+ 					expect(instance.get().values.length).toEqual(0);
+ 				});
+ 			});
+-
+-			describe('with timestamp', () => {
+-				beforeEach(() => {
+-					instance = new Gauge({
+-						name: 'name',
+-						help: 'help',
+-						labelNames: ['code']
+-					});
+-					instance.set({ code: '200' }, 20);
+-				});
+-				it('should be able to set value and timestamp as Date', () => {
+-					instance.labels('200').set(500, new Date('2017-01-26T01:05Z'));
+-					expectValue(500, 1485392700000);
+-				});
+-				it('should be able to set value and timestamp as number', () => {
+-					instance.labels('200').set(500, 1485392700000);
+-					expectValue(500, 1485392700000);
+-				});
+-				it('should not allow non numbers', () => {
+-					const fn = function() {
+-						instance.labels('200').set(500, 'blah');
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-				it('should not allow invalid dates', () => {
+-					const fn = function() {
+-						instance.labels('200').set(500, new Date('blah'));
+-					};
+-					expect(fn).toThrowErrorMatchingSnapshot();
+-				});
+-				it('should be able to increment', () => {
+-					instance.labels('200').inc(1, 1485392700000);
+-					expectValue(21, 1485392700000);
+-				});
+-				it('should be able to decrement', () => {
+-					instance.labels('200').dec(1, 1485392700000);
+-					expectValue(19, 1485392700000);
+-				});
+-			});
+ 		});
+ 	});
+ 	describe('without registry', () => {
+@@ -230,46 +191,6 @@ describe('gauge', () => {
+ 			expect(registryInstance.getMetricsAsJSON().length).toEqual(1);
+ 			expectValue(10);
+ 		});
+-
+-		describe('with timestamp', () => {
+-			beforeEach(() => {
+-				instance = new Gauge({
+-					name: 'name',
+-					help: 'help',
+-					labelNames: ['code'],
+-					registers: [registryInstance]
+-				});
+-				instance.set({ code: '200' }, 20);
+-			});
+-			it('should be able to set value and timestamp as Date', () => {
+-				instance.labels('200').set(500, new Date('2017-01-26T01:05Z'));
+-				expectValue(500, 1485392700000);
+-			});
+-			it('should be able to set value and timestamp as number', () => {
+-				instance.labels('200').set(500, 1485392700000);
+-				expectValue(500, 1485392700000);
+-			});
+-			it('should not allow non numbers', () => {
+-				const fn = function() {
+-					instance.labels('200').set(500, 'blah');
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should not allow invalid dates', () => {
+-				const fn = function() {
+-					instance.labels('200').set(500, new Date('blah'));
+-				};
+-				expect(fn).toThrowErrorMatchingSnapshot();
+-			});
+-			it('should be able to increment', () => {
+-				instance.labels('200').inc(1, 1485392700000);
+-				expectValue(21, 1485392700000);
+-			});
+-			it('should be able to decrement', () => {
+-				instance.labels('200').dec(1, 1485392700000);
+-				expectValue(19, 1485392700000);
+-			});
+-		});
+ 	});
+ 	describe('gauge reset', () => {
+ 		afterEach(() => {
+@@ -313,8 +234,7 @@ describe('gauge', () => {
+ 		});
+ 	});
+ 
+-	function expectValue(val, timestamp) {
++	function expectValue(val) {
+ 		expect(instance.get().values[0].value).toEqual(val);
+-		expect(instance.get().values[0].timestamp).toEqual(timestamp);
+ 	}
+ });
+",0,,16,367,2,1,16,367
+423,b2e5ef887a09d9771bca24c6999dff01d3084515,b2e5ef887a09d9771bca24c6999dff01d3084515,"Fixes #262
+Closes #263 (this replaces that PR, adding a test and changelog entry)","fix: summary.observe should validate labels correctly
+
+Fixes #262
+","diff --git a/test/summaryTest.js b/test/summaryTest.js
+index bd119df..d9c11fb 100644
+--- a/test/summaryTest.js
++++ b/test/summaryTest.js
+@@ -32,6 +32,18 @@ describe('summary', () => {
+ 				expect((await instance.get()).values[8].value).toEqual(1);
+ 			});
+ 
++			it('should validate labels when observing', async () => {
++				const summary = new Summary({
++					name: 'foobar',
++					help: 'Foo Bar',
++					labelNames: ['foo'],
++				});
++
++				expect(() => {
++					summary.observe({ foo: 'bar', baz: 'qaz' }, 10);
++				}).toThrowErrorMatchingSnapshot();
++			});
++
+ 			it('should correctly calculate percentiles when more values are added to the summary', async () => {
+ 				instance.observe(100);
+ 				instance.observe(100);
+",0,,4,17,1,1,4,17
+550,47441a08653a6d8e63844c0da5e691b448b0cae9,10a2831facb96275d561da17d2ded13dcfe3d2ff,"I plan to rebase-merge this onto master, then release a prerelease","Add openmetrics and exemplars support (#544)
+
+Co-authored-by: Andrei Dobre <andreidobre.web@gmail.com>
+","diff --git a/test/counterTest.js b/test/counterTest.js
+index ff16e51..0ee0fc2 100644
+--- a/test/counterTest.js
++++ b/test/counterTest.js
+@@ -1,11 +1,19 @@
+ 'use strict';
+ 
+-describe('counter', () => {
++const Registry = require('../index').Registry;
++
++describe.each([
++	['Prometheus', Registry.PROMETHEUS_CONTENT_TYPE],
++	['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE],
++])('counter with %s registry', (tag, regType) => {
+ 	const Counter = require('../index').Counter;
+-	const Registry = require('../index').Registry;
+ 	const globalRegistry = require('../index').register;
+ 	let instance;
+ 
++	beforeEach(() => {
++		globalRegistry.setContentType(regType);
++	});
++
+ 	describe('with params as object', () => {
+ 		beforeEach(() => {
+ 			instance = new Counter({ name: 'gauge_test', help: 'test' });
+@@ -168,7 +176,7 @@ describe('counter', () => {
+ 	describe('registry instance', () => {
+ 		let registryInstance;
+ 		beforeEach(() => {
+-			registryInstance = new Registry();
++			registryInstance = new Registry(regType);
+ 			instance = new Counter({
+ 				name: 'gauge_test',
+ 				help: 'test',
+
+diff --git a/test/gaugeTest.js b/test/gaugeTest.js
+index 3657b95..c7d9ec5 100644
+--- a/test/gaugeTest.js
++++ b/test/gaugeTest.js
+@@ -1,11 +1,19 @@
+ 'use strict';
+ 
+-describe('gauge', () => {
++const Registry = require('../index').Registry;
++
++describe.each([
++	['Prometheus', Registry.PROMETHEUS_CONTENT_TYPE],
++	['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE],
++])('gauge with %s registry', (tag, regType) => {
+ 	const Gauge = require('../index').Gauge;
+-	const Registry = require('../index').Registry;
+ 	const globalRegistry = require('../index').register;
+ 	let instance;
+ 
++	beforeEach(() => {
++		globalRegistry.setContentType(regType);
++	});
++
+ 	describe('global registry', () => {
+ 		afterEach(() => {
+ 			globalRegistry.clear();
+@@ -208,7 +216,7 @@ describe('gauge', () => {
+ 	describe('registry instance', () => {
+ 		let registryInstance;
+ 		beforeEach(() => {
+-			registryInstance = new Registry();
++			registryInstance = new Registry(regType);
+ 			instance = new Gauge({
+ 				name: 'gauge_test',
+ 				help: 'help',
+
+diff --git a/test/histogramTest.js b/test/histogramTest.js
+index 06978ad..5ec89f9 100644
+--- a/test/histogramTest.js
++++ b/test/histogramTest.js
+@@ -1,11 +1,19 @@
+ 'use strict';
+ 
+-describe('histogram', () => {
++const Registry = require('../index').Registry;
++
++describe.each([
++	['Prometheus', Registry.PROMETHEUS_CONTENT_TYPE],
++	['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE],
++])('histogram with %s registry', (tag, regType) => {
+ 	const Histogram = require('../index').Histogram;
+-	const Registry = require('../index').Registry;
+ 	const globalRegistry = require('../index').register;
+ 	let instance;
+ 
++	beforeEach(() => {
++		globalRegistry.setContentType(regType);
++	});
++
+ 	afterEach(() => {
+ 		instance = null;
+ 		globalRegistry.clear();
+@@ -435,7 +443,7 @@ describe('histogram', () => {
+ 		describe('registry instance', () => {
+ 			let registryInstance;
+ 			beforeEach(() => {
+-				registryInstance = new Registry();
++				registryInstance = new Registry(regType);
+ 				instance = new Histogram({
+ 					name: 'test_histogram',
+ 					help: 'test',
+
+diff --git a/test/registerTest.js b/test/registerTest.js
+index 81d38c0..1e4623c 100644
+--- a/test/registerTest.js
++++ b/test/registerTest.js
+@@ -1,646 +1,735 @@
+ 'use strict';
+ 
+-describe('register', () => {
+-	const register = require('../index').register;
+-	const Counter = require('../index').Counter;
+-	const Gauge = require('../index').Gauge;
+-	const Histogram = require('../index').Histogram;
+-	const Summary = require('../index').Summary;
+-
+-	beforeEach(() => {
+-		register.clear();
+-	});
+-
+-	describe('should output a counter metric', () => {
+-		let output;
+-		beforeEach(async () => {
+-			register.registerMetric(getMetric());
+-			output = (await register.metrics()).split('\n');
+-		});
+-
+-		it('with help as first item', () => {
+-			expect(output[0]).toEqual('# HELP test_metric A test metric');
+-		});
+-		it('with type as second item', () => {
+-			expect(output[1]).toEqual('# TYPE test_metric counter');
+-		});
+-		it('with first value of the metric as third item', () => {
+-			expect(output[2]).toEqual('test_metric{label=""hello"",code=""303""} 12');
+-		});
+-		it('with second value of the metric as fourth item', () => {
+-			expect(output[3]).toEqual('test_metric{label=""bye"",code=""404""} 34');
+-		});
++const Registry = require('../index').Registry;
++const register = require('../index').register;
++
++describe('Register', () => {
++	const contentTypeTestStr =
++		'application/openmetrics-text; version=42.0.0; charset=utf-8';
++	const expectedContentTypeErrStr = `Content type ${contentTypeTestStr} is unsupported`;
++	it('should throw if set to an unsupported type', () => {
++		expect(() => {
++			register.setContentType(contentTypeTestStr);
++		}).toThrowError(expectedContentTypeErrStr);
+ 	});
+ 
+-	it('should throw on more than one metric', () => {
+-		register.registerMetric(getMetric());
+-
++	it('should throw if created with an unsupported type', () => {
+ 		expect(() => {
+-			register.registerMetric(getMetric());
+-		}).toThrowError(
+-			'A metric with the name test_metric has already been registered.',
+-		);
++			new Registry(contentTypeTestStr);
++		}).toThrowError(expectedContentTypeErrStr);
+ 	});
+ 
+-	it('should handle and output a metric with a NaN value', async () => {
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'gauge',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: NaN,
+-						},
+-					],
+-				};
+-			},
+-		});
+-		const lines = (await register.metrics()).split('\n');
+-		expect(lines).toHaveLength(4);
+-		expect(lines[2]).toEqual('test_metric Nan');
+-	});
++	describe.each([
++		['Prometheus', Registry.PROMETHEUS_CONTENT_TYPE],
++		['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE],
++	])('with %s type', (tag, regType) => {
++		const Counter = require('../index').Counter;
++		const Gauge = require('../index').Gauge;
++		const Histogram = require('../index').Histogram;
++		const Summary = require('../index').Summary;
+ 
+-	it('should handle and output a metric with an +Infinity value', async () => {
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'gauge',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: Infinity,
+-						},
+-					],
+-				};
+-			},
++		beforeEach(() => {
++			register.setContentType(regType);
++			register.clear();
+ 		});
+-		const lines = (await register.metrics()).split('\n');
+-		expect(lines).toHaveLength(4);
+-		expect(lines[2]).toEqual('test_metric +Inf');
+-	});
+ 
+-	it('should handle and output a metric with an -Infinity value', async () => {
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'gauge',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: -Infinity,
+-						},
+-					],
+-				};
+-			},
+-		});
+-		const lines = (await register.metrics()).split('\n');
+-		expect(lines).toHaveLength(4);
+-		expect(lines[2]).toEqual('test_metric -Inf');
+-	});
++		describe('should output a counter metric', () => {
++			let output;
++			beforeEach(async () => {
++				register.registerMetric(getMetric());
++				output = (await register.metrics()).split('\n');
++			});
+ 
+-	it('should handle a metric without labels', async () => {
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'counter',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: 1,
+-						},
+-					],
+-				};
+-			},
++			it('with help as first item', () => {
++				expect(output[0]).toEqual('# HELP test_metric A test metric');
++			});
++			it('with type as second item', () => {
++				expect(output[1]).toEqual('# TYPE test_metric counter');
++			});
++			it('with first value of the metric as third item', () => {
++				if (register.contentType === Registry.OPENMETRICS_CONTENT_TYPE) {
++					expect(output[2]).toEqual(
++						'test_metric_total{label=""hello"",code=""303""} 12',
++					);
++				} else {
++					expect(output[2]).toEqual('test_metric{label=""hello"",code=""303""} 12');
++				}
++			});
++			it('with second value of the metric as fourth item', () => {
++				if (register.contentType === Registry.OPENMETRICS_CONTENT_TYPE) {
++					expect(output[3]).toEqual(
++						'test_metric_total{label=""bye"",code=""404""} 34',
++					);
++				} else {
++					expect(output[3]).toEqual('test_metric{label=""bye"",code=""404""} 34');
++				}
++			});
+ 		});
+-		expect((await register.metrics()).split('\n')).toHaveLength(4);
+-	});
+ 
+-	it('should handle a metric with default labels', async () => {
+-		register.setDefaultLabels({ testLabel: 'testValue' });
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'counter',
+-					help: 'A test metric',
+-					values: [{ value: 1 }],
+-				};
+-			},
+-		});
++		it('should throw on more than one metric', () => {
++			register.registerMetric(getMetric());
+ 
+-		const output = (await register.metrics()).split('\n')[2];
+-		expect(output).toEqual('test_metric{testLabel=""testValue""} 1');
+-	});
++			expect(() => {
++				register.registerMetric(getMetric());
++			}).toThrowError(
++				'A metric with the name test_metric has already been registered.',
++			);
++		});
+ 
+-	it('labeled metrics should take precidence over defaulted', async () => {
+-		register.setDefaultLabels({ testLabel: 'testValue' });
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'counter',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: 1,
+-							labels: {
+-								testLabel: 'overlapped',
+-								anotherLabel: 'value123',
++		it('should handle and output a metric with a NaN value', async () => {
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'gauge',
++						help: 'A test metric',
++						values: [
++							{
++								value: NaN,
+ 							},
+-						},
+-					],
+-				};
+-			},
++						],
++					};
++				},
++			});
++			const lines = (await register.metrics()).split('\n');
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect(lines).toHaveLength(5);
++			} else {
++				expect(lines).toHaveLength(4);
++			}
++			expect(lines[2]).toEqual('test_metric Nan');
+ 		});
+ 
+-		expect((await register.metrics()).split('\n')[2]).toEqual(
+-			'test_metric{testLabel=""overlapped"",anotherLabel=""value123""} 1',
+-		);
+-	});
+-
+-	it('should output all initialized metrics at value 0', async () => {
+-		new Counter({ name: 'counter', help: 'help' });
+-		new Gauge({ name: 'gauge', help: 'help' });
+-		new Histogram({ name: 'histogram', help: 'help' });
+-		new Summary({ name: 'summary', help: 'help' });
+-
+-		expect(await register.metrics()).toMatchSnapshot();
+-	});
+-
+-	it('should not output all initialized metrics at value 0 if labels', async () => {
+-		new Counter({ name: 'counter', help: 'help', labelNames: ['label'] });
+-		new Gauge({ name: 'gauge', help: 'help', labelNames: ['label'] });
+-		new Histogram({ name: 'histogram', help: 'help', labelNames: ['label'] });
+-		new Summary({ name: 'summary', help: 'help', labelNames: ['label'] });
+-
+-		expect(await register.metrics()).toMatchSnapshot();
+-	});
+-
+-	describe('should escape', () => {
+-		let escapedResult;
+-		beforeEach(async () => {
++		it('should handle and output a metric with an +Infinity value', async () => {
+ 			register.registerMetric({
+ 				async get() {
+ 					return {
+-						name: 'test_""_\\_\n_metric',
+-						help: 'help_help',
+-						type: 'counter',
++						name: 'test_metric',
++						type: 'gauge',
++						help: 'A test metric',
++						values: [
++							{
++								value: Infinity,
++							},
++						],
+ 					};
+ 				},
+ 			});
+-			escapedResult = await register.metrics();
+-		});
+-		it('backslash to \\\\', () => {
+-			expect(escapedResult).toMatch(/\\\\/);
+-		});
+-		it('newline to \\\\n', () => {
+-			expect(escapedResult).toMatch(/\n/);
++			const lines = (await register.metrics()).split('\n');
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect(lines).toHaveLength(5);
++			} else {
++				expect(lines).toHaveLength(4);
++			}
++			expect(lines[2]).toEqual('test_metric +Inf');
+ 		});
+-	});
+ 
+-	it('should escape "" in label values', async () => {
+-		register.registerMetric({
+-			async get() {
+-				return {
+-					name: 'test_metric',
+-					type: 'counter',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: 12,
+-							labels: {
+-								label: 'hello',
+-								code: '3""03',
++		it('should handle and output a metric with an -Infinity value', async () => {
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'gauge',
++						help: 'A test metric',
++						values: [
++							{
++								value: -Infinity,
+ 							},
+-						},
+-					],
+-				};
+-			},
++						],
++					};
++				},
++			});
++			const lines = (await register.metrics()).split('\n');
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect(lines).toHaveLength(5);
++			} else {
++				expect(lines).toHaveLength(4);
++			}
++			expect(lines[2]).toEqual('test_metric -Inf');
+ 		});
+-		const escapedResult = await register.metrics();
+-		expect(escapedResult).toMatch(/\\""/);
+-	});
+-
+-	describe('should output metrics as JSON', () => {
+-		it('should output metrics as JSON', async () => {
+-			register.registerMetric(getMetric());
+-			const output = await register.getMetricsAsJSON();
+ 
+-			expect(output.length).toEqual(1);
+-			expect(output[0].name).toEqual('test_metric');
+-			expect(output[0].type).toEqual('counter');
+-			expect(output[0].help).toEqual('A test metric');
+-			expect(output[0].values.length).toEqual(2);
++		it('should handle a metric without labels', async () => {
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'counter',
++						help: 'A test metric',
++						values: [
++							{
++								value: 1,
++							},
++						],
++					};
++				},
++			});
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect((await register.metrics()).split('\n')).toHaveLength(5);
++			} else {
++				expect((await register.metrics()).split('\n')).toHaveLength(4);
++			}
+ 		});
+ 
+-		it('should add default labels to JSON', async () => {
+-			register.registerMetric(getMetric());
+-			register.setDefaultLabels({
+-				defaultRegistryLabel: 'testValue',
++		it('should handle a metric with default labels', async () => {
++			register.setDefaultLabels({ testLabel: 'testValue' });
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'counter',
++						help: 'A test metric',
++						values: [{ value: 1 }],
++					};
++				},
+ 			});
+-			const output = await register.getMetricsAsJSON();
+ 
+-			expect(output.length).toEqual(1);
+-			expect(output[0].name).toEqual('test_metric');
+-			expect(output[0].type).toEqual('counter');
+-			expect(output[0].help).toEqual('A test metric');
+-			expect(output[0].values.length).toEqual(2);
+-			expect(output[0].values[0].labels).toEqual({
+-				code: '303',
+-				label: 'hello',
+-				defaultRegistryLabel: 'testValue',
+-			});
++			const output = (await register.metrics()).split('\n')[2];
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect(output).toEqual('test_metric_total{testLabel=""testValue""} 1');
++			} else {
++				expect(output).toEqual('test_metric{testLabel=""testValue""} 1');
++			}
+ 		});
+-	});
+-
+-	it('should allow removing single metrics', async () => {
+-		register.registerMetric(getMetric());
+-		register.registerMetric(getMetric('some other name'));
+-
+-		let output = await register.getMetricsAsJSON();
+-		expect(output.length).toEqual(2);
+-
+-		register.removeSingleMetric('test_metric');
+ 
+-		output = await register.getMetricsAsJSON();
++		it('labeled metrics should take precidence over defaulted', async () => {
++			register.setDefaultLabels({ testLabel: 'testValue' });
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'counter',
++						help: 'A test metric',
++						values: [
++							{
++								value: 1,
++								labels: {
++									testLabel: 'overlapped',
++									anotherLabel: 'value123',
++								},
++							},
++						],
++					};
++				},
++			});
+ 
+-		expect(output.length).toEqual(1);
+-		expect(output[0].name).toEqual('some other name');
+-	});
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect((await register.metrics()).split('\n')[2]).toEqual(
++					'test_metric_total{testLabel=""overlapped"",anotherLabel=""value123""} 1',
++				);
++			} else {
++				expect((await register.metrics()).split('\n')[2]).toEqual(
++					'test_metric{testLabel=""overlapped"",anotherLabel=""value123""} 1',
++				);
++			}
++		});
+ 
+-	it('should allow getting single metrics', () => {
+-		const metric = getMetric();
+-		register.registerMetric(metric);
++		it('should output all initialized metrics at value 0', async () => {
++			new Counter({ name: 'counter', help: 'help' });
++			new Gauge({ name: 'gauge', help: 'help' });
++			new Histogram({ name: 'histogram', help: 'help' });
++			new Summary({ name: 'summary', help: 'help' });
+ 
+-		const output = register.getSingleMetric('test_metric');
+-		expect(output).toEqual(metric);
+-	});
++			expect(await register.metrics()).toMatchSnapshot();
++		});
+ 
+-	it('should allow gettings metrics', async () => {
+-		const metric = getMetric();
+-		register.registerMetric(metric);
+-		const metrics = await register.metrics();
++		it('should not output all initialized metrics at value 0 if labels', async () => {
++			new Counter({ name: 'counter', help: 'help', labelNames: ['label'] });
++			new Gauge({ name: 'gauge', help: 'help', labelNames: ['label'] });
++			new Histogram({ name: 'histogram', help: 'help', labelNames: ['label'] });
++			new Summary({ name: 'summary', help: 'help', labelNames: ['label'] });
+ 
+-		expect(metrics.split('\n')[3]).toEqual(
+-			'test_metric{label=""bye"",code=""404""} 34',
+-		);
+-	});
++			expect(await register.metrics()).toMatchSnapshot();
++		});
+ 
+-	describe('resetting', () => {
+-		it('should allow resetting all metrics', async () => {
+-			const counter = new Counter({
+-				name: 'test_counter',
+-				help: 'test metric',
+-				labelNames: ['serial', 'active'],
+-			});
+-			const gauge = new Gauge({
+-				name: 'test_gauge',
+-				help: 'Another test metric',
+-				labelNames: ['level'],
++		describe('should escape', () => {
++			let escapedResult;
++			beforeEach(async () => {
++				register.registerMetric({
++					async get() {
++						return {
++							name: 'test_""_\\_\n_metric',
++							help: 'help_help',
++							type: 'counter',
++						};
++					},
++				});
++				escapedResult = await register.metrics();
+ 			});
+-			const histo = new Histogram({
+-				name: 'test_histo',
+-				help: 'test',
++			it('backslash to \\\\', () => {
++				expect(escapedResult).toMatch(/\\\\/);
+ 			});
+-			const summ = new Summary({
+-				name: 'test_summ',
+-				help: 'test',
+-				percentiles: [0.5],
++			it('newline to \\\\n', () => {
++				expect(escapedResult).toMatch(/\n/);
+ 			});
+-			register.registerMetric(counter);
+-			register.registerMetric(gauge);
+-			register.registerMetric(histo);
+-			register.registerMetric(summ);
+-
+-			counter.inc({ serial: '12345', active: 'yes' }, 12);
+-			gauge.set({ level: 'low' }, -12);
+-			histo.observe(1);
+-			summ.observe(100);
+-
+-			register.resetMetrics();
+-
+-			const same_counter = register.getSingleMetric('test_counter');
+-			expect((await same_counter.get()).values).toEqual([]);
+-
+-			const same_gauge = register.getSingleMetric('test_gauge');
+-			expect((await same_gauge.get()).values).toEqual([]);
+-
+-			const same_histo = register.getSingleMetric('test_histo');
+-			expect((await same_histo.get()).values).toEqual([]);
+-
+-			const same_summ = register.getSingleMetric('test_summ');
+-			expect((await same_summ.get()).values[0].value).toEqual(0);
+ 		});
+-	});
+-
+-	describe('Registry with default labels', () => {
+-		const Registry = require('../lib/registry');
+-
+-		describe('mutation tests', () => {
+-			describe('registry.metrics()', () => {
+-				it('should not throw with default labels (counter)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
+-					});
+ 
+-					const counter = new Counter({
+-						name: 'my_counter',
+-						help: 'my counter',
+-						registers: [r],
+-						labelNames: ['type'],
+-					});
++		it('should escape "" in label values', async () => {
++			register.registerMetric({
++				async get() {
++					return {
++						name: 'test_metric',
++						type: 'counter',
++						help: 'A test metric',
++						values: [
++							{
++								value: 12,
++								labels: {
++									label: 'hello',
++									code: '3""03',
++								},
++							},
++						],
++					};
++				},
++			});
++			const escapedResult = await register.metrics();
++			expect(escapedResult).toMatch(/\\""/);
++		});
+ 
+-					const myCounter = counter.labels('myType');
++		describe('should output metrics as JSON', () => {
++			it('should output metrics as JSON', async () => {
++				register.registerMetric(getMetric());
++				const output = await register.getMetricsAsJSON();
+ 
+-					myCounter.inc();
++				expect(output.length).toEqual(1);
++				expect(output[0].name).toEqual('test_metric');
++				expect(output[0].type).toEqual('counter');
++				expect(output[0].help).toEqual('A test metric');
++				expect(output[0].values.length).toEqual(2);
++			});
+ 
+-					const metrics = await r.metrics();
+-					const lines = metrics.split('\n');
+-					expect(lines).toContain(
+-						'my_counter{type=""myType"",env=""development""} 1',
+-					);
++			it('should add default labels to JSON', async () => {
++				register.registerMetric(getMetric());
++				register.setDefaultLabels({
++					defaultRegistryLabel: 'testValue',
++				});
++				const output = await register.getMetricsAsJSON();
++
++				expect(output.length).toEqual(1);
++				expect(output[0].name).toEqual('test_metric');
++				expect(output[0].type).toEqual('counter');
++				expect(output[0].help).toEqual('A test metric');
++				expect(output[0].values.length).toEqual(2);
++				expect(output[0].values[0].labels).toEqual({
++					code: '303',
++					label: 'hello',
++					defaultRegistryLabel: 'testValue',
++				});
++			});
++		});
+ 
+-					myCounter.inc();
++		it('should allow removing single metrics', async () => {
++			register.registerMetric(getMetric());
++			register.registerMetric(getMetric('some other name'));
+ 
+-					const metrics2 = await r.metrics();
+-					const lines2 = metrics2.split('\n');
+-					expect(lines2).toContain(
+-						'my_counter{type=""myType"",env=""development""} 2',
+-					);
+-				});
++			let output = await register.getMetricsAsJSON();
++			expect(output.length).toEqual(2);
+ 
+-				it('should not throw with default labels (gauge)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
+-					});
++			register.removeSingleMetric('test_metric');
+ 
+-					const gauge = new Gauge({
+-						name: 'my_gauge',
+-						help: 'my gauge',
+-						registers: [r],
+-						labelNames: ['type'],
+-					});
++			output = await register.getMetricsAsJSON();
+ 
+-					const myGauge = gauge.labels('myType');
++			expect(output.length).toEqual(1);
++			expect(output[0].name).toEqual('some other name');
++		});
+ 
+-					myGauge.inc(1);
++		it('should allow getting single metrics', () => {
++			const metric = getMetric();
++			register.registerMetric(metric);
+ 
+-					const metrics = await r.metrics();
+-					const lines = metrics.split('\n');
+-					expect(lines).toContain(
+-						'my_gauge{type=""myType"",env=""development""} 1',
+-					);
++			const output = register.getSingleMetric('test_metric');
++			expect(output).toEqual(metric);
++		});
+ 
+-					myGauge.inc(2);
++		it('should allow getting metrics', async () => {
++			const metric = getMetric();
++			register.registerMetric(metric);
++			const metrics = await register.metrics();
++
++			if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++				expect(metrics.split('\n')[3]).toEqual(
++					'test_metric_total{label=""bye"",code=""404""} 34',
++				);
++			} else {
++				expect(metrics.split('\n')[3]).toEqual(
++					'test_metric{label=""bye"",code=""404""} 34',
++				);
++			}
++		});
+ 
+-					const metrics2 = await r.metrics();
+-					const lines2 = metrics2.split('\n');
+-					expect(lines2).toContain(
+-						'my_gauge{type=""myType"",env=""development""} 3',
+-					);
++		describe('resetting', () => {
++			it('should allow resetting all metrics', async () => {
++				const counter = new Counter({
++					name: 'test_counter',
++					help: 'test metric',
++					labelNames: ['serial', 'active'],
+ 				});
++				const gauge = new Gauge({
++					name: 'test_gauge',
++					help: 'Another test metric',
++					labelNames: ['level'],
++				});
++				const histo = new Histogram({
++					name: 'test_histo',
++					help: 'test',
++				});
++				const summ = new Summary({
++					name: 'test_summ',
++					help: 'test',
++					percentiles: [0.5],
++				});
++				register.registerMetric(counter);
++				register.registerMetric(gauge);
++				register.registerMetric(histo);
++				register.registerMetric(summ);
+ 
+-				it('should not throw with default labels (histogram)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
+-					});
+-
+-					const hist = new Histogram({
+-						name: 'my_histogram',
+-						help: 'my histogram',
+-						registers: [r],
+-						labelNames: ['type'],
+-					});
++				counter.inc({ serial: '12345', active: 'yes' }, 12);
++				gauge.set({ level: 'low' }, -12);
++				histo.observe(1);
++				summ.observe(100);
+ 
+-					const myHist = hist.labels('myType');
++				register.resetMetrics();
+ 
+-					myHist.observe(1);
++				const same_counter = register.getSingleMetric('test_counter');
++				expect((await same_counter.get()).values).toEqual([]);
+ 
+-					const metrics = await r.metrics();
+-					const lines = metrics.split('\n');
+-					expect(lines).toContain(
+-						'my_histogram_bucket{le=""1"",type=""myType"",env=""development""} 1',
+-					);
++				const same_gauge = register.getSingleMetric('test_gauge');
++				expect((await same_gauge.get()).values).toEqual([]);
+ 
+-					myHist.observe(1);
++				const same_histo = register.getSingleMetric('test_histo');
++				expect((await same_histo.get()).values).toEqual([]);
+ 
+-					const metrics2 = await r.metrics();
+-					const lines2 = metrics2.split('\n');
+-					expect(lines2).toContain(
+-						'my_histogram_bucket{le=""1"",type=""myType"",env=""development""} 2',
+-					);
+-				});
++				const same_summ = register.getSingleMetric('test_summ');
++				expect((await same_summ.get()).values[0].value).toEqual(0);
+ 			});
++		});
+ 
+-			describe('registry.getMetricsAsJSON()', () => {
+-				it('should not throw with default labels (counter)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
++		describe('Registry with default labels', () => {
++			const Registry = require('../lib/registry');
++
++			describe('mutation tests', () => {
++				describe('registry.metrics()', () => {
++					it('should not throw with default labels (counter)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
++
++						const counter = new Counter({
++							name: 'my_counter',
++							help: 'my counter',
++							registers: [r],
++							labelNames: ['type'],
++						});
++
++						const myCounter = counter.labels('myType');
++
++						myCounter.inc();
++
++						const metrics = await r.metrics();
++						const lines = metrics.split('\n');
++						if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++							expect(lines).toContain(
++								'my_counter_total{type=""myType"",env=""development""} 1',
++							);
++						} else {
++							expect(lines).toContain(
++								'my_counter{type=""myType"",env=""development""} 1',
++							);
++						}
++
++						myCounter.inc();
++
++						const metrics2 = await r.metrics();
++						const lines2 = metrics2.split('\n');
++						if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++							expect(lines2).toContain(
++								'my_counter_total{type=""myType"",env=""development""} 2',
++							);
++						} else {
++							expect(lines2).toContain(
++								'my_counter{type=""myType"",env=""development""} 2',
++							);
++						}
+ 					});
+ 
+-					const counter = new Counter({
+-						name: 'my_counter',
+-						help: 'my counter',
+-						registers: [r],
+-						labelNames: ['type'],
+-					});
++					it('should not throw with default labels (gauge)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
+ 
+-					const myCounter = counter.labels('myType');
++						const gauge = new Gauge({
++							name: 'my_gauge',
++							help: 'my gauge',
++							registers: [r],
++							labelNames: ['type'],
++						});
+ 
+-					myCounter.inc();
++						const myGauge = gauge.labels('myType');
+ 
+-					const metrics = await r.getMetricsAsJSON();
+-					expect(metrics).toContainEqual({
+-						aggregator: 'sum',
+-						help: 'my counter',
+-						name: 'my_counter',
+-						type: 'counter',
+-						values: [
+-							{
+-								labels: { env: 'development', type: 'myType' },
+-								value: 1,
+-							},
+-						],
+-					});
++						myGauge.inc(1);
+ 
+-					myCounter.inc();
++						const metrics = await r.metrics();
++						const lines = metrics.split('\n');
++						expect(lines).toContain(
++							'my_gauge{type=""myType"",env=""development""} 1',
++						);
+ 
+-					const metrics2 = await r.getMetricsAsJSON();
+-					expect(metrics2).toContainEqual({
+-						aggregator: 'sum',
+-						help: 'my counter',
+-						name: 'my_counter',
+-						type: 'counter',
+-						values: [
+-							{
+-								labels: { env: 'development', type: 'myType' },
+-								value: 2,
+-							},
+-						],
+-					});
+-				});
++						myGauge.inc(2);
+ 
+-				it('should not throw with default labels (gauge)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
++						const metrics2 = await r.metrics();
++						const lines2 = metrics2.split('\n');
++						expect(lines2).toContain(
++							'my_gauge{type=""myType"",env=""development""} 3',
++						);
+ 					});
+ 
+-					const gauge = new Gauge({
+-						name: 'my_gauge',
+-						help: 'my gauge',
+-						registers: [r],
+-						labelNames: ['type'],
+-					});
++					it('should not throw with default labels (histogram)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
+ 
+-					const myGauge = gauge.labels('myType');
++						const hist = new Histogram({
++							name: 'my_histogram',
++							help: 'my histogram',
++							registers: [r],
++							labelNames: ['type'],
++						});
+ 
+-					myGauge.inc(1);
++						const myHist = hist.labels('myType');
+ 
+-					const metrics = await r.getMetricsAsJSON();
+-					expect(metrics).toContainEqual({
+-						aggregator: 'sum',
+-						help: 'my gauge',
+-						name: 'my_gauge',
+-						type: 'gauge',
+-						values: [
+-							{
+-								labels: { env: 'development', type: 'myType' },
+-								value: 1,
+-							},
+-						],
+-					});
++						myHist.observe(1);
+ 
+-					myGauge.inc(2);
++						const metrics = await r.metrics();
++						const lines = metrics.split('\n');
++						expect(lines).toContain(
++							'my_histogram_bucket{le=""1"",type=""myType"",env=""development""} 1',
++						);
+ 
+-					const metrics2 = await r.getMetricsAsJSON();
+-					expect(metrics2).toContainEqual({
+-						aggregator: 'sum',
+-						help: 'my gauge',
+-						name: 'my_gauge',
+-						type: 'gauge',
+-						values: [
+-							{
+-								labels: { env: 'development', type: 'myType' },
+-								value: 3,
+-							},
+-						],
++						myHist.observe(1);
++
++						const metrics2 = await r.metrics();
++						const lines2 = metrics2.split('\n');
++						expect(lines2).toContain(
++							'my_histogram_bucket{le=""1"",type=""myType"",env=""development""} 2',
++						);
+ 					});
+ 				});
+ 
+-				it('should not throw with default labels (histogram)', async () => {
+-					const r = new Registry();
+-					r.setDefaultLabels({
+-						env: 'development',
++				describe('registry.getMetricsAsJSON()', () => {
++					it('should not throw with default labels (counter)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
++
++						const counter = new Counter({
++							name: 'my_counter',
++							help: 'my counter',
++							registers: [r],
++							labelNames: ['type'],
++						});
++
++						const myCounter = counter.labels('myType');
++
++						myCounter.inc();
++
++						const metrics = await r.getMetricsAsJSON();
++						expect(metrics).toContainEqual({
++							aggregator: 'sum',
++							help: 'my counter',
++							name: 'my_counter',
++							type: 'counter',
++							values: [
++								{
++									labels: { env: 'development', type: 'myType' },
++									value: 1,
++								},
++							],
++						});
++
++						myCounter.inc();
++
++						const metrics2 = await r.getMetricsAsJSON();
++						expect(metrics2).toContainEqual({
++							aggregator: 'sum',
++							help: 'my counter',
++							name: 'my_counter',
++							type: 'counter',
++							values: [
++								{
++									labels: { env: 'development', type: 'myType' },
++									value: 2,
++								},
++							],
++						});
+ 					});
+ 
+-					const hist = new Histogram({
+-						name: 'my_histogram',
+-						help: 'my histogram',
+-						registers: [r],
+-						labelNames: ['type'],
++					it('should not throw with default labels (gauge)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
++
++						const gauge = new Gauge({
++							name: 'my_gauge',
++							help: 'my gauge',
++							registers: [r],
++							labelNames: ['type'],
++						});
++
++						const myGauge = gauge.labels('myType');
++
++						myGauge.inc(1);
++
++						const metrics = await r.getMetricsAsJSON();
++						expect(metrics).toContainEqual({
++							aggregator: 'sum',
++							help: 'my gauge',
++							name: 'my_gauge',
++							type: 'gauge',
++							values: [
++								{
++									labels: { env: 'development', type: 'myType' },
++									value: 1,
++								},
++							],
++						});
++
++						myGauge.inc(2);
++
++						const metrics2 = await r.getMetricsAsJSON();
++						expect(metrics2).toContainEqual({
++							aggregator: 'sum',
++							help: 'my gauge',
++							name: 'my_gauge',
++							type: 'gauge',
++							values: [
++								{
++									labels: { env: 'development', type: 'myType' },
++									value: 3,
++								},
++							],
++						});
+ 					});
+ 
+-					const myHist = hist.labels('myType');
+-
+-					myHist.observe(1);
+-
+-					const metrics = await r.getMetricsAsJSON();
+-					// NOTE: at this test we don't need to check exacte JSON schema
+-					expect(metrics[0].values).toContainEqual({
+-						labels: { env: 'development', le: 1, type: 'myType' },
+-						metricName: 'my_histogram_bucket',
+-						value: 1,
+-					});
+-
+-					myHist.observe(1);
+-
+-					const metrics2 = await r.getMetricsAsJSON();
+-					// NOTE: at this test we don't need to check exacte JSON schema
+-					expect(metrics2[0].values).toContainEqual({
+-						labels: { env: 'development', le: 1, type: 'myType' },
+-						metricName: 'my_histogram_bucket',
+-						value: 2,
++					it('should not throw with default labels (histogram)', async () => {
++						const r = new Registry(regType);
++						r.setDefaultLabels({
++							env: 'development',
++						});
++
++						const hist = new Histogram({
++							name: 'my_histogram',
++							help: 'my histogram',
++							registers: [r],
++							labelNames: ['type'],
++						});
++
++						const myHist = hist.labels('myType');
++
++						myHist.observe(1);
++
++						const metrics = await r.getMetricsAsJSON();
++						// NOTE: at this test we don't need to check exact JSON schema
++						expect(metrics[0].values).toContainEqual({
++							exemplar: null,
++							labels: { env: 'development', le: 1, type: 'myType' },
++							metricName: 'my_histogram_bucket',
++							value: 1,
++						});
++
++						myHist.observe(1);
++
++						const metrics2 = await r.getMetricsAsJSON();
++						// NOTE: at this test we don't need to check exact JSON schema
++						expect(metrics2[0].values).toContainEqual({
++							exemplar: null,
++							labels: { env: 'development', le: 1, type: 'myType' },
++							metricName: 'my_histogram_bucket',
++							value: 2,
++						});
+ 					});
+ 				});
+ 			});
+ 		});
+-	});
+ 
+-	describe('merging', () => {
+-		const Registry = require('../lib/registry');
+-		let registryOne;
+-		let registryTwo;
++		describe('merging', () => {
++			const Registry = require('../lib/registry');
++			let registryOne;
++			let registryTwo;
+ 
+-		beforeEach(() => {
+-			registryOne = new Registry();
+-			registryTwo = new Registry();
+-		});
++			beforeEach(() => {
++				registryOne = new Registry(regType);
++				registryTwo = new Registry(regType);
++			});
+ 
+-		it('should merge all provided registers', async () => {
+-			registryOne.registerMetric(getMetric('one'));
+-			registryTwo.registerMetric(getMetric('two'));
++			it('should merge all provided registers', async () => {
++				registryOne.registerMetric(getMetric('one'));
++				registryTwo.registerMetric(getMetric('two'));
+ 
+-			const merged = await Registry.merge([
+-				registryOne,
+-				registryTwo,
+-			]).getMetricsAsJSON();
+-			expect(merged).toHaveLength(2);
+-		});
++				const merged = await Registry.merge([
++					registryOne,
++					registryTwo,
++				]).getMetricsAsJSON();
++				expect(merged).toHaveLength(2);
++			});
+ 
+-		it('should throw if same name exists on both registers', () => {
+-			registryOne.registerMetric(getMetric());
+-			registryTwo.registerMetric(getMetric());
++			it('should throw if same name exists on both registers', () => {
++				registryOne.registerMetric(getMetric());
++				registryTwo.registerMetric(getMetric());
+ 
+-			const fn = function () {
+-				Registry.merge([registryOne, registryTwo]);
+-			};
++				const fn = function () {
++					Registry.merge([registryOne, registryTwo]);
++				};
+ 
+-			expect(fn).toThrowError(Error);
+-		});
+-	});
++				expect(fn).toThrowError(Error);
++			});
+ 
+-	it('should have the same contentType as the module', () => {
+-		const moduleWideContentType = require('../').contentType;
+-		expect(register.contentType).toEqual(moduleWideContentType);
+-	});
++			it('should throw if merging different types of registers', () => {
++				registryOne.setContentType(Registry.PROMETHEUS_CONTENT_TYPE);
++				registryTwo.setContentType(Registry.OPENMETRICS_CONTENT_TYPE);
+ 
+-	function getMetric(name) {
+-		name = name || 'test_metric';
+-		return {
+-			name,
+-			async get() {
+-				return {
+-					name,
+-					type: 'counter',
+-					help: 'A test metric',
+-					values: [
+-						{
+-							value: 12,
+-							labels: {
+-								label: 'hello',
+-								code: '303',
++				const fn = function () {
++					Registry.merge([registryOne, registryTwo]);
++				};
++
++				expect(fn).toThrowError(
++					'Registers can only be merged if they have the same content type',
++				);
++			});
++		});
++
++		function getMetric(name) {
++			name = name || 'test_metric';
++			return {
++				name,
++				async get() {
++					return {
++						name,
++						type: 'counter',
++						help: 'A test metric',
++						values: [
++							{
++								value: 12,
++								labels: {
++									label: 'hello',
++									code: '303',
++								},
+ 							},
+-						},
+-						{
+-							value: 34,
+-							labels: {
+-								label: 'bye',
+-								code: '404',
++							{
++								value: 34,
++								labels: {
++									label: 'bye',
++									code: '404',
++								},
+ 							},
+-						},
+-					],
+-				};
+-			},
+-		};
+-	}
++						],
++					};
++				},
++			};
++		}
++	});
+ });
+
+diff --git a/test/summaryTest.js b/test/summaryTest.js
+index 29fc2ab..306c9b8 100644
+--- a/test/summaryTest.js
++++ b/test/summaryTest.js
+@@ -1,11 +1,23 @@
+ 'use strict';
+ 
+-describe('summary', () => {
++const Registry = require('../index').Registry;
++
++describe.each([
++	['Prometheus', Registry.PROMETHEUS_CONTENT_TYPE],
++	['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE],
++])('summary with %s registry', (tag, regType) => {
+ 	const Summary = require('../index').Summary;
+-	const Registry = require('../index').Registry;
+ 	const globalRegistry = require('../index').register;
+ 	let instance;
+ 
++	beforeEach(() => {
++		globalRegistry.setContentType(regType);
++	});
++
++	afterEach(() => {
++		globalRegistry.clear();
++	});
++
+ 	describe('global registry', () => {
+ 		afterEach(() => {
+ 			globalRegistry.clear();
+@@ -464,7 +476,7 @@ describe('summary', () => {
+ 	describe('registry instance', () => {
+ 		let registryInstance;
+ 		beforeEach(() => {
+-			registryInstance = new Registry();
++			registryInstance = new Registry(regType);
+ 			instance = new Summary({
+ 				name: 'summary_test',
+ 				help: 'test',
+",0,,42,2363,5,5,44,2410
+556,133b25f02b8180236f3a72468c4147f451d41921,35d9295a91cdbae96708291fdc19721e5d4eaf3f,"Fix exemplar formating
+
+- Fixed improper formating of exemplars
+ - Added snapshot test for exemplars
+
+Fixes https://github.com/siimon/prom-client/issues/554","Fix exemplar formating
+
+- Fixed improper formating of exemplars
+- Added snapshot test for exemplars
+","diff --git a/test/exemplarsTest.js b/test/exemplarsTest.js
+index ef5c225..7396ba5 100644
+--- a/test/exemplarsTest.js
++++ b/test/exemplarsTest.js
+@@ -5,6 +5,8 @@ const globalRegistry = require('../index').register;
+ const Histogram = require('../index').Histogram;
+ const Counter = require('../index').Counter;
+ 
++Date.now = jest.fn(() => 1678654679000);
++
+ describe('Exemplars', () => {
+ 	it('should throw when using with Prometheus registry', async () => {
+ 		globalRegistry.setContentType(Registry.PROMETHEUS_CONTENT_TYPE);
+@@ -96,6 +98,8 @@ describe('Exemplars', () => {
+ 					getValuesByLabel('+Inf', vals)[0].exemplar.labelSet.traceId,
+ 				).toEqual('trace_id_test_3');
+ 				expect(getValuesByLabel('+Inf', vals)[0].exemplar.value).toEqual(11);
++
++				expect(await globalRegistry.metrics()).toMatchSnapshot();
+ 			});
+ 
+ 			it('should throw if exemplar is too long', async () => {
+
+diff --git a/test/registerTest.js b/test/registerTest.js
+index 1e4623c..9a956cd 100644
+--- a/test/registerTest.js
++++ b/test/registerTest.js
+@@ -223,24 +223,64 @@ describe('Register', () => {
+ 			}
+ 		});
+ 
+-		it('should output all initialized metrics at value 0', async () => {
+-			new Counter({ name: 'counter', help: 'help' });
+-			new Gauge({ name: 'gauge', help: 'help' });
+-			new Histogram({ name: 'histogram', help: 'help' });
+-			new Summary({ name: 'summary', help: 'help' });
++		if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++			it('should output all initialized metrics at value 0', async () => {
++				new Counter({ name: 'counter', help: 'help', enableExemplars: true });
++				new Gauge({ name: 'gauge', help: 'help' });
++				new Histogram({
++					name: 'histogram',
++					help: 'help',
++					enableExemplars: true,
++				});
++				new Summary({ name: 'summary', help: 'help' });
+ 
+-			expect(await register.metrics()).toMatchSnapshot();
+-		});
++				expect(await register.metrics()).toMatchSnapshot();
++			});
++		} else {
++			it('should output all initialized metrics at value 0', async () => {
++				new Counter({ name: 'counter', help: 'help' });
++				new Gauge({ name: 'gauge', help: 'help' });
++				new Histogram({ name: 'histogram', help: 'help' });
++				new Summary({ name: 'summary', help: 'help' });
++
++				expect(await register.metrics()).toMatchSnapshot();
++			});
++		}
+ 
+ 		it('should not output all initialized metrics at value 0 if labels', async () => {
+ 			new Counter({ name: 'counter', help: 'help', labelNames: ['label'] });
+ 			new Gauge({ name: 'gauge', help: 'help', labelNames: ['label'] });
+-			new Histogram({ name: 'histogram', help: 'help', labelNames: ['label'] });
++			new Histogram({
++				name: 'histogram',
++				help: 'help',
++				labelNames: ['label'],
++			});
+ 			new Summary({ name: 'summary', help: 'help', labelNames: ['label'] });
+ 
+ 			expect(await register.metrics()).toMatchSnapshot();
+ 		});
+ 
++		if (regType === Registry.OPENMETRICS_CONTENT_TYPE) {
++			it('should not output all initialized metrics at value 0 if labels and exemplars enabled', async () => {
++				new Counter({
++					name: 'counter',
++					help: 'help',
++					labelNames: ['label'],
++					enableExemplars: true,
++				});
++				new Gauge({ name: 'gauge', help: 'help', labelNames: ['label'] });
++				new Histogram({
++					name: 'histogram',
++					help: 'help',
++					labelNames: ['label'],
++					enableExemplars: true,
++				});
++				new Summary({ name: 'summary', help: 'help', labelNames: ['label'] });
++
++				expect(await register.metrics()).toMatchSnapshot();
++			});
++		}
++
+ 		describe('should escape', () => {
+ 			let escapedResult;
+ 			beforeEach(async () => {
+",0,,6,114,2,2,5,113
+667,8ff224076eb27a1c1845995dd39814eed59dc092,8ff224076eb27a1c1845995dd39814eed59dc092,,"chore: update Jest
+","diff --git a/test/exemplarsTest.js b/test/exemplarsTest.js
+index ff72ffc..f573d81 100644
+--- a/test/exemplarsTest.js
++++ b/test/exemplarsTest.js
+@@ -17,7 +17,7 @@ describe('Exemplars', () => {
+ 				labelNames: ['method', 'code'],
+ 				enableExemplars: true,
+ 			});
+-		}).toThrowError('Exemplars are supported only on OpenMetrics registries');
++		}).toThrow('Exemplars are supported only on OpenMetrics registries');
+ 	});
+ 	describe.each([['OpenMetrics', Registry.OPENMETRICS_CONTENT_TYPE]])(
+ 		'with %s registry',
+@@ -119,7 +119,7 @@ describe('Exemplars', () => {
+ 							spanId: 'j'.repeat(100),
+ 						},
+ 					});
+-				}).toThrowError('Label set size must be smaller than 128 UTF-8 chars');
++				}).toThrow('Label set size must be smaller than 128 UTF-8 chars');
+ 			});
+ 
+ 			it('should time request, with exemplar', async () => {
+
+diff --git a/test/registerTest.js b/test/registerTest.js
+index 8200fe6..513c34e 100644
+--- a/test/registerTest.js
++++ b/test/registerTest.js
+@@ -10,13 +10,13 @@ describe('Register', () => {
+ 	it('should throw if set to an unsupported type', () => {
+ 		expect(() => {
+ 			register.setContentType(contentTypeTestStr);
+-		}).toThrowError(expectedContentTypeErrStr);
++		}).toThrow(expectedContentTypeErrStr);
+ 	});
+ 
+ 	it('should throw if created with an unsupported type', () => {
+ 		expect(() => {
+ 			new Registry(contentTypeTestStr);
+-		}).toThrowError(expectedContentTypeErrStr);
++		}).toThrow(expectedContentTypeErrStr);
+ 	});
+ 
+ 	describe.each([
+@@ -71,7 +71,7 @@ describe('Register', () => {
+ 
+ 			expect(() => {
+ 				register.registerMetric(getMetric());
+-			}).toThrowError(
++			}).toThrow(
+ 				'A metric with the name test_metric has already been registered.',
+ 			);
+ 		});
+@@ -725,7 +725,7 @@ describe('Register', () => {
+ 					Registry.merge([registryOne, registryTwo]);
+ 				};
+ 
+-				expect(fn).toThrowError(Error);
++				expect(fn).toThrow(Error);
+ 			});
+ 
+ 			it('should throw if merging different types of registers', () => {
+@@ -736,7 +736,7 @@ describe('Register', () => {
+ 					Registry.merge([registryOne, registryTwo]);
+ 				};
+ 
+-				expect(fn).toThrowError(
++				expect(fn).toThrow(
+ 					'Registers can only be merged if they have the same content type',
+ 				);
+ 			});
+",0,,13,45,6,1,13,45

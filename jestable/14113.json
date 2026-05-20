@@ -1,0 +1,97 @@
+{
+    "id": 4044372,
+    "name": "ranyitz/qnm",
+    "isFork": false,
+    "commits": 266,
+    "branches": 10,
+    "releases": 0,
+    "forks": 31,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 1704,
+    "contributors": 14,
+    "size": 2476,
+    "createdAt": "2018-03-06T07:22:10",
+    "pushedAt": "2023-09-11T08:01:14",
+    "updatedAt": "2023-09-11T10:47:41",
+    "totalIssues": 44,
+    "openIssues": 16,
+    "totalPullRequests": 82,
+    "openPullRequests": 5,
+    "blankLines": 829,
+    "codeLines": 3744,
+    "commentLines": 156,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 81,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 493,
+            "blankLines": 277
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 385,
+            "blankLines": 3
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 64,
+            "codeLines": 2154,
+            "blankLines": 453
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 92,
+            "codeLines": 628,
+            "blankLines": 82
+        }
+    ],
+    "lastCommit": "2023-09-11T08:01:10",
+    "lastCommitSHA": "5a8885a544b3962397a7ea975537d8beef07d608",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 69407,
+        "JavaScript": 435,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "contirbutions: claimed",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "javascript",
+        "nodejs",
+        "npm",
+        "typescript",
+        "yarn"
+    ]
+}

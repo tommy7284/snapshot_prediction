@@ -1,0 +1,102 @@
+{
+    "id": 6783056,
+    "name": "siimon/prom-client",
+    "isFork": false,
+    "commits": 517,
+    "branches": 5,
+    "releases": 41,
+    "forks": 363,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": null,
+    "watchers": 30,
+    "stargazers": 2950,
+    "contributors": 111,
+    "size": 1753,
+    "createdAt": "2015-11-20T07:23:13",
+    "pushedAt": "2024-04-16T06:41:40",
+    "updatedAt": "2024-04-19T08:18:28",
+    "totalIssues": 309,
+    "openIssues": 84,
+    "totalPullRequests": 317,
+    "openPullRequests": 21,
+    "blankLines": 1658,
+    "codeLines": 7902,
+    "commentLines": 1043,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 111,
+            "language": "TypeScript",
+            "commentLines": 419,
+            "codeLines": 263
+        },
+        {
+            "blankLines": 1183,
+            "language": "JavaScript",
+            "commentLines": 623,
+            "codeLines": 6630
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 1,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 94
+        },
+        {
+            "blankLines": 355,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 835
+        }
+    ],
+    "lastCommit": "2024-04-16T06:41:32",
+    "lastCommitSHA": "1c7a4c08de62a756bd18031075db76c6414cc6eb",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 230244,
+        "Shell": 82
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs more info",
+        "question",
+        "semver-major",
+        "suggestion",
+        "waiting on author",
+        "wontfix"
+    ],
+    "topics": [
+        "metrics",
+        "monitoring",
+        "nodejs",
+        "prometheus-client"
+    ]
+}

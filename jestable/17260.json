@@ -1,0 +1,148 @@
+{
+    "id": 32294244,
+    "name": "kawalcovid19/wargabantuwarga.com",
+    "isFork": false,
+    "commits": 2386,
+    "branches": 26,
+    "releases": 0,
+    "forks": 170,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://www.wargabantuwarga.com",
+    "watchers": 13,
+    "stargazers": 553,
+    "contributors": 54,
+    "size": 5626,
+    "createdAt": "2021-07-05T02:30:01",
+    "pushedAt": "2023-10-27T05:18:35",
+    "updatedAt": "2023-11-07T12:57:44",
+    "totalIssues": 293,
+    "openIssues": 42,
+    "totalPullRequests": 590,
+    "openPullRequests": 25,
+    "blankLines": 1832,
+    "codeLines": 15630,
+    "commentLines": 440,
+    "metrics": [
+        {
+            "language": "TOML",
+            "commentLines": 6,
+            "codeLines": 48,
+            "blankLines": 12
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 26,
+            "codeLines": 79,
+            "blankLines": 9
+        },
+        {
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 441,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 284,
+            "codeLines": 11523,
+            "blankLines": 1346
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 84,
+            "codeLines": 870,
+            "blankLines": 108
+        },
+        {
+            "language": "YAML",
+            "commentLines": 39,
+            "codeLines": 602,
+            "blankLines": 54
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 716,
+            "blankLines": 254
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1344,
+            "blankLines": 47
+        }
+    ],
+    "lastCommit": "2023-07-19T03:28:04",
+    "lastCommitSHA": "71f6bda0c9a3965edf5daad92205b9648072fb15",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 422761,
+        "JavaScript": 32630,
+        "HTML": 18017,
+        "CSS": 2128,
+        "Shell": 138
+    },
+    "labels": [
+        "a11y",
+        "analytics",
+        "automerge",
+        "blocked",
+        "bug",
+        "ci-cd",
+        "dependencies",
+        "design",
+        "documentation",
+        "duplicate",
+        "dx",
+        "enhancement",
+        "epic",
+        "good first issue",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "high-priority",
+        "invalid",
+        "low-priority",
+        "need-perf-check",
+        "netlify-cms/draft",
+        "netlify-cms/pending_publish",
+        "netlify-cms/pending_review",
+        "poc",
+        "question",
+        "refactor",
+        "scripting",
+        "security",
+        "seo",
+        "testing",
+        "ui",
+        "ux",
+        "wontfix"
+    ],
+    "topics": [
+        "covid-19",
+        "cypress",
+        "hacktoberfest",
+        "nextjs",
+        "react",
+        "react-testing-library",
+        "tailwindcss",
+        "website"
+    ]
+}

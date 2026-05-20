@@ -1,0 +1,70 @@
+{
+    "id": 6251576,
+    "name": "pugjs/babel-plugin-transform-react-pug",
+    "isFork": false,
+    "commits": 87,
+    "branches": 16,
+    "releases": 3,
+    "forks": 52,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 16,
+    "stargazers": 768,
+    "contributors": 8,
+    "size": 754,
+    "createdAt": "2015-12-27T11:37:08",
+    "pushedAt": "2022-12-09T06:53:37",
+    "updatedAt": "2023-01-06T04:04:06",
+    "totalIssues": 94,
+    "openIssues": 30,
+    "totalPullRequests": 61,
+    "openPullRequests": 19,
+    "blankLines": 415,
+    "codeLines": 2386,
+    "commentLines": 126,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 82
+        },
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 94,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 264
+        },
+        {
+            "blankLines": 317,
+            "language": "JavaScript",
+            "commentLines": 124,
+            "codeLines": 2028
+        }
+    ],
+    "lastCommit": "2019-06-19T07:20:17",
+    "lastCommitSHA": "0cb224b4b129d51e29e24fe2fbecf63605662160",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 65577
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "help wanted",
+        "question"
+    ],
+    "topics": []
+}

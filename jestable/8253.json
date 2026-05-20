@@ -1,0 +1,78 @@
+{
+    "id": 6724993,
+    "name": "paratron/hookrouter",
+    "isFork": false,
+    "commits": 138,
+    "branches": 3,
+    "releases": 1,
+    "forks": 91,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 1458,
+    "contributors": 9,
+    "size": 306,
+    "createdAt": "2019-02-12T11:45:15",
+    "pushedAt": "2021-10-29T02:28:46",
+    "updatedAt": "2021-10-31T10:27:57",
+    "totalIssues": 136,
+    "openIssues": 59,
+    "totalPullRequests": 32,
+    "openPullRequests": 7,
+    "blankLines": 334,
+    "codeLines": 9197,
+    "commentLines": 154,
+    "metrics": [
+        {
+            "blankLines": 156,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 499
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 178,
+            "language": "JavaScript",
+            "commentLines": 154,
+            "codeLines": 765
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7911
+        }
+    ],
+    "lastCommit": "2020-12-01T08:23:57",
+    "lastCommitSHA": "e0ceb4a6ed495a59754351aff6ad54ce5c124512",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 27202,
+        "HTML": 533
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "probably wont fix",
+        "question",
+        "under development",
+        "wontfix"
+    ],
+    "topics": []
+}

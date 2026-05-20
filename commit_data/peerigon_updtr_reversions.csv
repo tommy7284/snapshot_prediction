@@ -1,0 +1,218 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+75,b277231f79f942cfa39287b83660b3f1e5669d4a,19862063472539f8c4c216ff746c1160a0d16260,Replaces https://github.com/peerigon/updtr/pull/73,"Refactor cmds and parse implementation
+","diff --git a/test/exec/cmds.test.js b/test/exec/cmds.test.js
+index 95456dd..ce2073f 100644
+--- a/test/exec/cmds.test.js
++++ b/test/exec/cmds.test.js
+@@ -203,8 +203,8 @@ describe(""cmds"", () => {
+             });
+         });
+         describe("".list()"", () => {
+-            it(""should be the same implementation as .npm.list"", () => {
+-                expect(cmds.yarn.list).toBe(cmds.npm.list);
++            it(""should match snapshot"", () => {
++                expect(cmds.yarn.list()).toMatchSnapshot();
+             });
+         });
+     });
+
+diff --git a/test/exec/parse.test.js b/test/exec/parse.test.js
+index 86a3424..6badef6 100644
+--- a/test/exec/parse.test.js
++++ b/test/exec/parse.test.js
+@@ -1,33 +1,23 @@
++import { EOL } from ""os"";
+ import readFixtures from ""../helpers/readFixtures"";
+ import parse from ""../../src/exec/parse"";
+ 
+-let jsonUnexpectedEndOfInput;
+ let stdoutLogs;
+ 
+ function testUnexpectedInput(parse) {
+     describe(""unexpected input"", () => {
+-        describe(""malformed JSON"", () => {
+-            it(""should throw with a helpful error message"", () => {
+-                expect(() => parse(""{"", ""my-cmd"")).toThrow(
+-                    ""Error when trying to parse stdout from command 'my-cmd': "" +
+-                        jsonUnexpectedEndOfInput.message
+-                );
+-            });
+-        });
+-        describe(""unexpected data format"", () => {
+-            it(""should throw with a helpful error message"", () => {
+-                expect(() =>
+-                    parse(
+-                        JSON.stringify({ some: { randomData: true } }),
+-                        ""my-cmd""
+-                    )
++        it(""should throw with a helpful error message"", () => {
++            expect(() =>
++                parse(
++                    ""{"",
++                    ""my-cmd""
+                 )
+-                    // We don't really want to test for the actual error message here,
+-                    // but just whether there is an error message at all.
+-                    .toThrow(
+-                    /Error when trying to parse stdout from command 'my-cmd': \w+/
+-                    );
+-            });
++            )
++                // We don't really want to test for the actual error message here,
++                // but just whether there is an error message at all.
++                .toThrow(
++                /Error when trying to parse stdout from command 'my-cmd': \w+/
++                );
+         });
+     });
+ }
+@@ -55,11 +45,6 @@ beforeAll(async () => {
+         ""outdated-dev/list.npm.log"",
+         ""outdated-dev/list.yarn.log"",
+     ]);
+-    try {
+-        JSON.parse("""");
+-    } catch (err) {
+-        jsonUnexpectedEndOfInput = err;
+-    }
+ });
+ 
+ describe(""parse"", () => {
+@@ -72,9 +57,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -91,9 +73,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -110,9 +89,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -217,9 +193,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -236,9 +209,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -255,9 +225,6 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBe(0);
+-                    expect(() => JSON.parse(fixture)).toThrow(
+-                        jsonUnexpectedEndOfInput
+-                    );
+                 });
+                 it(""should return an empty array"", () => {
+                     expect(
+@@ -274,7 +241,7 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBeGreaterThan(10);
+-                    JSON.parse(fixture); // should be parseable
++                    fixture.split(EOL).forEach(line => JSON.parse(line)); // Each line should be parseable
+                 });
+                 it(""should return an array with normalized outdated data"", () => {
+                     expect(
+@@ -291,7 +258,7 @@ describe(""parse"", () => {
+                         .trim();
+ 
+                     expect(fixture.length).toBeGreaterThan(10);
+-                    JSON.parse(fixture); // should be parseable
++                    fixture.split(EOL).forEach(line => JSON.parse(line)); // Each line should be parseable
+                 });
+                 it(""should return an array with normalized outdated data"", () => {
+                     expect(
+@@ -304,8 +271,52 @@ describe(""parse"", () => {
+             testUnexpectedInput(parse.yarn.outdated);
+         });
+         describe("".list()"", () => {
+-            it(""should be the same implementation as .npm.list"", () => {
+-                expect(parse.yarn.list).toBe(parse.npm.list);
++            function testFixture(fixtureName) {
++                it(""fixture sanity test"", () => {
++                    const fixture = stdoutLogs
++                        .get(fixtureName + ""/list.yarn.log"")
++                        .trim();
++
++                    expect(fixture.length).toBeGreaterThan(10);
++                    JSON.parse(fixture); // should be parseable
++                });
++                it(""should return an array with installed versions"", () => {
++                    expect(
++                        parse.yarn.list(
++                            stdoutLogs.get(fixtureName + ""/list.yarn.log"")
++                        )
++                    ).toMatchSnapshot();
++                });
++            }
++
++            describe(""empty fixture"", () => {
++                it(""fixture sanity test"", () => {
++                    const fixture = stdoutLogs.get(""empty/list.yarn.log"").trim();
++
++                    expect(fixture.length).toBeGreaterThan(10);
++                    JSON.parse(fixture); // should be parseable
++                });
++                it(""should return an empty array"", () => {
++                    expect(
++                        parse.yarn.list(stdoutLogs.get(""empty/list.yarn.log""))
++                    ).toEqual([]);
++                });
++            });
++
++            describe(""no-outdated fixture"", () => {
++                testFixture(""no-outdated"");
++            });
++
++            describe(""no-outdated-dev fixture"", () => {
++                testFixture(""no-outdated-dev"");
++            });
++
++            describe(""outdated fixture"", () => {
++                testFixture(""outdated"");
++            });
++
++            describe(""outdated-dev fixture"", () => {
++                testFixture(""outdated-dev"");
+             });
+         });
+     });
+",0,,7,368,3,9,12,3480
+86,462c6bbb58bf7ab8496e609ecb19488862803ac4,2435f4fa696588407818491a470a331a3b9b4907,"I would advise to review these on a commit by commit basis, since I had to `eslint --fix` in the middle of it. It's mostly whitespace though.
+
+edit: Also, I'm unsure what to make of the failing tests in Travis. Locally, everything passes.","feat: change babel node target and add nvmrc
+",,0,,3,35,1,30,48,15133

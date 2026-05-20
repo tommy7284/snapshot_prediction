@@ -1,0 +1,121 @@
+{
+    "id": 6783609,
+    "name": "webpack-contrib/imports-loader",
+    "isFork": false,
+    "commits": 158,
+    "branches": 1,
+    "releases": 14,
+    "forks": 63,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 22,
+    "stargazers": 520,
+    "contributors": 30,
+    "size": 1826,
+    "createdAt": "2012-11-06T03:03:17",
+    "pushedAt": "2024-04-08T01:21:29",
+    "updatedAt": "2024-03-09T11:04:00",
+    "totalIssues": 54,
+    "openIssues": 0,
+    "totalPullRequests": 141,
+    "openPullRequests": 0,
+    "blankLines": 666,
+    "codeLines": 28333,
+    "commentLines": 89,
+    "metrics": [
+        {
+            "blankLines": 325,
+            "language": "JavaScript",
+            "commentLines": 24,
+            "codeLines": 1843
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 86
+        },
+        {
+            "blankLines": 310,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 916
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25472
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        }
+    ],
+    "lastCommit": "2024-04-08T01:21:28",
+    "lastCommitSHA": "85920447a5e8ce20286ca09c9e216090197dd6bf",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 63153,
+        "Shell": 151
+    },
+    "labels": [
+        "dependencies",
+        "flag: community help wanted",
+        "flag: has pull request",
+        "flag: needs docs",
+        "flag: needs more info",
+        "flag: needs tests",
+        "flag: performance",
+        "hacktoberfest-accepted",
+        "pr_action: blocked",
+        "pr_action: discuss",
+        "pr_action: merge ready",
+        "pr_action: rebase",
+        "pr_action: review",
+        "pr_action: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (required)",
+        "priority: 4 (important)",
+        "priority: 5 (nice to have)",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (inconvenient)",
+        "severity: 5 (confusing)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: needs repro",
+        "status: needs triage",
+        "status: pending",
+        "type: bug",
+        "type: build",
+        "type: chore",
+        "type: ci",
+        "type: documentation",
+        "type: feature",
+        "type: refactor",
+        "type: style"
+    ],
+    "topics": [
+        "webpack-loader"
+    ]
+}

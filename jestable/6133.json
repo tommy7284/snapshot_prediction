@@ -1,0 +1,85 @@
+{
+    "id": 6228343,
+    "name": "leoforfree/cz-customizable",
+    "isFork": false,
+    "commits": 172,
+    "branches": 6,
+    "releases": 42,
+    "forks": 196,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 539,
+    "contributors": 26,
+    "size": 865,
+    "createdAt": "2015-10-29T10:25:39",
+    "pushedAt": "2023-06-28T08:00:23",
+    "updatedAt": "2023-06-29T09:03:31",
+    "totalIssues": 91,
+    "openIssues": 33,
+    "totalPullRequests": 134,
+    "openPullRequests": 25,
+    "blankLines": 324,
+    "codeLines": 12913,
+    "commentLines": 237,
+    "metrics": [
+        {
+            "blankLines": 67,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 135
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11546
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 243,
+            "language": "JavaScript",
+            "commentLines": 207,
+            "codeLines": 1108
+        },
+        {
+            "blankLines": 14,
+            "language": "YAML",
+            "commentLines": 30,
+            "codeLines": 95
+        }
+    ],
+    "lastCommit": "2023-02-18T05:00:11",
+    "lastCommitSHA": "04426ba7e30d9d0a0d53e173a0c0bb22dab1a70e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 49985
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "feature",
+        "help wanted",
+        "invalid",
+        "question",
+        "refactoring",
+        "released",
+        "wontfix"
+    ],
+    "topics": [
+        "commit-message",
+        "commitizen",
+        "conventionalcommits"
+    ]
+}

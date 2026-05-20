@@ -1,0 +1,89 @@
+{
+    "id": 6773404,
+    "name": "stereobooster/react-snap",
+    "isFork": false,
+    "commits": 495,
+    "branches": 20,
+    "releases": 0,
+    "forks": 388,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 4885,
+    "contributors": 30,
+    "size": 1472,
+    "createdAt": "2017-10-01T01:56:32",
+    "pushedAt": "2023-03-23T04:40:43",
+    "updatedAt": "2023-03-28T09:05:28",
+    "totalIssues": 364,
+    "openIssues": 148,
+    "totalPullRequests": 205,
+    "openPullRequests": 39,
+    "blankLines": 720,
+    "codeLines": 3089,
+    "commentLines": 128,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 9,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 53,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 230
+        },
+        {
+            "blankLines": 141,
+            "language": "JavaScript",
+            "commentLines": 119,
+            "codeLines": 1678
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 526,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1120
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 48
+        }
+    ],
+    "lastCommit": "2022-11-14T10:30:54",
+    "lastCommitSHA": "e2746ebe63cc75a4943d076585fff5aa5b50751d",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 60925,
+        "HTML": 5017,
+        "CSS": 253
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "ignored template",
+        "invalid",
+        "question",
+        "wait for more info",
+        "wontfix"
+    ],
+    "topics": []
+}

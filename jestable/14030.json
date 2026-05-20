@@ -1,0 +1,100 @@
+{
+    "id": 4043416,
+    "name": "benawad/destiny",
+    "isFork": false,
+    "commits": 405,
+    "branches": 25,
+    "releases": 11,
+    "forks": 81,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "develop",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 40,
+    "stargazers": 3531,
+    "contributors": 17,
+    "size": 4409,
+    "createdAt": "2020-02-13T04:54:56",
+    "pushedAt": "2023-01-05T07:15:48",
+    "updatedAt": "2023-01-25T05:26:17",
+    "totalIssues": 89,
+    "openIssues": 32,
+    "totalPullRequests": 107,
+    "openPullRequests": 25,
+    "blankLines": 22790,
+    "codeLines": 103690,
+    "commentLines": 24165,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 62,
+            "blankLines": 8
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 165,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 140,
+            "blankLines": 76
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 62,
+            "codeLines": 1785,
+            "blankLines": 374
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 24103,
+            "codeLines": 101486,
+            "blankLines": 22326
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 45,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2020-12-15T06:31:06",
+    "lastCommitSHA": "3cfab83853cc7f4646e124ea20bdb46cd54d52cd",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 62721,
+        "JavaScript": 6145
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "important",
+        "internal",
+        "invalid",
+        "need information",
+        "pending clarification",
+        "question",
+        "released",
+        "wontfix"
+    ],
+    "topics": []
+}

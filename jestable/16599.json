@@ -1,0 +1,111 @@
+{
+    "id": 6920992,
+    "name": "4catalyzer/found",
+    "isFork": false,
+    "commits": 896,
+    "branches": 72,
+    "releases": 77,
+    "forks": 63,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://4catalyzer.github.io/found/",
+    "watchers": 17,
+    "stargazers": 795,
+    "contributors": 24,
+    "size": 9628,
+    "createdAt": "2016-08-27T06:48:57",
+    "pushedAt": "2024-04-04T02:27:01",
+    "updatedAt": "2024-04-04T03:28:10",
+    "totalIssues": 158,
+    "openIssues": 35,
+    "totalPullRequests": 903,
+    "openPullRequests": 66,
+    "blankLines": 1963,
+    "codeLines": 9126,
+    "commentLines": 771,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2501,
+            "blankLines": 914
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 578,
+            "codeLines": 2819,
+            "blankLines": 590
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 175,
+            "codeLines": 2663,
+            "blankLines": 390
+        },
+        {
+            "language": "CSS",
+            "commentLines": 9,
+            "codeLines": 56,
+            "blankLines": 11
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 52,
+            "blankLines": 0
+        },
+        {
+            "language": "SVG",
+            "commentLines": 6,
+            "codeLines": 130,
+            "blankLines": 8
+        },
+        {
+            "language": "JSX",
+            "commentLines": 3,
+            "codeLines": 469,
+            "blankLines": 50
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 30,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 406,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-03-22T03:47:07",
+    "lastCommitSHA": "30d141511b8b034dabc5784f3faeef3c6ebac86a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 82900,
+        "JavaScript": 70411,
+        "CSS": 1548
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "renovatebot",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "react",
+        "redux",
+        "router"
+    ]
+}

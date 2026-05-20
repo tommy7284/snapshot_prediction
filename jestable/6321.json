@@ -1,0 +1,80 @@
+{
+    "id": 6251211,
+    "name": "ctrlplusb/react-async-component",
+    "isFork": false,
+    "commits": 110,
+    "branches": 18,
+    "releases": 15,
+    "forks": 79,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1447,
+    "contributors": 8,
+    "size": 1370,
+    "createdAt": "2017-01-17T10:04:37",
+    "pushedAt": "2022-12-07T09:43:56",
+    "updatedAt": "2022-12-26T03:53:23",
+    "totalIssues": 73,
+    "openIssues": 24,
+    "totalPullRequests": 48,
+    "openPullRequests": 24,
+    "blankLines": 152,
+    "codeLines": 943,
+    "commentLines": 49,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 150
+        },
+        {
+            "blankLines": 6,
+            "language": "TypeScript",
+            "commentLines": 21,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 71,
+            "language": "JavaScript",
+            "commentLines": 27,
+            "codeLines": 553
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 75,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 207
+        }
+    ],
+    "lastCommit": "2018-03-26T03:14:39",
+    "lastCommitSHA": "09935a24c29231e7335cad2c9baa0928181cbb68",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 18803
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

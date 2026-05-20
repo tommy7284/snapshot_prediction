@@ -1,0 +1,91 @@
+{
+    "id": 6940287,
+    "name": "selfrefactor/rambda",
+    "isFork": false,
+    "commits": 2316,
+    "branches": 2,
+    "releases": 63,
+    "forks": 85,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://selfrefactor.github.io/rambda",
+    "watchers": 15,
+    "stargazers": 1586,
+    "contributors": 56,
+    "size": 12935,
+    "createdAt": "2017-01-15T01:50:45",
+    "pushedAt": "2024-04-09T08:25:40",
+    "updatedAt": "2024-04-09T01:19:37",
+    "totalIssues": 202,
+    "openIssues": 2,
+    "totalPullRequests": 518,
+    "openPullRequests": 0,
+    "blankLines": 17496,
+    "codeLines": 55534,
+    "commentLines": 6172,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 47
+        },
+        {
+            "blankLines": 10629,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 27359
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 146
+        },
+        {
+            "blankLines": 3664,
+            "language": "TypeScript",
+            "commentLines": 5921,
+            "codeLines": 8381
+        },
+        {
+            "blankLines": 3196,
+            "language": "JavaScript",
+            "commentLines": 250,
+            "codeLines": 19580
+        }
+    ],
+    "lastCommit": "2024-04-05T11:52:42",
+    "lastCommitSHA": "4b77a89fb368cf324aae530c6d5b737741469f14",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 517908,
+        "TypeScript": 136445
+    },
+    "labels": [
+        "bug",
+        "discussion",
+        "done waiting release",
+        "in progress",
+        "polls",
+        "repl",
+        "sweep"
+    ],
+    "topics": [
+        "fp",
+        "functional-programming",
+        "lodash",
+        "ramda",
+        "utils"
+    ]
+}

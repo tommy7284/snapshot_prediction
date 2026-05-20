@@ -1,0 +1,118 @@
+{
+    "id": 6870806,
+    "name": "hypeserver/react-date-range",
+    "isFork": false,
+    "commits": 488,
+    "branches": 34,
+    "releases": 18,
+    "forks": 651,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 39,
+    "stargazers": 2551,
+    "contributors": 49,
+    "size": 3897,
+    "createdAt": "2015-10-09T12:29:40",
+    "pushedAt": "2024-04-22T10:37:11",
+    "updatedAt": "2024-04-22T12:25:08",
+    "totalIssues": 395,
+    "openIssues": 173,
+    "totalPullRequests": 249,
+    "openPullRequests": 47,
+    "blankLines": 485,
+    "codeLines": 4334,
+    "commentLines": 46,
+    "metrics": [
+        {
+            "blankLines": 146,
+            "language": "JavaScript",
+            "commentLines": 14,
+            "codeLines": 2206
+        },
+        {
+            "blankLines": 146,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 780
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 90
+        },
+        {
+            "blankLines": 83,
+            "language": "SCSS",
+            "commentLines": 0,
+            "codeLines": 498
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 11,
+            "language": "YAML",
+            "commentLines": 31,
+            "codeLines": 89
+        },
+        {
+            "blankLines": 13,
+            "language": "JSX",
+            "commentLines": 1,
+            "codeLines": 153
+        },
+        {
+            "blankLines": 83,
+            "language": "Sass",
+            "commentLines": 0,
+            "codeLines": 498
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 7
+        }
+    ],
+    "lastCommit": "2024-04-22T10:37:11",
+    "lastCommitSHA": "b1418dc3141bfa58da68655a80c8d8817681cb70",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 76473,
+        "SCSS": 10625
+    },
+    "labels": [
+        "awaiting response",
+        "bug",
+        "decision needed",
+        "dependencies",
+        "deprecated version",
+        "developing",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "inactive",
+        "investigate",
+        "question",
+        "rejected",
+        "v1",
+        "wontfix"
+    ],
+    "topics": [
+        "datetime",
+        "datetimepicker",
+        "range-picker",
+        "react"
+    ]
+}

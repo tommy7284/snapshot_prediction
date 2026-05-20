@@ -1,0 +1,78 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+623,3ceaa783f8caef1669f0b436c6fd7c17125fb05a,a73add8135fae65c8b2c339d7631b6d4a128df4e,"Now, we can use production Web Chat without modifications in Emulator:
+
+* No custom build of Web Chat and Direct Line JS, we are using production version from NPM directly
+* Chat history preservation/restoration is done thru Emulator Core, not hacking into Web Chat redux store
+* Chat tabs behind the current tab will no longer unmount, but hidden and kept in DOM until close
+
+Caveats:
+
+After merging this PR, we will show send box and interactivity even we load transcript, this is because the PR for hiding send box is pending approval on Web Chat. Once it's in Web Chat, we can bump version and get that fixed without code change. Will track in another bug.
+
+Some design considerations:
+
+* Bot ID and user ID are now fixed to ""bot"" and ""default-user"" respectively
+   * Otherwise, we will need to load physical transcript files before instantiating the document editor (need context switching: client -> main -> client)
+   * Web Chat is not reactive to bot ID and user ID change
+   * No one complain about random bot ID and user ID for Chatdown-generated transcript, seems no one really care about bot ID and user ID yet
+* Tabs that hide behind active tab are now hidden, instead of unmounted
+   * Otherwise, we will need to preserve Web Chat redux store, which means
+      1. Preserving history in Web Chat is controversy and we probably need to keep custom Web Chat, instead of production
+      2. Emulator redux store will need to keep a copy of another redux store (as of today), seems weird, and Web Chat redux store is not plain JSON too","Hardcode channel account ID
+","diff --git a/packages/app/main/src/utils/conversation.spec.ts b/packages/app/main/src/utils/conversation.spec.ts
+new file mode 100644
+index 0000000..027bdaf
+--- /dev/null
++++ b/packages/app/main/src/utils/conversation.spec.ts
+@@ -0,0 +1,50 @@
++import { cleanupId, __testables } from './conversation';
++
++const { expect, test } = global as any;
++const { findIdWithRole } = __testables;
++
++test('find ID with role ""bot""', () => {
++  const activities = [{
++    recipient: { id: 'bot-1', role: 'bot' }
++  }, {
++    recipient: { id: 'bot-2', role: 'bot' }
++  }];
++
++  expect(findIdWithRole(activities, 'bot')).toBe('bot-1');
++});
++
++test('clean up ID without specifying ID', () => {
++  const activities = [{
++    from: { role: 'bot' },
++    recipient: { id: 'user-1', role: 'user' }
++  }, {
++    from: { role: 'user' },
++    recipient: { id: 'bot-1', role: 'bot' }
++  }, {
++    from: { role: 'bot' },
++    recipient: { id: 'user-2', role: 'user' }
++  }, {
++    from: { role: 'user' },
++    recipient: { id: 'bot-2', role: 'bot' }
++  }];
++
++  expect(cleanupId(activities)).toMatchSnapshot();
++});
++
++test('clean up ID with ID specified', () => {
++  const activities = [{
++    from: { role: 'bot' },
++    recipient: { id: 'user-1', role: 'user' }
++  }, {
++    from: { role: 'user' },
++    recipient: { id: 'bot-1', role: 'bot' }
++  }, {
++    from: { role: 'bot' },
++    recipient: { id: 'user-2', role: 'user' }
++  }, {
++    from: { role: 'user' },
++    recipient: { id: 'bot-2', role: 'bot' }
++  }];
++
++  expect(cleanupId(activities, 'bot-x', 'user-x')).toMatchSnapshot();
++});
+",0,,9,364,1,7,159,91455

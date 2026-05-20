@@ -1,0 +1,98 @@
+{
+    "id": 6654271,
+    "name": "react-ga/react-ga",
+    "isFork": false,
+    "commits": 373,
+    "branches": 11,
+    "releases": 28,
+    "forks": 465,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 74,
+    "stargazers": 5027,
+    "contributors": 81,
+    "size": 2382,
+    "createdAt": "2015-03-27T11:09:25",
+    "pushedAt": "2023-01-06T08:18:16",
+    "updatedAt": "2023-01-23T03:04:06",
+    "totalIssues": 339,
+    "openIssues": 127,
+    "totalPullRequests": 203,
+    "openPullRequests": 18,
+    "blankLines": 485,
+    "codeLines": 42668,
+    "commentLines": 192,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 47
+        },
+        {
+            "blankLines": 131,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 363
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 39346
+        },
+        {
+            "blankLines": 38,
+            "language": "TypeScript",
+            "commentLines": 30,
+            "codeLines": 305
+        },
+        {
+            "blankLines": 235,
+            "language": "JavaScript",
+            "commentLines": 144,
+            "codeLines": 2046
+        },
+        {
+            "blankLines": 77,
+            "language": "JSX",
+            "commentLines": 18,
+            "codeLines": 555
+        }
+    ],
+    "lastCommit": "2022-06-16T02:54:42",
+    "lastCommitSHA": "087837dc03d482549ded7669ac559df0c7cc5498",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 79114,
+        "TypeScript": 4278,
+        "Shell": 140
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "ga integration bug",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": []
+}

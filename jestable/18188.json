@@ -1,0 +1,119 @@
+{
+    "id": 70563258,
+    "name": "alura/techguide",
+    "isFork": false,
+    "commits": 446,
+    "branches": 15,
+    "releases": 0,
+    "forks": 654,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://techguide.sh",
+    "watchers": 41,
+    "stargazers": 3306,
+    "contributors": 60,
+    "size": 3970,
+    "createdAt": "2022-03-25T01:46:18",
+    "pushedAt": "2024-04-19T12:25:09",
+    "updatedAt": "2024-04-20T03:46:10",
+    "totalIssues": 56,
+    "openIssues": 15,
+    "totalPullRequests": 207,
+    "openPullRequests": 0,
+    "blankLines": 788,
+    "codeLines": 51581,
+    "commentLines": 277,
+    "metrics": [
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 2
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 2155,
+            "blankLines": 7
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 203,
+            "codeLines": 6410,
+            "blankLines": 495
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 67,
+            "blankLines": 2
+        },
+        {
+            "language": "GraphQL",
+            "commentLines": 0,
+            "codeLines": 135,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 73,
+            "codeLines": 34358,
+            "blankLines": 201
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 8220,
+            "blankLines": 78
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 215,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2024-04-19T12:25:08",
+    "lastCommitSHA": "676942ef9974c6eda6c80df9c34cc89641be0966",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 228713,
+        "JavaScript": 1693
+    },
+    "labels": [
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "question",
+        "refactor",
+        "wontfix",
+        "\ud83d\udcd5 content suggestion (uncategorized)",
+        "\ud83d\udcd6 documentation",
+        "\ud83d\udcd7 content suggestion (categorized)",
+        "\ud83d\udea7 wip",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": [
+        "hacktoberfest"
+    ]
+}

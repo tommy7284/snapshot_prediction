@@ -1,0 +1,93 @@
+{
+    "id": 4032029,
+    "name": "zalando-incubator/graphql-jit",
+    "isFork": false,
+    "commits": 179,
+    "branches": 11,
+    "releases": 18,
+    "forks": 56,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": "https://try-graphql-jit.boopathi.in/",
+    "watchers": 19,
+    "stargazers": 1021,
+    "contributors": 30,
+    "size": 964,
+    "createdAt": "2018-10-12T12:23:19",
+    "pushedAt": "2024-03-21T09:29:29",
+    "updatedAt": "2024-03-20T03:04:30",
+    "totalIssues": 53,
+    "openIssues": 20,
+    "totalPullRequests": 189,
+    "openPullRequests": 10,
+    "blankLines": 1490,
+    "codeLines": 16074,
+    "commentLines": 940,
+    "metrics": [
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 69,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 268,
+            "blankLines": 116
+        },
+        {
+            "language": "GraphQL",
+            "commentLines": 0,
+            "codeLines": 20,
+            "blankLines": 5
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 261,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 934,
+            "codeLines": 15434,
+            "blankLines": 1349
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 13,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2024-03-21T09:29:28",
+    "lastCommitSHA": "ed75644dd6ee683f5e25c2b4979f472d445de504",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 449726,
+        "JavaScript": 5557
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

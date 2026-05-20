@@ -1,0 +1,106 @@
+{
+    "id": 69741756,
+    "name": "jsonhero-io/jsonhero-web",
+    "isFork": false,
+    "commits": 200,
+    "branches": 4,
+    "releases": 0,
+    "forks": 184,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://jsonhero.io",
+    "watchers": 24,
+    "stargazers": 4264,
+    "contributors": 8,
+    "size": 58258,
+    "createdAt": "2022-03-01T09:33:29",
+    "pushedAt": "2022-08-08T03:01:16",
+    "updatedAt": "2022-08-12T04:58:49",
+    "totalIssues": 56,
+    "openIssues": 42,
+    "totalPullRequests": 24,
+    "openPullRequests": 6,
+    "blankLines": 1769,
+    "codeLines": 39887,
+    "commentLines": 302,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 290,
+            "codeLines": 11725,
+            "blankLines": 1488
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 3,
+            "codeLines": 66,
+            "blankLines": 2
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 37,
+            "blankLines": 4
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 2,
+            "codeLines": 8,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 27616,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 372,
+            "blankLines": 257
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        },
+        {
+            "language": "TOML",
+            "commentLines": 4,
+            "codeLines": 26,
+            "blankLines": 9
+        },
+        {
+            "language": "CSS",
+            "commentLines": 3,
+            "codeLines": 26,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2022-08-08T03:00:48",
+    "lastCommitSHA": "be50a6aacdfca81f7f2fbdecd75259d5d7938942",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 329555,
+        "JavaScript": 1713,
+        "CSS": 692
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

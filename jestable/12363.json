@@ -1,0 +1,197 @@
+{
+    "id": 69996910,
+    "name": "metrico/qryn",
+    "isFork": false,
+    "commits": 1712,
+    "branches": 63,
+    "releases": 57,
+    "forks": 59,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "GNU Affero General Public License v3.0",
+    "homepage": "https://qryn.dev",
+    "watchers": 14,
+    "stargazers": 945,
+    "contributors": 16,
+    "size": 58086,
+    "createdAt": "2018-12-26T01:52:21",
+    "pushedAt": "2024-04-25T11:17:04",
+    "updatedAt": "2024-04-25T05:17:30",
+    "totalIssues": 186,
+    "openIssues": 21,
+    "totalPullRequests": 307,
+    "openPullRequests": 5,
+    "blankLines": 5393,
+    "codeLines": 45515,
+    "commentLines": 13171,
+    "metrics": [
+        {
+            "blankLines": 54,
+            "language": "Rust",
+            "commentLines": 4,
+            "codeLines": 536
+        },
+        {
+            "blankLines": 12,
+            "language": "TOML",
+            "commentLines": 5,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 579,
+            "language": "Protocol Buffers",
+            "commentLines": 1897,
+            "codeLines": 1482
+        },
+        {
+            "blankLines": 1,
+            "language": "make",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 218,
+            "language": "INI",
+            "commentLines": 367,
+            "codeLines": 405
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 7,
+            "language": "Bourne Shell",
+            "commentLines": 8,
+            "codeLines": 76
+        },
+        {
+            "blankLines": 2960,
+            "language": "JavaScript",
+            "commentLines": 7876,
+            "codeLines": 19393
+        },
+        {
+            "blankLines": 57,
+            "language": "YAML",
+            "commentLines": 41,
+            "codeLines": 879
+        },
+        {
+            "blankLines": 151,
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 375
+        },
+        {
+            "blankLines": 199,
+            "language": "Diff",
+            "commentLines": 1311,
+            "codeLines": 4237
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 322,
+            "language": "XML",
+            "commentLines": 1564,
+            "codeLines": 534
+        },
+        {
+            "blankLines": 825,
+            "language": "Go",
+            "commentLines": 73,
+            "codeLines": 3508
+        },
+        {
+            "blankLines": 1,
+            "language": "TypeScript",
+            "commentLines": 22,
+            "codeLines": 79
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 13947
+        },
+        {
+            "blankLines": 5,
+            "language": "Dockerfile",
+            "commentLines": 2,
+            "codeLines": 8
+        }
+    ],
+    "lastCommit": "2024-04-13T04:44:30",
+    "lastCommitSHA": "e8e01bd656f901330fbc1de8000c90435a168a42",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 890807,
+        "Go": 58660,
+        "Rust": 16960,
+        "Shell": 3766,
+        "HTML": 823,
+        "Dockerfile": 249,
+        "Makefile": 94
+    },
+    "labels": [
+        "3.x",
+        "bug",
+        "bun",
+        "cnpm",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "experimental",
+        "feature request",
+        "fixed",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "needs testing",
+        "node18",
+        "question",
+        "resync",
+        "wasm",
+        "wontfix"
+    ],
+    "topics": [
+        "apm",
+        "clickhouse",
+        "ebpf",
+        "grafana",
+        "lgtm",
+        "logql",
+        "logs",
+        "loki",
+        "metrics",
+        "monitoring",
+        "observability",
+        "opentelemetry",
+        "prometheus",
+        "promql",
+        "pyroscope",
+        "tempo",
+        "tempoql",
+        "timeseries",
+        "tracing",
+        "wasm"
+    ]
+}

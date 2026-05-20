@@ -1,0 +1,125 @@
+{
+    "id": 94609791,
+    "name": "visgl/react-google-maps",
+    "isFork": false,
+    "commits": 232,
+    "branches": 2,
+    "releases": 29,
+    "forks": 48,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://visgl.github.io/react-google-maps/",
+    "watchers": 11,
+    "stargazers": 582,
+    "contributors": 27,
+    "size": 4303,
+    "createdAt": "2022-11-23T07:43:53",
+    "pushedAt": "2024-05-10T12:35:25",
+    "updatedAt": "2024-05-10T03:56:23",
+    "totalIssues": 80,
+    "openIssues": 11,
+    "totalPullRequests": 213,
+    "openPullRequests": 4,
+    "blankLines": 2223,
+    "codeLines": 39456,
+    "commentLines": 673,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 3,
+            "codeLines": 79,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2131,
+            "blankLines": 983
+        },
+        {
+            "language": "YAML",
+            "commentLines": 9,
+            "codeLines": 237,
+            "blankLines": 35
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 21,
+            "blankLines": 7
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 567,
+            "codeLines": 6012,
+            "blankLines": 1071
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 83,
+            "codeLines": 491,
+            "blankLines": 52
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 29698,
+            "blankLines": 3
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 393,
+            "blankLines": 22
+        },
+        {
+            "language": "JSX",
+            "commentLines": 4,
+            "codeLines": 202,
+            "blankLines": 23
+        },
+        {
+            "language": "CSS",
+            "commentLines": 6,
+            "codeLines": 192,
+            "blankLines": 27
+        }
+    ],
+    "lastCommit": "2024-05-09T05:57:47",
+    "lastCommitSHA": "128df8730b7e1549e530a108192e7bae0699f199",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 116486,
+        "JavaScript": 19051,
+        "CSS": 1547,
+        "MDX": 1317,
+        "Shell": 717
+    },
+    "labels": [
+        "autorelease: pending",
+        "autorelease: tagged",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "failed to reproduce",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs more info",
+        "question",
+        "rfc",
+        "website",
+        "wontfix"
+    ],
+    "topics": [
+        "google-maps",
+        "google-maps-api",
+        "react"
+    ]
+}

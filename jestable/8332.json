@@ -1,0 +1,89 @@
+{
+    "id": 6733622,
+    "name": "reach/router",
+    "isFork": false,
+    "commits": 281,
+    "branches": 32,
+    "releases": 0,
+    "forks": 352,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://reach.tech/router",
+    "watchers": 57,
+    "stargazers": 6933,
+    "contributors": 59,
+    "size": 2181,
+    "createdAt": "2018-05-25T04:47:48",
+    "pushedAt": "2022-12-08T07:53:14",
+    "updatedAt": "2023-01-07T03:36:10",
+    "totalIssues": 320,
+    "openIssues": 127,
+    "totalPullRequests": 196,
+    "openPullRequests": 46,
+    "blankLines": 1815,
+    "codeLines": 7098,
+    "commentLines": 1536,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 248
+        },
+        {
+            "blankLines": 442,
+            "language": "JavaScript",
+            "commentLines": 1514,
+            "codeLines": 3083
+        },
+        {
+            "blankLines": 9,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 71
+        },
+        {
+            "blankLines": 9,
+            "language": "CSS",
+            "commentLines": 2,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 1353,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3617
+        }
+    ],
+    "lastCommit": "2020-10-30T07:43:33",
+    "lastCommitSHA": "d2c9ad06715c9d48c2d16f55f7cd889b626d2521",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 87093,
+        "HTML": 3896
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "fix in progress",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs docs",
+        "potential bug",
+        "question"
+    ],
+    "topics": []
+}

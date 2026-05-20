@@ -1,0 +1,119 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+370,7a76f8c0851e755849c0457cb0e8ac15916394af,7899e3cb4787f89cbaa8c2b3bba7a5fc6d074b79,,"mandatory allowed hosts for secure URLs
+","diff --git a/src/datasource.spec.ts b/src/datasource.spec.ts
+index 2fb2d5b..1c40e61 100644
+--- a/src/datasource.spec.ts
++++ b/src/datasource.spec.ts
+@@ -1,3 +1,4 @@
++import { DataSourceWithBackend } from '@grafana/runtime';
+ import { DataSourceInstanceSettings, PluginType } from '@grafana/data';
+ import { Datasource } from './datasource';
+ 
+@@ -40,31 +41,56 @@ const DummyDatasource: DataSourceInstanceSettings = {
+   jsonData: {},
+ };
+ 
+-const ds = new Datasource(DummyDatasource);
++describe('metricFindQuery', () => {
++  const ds = new Datasource(DummyDatasource);
++  describe('Random Variable', () => {
++    it('Random', async () => {
++      const result = await ds.metricFindQuery({ query: 'Random(A,B,C,D)', queryType: 'legacy' });
++      expect(['A', 'B', 'C', 'D']).toContain(result[0].text);
++    });
++  });
+ 
+-describe('metricFindQuery - Random Variable', () => {
+-  it('Random', async () => {
+-    const result = await ds.metricFindQuery({ query: 'Random(A,B,C,D)', queryType: 'legacy' });
+-    expect(['A', 'B', 'C', 'D']).toContain(result[0].text);
++  describe('Join', () => {
++    it('Join', async () => {
++      expect(await ds.metricFindQuery({ query: 'Join(A,B,C,D)', queryType: 'legacy' })).toStrictEqual([{ text: 'ABCD', value: 'ABCD' }]);
++    });
+   });
+-});
+ 
+-describe('metricFindQuery - Join', () => {
+-  it('Join', async () => {
+-    expect(await ds.metricFindQuery({ query: 'Join(A,B,C,D)', queryType: 'legacy' })).toStrictEqual([{ text: 'ABCD', value: 'ABCD' }]);
++  describe('Collection', () => {
++    it('Collection', async () => {
++      expect(await ds.metricFindQuery({ query: 'Collection(A,B,C,D)', queryType: 'legacy' })).toMatchSnapshot();
++    });
+   });
+-});
+ 
+-describe('metricFindQuery - Collection', () => {
+-  it('Collection', async () => {
+-    expect(await ds.metricFindQuery({ query: 'Collection(A,B,C,D)', queryType: 'legacy' })).toMatchSnapshot();
++  describe('CollectionLookup', () => {
++    it('CollectionLookup', async () => {
++      expect(await ds.metricFindQuery({ query: 'CollectionLookup(pd,prod-server,np,nonprod-server,dev,dev-server,np)', queryType: 'legacy' })).toMatchSnapshot();
++      expect(await ds.metricFindQuery({ query: 'CollectionLookup(A,a,B,b,C,c,D,d,C)', queryType: 'legacy' })).toMatchSnapshot();
++      expect(await ds.metricFindQuery({ query: 'CollectionLookup(A,a,B,b,C,c,D,d,E)', queryType: 'legacy' })).toMatchSnapshot();
++    });
+   });
+ });
+ 
+-describe('metricFindQuery - CollectionLookup', () => {
+-  it('CollectionLookup', async () => {
+-    expect(await ds.metricFindQuery({ query: 'CollectionLookup(pd,prod-server,np,nonprod-server,dev,dev-server,np)', queryType: 'legacy' })).toMatchSnapshot();
+-    expect(await ds.metricFindQuery({ query: 'CollectionLookup(A,a,B,b,C,c,D,d,C)', queryType: 'legacy' })).toMatchSnapshot();
+-    expect(await ds.metricFindQuery({ query: 'CollectionLookup(A,a,B,b,C,c,D,d,E)', queryType: 'legacy' })).toMatchSnapshot();
++describe('testDatasource', () => {
++  beforeEach(() => jest.spyOn(DataSourceWithBackend.prototype, 'testDatasource').mockResolvedValue({ a: 'b' }));
++  it('should throw error when allowed hosts not configured', async () => {
++    const ds = new Datasource({ ...DummyDatasource, jsonData: { auth_method: 'basicAuth' } });
++    const result = await ds.testDatasource();
++    expect(result).toStrictEqual({ status: 'error', message: 'Configure allowed hosts in the authentication section' });
++  });
++  it('should throw error when allowed hosts does not have any values', async () => {
++    const ds = new Datasource({ ...DummyDatasource, jsonData: { auth_method: 'apiKey', allowedHosts: [] } });
++    const result = await ds.testDatasource();
++    expect(result).toStrictEqual({ status: 'error', message: 'Configure allowed hosts in the authentication section' });
++  });
++  it('should not throw error when allowed hosts configured', async () => {
++    const ds = new Datasource({ ...DummyDatasource, jsonData: { auth_method: 'apiKey', allowedHosts: ['foo'] } });
++    const result = await ds.testDatasource();
++    expect(result).toStrictEqual({ a: 'b' });
++  });
++  it('should throw error when allowed hosts configured with oauth passthrough', async () => {
++    const ds = new Datasource({ ...DummyDatasource, jsonData: { oauthPassThru: true } });
++    const result = await ds.testDatasource();
++    expect(result).toStrictEqual({ status: 'error', message: 'Configure allowed hosts in the authentication section' });
+   });
+ });
+",0,,14,252,1,13,205,8914
+729,b44116029d524e96861277e160f85e33682271ea,4c697c810d76f7828ccc7c487d9b338bd6e49d2a,"- [x] Updated the grafana plugin SDK from v0.193.0 to v0.197.0
+- [x] Added support for variables in the backend parser root selector ( previously interpolation was not handled for `rootSelector` property )
+- [x] Fixed a bug where variable values were not passed with the nested variable queries ( passed `scopedVars` to `metricFindQuery` method )
+- [x] Better support for variable handling when variable queries have more than 1 column ( Addes support for `__text` and `__value` kind of variable support similar to [mysql/postgres](https://grafana.com/docs/grafana/latest/datasources/mysql/#query-variable)
+
+","toolkit migration to plugin-tools (#730)
+
+","diff --git a/src/datasource.spec.ts b/src/datasource.spec.ts
+index 0eeb05a..dce4da2 100644
+--- a/src/datasource.spec.ts
++++ b/src/datasource.spec.ts
+@@ -1,7 +1,6 @@
+-import { PluginType } from '@grafana/data';
++import { PluginType, DataSourceInstanceSettings } from '@grafana/data';
+ import { DataSourceWithBackend } from '@grafana/runtime';
+ import { Datasource } from './datasource';
+-import type { DataSourceInstanceSettings } from '@grafana/data/types';
+ 
+ jest.mock('@grafana/runtime', () => ({
+   ...(jest.requireActual('@grafana/runtime') as unknown as object),
+@@ -19,6 +18,7 @@ const DummyDatasource: DataSourceInstanceSettings = {
+   name: '',
+   access: 'proxy',
+   type: 'yesoreyeram-infinity-datasource',
++  readOnly: true,
+   meta: {
+     id: '',
+     name: '',
+",0,,189,28249,6,9,166,24241
+730,a5831aaf03b1c10e684ea717187dd3e964c1f4eb,2f87d0aeb964ba75247f60b730cf272c69d6eafe,"- [x] This PR migrates the build tooling from `@grafana/toolkit` to `@grafana/plugin-tools`.
+- [x] This PR also sets the minimum supported Grafana version to 9.5.15 from 8.4.7 ","jest/test updates
+",,0,,17,2127,6,10,159,24153

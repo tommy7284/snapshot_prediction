@@ -1,0 +1,5246 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+453,84770c50ab910980636529d8f39975a9c94548f3,47659994066177ba4eda98c2e8fe60f61e01daa4,"There is only one things that we be potential broken - using directly in browser without es6 support, but today is 2025 year and time to drop such browsers and we have:
+
+```
+""engines"": {
+    ""node"": "">=10.13.0""
+  },
+```
+
+it means any features which supported in `10.13.0` can be used in our code and so if you want to support only `es3`/`es5` env you need to transpile  ","chore: migrate to eslint-config-webpack
+","diff --git a/test/exportsField.test.js b/test/exportsField.test.js
+index f0ec2cd..50229fb 100644
+--- a/test/exportsField.test.js
++++ b/test/exportsField.test.js
+@@ -1,3 +1,5 @@
++""use strict"";
++
+ const path = require(""path"");
+ const fs = require(""fs"");
+ const { processExportsField } = require(""../lib/util/entrypoints"");
+@@ -13,13 +15,13 @@ const fixture4 = path.resolve(__dirname, ""fixtures"", ""exports-field-error"");
+ const fixture5 = path.resolve(
+ 	__dirname,
+ 	""fixtures"",
+-	""exports-field-invalid-package-target""
++	""exports-field-invalid-package-target"",
+ );
+ 
+-describe(""Process exports field"", function exportsField() {
++describe(""process exports field"", () => {
+ 	/** @type {Array<{name: string, expect: string[]|Error, suite: [ExportsField, string, string[]]}>} */
+ 	const testCases = [
+-		//#region Samples
++		// #region Samples
+ 		{
+ 			name: ""sample #1"",
+ 			expect: [""./dist/test/file.js"", ""./src/test/file.js""],
+@@ -27,13 +29,13 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./foo/"": {
+ 						import: [""./dist/"", ""./src/""],
+-						webpack: ""./wp/""
++						webpack: ""./wp/"",
+ 					},
+-					""."": ""./main.js""
++					""."": ""./main.js"",
+ 				},
+ 				""./foo/test/file.js"",
+-				[""import"", ""webpack""]
+-			]
++				[""import"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #1 (wildcard)"",
+@@ -42,35 +44,35 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./foo/*"": {
+ 						import: [""./dist/*"", ""./src/*""],
+-						webpack: ""./wp/*""
++						webpack: ""./wp/*"",
+ 					},
+-					""."": ""./main.js""
++					""."": ""./main.js"",
+ 				},
+ 				""./foo/test/file.js"",
+-				[""import"", ""webpack""]
+-			]
++				[""import"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #2"",
+ 			expect: [""./data/timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./timezones/"": ""./data/timezones/""
++					""./timezones/"": ""./data/timezones/"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #2 (wildcard)"",
+ 			expect: [""./data/timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./timezones/*"": ""./data/timezones/*""
++					""./timezones/*"": ""./data/timezones/*"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #3"",
+@@ -78,11 +80,11 @@ describe(""Process exports field"", function exportsField() {
+ 			expect: [""./data/timezones/timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./"": ""./data/timezones/""
++					""./"": ""./data/timezones/"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #3 (wildcard)"",
+@@ -90,11 +92,11 @@ describe(""Process exports field"", function exportsField() {
+ 			expect: [""./data/timezones/timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./*"": ""./data/timezones/*.mjs""
++					""./*"": ""./data/timezones/*.mjs"",
+ 				},
+ 				""./timezones/pdt"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #4"",
+@@ -102,15 +104,15 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""./dist/index.js"": {
+-						node: ""./index.js""
+-					}
++						node: ""./index.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #4 (wildcard)"",
+@@ -118,15 +120,15 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/index.js"": {
+-						node: ""./index.js""
+-					}
++						node: ""./index.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #5"",
+@@ -134,16 +136,16 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""./dist/index.js"": {
+ 						node: ""./index.js"",
+-						default: ""./browser/index.js""
+-					}
++						default: ""./browser/index.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #5 (wildcard)"",
+@@ -151,71 +153,71 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/index.js"": {
+ 						node: ""./index.js"",
+-						default: ""./browser/index.js""
+-					}
++						default: ""./browser/index.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #6"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./dist/a"": ""./dist/index.js""
++					""./dist/a"": ""./dist/index.js"",
+ 				},
+ 				""./dist/aaa"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #7"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./dist/a/a/"": ""./dist/index.js""
++					""./dist/a/a/"": ""./dist/index.js"",
+ 				},
+ 				""./dist/a/a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #7 (wildcard)"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./dist/a/a/*"": ""./dist/index.js""
++					""./dist/a/a/*"": ""./dist/index.js"",
+ 				},
+ 				""./dist/a/a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #8"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""."": ""./index.js""
++					""."": ""./index.js"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #9"",
+ 			expect: [""./main.js""],
+ 			suite: [
+ 				{
+-					""./index.js"": ""./main.js""
++					""./index.js"": ""./main.js"",
+ 				},
+ 				""./index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #10"",
+@@ -228,11 +230,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #11"",
+@@ -245,11 +247,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./bar#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #12"",
+@@ -262,11 +264,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./#zapp/ok.js#abc"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #12"",
+@@ -279,11 +281,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./#zapp/ok.js#abc"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #13"",
+@@ -296,11 +298,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./#zapp/ok.js?abc"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #14"",
+@@ -313,11 +315,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./#zapp/🎉.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #15"",
+@@ -330,12 +332,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				// ""🎉"" percent encoded
+ 				""./#zapp/%F0%9F%8E%89.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #16"",
+@@ -348,11 +350,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./🎉"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #17"",
+@@ -365,11 +367,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./%F0%9F%8E%89"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #18"",
+@@ -382,11 +384,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./module"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #19"",
+@@ -399,11 +401,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./module#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #20"",
+@@ -416,11 +418,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./zzz*""
++					""./#zipp*"": ""./zzz*"",
+ 				},
+ 				""./module?foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #21"",
+@@ -433,36 +435,36 @@ describe(""Process exports field"", function exportsField() {
+ 					""./%F0%9F%8E%89"": ""./other.js"",
+ 					""./bar#foo"": ""./ok.js"",
+ 					""./#zapp/"": ""./"",
+-					""./#zipp*"": ""./z*z*z*""
++					""./#zipp*"": ""./z*z*z*"",
+ 				},
+ 				""./#zippi"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #22"",
+ 			expect: [""./d?e?f""],
+ 			suite: [
+ 				{
+-					""./a?b?c/"": ""./""
++					""./a?b?c/"": ""./"",
+ 				},
+ 				""./a?b?c/d?e?f"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Direct mapping
++		// #region Direct mapping
+ 		{
+ 			name: ""Direct mapping #1"",
+ 			expect: [""./dist/index.js""],
+ 			suite: [
+ 				{
+-					""."": ""./dist/index.js""
++					""."": ""./dist/index.js"",
+ 				},
+ 				""."",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #2"",
+@@ -471,11 +473,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./"": ""./"",
+ 					""./*"": ""./*"",
+-					""./dist/index.js"": ""./dist/index.js""
++					""./dist/index.js"": ""./dist/index.js"",
+ 				},
+ 				""."",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #3"",
+@@ -485,11 +487,11 @@ describe(""Process exports field"", function exportsField() {
+ 					""./dist/"": ""./dist/"",
+ 					""./dist/*"": ""./dist/*"",
+ 					""./dist*"": ""./dist*"",
+-					""./dist/index.js"": ""./dist/a.js""
++					""./dist/index.js"": ""./dist/a.js"",
+ 				},
+ 				""./dist/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #4"",
+@@ -497,18 +499,18 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""./*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/index.js"": {
+-						browser: ""./index.js""
+-					}
++						browser: ""./index.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #5"",
+@@ -518,18 +520,18 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""./*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/index.js"": {
+-						node: ""./node.js""
+-					}
++						node: ""./node.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #6"",
+@@ -539,12 +541,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": {
+ 						browser: ""./index.js"",
+ 						node: ""./src/node/index.js"",
+-						default: ""./src/index.js""
+-					}
++						default: ""./src/index.js"",
++					},
+ 				},
+ 				""."",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #7"",
+@@ -554,12 +556,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": {
+ 						default: ""./src/index.js"",
+ 						browser: ""./index.js"",
+-						node: ""./src/node/index.js""
+-					}
++						node: ""./src/node/index.js"",
++					},
+ 				},
+ 				""."",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #8"",
+@@ -569,34 +571,34 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": {
+ 						browser: ""./index.js"",
+ 						node: ""./src/node/index.js"",
+-						default: ""./src/index.js""
+-					}
++						default: ""./src/index.js"",
++					},
+ 				},
+ 				""."",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #9"",
+ 			expect: [""./index""], // it is fine, file may not have extension
+ 			suite: [
+ 				{
+-					""."": ""./index""
++					""."": ""./index"",
+ 				},
+ 				""."",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #10"",
+ 			expect: [""./index.js""],
+ 			suite: [
+ 				{
+-					""./index"": ""./index.js""
++					""./index"": ""./index.js"",
+ 				},
+ 				""./index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #11"",
+@@ -605,11 +607,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./"": ""./"",
+ 					""./*"": ""./*"",
+-					""./dist/index.js"": ""./dist/index.js""
++					""./dist/index.js"": ""./dist/index.js"",
+ 				},
+ 				""./foo.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #12"",
+@@ -618,11 +620,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./"": ""./"",
+ 					""./*"": ""./*"",
+-					""./dist/index.js"": ""./dist/index.js""
++					""./dist/index.js"": ""./dist/index.js"",
+ 				},
+ 				""./foo/bar/baz.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #13"",
+@@ -630,11 +632,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": ""./"",
+-					""./dist/index.js"": ""./dist/index.js""
++					""./dist/index.js"": ""./dist/index.js"",
+ 				},
+ 				""./foo/bar/baz.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #14"",
+@@ -642,15 +644,15 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./*"": ""./*"",
+-					""./dist/index.js"": ""./dist/index.js""
++					""./dist/index.js"": ""./dist/index.js"",
+ 				},
+ 				""./foo/bar/baz.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Direct and conditional mapping
++		// #region Direct and conditional mapping
+ 		{
+ 			name: ""Direct and conditional mapping #1"",
+ 			expect: [],
+@@ -659,12 +661,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""."",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #2"",
+@@ -674,12 +676,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""."",
+-				[""import""]
+-			]
++				[""import""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #3"",
+@@ -689,12 +691,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""."",
+-				[""import"", ""require""]
+-			]
++				[""import"", ""require""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #4"",
+@@ -704,140 +706,144 @@ describe(""Process exports field"", function exportsField() {
+ 					""."": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: [""./require.js""] },
+-						{ import: [""./import.mjs"", ""./import.js""] }
+-					]
++						{ import: [""./import.mjs"", ""./import.js""] },
++					],
+ 				},
+ 				""."",
+-				[""import"", ""require""]
+-			]
++				[""import"", ""require""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region When mapping to a folder root, both the left and right sides must end in slashes
++		// #region When mapping to a folder root, both the left and right sides must end in slashes
+ 		{
+ 			name: ""mapping to a folder root #1"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./timezones"": ""./data/timezones/""
++					""./timezones"": ""./data/timezones/"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #2"",
+-			expect: new Error(), // incorrect export field
++			expect: new Error(
++				'Expecting folder to folder mapping. ""./data/timezones"" should end with ""/""',
++			),
+ 			suite: [
+ 				{
+-					""./timezones/"": ""./data/timezones""
++					""./timezones/"": ""./data/timezones"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #3"",
+ 			expect: [""./data/timezones/pdt/index.mjs""],
+ 			suite: [
+ 				{
+-					""./timezones/pdt/"": ""./data/timezones/pdt/""
++					""./timezones/pdt/"": ""./data/timezones/pdt/"",
+ 				},
+ 				""./timezones/pdt/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #3 (wildcard)"",
+ 			expect: [""./data/timezones/pdt/index.mjs""],
+ 			suite: [
+ 				{
+-					""./timezones/pdt/*"": ""./data/timezones/pdt/*""
++					""./timezones/pdt/*"": ""./data/timezones/pdt/*"",
+ 				},
+ 				""./timezones/pdt/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #4"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./"": ""./timezones/""
++					""./"": ""./timezones/"",
+ 				},
+ 				""./pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #4 (wildcard)"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./*"": ""./timezones/*""
++					""./*"": ""./timezones/*"",
+ 				},
+ 				""./pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #5"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./"": ""./""
++					""./"": ""./"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #5 (wildcard)"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""./*"": ""./*""
++					""./*"": ""./*"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #6"",
+-			expect: new Error(), // not a folder mapping
++			expect: new Error(
++				'Expecting folder to folder mapping. ""."" should end with ""/""',
++			),
+ 			suite: [
+ 				{
+-					""./"": "".""
++					""./"": ""."",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #7"",
+ 			expect: [], // incorrect export field, but value did not processed
+ 			suite: [
+ 				{
+-					""."": ""./""
++					""."": ""./"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #7 (wildcard)"",
+ 			expect: [], // incorrect export field, but value did not processed
+ 			suite: [
+ 				{
+-					""."": ""./*""
++					""."": ""./*"",
+ 				},
+ 				""./timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region The longest matching path prefix is prioritized
++		// #region The longest matching path prefix is prioritized
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #1"",
+ 			// it does not work same as conditional mapping,
+@@ -846,11 +852,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": ""./"",
+-					""./dist/"": ""./lib/""
++					""./dist/"": ""./lib/"",
+ 				},
+ 				""./dist/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #1 (wildcard)"",
+@@ -860,11 +866,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./*"": ""./*"",
+-					""./dist/*"": ""./lib/*""
++					""./dist/*"": ""./lib/*"",
+ 				},
+ 				""./dist/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #2"",
+@@ -872,11 +878,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./dist/utils/"": ""./dist/utils/"",
+-					""./dist/"": ""./lib/""
++					""./dist/"": ""./lib/"",
+ 				},
+ 				""./dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #2 (wildcard)"",
+@@ -884,11 +890,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./dist/utils/*"": ""./dist/utils/*"",
+-					""./dist/*"": ""./lib/*""
++					""./dist/*"": ""./lib/*"",
+ 				},
+ 				""./dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #3"",
+@@ -900,11 +906,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./dist/utils/index.js"": ""./dist/utils/index.js"",
+ 					""./dist/utils/"": ""./dist/utils/index.mjs"",
+-					""./dist/"": ""./lib/""
++					""./dist/"": ""./lib/"",
+ 				},
+ 				""./dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #3 (wildcard)"",
+@@ -916,11 +922,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./dist/utils/index.js"": ""./dist/utils/index.js"",
+ 					""./dist/utils/*"": ""./dist/utils/index.mjs"",
+-					""./dist/*"": ""./lib/*""
++					""./dist/*"": ""./lib/*"",
+ 				},
+ 				""./dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #4"",
+@@ -931,13 +937,13 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": {
+-						browser: ""./browser/""
++						browser: ""./browser/"",
+ 					},
+-					""./dist/"": ""./lib/""
++					""./dist/"": ""./lib/"",
+ 				},
+ 				""./dist/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #4 (wildcard)"",
+@@ -948,17 +954,17 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./*"": {
+-						browser: ""./browser/*""
++						browser: ""./browser/*"",
+ 					},
+-					""./dist/*"": ""./lib/*""
++					""./dist/*"": ""./lib/*"",
+ 				},
+ 				""./dist/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Conditional mapping folder
++		// #region Conditional mapping folder
+ 		{
+ 			name: ""conditional mapping folder #1"",
+ 			expect: [""lodash/index.js"", ""./utils/index.js""],
+@@ -966,12 +972,12 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./utils/"": {
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./utils-node/""]
+-					}
++						node: [""./utils-node/""],
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #1 (wildcard)"",
+@@ -980,12 +986,12 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./utils/*"": {
+ 						browser: [""lodash/*"", ""./utils/*""],
+-						node: [""./utils-node/*""]
+-					}
++						node: [""./utils-node/*""],
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #2"",
+@@ -995,12 +1001,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""./utils/"": {
+ 						webpack: ""./wpk/"",
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./node/""]
+-					}
++						node: [""./node/""],
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #2 (wildcard)"",
+@@ -1010,12 +1016,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""./utils/*"": {
+ 						webpack: ""./wpk/*"",
+ 						browser: [""lodash/*"", ""./utils/*""],
+-						node: [""./node/*""]
+-					}
++						node: [""./node/*""],
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #3"",
+@@ -1025,12 +1031,12 @@ describe(""Process exports field"", function exportsField() {
+ 					""./utils/"": {
+ 						webpack: ""./wpk/"",
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./utils/""]
+-					}
++						node: [""./utils/""],
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #3 (wildcard)"",
+@@ -1040,76 +1046,82 @@ describe(""Process exports field"", function exportsField() {
+ 					""./utils/*"": {
+ 						webpack: ""./wpk/*"",
+ 						browser: [""lodash/*"", ""./utils/*""],
+-						node: [""./utils/*""]
+-					}
++						node: [""./utils/*""],
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Incorrect exports field definition
++		// #region Incorrect exports field definition
+ 		{
+ 			name: ""incorrect exports field #1"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""."" (key: ""/utils/"")',
++			),
+ 			suite: [
+ 				{
+-					""/utils/"": ""./a/""
++					""/utils/"": ""./a/"",
+ 				},
+ 				""./utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #2"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""."" (key: ""/utils/"")',
++			),
+ 			suite: [
+ 				{
+ 					""/utils/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #3 (wildcard)"",
+-			expect: new Error(),
++			expect: new Error(
++				'Expecting file to file mapping. ""/a/"" should not end with ""/""',
++			),
+ 			suite: [
+ 				{
+ 					""./utils/*"": {
+ 						browser: ""/a/"",
+-						default: ""/b/""
+-					}
++						default: ""/b/"",
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #4"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./utils/index"": ""./a/index.js""
++					""./utils/index"": ""./a/index.js"",
+ 				},
+ 				""./utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #5"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./utils/index.mjs"": ""./a/index.js""
++					""./utils/index.mjs"": ""./a/index.js"",
+ 				},
+ 				""./utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #6"",
+@@ -1118,12 +1130,12 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./utils/index"": {
+ 						browser: ""./a/index.js"",
+-						default: ""./b/index.js""
+-					}
++						default: ""./b/index.js"",
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #7"",
+@@ -1132,138 +1144,142 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./utils/index.mjs"": {
+ 						browser: ""./a/index.js"",
+-						default: ""./b/index.js""
+-					}
++						default: ""./b/index.js"",
++					},
+ 				},
+ 				""./utils/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Incorrect request
++		// #region Incorrect request
+ 
+ 		{
+ 			name: ""incorrect request #1"",
+-			expect: new Error(),
++			expect: new Error('Request should be relative path and start with "".""'),
+ 			suite: [
+ 				{
+-					""./utils/"": ""./a/""
++					""./utils/"": ""./a/"",
+ 				},
+ 				""/utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #2"",
+-			expect: new Error(),
++			expect: new Error('Request should be relative path and start with "".""'),
+ 			suite: [
+ 				{
+ 					""./utils/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""/utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #3"",
+-			expect: new Error(),
++			expect: new Error('Request should be relative path and start with ""./""'),
+ 			suite: [
+ 				{
+ 					""./utils/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""../utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #4"",
+-			expect: new Error(),
++			expect: new Error('Request should be relative path and start with "".""'),
+ 			suite: [
+ 				{
+ 					""./utils/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""/utils/index.mjs/"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Directory exports targets may not backtrack above the package base
++		// #region Directory exports targets may not backtrack above the package base
+ 		{
+ 			name: ""backtracking package base #1"",
+ 			expect: [""./dist/index""], // we don't handle backtracking here
+ 			suite: [
+ 				{
+-					""./../../utils/"": ""./dist/""
++					""./../../utils/"": ""./dist/"",
+ 				},
+ 				""./../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #1 (wildcard)"",
+ 			expect: [""./dist/index""], // we don't handle backtracking here
+ 			suite: [
+ 				{
+-					""./../../utils/*"": ""./dist/*""
++					""./../../utils/*"": ""./dist/*"",
+ 				},
+ 				""./../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #2"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""./"" (key: ""../../utils/"")',
++			),
+ 			suite: [
+ 				{
+-					""../../utils/"": ""./dist/""
++					""../../utils/"": ""./dist/"",
+ 				},
+ 				""../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #2 (wildcard)"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""./"" (key: ""../../utils/*"")',
++			),
+ 			suite: [
+ 				{
+-					""../../utils/*"": ""./dist/*""
++					""../../utils/*"": ""./dist/*"",
+ 				},
+ 				""../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #3"",
+ 			expect: [""./../src/index""], // we don't handle backtracking here
+ 			suite: [
+ 				{
+-					""./utils/"": ""./../src/""
++					""./utils/"": ""./../src/"",
+ 				},
+ 				""./utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #3 (wildcard)"",
+ 			expect: [""./../src/index""], // we don't handle backtracking here
+ 			suite: [
+ 				{
+-					""./utils/*"": ""./../src/*""
++					""./utils/*"": ""./../src/*"",
+ 				},
+ 				""./utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #4"",
+@@ -1271,11 +1287,11 @@ describe(""Process exports field"", function exportsField() {
+ 			expect: [""./src/../index.js""],
+ 			suite: [
+ 				{
+-					""./utils/index"": ""./src/../index.js""
++					""./utils/index"": ""./src/../index.js"",
+ 				},
+ 				""./utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #5"",
+@@ -1284,11 +1300,11 @@ describe(""Process exports field"", function exportsField() {
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""./utils/../utils/index"": ""./src/../index.js""
++					""./utils/../utils/index"": ""./src/../index.js"",
+ 				},
+ 				""./utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #6"",
+@@ -1296,12 +1312,12 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./utils/"": {
+-						browser: ""./utils/../""
+-					}
++						browser: ""./utils/../"",
++					},
+ 				},
+ 				""./utils/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #6 (wildcard)"",
+@@ -1309,12 +1325,12 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./utils/*"": {
+-						browser: ""./utils/../*""
+-					}
++						browser: ""./utils/../*"",
++					},
+ 				},
+ 				""./utils/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #7"",
+@@ -1322,11 +1338,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./"": ""./src/../../"",
+-					""./dist/"": ""./dist/""
++					""./dist/"": ""./dist/"",
+ 				},
+ 				""./dist/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #7 (wildcard)"",
+@@ -1334,96 +1350,96 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./*"": ""./src/../../*"",
+-					""./dist/*"": ""./dist/*""
++					""./dist/*"": ""./dist/*"",
+ 				},
+ 				""./dist/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Directory exports subpaths may not backtrack above the target folder
++		// #region Directory exports subpaths may not backtrack above the target folder
+ 		{
+ 			name: ""backtracking target folder #1"",
+ 			expect: [""./dist/timezone/../../index""],
+ 			suite: [
+ 				{
+-					""./utils/"": ""./dist/""
++					""./utils/"": ""./dist/"",
+ 				},
+ 				""./utils/timezone/../../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking target folder #1 (wildcard)"",
+ 			expect: [""./dist/timezone/../../index""],
+ 			suite: [
+ 				{
+-					""./utils/*"": ""./dist/*""
++					""./utils/*"": ""./dist/*"",
+ 				},
+ 				""./utils/timezone/../../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking target folder #2"",
+ 			expect: [""./dist/timezone/../index""],
+ 			suite: [
+ 				{
+-					""./utils/"": ""./dist/""
++					""./utils/"": ""./dist/"",
+ 				},
+ 				""./utils/timezone/../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking target folder #2 (wildcard)"",
+ 			expect: [""./dist/timezone/../index""],
+ 			suite: [
+ 				{
+-					""./utils/*"": ""./dist/*""
++					""./utils/*"": ""./dist/*"",
+ 				},
+ 				""./utils/timezone/../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking target folder #3"",
+ 			expect: [""./dist/target/../../index""],
+ 			suite: [
+ 				{
+-					""./utils/"": ""./dist/target/""
++					""./utils/"": ""./dist/target/"",
+ 				},
+ 				""./utils/../../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking target folder #3 (wildcard)"",
+ 			expect: [""./dist/target/../../index""],
+ 			suite: [
+ 				{
+-					""./utils/*"": ""./dist/target/*""
++					""./utils/*"": ""./dist/target/*"",
+ 				},
+ 				""./utils/../../index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Exports targets cannot map into a nested node_modules path
++		// #region Exports targets cannot map into a nested node_modules path
+ 		{
+ 			name: ""nested node_modules path #1"",
+ 			expect: [""./node_modules/lodash/dist/index.js""], // we don't handle node_modules here
+ 			suite: [
+ 				{
+ 					""./utils/"": {
+-						browser: ""./node_modules/""
+-					}
++						browser: ""./node_modules/"",
++					},
+ 				},
+ 				""./utils/lodash/dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested node_modules path #1 (wildcard)"",
+@@ -1431,38 +1447,38 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./utils/*"": {
+-						browser: ""./node_modules/*""
+-					}
++						browser: ""./node_modules/*"",
++					},
+ 				},
+ 				""./utils/lodash/dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested node_modules path #2"",
+ 			expect: [""./utils/../node_modules/lodash/dist/index.js""],
+ 			suite: [
+ 				{
+-					""./utils/"": ""./utils/../node_modules/""
++					""./utils/"": ""./utils/../node_modules/"",
+ 				},
+ 				""./utils/lodash/dist/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""nested node_modules path #2 (wildcard)"",
+ 			expect: [""./utils/../node_modules/lodash/dist/index.js""],
+ 			suite: [
+ 				{
+-					""./utils/*"": ""./utils/../node_modules/*""
++					""./utils/*"": ""./utils/../node_modules/*"",
+ 				},
+ 				""./utils/lodash/dist/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Nested mapping
++		// #region Nested mapping
+ 		{
+ 			name: ""nested mapping #1"",
+ 			expect: [],
+@@ -1472,14 +1488,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: ""./"",
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #1 (wildcard)"",
+@@ -1490,14 +1506,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: ""./*"",
+ 							default: {
+-								node: ""./node/*""
+-							}
+-						}
+-					}
++								node: ""./node/*"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #2"",
+@@ -1508,14 +1524,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #2 (wildcard)"",
+@@ -1526,14 +1542,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./*"", ""./node/*""],
+ 							default: {
+-								node: ""./node/*""
+-							}
+-						}
+-					}
++								node: ""./node/*"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #3"",
+@@ -1544,14 +1560,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""webpack""]
+-			]
++				[""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #3 (wildcard)"",
+@@ -1562,14 +1578,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./*"", ""./node/*""],
+ 							default: {
+-								node: ""./node/*""
+-							}
+-						}
+-					}
++								node: ""./node/*"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""webpack""]
+-			]
++				[""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #4"",
+@@ -1580,14 +1596,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""node"", ""browser""]
+-			]
++				[""node"", ""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #4 (wildcard)"",
+@@ -1598,14 +1614,14 @@ describe(""Process exports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./*"", ""./node/*""],
+ 							default: {
+-								node: ""./node/*""
+-							}
+-						}
+-					}
++								node: ""./node/*"",
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""node"", ""browser""]
+-			]
++				[""node"", ""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #5"",
+@@ -1617,15 +1633,15 @@ describe(""Process exports field"", function exportsField() {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""node""]
+-			]
++				[""browser"", ""node""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #5 (wildcard)"",
+@@ -1637,15 +1653,15 @@ describe(""Process exports field"", function exportsField() {
+ 							webpack: [""./*"", ""./node/*""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/*""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/*""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""node""]
+-			]
++				[""browser"", ""node""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #6"",
+@@ -1657,15 +1673,15 @@ describe(""Process exports field"", function exportsField() {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""node"", ""webpack""]
+-			]
++				[""browser"", ""node"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #6 (wildcard)"",
+@@ -1677,15 +1693,15 @@ describe(""Process exports field"", function exportsField() {
+ 							webpack: [""./*"", ""./node/*""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/*""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/*""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""./utils/index.js"",
+-				[""browser"", ""node"", ""webpack""]
+-			]
++				[""browser"", ""node"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #7"",
+@@ -1694,12 +1710,12 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./a.js"": {
+ 						abc: { def: ""./x.js"" },
+-						ghi: ""./y.js""
+-					}
++						ghi: ""./y.js"",
++					},
+ 				},
+ 				""./a.js"",
+-				[""abc"", ""ghi""]
+-			]
++				[""abc"", ""ghi""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #8"",
+@@ -1708,35 +1724,35 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./a.js"": {
+ 						abc: { def: ""./x.js"", default: [] },
+-						ghi: ""./y.js""
+-					}
++						ghi: ""./y.js"",
++					},
+ 				},
+ 				""./a.js"",
+-				[""abc"", ""ghi""]
+-			]
++				[""abc"", ""ghi""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Syntax sugar
++		// #region Syntax sugar
+ 		{
+ 			name: ""syntax sugar #1"",
+ 			expect: [""./main.js""],
+-			suite: [""./main.js"", ""."", []]
++			suite: [""./main.js"", ""."", []],
+ 		},
+ 		{
+ 			name: ""syntax sugar #2"",
+ 			expect: [],
+-			suite: [""./main.js"", ""./lib.js"", []]
++			suite: [""./main.js"", ""./lib.js"", []],
+ 		},
+ 		{
+ 			name: ""syntax sugar #3"",
+ 			expect: [""./a.js"", ""./b.js""],
+-			suite: [[""./a.js"", ""./b.js""], ""."", []]
++			suite: [[""./a.js"", ""./b.js""], ""."", []],
+ 		},
+ 		{
+ 			name: ""syntax sugar #4"",
+ 			expect: [],
+-			suite: [[""./a.js"", ""./b.js""], ""./lib.js"", []]
++			suite: [[""./a.js"", ""./b.js""], ""./lib.js"", []],
+ 		},
+ 		{
+ 			name: ""syntax sugar #5"",
+@@ -1744,12 +1760,12 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					browser: {
+-						default: ""./index.js""
+-					}
++						default: ""./index.js"",
++					},
+ 				},
+ 				""."",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""syntax sugar #6"",
+@@ -1757,44 +1773,48 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					browser: {
+-						default: ""./index.js""
+-					}
++						default: ""./index.js"",
++					},
+ 				},
+ 				""./lib.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""syntax sugar #7"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""."" (key: ""browser"")',
++			),
+ 			suite: [
+ 				{
+ 					""./node"": ""./node.js"",
+ 					browser: {
+-						default: ""./index.js""
+-					}
++						default: ""./index.js"",
++					},
+ 				},
+ 				""."",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""syntax sugar #8"",
+-			expect: new Error(),
++			expect: new Error(
++				'Exports field key should be relative path and start with ""."" (key: ""browser"")',
++			),
+ 			suite: [
+ 				{
+ 					browser: {
+-						default: ""./index.js""
++						default: ""./index.js"",
+ 					},
+-					""./node"": ""./node.js""
++					""./node"": ""./node.js"",
+ 				},
+ 				""."",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Wildcards
++		// #region Wildcards
+ 		{
+ 			name: ""wildcard longest #1"",
+ 			expect: [""./abc/d""],
+@@ -1802,11 +1822,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./ab*"": ""./ab/*"",
+ 					""./abc*"": ""./abc/*"",
+-					""./a*"": ""./a/*""
++					""./a*"": ""./a/*"",
+ 				},
+ 				""./abcd"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard longest #2"",
+@@ -1815,11 +1835,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./ab*"": ""./ab/*"",
+ 					""./abc*"": ""./abc/*"",
+-					""./a*"": ""./a/*""
++					""./a*"": ""./a/*"",
+ 				},
+ 				""./abcd/e"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard longest #3"",
+@@ -1828,11 +1848,11 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./x/ab*"": ""./ab/*"",
+ 					""./x/abc*"": ""./abc/*"",
+-					""./x/a*"": ""./a/*""
++					""./x/a*"": ""./a/*"",
+ 				},
+ 				""./x/abcd"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard longest #4"",
+@@ -1841,14 +1861,14 @@ describe(""Process exports field"", function exportsField() {
+ 				{
+ 					""./x/ab*"": ""./ab/*"",
+ 					""./x/abc*"": ""./abc/*"",
+-					""./x/a*"": ""./a/*""
++					""./x/a*"": ""./a/*"",
+ 				},
+ 				""./x/abcd/e"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 
+-		//#endregion
++		// #endregion
+ 
+ 		{
+ 			name: ""path tree edge case #1"",
+@@ -1856,11 +1876,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/"": ""./A/"",
+-					""./a/b/c"": ""./c.js""
++					""./a/b/c"": ""./c.js"",
+ 				},
+ 				""./a/b/d.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #1 (wildcard)"",
+@@ -1868,11 +1888,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/*"": ""./A/*"",
+-					""./a/b/c"": ""./c.js""
++					""./a/b/c"": ""./c.js"",
+ 				},
+ 				""./a/b/d.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #2"",
+@@ -1880,11 +1900,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/"": ""./A/"",
+-					""./a/b"": ""./b.js""
++					""./a/b"": ""./b.js"",
+ 				},
+ 				""./a/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #2 (wildcard)"",
+@@ -1892,11 +1912,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/*"": ""./A/*"",
+-					""./a/b"": ""./b.js""
++					""./a/b"": ""./b.js"",
+ 				},
+ 				""./a/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #3"",
+@@ -1904,11 +1924,11 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/"": ""./A/"",
+-					""./a/b/c/d"": ""./c.js""
++					""./a/b/c/d"": ""./c.js"",
+ 				},
+ 				""./a/b/d/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #3 (wildcard)"",
+@@ -1916,55 +1936,55 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./a/*"": ""./A/*"",
+-					""./a/b/c/d"": ""./c.js""
++					""./a/b/c/d"": ""./c.js"",
+ 				},
+ 				""./a/b/d/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #1"",
+ 			expect: [""./A/b.js""],
+ 			suite: [
+ 				{
+-					""./a/*.js"": ""./A/*.js""
++					""./a/*.js"": ""./A/*.js"",
+ 				},
+ 				""./a/b.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #2"",
+ 			expect: [""./A/b/c.js""],
+ 			suite: [
+ 				{
+-					""./a/*.js"": ""./A/*.js""
++					""./a/*.js"": ""./A/*.js"",
+ 				},
+ 				""./a/b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #3"",
+ 			expect: [""./A/b/c.js""],
+ 			suite: [
+ 				{
+-					""./a/*/c.js"": ""./A/*/c.js""
++					""./a/*/c.js"": ""./A/*/c.js"",
+ 				},
+ 				""./a/b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #4"",
+ 			expect: [""./A/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/*/c.js"": ""./A/*/*.js""
++					""./a/*/c.js"": ""./A/*/*.js"",
+ 				},
+ 				""./a/b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #5"",
+@@ -1972,16 +1992,16 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/*.js"": {
+ 						node: ""./*.js"",
+-						default: ""./browser/*.js""
+-					}
++						default: ""./browser/*.js"",
++					},
+ 				},
+ 				""./dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #5"",
+@@ -1989,16 +2009,16 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*"": {
+-						browser: [""./browser/*""]
++						browser: [""./browser/*""],
+ 					},
+ 					""./dist/*.js"": {
+ 						node: ""./*.js"",
+-						default: ""./browser/*.js""
+-					}
++						default: ""./browser/*.js"",
++					},
+ 				},
+ 				""./lib/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #6"",
+@@ -2006,16 +2026,16 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*/bar.js"": {
+-						browser: [""./browser/*/bar.js""]
++						browser: [""./browser/*/bar.js""],
+ 					},
+ 					""./dist/*/bar.js"": {
+ 						node: ""./*.js"",
+-						default: ""./browser/*.js""
+-					}
++						default: ""./browser/*.js"",
++					},
+ 				},
+ 				""./lib/foo/bar.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #6"",
+@@ -2023,16 +2043,16 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*/bar.js"": {
+-						browser: [""./browser/*/bar.js""]
++						browser: [""./browser/*/bar.js""],
+ 					},
+ 					""./dist/*/bar.js"": {
+ 						node: ""./*.js"",
+-						default: ""./browser/*.js""
+-					}
++						default: ""./browser/*.js"",
++					},
+ 				},
+ 				""./dist/foo/bar.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #7"",
+@@ -2040,131 +2060,132 @@ describe(""Process exports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""./lib/*/bar.js"": {
+-						browser: [""./browser/*/bar.js""]
++						browser: [""./browser/*/bar.js""],
+ 					},
+ 					""./dist/*/bar.js"": {
+ 						node: ""./*.js"",
+-						default: ""./browser/*/default.js""
+-					}
++						default: ""./browser/*/default.js"",
++					},
+ 				},
+ 				""./dist/foo/bar.js"",
+-				[""default""]
+-			]
++				[""default""],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #8"",
+ 			expect: [""./A/b/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/*/c.js"": ""./A/*/*/*.js""
++					""./a/*/c.js"": ""./A/*/*/*.js"",
+ 				},
+ 				""./a/b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #9"",
+ 			expect: [""./A/b/b/b.js"", ""./B/b/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/*/c.js"": [""./A/*/*/*.js"", ""./B/*/*/*.js""]
++					""./a/*/c.js"": [""./A/*/*/*.js"", ""./B/*/*/*.js""],
+ 				},
+ 				""./a/b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #10"",
+ 			expect: [""./A/b/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/foo-*/c.js"": ""./A/*/*/*.js""
++					""./a/foo-*/c.js"": ""./A/*/*/*.js"",
+ 				},
+ 				""./a/foo-b/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #11"",
+ 			expect: [""./A/b/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/*-foo/c.js"": ""./A/*/*/*.js""
++					""./a/*-foo/c.js"": ""./A/*/*/*.js"",
+ 				},
+ 				""./a/b-foo/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #12"",
+ 			expect: [""./A/b/b/b.js""],
+ 			suite: [
+ 				{
+-					""./a/foo-*-foo/c.js"": ""./A/*/*/*.js""
++					""./a/foo-*-foo/c.js"": ""./A/*/*/*.js"",
+ 				},
+ 				""./a/foo-b-foo/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #13"",
+ 			expect: [""./A/b/c/d.js""],
+ 			suite: [
+ 				{
+-					""./a/foo-*-foo/c.js"": ""./A/b/c/d.js""
++					""./a/foo-*-foo/c.js"": ""./A/b/c/d.js"",
+ 				},
+ 				""./a/foo-b-foo/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""wildcard pattern #13"",
+ 			expect: [""./A/b/c/*.js""],
+ 			suite: [
+ 				{
+-					""./a/foo-foo/c.js"": ""./A/b/c/*.js""
++					""./a/foo-foo/c.js"": ""./A/b/c/*.js"",
+ 				},
+ 				""./a/foo-foo/c.js"",
+-				[]
+-			]
+-		}
++				[],
++			],
++		},
+ 	];
+ 
+-	testCases.forEach((testCase) => {
++	for (const testCase of testCases) {
+ 		it(testCase.name, () => {
+ 			if (testCase.expect instanceof Error) {
+ 				expect(() => {
++					// eslint-disable-next-line no-unused-expressions
+ 					processExportsField(testCase.suite[0])(
+ 						testCase.suite[1],
+-						new Set(testCase.suite[2])
++						new Set(testCase.suite[2]),
+ 					)[0];
+-				}).toThrowError();
++				}).toThrow(testCase.expect.message);
+ 			} else {
+ 				expect(
+ 					processExportsField(testCase.suite[0])(
+ 						testCase.suite[1],
+-						new Set(testCase.suite[2])
+-					)[0]
++						new Set(testCase.suite[2]),
++					)[0],
+ 				).toEqual(testCase.expect);
+ 			}
+ 		});
+-	});
++	}
+ });
+ 
+-describe(""ExportsFieldPlugin"", () => {
++describe(""exportsFieldPlugin"", () => {
+ 	const nodeFileSystem = new CachedInputFileSystem(fs, 4000);
+ 
+ 	const resolver = ResolverFactory.createResolver({
+ 		extensions: ["".js""],
+ 		fileSystem: nodeFileSystem,
+ 		fullySpecified: true,
+-		conditionNames: [""webpack""]
++		conditionNames: [""webpack""],
+ 	});
+ 
+ 	const commonjsResolver = ResolverFactory.createResolver({
+ 		extensions: ["".js""],
+ 		fileSystem: nodeFileSystem,
+-		conditionNames: [""webpack""]
++		conditionNames: [""webpack""],
+ 	});
+ 
+ 	it(""resolve root using exports field, not a main field"", (done) => {
+@@ -2172,7 +2193,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""node_modules/exports-field/x.js"")
++				path.resolve(fixture, ""node_modules/exports-field/x.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2183,7 +2204,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			conditionNames: [""custom""],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve(
+@@ -2195,10 +2216,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""node_modules/exports-field/lib/lib2/main.js"")
++					path.resolve(fixture, ""node_modules/exports-field/lib/lib2/main.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2207,7 +2228,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			conditionNames: [""node""],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve(
+@@ -2219,10 +2240,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture2, ""node_modules/exports-field/lib/browser.js"")
++					path.resolve(fixture2, ""node_modules/exports-field/lib/browser.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2237,11 +2258,11 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(/Can't resolve/);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+-	it(""throw error if extension not provided"", (done) => {
++	it(""throw error if extension not provided #2"", (done) => {
+ 		resolver.resolve(
+ 			{},
+ 			fixture2,
+@@ -2252,7 +2273,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(/Can't resolve/);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2266,10 +2287,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture2, ""node_modules/exports-field/lib/main.js"")
++					path.resolve(fixture2, ""node_modules/exports-field/lib/main.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2283,10 +2304,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""node_modules/exports-field/lib/main.js"")
++					path.resolve(fixture, ""node_modules/exports-field/lib/main.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2300,10 +2321,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture2, ""node_modules/exports-field/lib/browser.js"")
++					path.resolve(fixture2, ""node_modules/exports-field/lib/browser.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2319,11 +2340,11 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(result).toEqual(
+ 					path.resolve(
+ 						fixture2,
+-						""node_modules/exports-field/lib/browser.js?foo""
+-					)
++						""node_modules/exports-field/lib/browser.js?foo"",
++					),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2348,11 +2369,11 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(result).toEqual(
+ 					path.resolve(
+ 						fixture2,
+-						""node_modules/exports-field/lib/browser.js#foo""
+-					)
++						""node_modules/exports-field/lib/browser.js#foo"",
++					),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2375,10 +2396,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""node_modules/exports-field/lib/main.js"")
++					path.resolve(fixture, ""node_modules/exports-field/lib/main.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2393,7 +2414,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(/Can't resolve/);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2407,10 +2428,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\/lib\/lib2\/\.\.\/\.\.\/\.\.\/a\.js"" defined for ""\.\/dist\/""/
++					/Invalid ""exports"" target ""\.\/lib\/lib2\/\.\.\/\.\.\/\.\.\/a\.js"" defined for ""\.\/dist\/""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2424,10 +2445,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\/\.\.\/\.\.\/a\.js"" defined for ""\.\/dist\/a\.js""/
++					/Invalid ""exports"" target ""\.\/\.\.\/\.\.\/a\.js"" defined for ""\.\/dist\/a\.js""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2451,7 +2472,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(/not exported from package/);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2460,14 +2481,14 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			exportsFields: [[""exportsField"", ""exports""]],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve({}, fixture3, ""exports-field"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture3, ""node_modules/exports-field/main.js"")
++				path.resolve(fixture3, ""node_modules/exports-field/main.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2478,14 +2499,14 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			exportsFields: [[""exportsField"", ""exports""], ""exports""],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve({}, fixture3, ""exports-field"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture3, ""node_modules/exports-field/main.js"")
++				path.resolve(fixture3, ""node_modules/exports-field/main.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2496,14 +2517,14 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			exportsFields: [""exports"", [""exportsField"", ""exports""]],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve({}, fixture3, ""exports-field"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture3, ""node_modules/exports-field/main.js"")
++				path.resolve(fixture3, ""node_modules/exports-field/main.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2514,14 +2535,14 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			exportsFields: [[""exports""]],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve({}, fixture2, ""exports-field"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture2, ""node_modules/exports-field/index.js"")
++				path.resolve(fixture2, ""node_modules/exports-field/index.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2532,14 +2553,14 @@ describe(""ExportsFieldPlugin"", () => {
+ 			aliasFields: [""browser""],
+ 			exportsFields: [""ex"", [""exportsField"", ""exports""]],
+ 			extensions: ["".js""],
+-			fileSystem: nodeFileSystem
++			fileSystem: nodeFileSystem,
+ 		});
+ 
+ 		resolver.resolve({}, fixture3, ""exports-field"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture3, ""node_modules/exports-field/index"")
++				path.resolve(fixture3, ""node_modules/exports-field/index""),
+ 			);
+ 			done();
+ 		});
+@@ -2577,7 +2598,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""exports"" target ""\.\/a\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.""/
++				/Invalid ""exports"" target ""\.\/a\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.""/,
+ 			);
+ 			done();
+ 		});
+@@ -2595,7 +2616,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				expect(err.message).toMatch(/should be relative path/);
+ 				expect(err.message).toMatch(/umd/);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2610,27 +2631,27 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""node_modules/exports-field/lib/browser.js"")
++					path.resolve(fixture, ""node_modules/exports-field/lib/browser.js""),
+ 				);
+ 				expect(
+-					log.map((line) => line.replace(fixture, ""..."").replace(/\\/g, ""/""))
++					log.map((line) => line.replace(fixture, ""..."").replace(/\\/g, ""/"")),
+ 				).toMatchSnapshot();
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+ 	it(""should resolve with wildcard pattern #1"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/features/f.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/features/f.js"")
++				path.resolve(fixture, ""./node_modules/m/src/features/f.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2639,39 +2660,39 @@ describe(""ExportsFieldPlugin"", () => {
+ 	it(""should resolve with wildcard pattern #2"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/features/y/y.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/features/y/y.js"")
++				path.resolve(fixture, ""./node_modules/m/src/features/y/y.js""),
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #2"", (done) => {
++	it(""should resolve with wildcard pattern #3"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/features/y/y.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/features/y/y.js"")
++				path.resolve(fixture, ""./node_modules/m/src/features/y/y.js""),
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #3"", (done) => {
++	it(""should resolve with wildcard pattern #4"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve(
+@@ -2683,33 +2704,33 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""./node_modules/m/src/features/y/y.js"")
++					path.resolve(fixture, ""./node_modules/m/src/features/y/y.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #4"", (done) => {
++	it(""should resolve with wildcard pattern #5"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/middle/nested/f.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/middle/nested/f.js"")
++				path.resolve(fixture, ""./node_modules/m/src/middle/nested/f.js""),
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #5"", (done) => {
++	it(""should resolve with wildcard pattern #6"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve(
+@@ -2721,17 +2742,17 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""./node_modules/m/src/middle-1/nested/f.js"")
++					path.resolve(fixture, ""./node_modules/m/src/middle-1/nested/f.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #6"", (done) => {
++	it(""should resolve with wildcard pattern #7"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve(
+@@ -2743,17 +2764,17 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.resolve(fixture, ""./node_modules/m/src/middle-2/nested/f.js"")
++					path.resolve(fixture, ""./node_modules/m/src/middle-2/nested/f.js""),
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #7"", (done) => {
++	it(""should resolve with wildcard pattern #8"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/middle-3/nested/f"", {}, (err, result) => {
+@@ -2762,40 +2783,40 @@ describe(""ExportsFieldPlugin"", () => {
+ 			expect(result).toEqual(
+ 				path.resolve(
+ 					fixture,
+-					""./node_modules/m/src/middle-3/nested/f/nested/f.js""
+-				)
++					""./node_modules/m/src/middle-3/nested/f/nested/f.js"",
++				),
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #8"", (done) => {
++	it(""should resolve with wildcard pattern #9"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/middle-4/f/nested"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/middle-4/f/f.js"")
++				path.resolve(fixture, ""./node_modules/m/src/middle-4/f/f.js""),
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should resolve with wildcard pattern #9"", (done) => {
++	it(""should resolve with wildcard pattern #10"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""m/middle-5/f$/$"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/m/src/middle-5/f$/$.js"")
++				path.resolve(fixture, ""./node_modules/m/src/middle-5/f$/$.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2804,7 +2825,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 	it(""should throw error if target is 'null'"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/""
++			""./fixtures/imports-exports-wildcard/"",
+ 		);
+ 
+ 		resolver.resolve(
+@@ -2816,10 +2837,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Package path \.\/features\/internal\/file\.js is not exported/
++					/Package path \.\/features\/internal\/file\.js is not exported/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2827,22 +2848,22 @@ describe(""ExportsFieldPlugin"", () => {
+ 		const resolver = ResolverFactory.createResolver({
+ 			extensions: ["".js""],
+ 			extensionAlias: {
+-				"".js"": ["".ts"", "".js""]
++				"".js"": ["".ts"", "".js""],
+ 			},
+ 			fileSystem: nodeFileSystem,
+ 			fullySpecified: true,
+-			conditionNames: [""webpack"", ""default""]
++			conditionNames: [""webpack"", ""default""],
+ 		});
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/exports-field-and-extension-alias/""
++			""./fixtures/exports-field-and-extension-alias/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""@org/pkg/string.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/@org/pkg/dist/string.js"")
++				path.resolve(fixture, ""./node_modules/@org/pkg/dist/string.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2852,22 +2873,22 @@ describe(""ExportsFieldPlugin"", () => {
+ 		const resolver = ResolverFactory.createResolver({
+ 			extensions: ["".js""],
+ 			extensionAlias: {
+-				"".js"": ["".ts"", "".js""]
++				"".js"": ["".ts"", "".js""],
+ 			},
+ 			fileSystem: nodeFileSystem,
+ 			fullySpecified: true,
+-			conditionNames: [""webpack"", ""default""]
++			conditionNames: [""webpack"", ""default""],
+ 		});
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/exports-field-and-extension-alias/""
++			""./fixtures/exports-field-and-extension-alias/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""pkg/string.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/pkg/dist/string.js"")
++				path.resolve(fixture, ""./node_modules/pkg/dist/string.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2877,22 +2898,22 @@ describe(""ExportsFieldPlugin"", () => {
+ 		const resolver = ResolverFactory.createResolver({
+ 			extensions: ["".js""],
+ 			extensionAlias: {
+-				"".js"": ["".foo"", "".baz"", "".baz"", "".ts"", "".js""]
++				"".js"": ["".foo"", "".baz"", "".baz"", "".ts"", "".js""],
+ 			},
+ 			fileSystem: nodeFileSystem,
+ 			fullySpecified: true,
+-			conditionNames: [""webpack"", ""default""]
++			conditionNames: [""webpack"", ""default""],
+ 		});
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/exports-field-and-extension-alias/""
++			""./fixtures/exports-field-and-extension-alias/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""pkg/string.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""./node_modules/pkg/dist/string.js"")
++				path.resolve(fixture, ""./node_modules/pkg/dist/string.js""),
+ 			);
+ 			done();
+ 		});
+@@ -2902,22 +2923,22 @@ describe(""ExportsFieldPlugin"", () => {
+ 		const resolver = ResolverFactory.createResolver({
+ 			extensions: ["".js""],
+ 			extensionAlias: {
+-				"".js"": ["".ts""]
++				"".js"": ["".ts""],
+ 			},
+ 			fileSystem: nodeFileSystem,
+ 			fullySpecified: true,
+-			conditionNames: [""webpack"", ""default""]
++			conditionNames: [""webpack"", ""default""],
+ 		});
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/exports-field-and-extension-alias/""
++			""./fixtures/exports-field-and-extension-alias/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""pkg/string.js"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Package path \.\/string\.ts is not exported/
++				/Package path \.\/string\.ts is not exported/,
+ 			);
+ 			done();
+ 		});
+@@ -2927,22 +2948,22 @@ describe(""ExportsFieldPlugin"", () => {
+ 		const resolver = ResolverFactory.createResolver({
+ 			extensions: ["".js""],
+ 			extensionAlias: {
+-				"".js"": "".ts""
++				"".js"": "".ts"",
+ 			},
+ 			fileSystem: nodeFileSystem,
+ 			fullySpecified: true,
+-			conditionNames: [""webpack"", ""default""]
++			conditionNames: [""webpack"", ""default""],
+ 		});
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/exports-field-and-extension-alias/""
++			""./fixtures/exports-field-and-extension-alias/"",
+ 		);
+ 
+ 		resolver.resolve({}, fixture, ""pkg/string.js"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Package path \.\/string\.ts is not exported/
++				/Package path \.\/string\.ts is not exported/,
+ 			);
+ 			done();
+ 		});
+@@ -2957,9 +2978,9 @@ describe(""ExportsFieldPlugin"", () => {
+ 			(err, result) => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+-				expect(result).toEqual(path.resolve(fixture5, ""./a.js"") + ""?foo=../"");
++				expect(result).toBe(`${path.resolve(fixture5, ""./a.js"")}?foo=../`);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2972,11 +2993,9 @@ describe(""ExportsFieldPlugin"", () => {
+ 			(err, result) => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+-				expect(result).toEqual(
+-					path.resolve(fixture5, ""./a.js"") + ""?foo=../#../""
+-				);
++				expect(result).toBe(`${path.resolve(fixture5, ""./a.js"")}?foo=../#../`);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -2990,10 +3009,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""-bad-specifier-"" defined for ""\.\/bar""/
++					/Invalid ""exports"" target ""-bad-specifier-"" defined for ""\.\/bar""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3007,10 +3026,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""foo"" defined for ""\.\/baz-multi""/
++					/Invalid ""exports"" target ""foo"" defined for ""\.\/baz-multi""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3025,7 +3044,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3040,7 +3059,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3055,7 +3074,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3069,10 +3088,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\/b\/index\.mjs"" defined for ""\.\/utils\//
++					/Invalid ""exports"" target ""\/b\/index\.mjs"" defined for ""\.\/utils\//,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3086,10 +3105,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\/a\/index.mjs"" defined for ""\.\/utils1\/""/
++					/Invalid ""exports"" target ""\/a\/index.mjs"" defined for ""\.\/utils1\/""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3103,10 +3122,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/this\/index"" defined for ""\.\/utils2\/""/
++					/Invalid ""exports"" target ""\.\.\/this\/index"" defined for ""\.\/utils2\/""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3120,10 +3139,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/this\/index"" defined for ""\.\/utils3\/\*""/
++					/Invalid ""exports"" target ""\.\.\/this\/index"" defined for ""\.\/utils3\/\*""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3137,10 +3156,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/src\/index"" defined for ""\.\/utils4\/\*""/
++					/Invalid ""exports"" target ""\.\.\/src\/index"" defined for ""\.\/utils4\/\*""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3154,10 +3173,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/src\/index"" defined for ""\.\/utils5\/""/
++					/Invalid ""exports"" target ""\.\.\/src\/index"" defined for ""\.\/utils5\/""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3171,10 +3190,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\."" defined for ""\.\/\*""/
++					/Invalid ""exports"" target ""\."" defined for ""\.\/\*""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3188,10 +3207,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Can't resolve '@exports-field\/bad-specifier\/non-existent\.js'/
++					/Can't resolve '@exports-field\/bad-specifier\/non-existent\.js'/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3205,10 +3224,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""\.\/dep\/multi1""/
++					/Invalid ""exports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""\.\/dep\/multi1""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3222,10 +3241,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\.\/\.\.\/test"" defined for ""\.\/dep\/multi2""/
++					/Invalid ""exports"" target ""\.\.\/\.\.\/test"" defined for ""\.\/dep\/multi2""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3239,10 +3258,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\/c\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.\/dep\/multi4""/
++					/Invalid ""exports"" target ""\.\/c\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.\/dep\/multi4""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3256,10 +3275,10 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!err) return done(new Error(`expect error, got ${result}`));
+ 				expect(err).toBeInstanceOf(Error);
+ 				expect(err.message).toMatch(
+-					/Invalid ""exports"" target ""\.\/a\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.\/dep\/multi5""/
++					/Invalid ""exports"" target ""\.\/a\/\.\.\/b\/\.\.\/\.\.\/pack1\/index\.js"" defined for ""\.\/dep\/multi5""/,
+ 				);
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3274,7 +3293,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3289,7 +3308,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3304,7 +3323,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -3319,7 +3338,7 @@ describe(""ExportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture5, ""./a.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ });
+
+diff --git a/test/importsField.test.js b/test/importsField.test.js
+index a9a530b..93cd32b 100644
+--- a/test/importsField.test.js
++++ b/test/importsField.test.js
+@@ -1,3 +1,5 @@
++""use strict"";
++
+ const path = require(""path"");
+ const fs = require(""fs"");
+ const { processImportsField } = require(""../lib/util/entrypoints"");
+@@ -9,10 +11,10 @@ const CachedInputFileSystem = require(""../lib/CachedInputFileSystem"");
+ const fixture = path.resolve(__dirname, ""fixtures"", ""imports-field"");
+ const fixture1 = path.resolve(__dirname, ""fixtures"", ""imports-field-different"");
+ 
+-describe(""Process imports field"", function exportsField() {
++describe(""process imports field"", () => {
+ 	/** @type {Array<{name: string, expect: string[]|Error, suite: [ImportsField, string, string[]]}>} */
+ 	const testCases = [
+-		//#region Samples
++		// #region Samples
+ 		{
+ 			name: ""sample #1"",
+ 			expect: [""./dist/test/file.js"", ""./src/test/file.js""],
+@@ -20,24 +22,24 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#abc/"": {
+ 						import: [""./dist/"", ""./src/""],
+-						webpack: ""./wp/""
++						webpack: ""./wp/"",
+ 					},
+-					""#abc"": ""./main.js""
++					""#abc"": ""./main.js"",
+ 				},
+ 				""#abc/test/file.js"",
+-				[""import"", ""webpack""]
+-			]
++				[""import"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #2"",
+ 			expect: [""./data/timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""#1/timezones/"": ""./data/timezones/""
++					""#1/timezones/"": ""./data/timezones/"",
+ 				},
+ 				""#1/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #3"",
+@@ -46,11 +48,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#aaa/"": ""./data/timezones/"",
+-					""#a/"": ""./data/timezones/""
++					""#a/"": ""./data/timezones/"",
+ 				},
+ 				""#a/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #4"",
+@@ -58,15 +60,15 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/lib/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""#a/dist/index.js"": {
+-						node: ""./index.js""
+-					}
++						node: ""./index.js"",
++					},
+ 				},
+ 				""#a/dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #5"",
+@@ -74,60 +76,60 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/lib/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""#a/dist/index.js"": {
+ 						node: ""./index.js"",
+-						default: ""./browser/index.js""
+-					}
++						default: ""./browser/index.js"",
++					},
+ 				},
+ 				""#a/dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""sample #6"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a/dist/a"": ""./dist/index.js""
++					""#a/dist/a"": ""./dist/index.js"",
+ 				},
+ 				""#a/dist/aaa"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #7"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a/a/a/"": ""./dist/index.js""
++					""#a/a/a/"": ""./dist/index.js"",
+ 				},
+ 				""#a/a/a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #8"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a"": ""./index.js""
++					""#a"": ""./index.js"",
+ 				},
+ 				""#a/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #9"",
+ 			expect: [""./main.js""],
+ 			suite: [
+ 				{
+-					""#a/index.js"": ""./main.js""
++					""#a/index.js"": ""./main.js"",
+ 				},
+ 				""#a/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #10"",
+@@ -139,11 +141,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #11"",
+@@ -155,11 +157,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/bar#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #12"",
+@@ -171,11 +173,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/#zapp/ok.js#abc"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #13"",
+@@ -187,11 +189,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/#zapp/ok.js?abc"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #14"",
+@@ -203,11 +205,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/#zapp/🎉.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #15"",
+@@ -219,12 +221,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				// ""🎉"" percent encoded
+ 				""#a/#zapp/%F0%9F%8E%89.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #16"",
+@@ -236,11 +238,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/🎉"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #17"",
+@@ -252,11 +254,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/%F0%9F%8E%89"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #18"",
+@@ -268,11 +270,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/module"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #19"",
+@@ -284,11 +286,11 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/module#foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #20"",
+@@ -300,33 +302,33 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/🎉"": ""./ok.js"",
+ 					""#a/%F0%9F%8E%89"": ""./other.js"",
+ 					""#a/bar#foo"": ""./ok.js"",
+-					""#a/#zapp/"": ""./""
++					""#a/#zapp/"": ""./"",
+ 				},
+ 				""#a/module?foo"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #21"",
+ 			expect: [""./d?e?f""],
+ 			suite: [
+ 				{
+-					""#a/a?b?c/"": ""./""
++					""#a/a?b?c/"": ""./"",
+ 				},
+ 				""#a/a?b?c/d?e?f"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""sample #22"",
+ 			expect: [""/user/a/index""],
+ 			suite: [
+ 				{
+-					""#a/"": ""/user/a/""
++					""#a/"": ""/user/a/"",
+ 				},
+ 				""#a/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #1"",
+@@ -334,11 +336,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": ""./A/"",
+-					""#a/b/c"": ""./c.js""
++					""#a/b/c"": ""./c.js"",
+ 				},
+ 				""#a/b/d.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #2"",
+@@ -346,11 +348,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": ""./A/"",
+-					""#a/b"": ""./b.js""
++					""#a/b"": ""./b.js"",
+ 				},
+ 				""#a/c.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""path tree edge case #3"",
+@@ -358,36 +360,36 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": ""./A/"",
+-					""#a/b/c/d"": ""./c.js""
++					""#a/b/c/d"": ""./c.js"",
+ 				},
+ 				""#a/b/c/d.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Direct mapping
++		// #region Direct mapping
+ 		{
+ 			name: ""Direct mapping #1"",
+ 			expect: [""./dist/index.js""],
+ 			suite: [
+ 				{
+-					""#a"": ""./dist/index.js""
++					""#a"": ""./dist/index.js"",
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #2"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a/"": ""./""
++					""#a/"": ""./"",
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #3"",
+@@ -395,11 +397,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": ""./dist/"",
+-					""#a/index.js"": ""./dist/a.js""
++					""#a/index.js"": ""./dist/a.js"",
+ 				},
+ 				""#a/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #4"",
+@@ -407,15 +409,15 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""#a/index.js"": {
+-						browser: ""./index.js""
+-					}
++						browser: ""./index.js"",
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #5"",
+@@ -425,15 +427,15 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": {
+-						browser: [""./browser/""]
++						browser: [""./browser/""],
+ 					},
+ 					""#a/index.js"": {
+-						node: ""./node.js""
+-					}
++						node: ""./node.js"",
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #6"",
+@@ -443,12 +445,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": {
+ 						browser: ""./index.js"",
+ 						node: ""./src/node/index.js"",
+-						default: ""./src/index.js""
+-					}
++						default: ""./src/index.js"",
++					},
+ 				},
+ 				""#a"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #7"",
+@@ -458,12 +460,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": {
+ 						default: ""./src/index.js"",
+ 						browser: ""./index.js"",
+-						node: ""./src/node/index.js""
+-					}
++						node: ""./src/node/index.js"",
++					},
+ 				},
+ 				""#a"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #8"",
+@@ -473,71 +475,71 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": {
+ 						browser: ""./index.js"",
+ 						node: ""./src/node/index.js"",
+-						default: ""./src/index.js""
+-					}
++						default: ""./src/index.js"",
++					},
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #9"",
+ 			expect: [""./index""], // it is fine, file may not have extension
+ 			suite: [
+ 				{
+-					""#a"": ""./index""
++					""#a"": ""./index"",
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #10"",
+ 			expect: [""./index.js""],
+ 			suite: [
+ 				{
+-					""#a/index"": ""./index.js""
++					""#a/index"": ""./index.js"",
+ 				},
+ 				""#a/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #11"",
+ 			expect: [""b""],
+ 			suite: [
+ 				{
+-					""#a"": ""b""
++					""#a"": ""b"",
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #12"",
+ 			expect: [""b/index""],
+ 			suite: [
+ 				{
+-					""#a/"": ""b/""
++					""#a/"": ""b/"",
+ 				},
+ 				""#a/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct mapping #13"",
+ 			expect: [""b#anotherhashishere""],
+ 			suite: [
+ 				{
+-					""#a?q=a#hashishere"": ""b#anotherhashishere""
++					""#a?q=a#hashishere"": ""b#anotherhashishere"",
+ 				},
+ 				""#a?q=a#hashishere"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Direct and conditional mapping
++		// #region Direct and conditional mapping
+ 		{
+ 			name: ""Direct and conditional mapping #1"",
+ 			expect: [],
+@@ -546,12 +548,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""#a"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #2"",
+@@ -561,12 +563,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""#a"",
+-				[""import""]
+-			]
++				[""import""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #3"",
+@@ -576,12 +578,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: ""./require.js"" },
+-						{ import: ""./import.mjs"" }
+-					]
++						{ import: ""./import.mjs"" },
++					],
+ 				},
+ 				""#a"",
+-				[""import"", ""require""]
+-			]
++				[""import"", ""require""],
++			],
+ 		},
+ 		{
+ 			name: ""Direct and conditional mapping #4"",
+@@ -591,96 +593,100 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a"": [
+ 						{ browser: ""./browser.js"" },
+ 						{ require: [""./require.js""] },
+-						{ import: [""./import.mjs"", ""#b/import.js""] }
+-					]
++						{ import: [""./import.mjs"", ""#b/import.js""] },
++					],
+ 				},
+ 				""#a"",
+-				[""import"", ""require""]
+-			]
++				[""import"", ""require""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region When mapping to a folder root, both the left and right sides must end in slashes
++		// #region When mapping to a folder root, both the left and right sides must end in slashes
+ 		{
+ 			name: ""mapping to a folder root #1"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#timezones"": ""./data/timezones/""
++					""#timezones"": ""./data/timezones/"",
+ 				},
+ 				""#timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #2"",
+-			expect: new Error(), // incorrect export field
++			expect: new Error(
++				'Expecting folder to folder mapping. ""./data/timezones"" should end with ""/""',
++			),
+ 			suite: [
+ 				{
+-					""#timezones/"": ""./data/timezones""
++					""#timezones/"": ""./data/timezones"",
+ 				},
+ 				""#timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #3"",
+ 			expect: [""./data/timezones/pdt/index.mjs""],
+ 			suite: [
+ 				{
+-					""#timezones/pdt/"": ""./data/timezones/pdt/""
++					""#timezones/pdt/"": ""./data/timezones/pdt/"",
+ 				},
+ 				""#timezones/pdt/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #4"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""#a/"": ""./timezones/""
++					""#a/"": ""./timezones/"",
+ 				},
+ 				""#a/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #5"",
+ 			expect: [""./timezones/pdt.mjs""],
+ 			suite: [
+ 				{
+-					""#a/"": ""./""
++					""#a/"": ""./"",
+ 				},
+ 				""#a/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #6"",
+-			expect: new Error(), // not a folder mapping
++			expect: new Error(
++				'Expecting folder to folder mapping. ""."" should end with ""/""',
++			),
+ 			suite: [
+ 				{
+-					""#a/"": "".""
++					""#a/"": ""."",
+ 				},
+ 				""#a/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""mapping to a folder root #7"",
+ 			expect: [], // incorrect export field, but value did not processed
+ 			suite: [
+ 				{
+-					""#a"": ""./""
++					""#a"": ""./"",
+ 				},
+ 				""#a/timezones/pdt.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region The longest matching path prefix is prioritized
++		// #region The longest matching path prefix is prioritized
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #1"",
+ 			// it does not work same as conditional mapping,
+@@ -689,11 +695,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": ""./"",
+-					""#a/dist/"": ""./lib/""
++					""#a/dist/"": ""./lib/"",
+ 				},
+ 				""#a/dist/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #2"",
+@@ -701,11 +707,11 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/dist/utils/"": ""./dist/utils/"",
+-					""#a/dist/"": ""./lib/""
++					""#a/dist/"": ""./lib/"",
+ 				},
+ 				""#a/dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #3"",
+@@ -717,11 +723,11 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a/dist/utils/index.js"": ""./dist/utils/index.js"",
+ 					""#a/dist/utils/"": ""./dist/utils/index.mjs"",
+-					""#a/dist/"": ""./lib/""
++					""#a/dist/"": ""./lib/"",
+ 				},
+ 				""#a/dist/utils/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""the longest matching path prefix is prioritized #4"",
+@@ -732,17 +738,17 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": {
+-						browser: ""./browser/""
++						browser: ""./browser/"",
+ 					},
+-					""#a/dist/"": ""./lib/""
++					""#a/dist/"": ""./lib/"",
+ 				},
+ 				""#a/dist/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Conditional mapping folder
++		// #region Conditional mapping folder
+ 		{
+ 			name: ""conditional mapping folder #1"",
+ 			expect: [""lodash/index.js"", ""./utils/index.js""],
+@@ -750,12 +756,12 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a/"": {
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./utils-node/""]
+-					}
++						node: [""./utils-node/""],
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #2"",
+@@ -765,12 +771,12 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/"": {
+ 						webpack: ""./wpk/"",
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./node/""]
+-					}
++						node: [""./node/""],
++					},
+ 				},
+ 				""#a/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""conditional mapping folder #3"",
+@@ -780,37 +786,37 @@ describe(""Process imports field"", function exportsField() {
+ 					""#a/"": {
+ 						webpack: ""./wpk/"",
+ 						browser: [""lodash/"", ""./utils/""],
+-						node: [""./utils/""]
+-					}
++						node: [""./utils/""],
++					},
+ 				},
+ 				""#a/index.mjs"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Incorrect imports field definition
++		// #region Incorrect imports field definition
+ 		{
+ 			name: ""incorrect exports field #1"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a/index"": ""./a/index.js""
++					""#a/index"": ""./a/index.js"",
+ 				},
+ 				""#a/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #2"",
+ 			expect: [],
+ 			suite: [
+ 				{
+-					""#a/index.mjs"": ""./a/index.js""
++					""#a/index.mjs"": ""./a/index.js"",
+ 				},
+ 				""#a/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #3"",
+@@ -819,12 +825,12 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a/index"": {
+ 						browser: ""./a/index.js"",
+-						default: ""./b/index.js""
+-					}
++						default: ""./b/index.js"",
++					},
+ 				},
+ 				""#a/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect exports field #4"",
+@@ -833,119 +839,119 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a/index.mjs"": {
+ 						browser: ""./a/index.js"",
+-						default: ""./b/index.js""
+-					}
++						default: ""./b/index.js"",
++					},
+ 				},
+ 				""#a/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Incorrect request
++		// #region Incorrect request
+ 
+ 		{
+ 			name: ""incorrect request #1"",
+-			expect: new Error(),
++			expect: new Error('Request should start with ""#""'),
+ 			suite: [
+ 				{
+-					""#a/"": ""./a/""
++					""#a/"": ""./a/"",
+ 				},
+ 				""/utils/index.mjs"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #2"",
+-			expect: new Error(),
++			expect: new Error('Request should start with ""#""'),
+ 			suite: [
+ 				{
+ 					""#a/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""./utils/index.mjs"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #3"",
+-			expect: new Error(),
++			expect: new Error(""Request should have at least 2 characters""),
+ 			suite: [
+ 				{
+ 					""#a/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""#"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #4"",
+-			expect: new Error(),
++			expect: new Error('Request should not start with ""#/""'),
+ 			suite: [
+ 				{
+ 					""#a/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""#/"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""incorrect request #5"",
+-			expect: new Error(),
++			expect: new Error(""Only requesting file allowed""),
+ 			suite: [
+ 				{
+ 					""#a/"": {
+ 						browser: ""./a/"",
+-						default: ""./b/""
+-					}
++						default: ""./b/"",
++					},
+ 				},
+ 				""#a/"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Directory imports targets may backtrack above the package base
++		// #region Directory imports targets may backtrack above the package base
+ 		{
+ 			name: ""backtracking package base #1"",
+ 			expect: [""./dist/index""], // we don't handle backtracking here
+ 			suite: [
+ 				{
+-					""#a/../../utils/"": ""./dist/""
++					""#a/../../utils/"": ""./dist/"",
+ 				},
+ 				""#a/../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #2"",
+ 			expect: [""./dist/../../utils/index""],
+ 			suite: [
+ 				{
+-					""#a/"": ""./dist/""
++					""#a/"": ""./dist/"",
+ 				},
+ 				""#a/../../utils/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #3"",
+ 			expect: [""../src/index""],
+ 			suite: [
+ 				{
+-					""#a/"": ""../src/""
++					""#a/"": ""../src/"",
+ 				},
+ 				""#a/index"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+ 		{
+ 			name: ""backtracking package base #4"",
+@@ -953,43 +959,43 @@ describe(""Process imports field"", function exportsField() {
+ 			suite: [
+ 				{
+ 					""#a/"": {
+-						browser: ""./utils/../../../""
+-					}
++						browser: ""./utils/../../../"",
++					},
+ 				},
+ 				""#a/index"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Imports targets cannot map into a nested node_modules path
++		// #region Imports targets cannot map into a nested node_modules path
+ 		{
+ 			name: ""nested node_modules path #1"",
+ 			expect: [""moment/node_modules/lodash/dist/index.js""], // we don't handle node_modules here
+ 			suite: [
+ 				{
+ 					""#a/"": {
+-						browser: ""moment/node_modules/""
+-					}
++						browser: ""moment/node_modules/"",
++					},
+ 				},
+ 				""#a/lodash/dist/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested node_modules path #2"",
+ 			expect: [""../node_modules/lodash/dist/index.js""],
+ 			suite: [
+ 				{
+-					""#a/"": ""../node_modules/""
++					""#a/"": ""../node_modules/"",
+ 				},
+ 				""#a/lodash/dist/index.js"",
+-				[]
+-			]
++				[],
++			],
+ 		},
+-		//#endregion
++		// #endregion
+ 
+-		//#region Nested mapping
++		// #region Nested mapping
+ 		{
+ 			name: ""nested mapping #1"",
+ 			expect: [],
+@@ -999,14 +1005,14 @@ describe(""Process imports field"", function exportsField() {
+ 						browser: {
+ 							webpack: ""./"",
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser""]
+-			]
++				[""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #2"",
+@@ -1017,14 +1023,14 @@ describe(""Process imports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser"", ""webpack""]
+-			]
++				[""browser"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #3"",
+@@ -1035,14 +1041,14 @@ describe(""Process imports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""./node/""
+-							}
+-						}
+-					}
++								node: ""./node/"",
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""webpack""]
+-			]
++				[""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #4"",
+@@ -1053,14 +1059,14 @@ describe(""Process imports field"", function exportsField() {
+ 						browser: {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+-								node: ""moment/node/""
+-							}
+-						}
+-					}
++								node: ""moment/node/"",
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""node"", ""browser""]
+-			]
++				[""node"", ""browser""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #5"",
+@@ -1072,15 +1078,15 @@ describe(""Process imports field"", function exportsField() {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser"", ""node""]
+-			]
++				[""browser"", ""node""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #6"",
+@@ -1092,15 +1098,15 @@ describe(""Process imports field"", function exportsField() {
+ 							webpack: [""./"", ""./node/""],
+ 							default: {
+ 								node: {
+-									webpack: [""./wpck/""]
+-								}
+-							}
+-						}
+-					}
++									webpack: [""./wpck/""],
++								},
++							},
++						},
++					},
+ 				},
+ 				""#a/index.js"",
+-				[""browser"", ""node"", ""webpack""]
+-			]
++				[""browser"", ""node"", ""webpack""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #7"",
+@@ -1109,12 +1115,12 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a"": {
+ 						abc: { def: ""./x.js"" },
+-						ghi: ""./y.js""
+-					}
++						ghi: ""./y.js"",
++					},
+ 				},
+ 				""#a"",
+-				[""abc"", ""ghi""]
+-			]
++				[""abc"", ""ghi""],
++			],
+ 		},
+ 		{
+ 			name: ""nested mapping #8"",
+@@ -1123,45 +1129,45 @@ describe(""Process imports field"", function exportsField() {
+ 				{
+ 					""#a"": {
+ 						abc: { def: ""./x.js"", default: [] },
+-						ghi: ""./y.js""
+-					}
++						ghi: ""./y.js"",
++					},
+ 				},
+ 				""#a"",
+-				[""abc"", ""ghi""]
+-			]
+-		}
+-		//#endregion
++				[""abc"", ""ghi""],
++			],
++		},
++		// #endregion
+ 	];
+ 
+-	testCases.forEach((testCase) => {
++	for (const testCase of testCases) {
+ 		it(testCase.name, () => {
+ 			if (testCase.expect instanceof Error) {
+ 				expect(() =>
+ 					processImportsField(testCase.suite[0])(
+ 						testCase.suite[1],
+-						new Set(testCase.suite[2])
+-					)
+-				).toThrowError();
++						new Set(testCase.suite[2]),
++					),
++				).toThrow(testCase.expect.message);
+ 			} else {
+ 				expect(
+ 					processImportsField(testCase.suite[0])(
+ 						testCase.suite[1],
+-						new Set(testCase.suite[2])
+-					)[0]
++						new Set(testCase.suite[2]),
++					)[0],
+ 				).toEqual(testCase.expect);
+ 			}
+ 		});
+-	});
++	}
+ });
+ 
+-describe(""ImportsFieldPlugin"", () => {
++describe(""importsFieldPlugin"", () => {
+ 	const nodeFileSystem = new CachedInputFileSystem(fs, 4000);
+ 
+ 	const resolver = ResolverFactory.createResolver({
+ 		extensions: ["".js""],
+ 		fileSystem: nodeFileSystem,
+ 		mainFiles: [""index.js""],
+-		conditionNames: [""webpack""]
++		conditionNames: [""webpack""],
+ 	});
+ 
+ 	it(""should resolve using imports field instead of self-referencing"", (done) => {
+@@ -1184,7 +1190,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(path.resolve(fixture, ""b.js""));
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+@@ -1193,7 +1199,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""imports"" target ""\.\.\/b\.js"" defined for ""#b""/
++				/Invalid ""imports"" target ""\.\.\/b\.js"" defined for ""#b""/,
+ 			);
+ 			done();
+ 		});
+@@ -1205,7 +1211,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 			fileSystem: nodeFileSystem,
+ 			mainFiles: [""index.js""],
+ 			importsFields: [[""imports""]],
+-			conditionNames: [""webpack""]
++			conditionNames: [""webpack""],
+ 		});
+ 
+ 		resolver.resolve({}, fixture, ""#imports-field"", {}, (err, result) => {
+@@ -1222,7 +1228,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 			fileSystem: nodeFileSystem,
+ 			mainFiles: [""index.js""],
+ 			importsFields: [[""other"", ""imports""], ""imports""],
+-			conditionNames: [""webpack""]
++			conditionNames: [""webpack""],
+ 		});
+ 
+ 		resolver.resolve({}, fixture, ""#b"", {}, (err, result) => {
+@@ -1238,7 +1244,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+ 			expect(result).toEqual(
+-				path.resolve(fixture, ""node_modules/a/lib/main.js"")
++				path.resolve(fixture, ""node_modules/a/lib/main.js""),
+ 			);
+ 			done();
+ 		});
+@@ -1304,20 +1310,20 @@ describe(""ImportsFieldPlugin"", () => {
+ 				if (err) return done(err);
+ 				if (!result) return done(new Error(""No result""));
+ 				expect(result).toEqual(
+-					path.join(fixture, ""node_modules/a/lib/index.js"")
++					path.join(fixture, ""node_modules/a/lib/index.js""),
+ 				);
+ 				expect(
+-					log.map((line) => line.replace(fixture, ""..."").replace(/\\/g, ""/""))
++					log.map((line) => line.replace(fixture, ""..."").replace(/\\/g, ""/"")),
+ 				).toMatchSnapshot();
+ 				done();
+-			}
++			},
+ 		);
+ 	});
+ 
+ 	it(""should resolve with wildcard pattern"", (done) => {
+ 		const fixture = path.resolve(
+ 			__dirname,
+-			""./fixtures/imports-exports-wildcard/node_modules/m/""
++			""./fixtures/imports-exports-wildcard/node_modules/m/"",
+ 		);
+ 		resolver.resolve({}, fixture, ""#internal/i.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+@@ -1341,7 +1347,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Resolving to directories is not possible with the imports field \(request was #dep\/\)/
++				/Resolving to directories is not possible with the imports field \(request was #dep\/\)/,
+ 			);
+ 			done();
+ 		});
+@@ -1351,7 +1357,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		resolver.resolve({}, fixture1, ""#dep"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+-			expect(result).toEqual(path.resolve(fixture1, ""./a.js"") + ""?foo=../"");
++			expect(result).toBe(`${path.resolve(fixture1, ""./a.js"")}?foo=../`);
+ 			done();
+ 		});
+ 	});
+@@ -1360,7 +1366,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		resolver.resolve({}, fixture1, ""#dep/foo/a.js"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+-			expect(result).toEqual(path.resolve(fixture1, ""./a.js"") + ""?foo=../#../"");
++			expect(result).toBe(`${path.resolve(fixture1, ""./a.js"")}?foo=../#../`);
+ 			done();
+ 		});
+ 	});
+@@ -1374,7 +1380,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #3"", (done) => {
++	it(""should work with invalid imports #4"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/baz"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1383,7 +1389,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #4"", (done) => {
++	it(""should work with invalid imports #5"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/baz-multi"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1392,7 +1398,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #5"", (done) => {
++	it(""should work with invalid imports #6"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/baz-multi"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1401,7 +1407,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #6"", (done) => {
++	it(""should work with invalid imports #7"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/pattern/a.js"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1410,7 +1416,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #7"", (done) => {
++	it(""should work with invalid imports #8"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/array"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+@@ -1419,7 +1425,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #8"", (done) => {
++	it(""should work with invalid imports #9"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/array2"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1428,7 +1434,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #9"", (done) => {
++	it(""should work with invalid imports #10"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/array3"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+@@ -1437,7 +1443,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #10"", (done) => {
++	it(""should work with invalid imports #11"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/empty"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1446,7 +1452,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #10"", (done) => {
++	it(""should work with invalid imports #12"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/with-bad"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+@@ -1455,7 +1461,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #10"", (done) => {
++	it(""should work with invalid imports #13"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/with-bad2"", {}, (err, result) => {
+ 			if (err) return done(err);
+ 			if (!result) return done(new Error(""No result""));
+@@ -1464,7 +1470,7 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #11"", (done) => {
++	it(""should work with invalid imports #14"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#timezones/pdt.mjs"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+@@ -1473,45 +1479,45 @@ describe(""ImportsFieldPlugin"", () => {
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #12"", (done) => {
++	it(""should work with invalid imports #15"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/multi1"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""imports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""#dep\/multi1""/
++				/Invalid ""imports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""#dep\/multi1""/,
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #13"", (done) => {
++	it(""should work with invalid imports #16"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/multi2"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""imports"" target ""\.\.\/\.\.\/test"" defined for ""#dep\/multi2""/
++				/Invalid ""imports"" target ""\.\.\/\.\.\/test"" defined for ""#dep\/multi2""/,
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #13"", (done) => {
++	it(""should work with invalid imports #17"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/multi1"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""imports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""#dep\/multi1""/
++				/Invalid ""imports"" target ""\.\.\/\.\.\/test\/foo"" defined for ""#dep\/multi1""/,
+ 			);
+ 			done();
+ 		});
+ 	});
+ 
+-	it(""should work with invalid imports #14"", (done) => {
++	it(""should work with invalid imports #18"", (done) => {
+ 		resolver.resolve({}, fixture1, ""#dep/multi2"", {}, (err, result) => {
+ 			if (!err) return done(new Error(`expect error, got ${result}`));
+ 			expect(err).toBeInstanceOf(Error);
+ 			expect(err.message).toMatch(
+-				/Invalid ""imports"" target ""\.\.\/\.\.\/test"" defined for ""#dep\/multi2""/
++				/Invalid ""imports"" target ""\.\.\/\.\.\/test"" defined for ""#dep\/multi2""/,
+ 			);
+ 			done();
+ 		});
+",0,,82,10162,2,2,83,10164

@@ -1,0 +1,3963 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/Rifm.test.js.snap,tests/Rifm.test.js,,"Update tests
+","diff --git a/tests/Rifm.test.js b/tests/Rifm.test.js
+deleted file mode 100644
+index 55886f6..0000000
+--- a/tests/Rifm.test.js
++++ /dev/null
+@@ -1,178 +0,0 @@
+-// @flow
+-
+-import * as React from 'react';
+-import TestRenderer from 'react-test-renderer';
+-import { Value } from 'react-powerplug';
+-import { Rifm } from '../src';
+-import { numberFormat, dateFormat } from '../docs/format.js';
+-import { InputEmulator, renderInputState } from './utils/InputEmulator';
+-
+-declare var test: Function;
+-declare var expect: Function;
+-declare var jest: Object;
+-
+-const makeEvt = (
+-  value: string,
+-  start: number,
+-  end?: number = start
+-): SyntheticInputEvent<HTMLInputElement> =>
+-  ({
+-    target: {
+-      value,
+-      selectionStart: start,
+-      selectionEnd: end,
+-    },
+-  }: any);
+-
+-test('number comma format', () => {
+-  const onChangeFn = jest.fn();
+-  let rifm = null;
+-
+-  TestRenderer.create(
+-    <Value initial="""" onChange={onChangeFn}>
+-      {input => (
+-        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
+-          {_rifm => {
+-            rifm = _rifm;
+-            return null;
+-          }}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  if (!rifm) {
+-    throw Error('rifm is not initialized');
+-  }
+-
+-  rifm.onChange(makeEvt(`111`, 2));
+-  expect(rifm.value).toEqual(`111`);
+-  expect(onChangeFn).lastCalledWith(`111`);
+-
+-  rifm.onChange(makeEvt(`1111`, 3));
+-  expect(rifm.value).toEqual(`1,111`);
+-  expect(onChangeFn).lastCalledWith(`1,111`);
+-});
+-
+-test('mask behaviour', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '4' });
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
+-  exec({ type: 'PUT_SYMBOL', payload: '789' });
+-  // now check that replace works
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'PUT_SYMBOL', payload: '7' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '01' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-  exec({ type: 'MOVE_CARET', payload: 2 });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '9876' });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-
+-  expect(snaphot).toMatchSnapshot();
+-});
+-
+-test('mask behaviour with bad symbols', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
+-});
+",0,
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,,"Update tests
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+new file mode 100644
+index 0000000..bfa61e8
+--- /dev/null
++++ b/tests/RifmFormat.test.js
+@@ -0,0 +1,146 @@
++// @flow
++
++import * as React from 'react';
++import TestRenderer from 'react-test-renderer';
++import { Value } from 'react-powerplug';
++import { Rifm } from '../src';
++import { numberFormat, currencyFormat2 } from '../docs/format';
++import {
++  InputEmulator,
++  renderInputState,
++  type InputCommand,
++} from './utils/InputEmulator';
++
++test('format works', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '46' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('format with custom refuse works', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          refuse={/[^\d.]/gi}
++          value={input.value}
++          onChange={input.set}
++          format={currencyFormat2}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '46' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,,"Update tests
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+new file mode 100644
+index 0000000..3cba13c
+--- /dev/null
++++ b/tests/RifmMask.test.js
+@@ -0,0 +1,135 @@
++// @flow
++
++import * as React from 'react';
++import TestRenderer from 'react-test-renderer';
++import { Value } from 'react-powerplug';
++import { Rifm } from '../src';
++import { dateFormat } from '../docs/format.js';
++import {
++  InputEmulator,
++  renderInputState,
++  type InputCommand,
++} from './utils/InputEmulator';
++
++test('mask behaviour', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '4' });
++  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
++  exec({ type: 'PUT_SYMBOL', payload: '789' });
++  // now check that replace works
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'PUT_SYMBOL', payload: '7' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'BACKSPACE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '01' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
++
++  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++  exec({ type: 'MOVE_CARET', payload: 2 });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '9876' });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('mask behaviour with bad symbols', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/Rifm.test.js.snap,tests/Rifm.test.js,,"Update tests
+","diff --git a/tests/Rifm.test.js b/tests/Rifm.test.js
+deleted file mode 100644
+index 55886f6..0000000
+--- a/tests/Rifm.test.js
++++ /dev/null
+@@ -1,178 +0,0 @@
+-// @flow
+-
+-import * as React from 'react';
+-import TestRenderer from 'react-test-renderer';
+-import { Value } from 'react-powerplug';
+-import { Rifm } from '../src';
+-import { numberFormat, dateFormat } from '../docs/format.js';
+-import { InputEmulator, renderInputState } from './utils/InputEmulator';
+-
+-declare var test: Function;
+-declare var expect: Function;
+-declare var jest: Object;
+-
+-const makeEvt = (
+-  value: string,
+-  start: number,
+-  end?: number = start
+-): SyntheticInputEvent<HTMLInputElement> =>
+-  ({
+-    target: {
+-      value,
+-      selectionStart: start,
+-      selectionEnd: end,
+-    },
+-  }: any);
+-
+-test('number comma format', () => {
+-  const onChangeFn = jest.fn();
+-  let rifm = null;
+-
+-  TestRenderer.create(
+-    <Value initial="""" onChange={onChangeFn}>
+-      {input => (
+-        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
+-          {_rifm => {
+-            rifm = _rifm;
+-            return null;
+-          }}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  if (!rifm) {
+-    throw Error('rifm is not initialized');
+-  }
+-
+-  rifm.onChange(makeEvt(`111`, 2));
+-  expect(rifm.value).toEqual(`111`);
+-  expect(onChangeFn).lastCalledWith(`111`);
+-
+-  rifm.onChange(makeEvt(`1111`, 3));
+-  expect(rifm.value).toEqual(`1,111`);
+-  expect(onChangeFn).lastCalledWith(`1,111`);
+-});
+-
+-test('mask behaviour', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '4' });
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
+-  exec({ type: 'PUT_SYMBOL', payload: '789' });
+-  // now check that replace works
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'PUT_SYMBOL', payload: '7' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '01' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-  exec({ type: 'MOVE_CARET', payload: 2 });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '9876' });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-
+-  expect(snaphot).toMatchSnapshot();
+-});
+-
+-test('mask behaviour with bad symbols', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
+-});
+",0,
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,,"Update tests
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+new file mode 100644
+index 0000000..bfa61e8
+--- /dev/null
++++ b/tests/RifmFormat.test.js
+@@ -0,0 +1,146 @@
++// @flow
++
++import * as React from 'react';
++import TestRenderer from 'react-test-renderer';
++import { Value } from 'react-powerplug';
++import { Rifm } from '../src';
++import { numberFormat, currencyFormat2 } from '../docs/format';
++import {
++  InputEmulator,
++  renderInputState,
++  type InputCommand,
++} from './utils/InputEmulator';
++
++test('format works', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '46' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('format with custom refuse works', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          refuse={/[^\d.]/gi}
++          value={input.value}
++          onChange={input.set}
++          format={currencyFormat2}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '46' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: 100 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'PUT_SYMBOL', payload: '.' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+29,e832756d03860caccd60eaf27d33569f1c8299f3,e832756d03860caccd60eaf27d33569f1c8299f3,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,,"Update tests
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+new file mode 100644
+index 0000000..3cba13c
+--- /dev/null
++++ b/tests/RifmMask.test.js
+@@ -0,0 +1,135 @@
++// @flow
++
++import * as React from 'react';
++import TestRenderer from 'react-test-renderer';
++import { Value } from 'react-powerplug';
++import { Rifm } from '../src';
++import { dateFormat } from '../docs/format.js';
++import {
++  InputEmulator,
++  renderInputState,
++  type InputCommand,
++} from './utils/InputEmulator';
++
++test('mask behaviour', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++  exec({ type: 'PUT_SYMBOL', payload: '23' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '4' });
++  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
++  exec({ type: 'PUT_SYMBOL', payload: '789' });
++  // now check that replace works
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: '9' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'PUT_SYMBOL', payload: '7' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' });
++
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'BACKSPACE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '0' });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '01' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
++
++  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++  exec({ type: 'MOVE_CARET', payload: 2 });
++
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'BACKSPACE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '9876' });
++  exec({ type: 'PUT_SYMBOL', payload: '5' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('mask behaviour with bad symbols', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+31,29d72bcb4f10537aa6be5fba5d6cbb04ca4568e9,96b15ef197ecc9dbce6ac0425918d738d912ade2,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"For now if you have input like `123|'456` where `|` is cursor position, pressing `delete` button do nothing. 
+(I totally forgot that delete button exists on most keyboards (except mine))
+
+","Add failing test
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index bfa61e8..c155696 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -4,7 +4,7 @@ import * as React from 'react';
+ import TestRenderer from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+-import { numberFormat, currencyFormat2 } from '../docs/format';
++import { numberFormat, currencyFormat, currencyFormat2 } from '../docs/format';
+ import {
+   InputEmulator,
+   renderInputState,
+@@ -142,5 +142,66 @@ test('format with custom refuse works', async () => {
+   exec({ type: 'BACKSPACE' });
+   exec({ type: 'BACKSPACE' });
+ 
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' });
++  exec({ type: 'MOVE_CARET', payload: -11 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 4 });
++  exec({ type: 'DELETE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('format with fixed point delete backspace', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          refuse={/[^\d.]/gi}
++          value={input.value}
++          onChange={input.set}
++          format={currencyFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '123' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++
+   expect(snaphot).toMatchSnapshot();
+ });
+",0,
+31,29d72bcb4f10537aa6be5fba5d6cbb04ca4568e9,f5c3230069d8b1e9bbf3ae7ba8478d6878cdf2b4,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"For now if you have input like `123|'456` where `|` is cursor position, pressing `delete` button do nothing. 
+(I totally forgot that delete button exists on most keyboards (except mine))
+
+","Add mask delete failing test
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 3cba13c..3e4cae6 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -133,3 +133,63 @@ test('mask behaviour with bad symbols', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('mask behaviour with delete', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1978' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '18' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'MOVE_CARET', payload: 2 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+31,29d72bcb4f10537aa6be5fba5d6cbb04ca4568e9,96b15ef197ecc9dbce6ac0425918d738d912ade2,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"For now if you have input like `123|'456` where `|` is cursor position, pressing `delete` button do nothing. 
+(I totally forgot that delete button exists on most keyboards (except mine))
+
+","Add failing test
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index bfa61e8..c155696 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -4,7 +4,7 @@ import * as React from 'react';
+ import TestRenderer from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+-import { numberFormat, currencyFormat2 } from '../docs/format';
++import { numberFormat, currencyFormat, currencyFormat2 } from '../docs/format';
+ import {
+   InputEmulator,
+   renderInputState,
+@@ -142,5 +142,66 @@ test('format with custom refuse works', async () => {
+   exec({ type: 'BACKSPACE' });
+   exec({ type: 'BACKSPACE' });
+ 
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' });
++  exec({ type: 'MOVE_CARET', payload: -11 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: 4 });
++  exec({ type: 'DELETE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
++
++test('format with fixed point delete backspace', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          refuse={/[^\d.]/gi}
++          value={input.value}
++          onChange={input.set}
++          format={currencyFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '123' });
++  exec({ type: 'MOVE_CARET', payload: -2 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++
+   expect(snaphot).toMatchSnapshot();
+ });
+",0,
+31,29d72bcb4f10537aa6be5fba5d6cbb04ca4568e9,f5c3230069d8b1e9bbf3ae7ba8478d6878cdf2b4,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"For now if you have input like `123|'456` where `|` is cursor position, pressing `delete` button do nothing. 
+(I totally forgot that delete button exists on most keyboards (except mine))
+
+","Add mask delete failing test
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 3cba13c..3e4cae6 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -133,3 +133,63 @@ test('mask behaviour with bad symbols', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('mask behaviour with delete', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => (
++        <Rifm
++          replace={v => v.length >= 10}
++          value={input.value}
++          onChange={input.set}
++          format={dateFormat}
++        >
++          {({ value, onChange }) => (
++            <InputEmulator value={value} onChange={onChange}>
++              {(exec, val) => {
++                execCommand = exec;
++                getVal = val;
++                return null;
++              }}
++            </InputEmulator>
++          )}
++        </Rifm>
++      )}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '1978' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '18' });
++  exec({ type: 'MOVE_CARET', payload: 1 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'MOVE_CARET', payload: 2 });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'DELETE' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+33,a1450246b0e183cb3a516de98e435386bb0ad963,369bd52872aa30fa42a5dd5eb6a66e069835c8b6,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"`18-08|-1978` where `|` is cursor, delete causes cursor move in incorrect position `18-08-1|978`
+
+must be `18-08-|1978`","Add failing test
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 3e4cae6..9493bb5 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -190,6 +190,9 @@ test('mask behaviour with delete', async () => {
+   exec({ type: 'DELETE' });
+   exec({ type: 'DELETE' });
+   exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '78' });
++  exec({ type: 'MOVE_CARET', payload: -5 });
++  exec({ type: 'DELETE' });
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
+",0,
+33,a1450246b0e183cb3a516de98e435386bb0ad963,369bd52872aa30fa42a5dd5eb6a66e069835c8b6,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"`18-08|-1978` where `|` is cursor, delete causes cursor move in incorrect position `18-08-1|978`
+
+must be `18-08-|1978`","Add failing test
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 3e4cae6..9493bb5 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -190,6 +190,9 @@ test('mask behaviour with delete', async () => {
+   exec({ type: 'DELETE' });
+   exec({ type: 'DELETE' });
+   exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: '78' });
++  exec({ type: 'MOVE_CARET', payload: -5 });
++  exec({ type: 'DELETE' });
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
+",0,
+35,a1150761179381e17174c59d73b6923a6d1a13c7,ee0110aaea9c13cf09c7ecb08e44addd5fe25cf7,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"closes #27 
+
+`+` does not call onChange if value is not changed","Add failing tests
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index c155696..0127f81 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -15,22 +15,27 @@ test('format works', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -40,7 +45,14 @@ test('format works', async () => {
+     }
+ 
+     execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++
++    expect(stateValue_).toEqual(getVal().value);
++
++    snaphot.push({
++      ...getVal(),
++      cmd,
++      withCaret: renderInputState(getVal()),
++    });
+   };
+ 
+   exec({ type: 'PUT_SYMBOL', payload: '1' });
+@@ -73,27 +85,32 @@ test('format with custom refuse works', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          refuse={/[^\d.]/gi}
+-          value={input.value}
+-          onChange={input.set}
+-          format={currencyFormat2}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            refuse={/[^\d.]/gi}
++            value={input.value}
++            onChange={input.set}
++            format={currencyFormat2}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -103,6 +120,7 @@ test('format with custom refuse works', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -165,27 +183,32 @@ test('format with fixed point delete backspace', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          refuse={/[^\d.]/gi}
+-          value={input.value}
+-          onChange={input.set}
+-          format={currencyFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            refuse={/[^\d.]/gi}
++            value={input.value}
++            onChange={input.set}
++            format={currencyFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -195,6 +218,7 @@ test('format with fixed point delete backspace', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -205,3 +229,65 @@ test('format with fixed point delete backspace', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('format works even if state is not updated on equal vals', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++  let stateValue_ = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            value={input.value}
++            onChange={v => {
++              if (input.value !== v) {
++                input.set(v);
++              }
++            }}
++            format={numberFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++
++    expect(stateValue_).toEqual(getVal().value);
++
++    snaphot.push({
++      ...getVal(),
++      cmd,
++      withCaret: renderInputState(getVal()),
++    });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456' });
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+35,a1150761179381e17174c59d73b6923a6d1a13c7,ee0110aaea9c13cf09c7ecb08e44addd5fe25cf7,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"closes #27 
+
+`+` does not call onChange if value is not changed","Add failing tests
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 9493bb5..042ba76 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -15,27 +15,32 @@ test('mask behaviour', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -45,6 +50,7 @@ test('mask behaviour', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -94,27 +100,32 @@ test('mask behaviour with bad symbols', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -124,6 +135,7 @@ test('mask behaviour with bad symbols', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -138,27 +150,32 @@ test('mask behaviour with delete', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -168,6 +185,7 @@ test('mask behaviour with delete', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -196,3 +214,72 @@ test('mask behaviour with delete', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('mask works even if state is not updated on equal vals', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++  let stateValue_ = null;
++  let callCount_ = 0;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={v => {
++              if (input.value !== v) {
++                callCount_++;
++                input.set(v);
++              }
++            }}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: '1978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++
++  expect(callCount_).toEqual(1);
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+35,a1150761179381e17174c59d73b6923a6d1a13c7,ee0110aaea9c13cf09c7ecb08e44addd5fe25cf7,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"closes #27 
+
+`+` does not call onChange if value is not changed","Add failing tests
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index c155696..0127f81 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -15,22 +15,27 @@ test('format works', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm value={input.value} onChange={input.set} format={numberFormat}>
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -40,7 +45,14 @@ test('format works', async () => {
+     }
+ 
+     execCommand(cmd);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++
++    expect(stateValue_).toEqual(getVal().value);
++
++    snaphot.push({
++      ...getVal(),
++      cmd,
++      withCaret: renderInputState(getVal()),
++    });
+   };
+ 
+   exec({ type: 'PUT_SYMBOL', payload: '1' });
+@@ -73,27 +85,32 @@ test('format with custom refuse works', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          refuse={/[^\d.]/gi}
+-          value={input.value}
+-          onChange={input.set}
+-          format={currencyFormat2}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            refuse={/[^\d.]/gi}
++            value={input.value}
++            onChange={input.set}
++            format={currencyFormat2}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -103,6 +120,7 @@ test('format with custom refuse works', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -165,27 +183,32 @@ test('format with fixed point delete backspace', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          refuse={/[^\d.]/gi}
+-          value={input.value}
+-          onChange={input.set}
+-          format={currencyFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            refuse={/[^\d.]/gi}
++            value={input.value}
++            onChange={input.set}
++            format={currencyFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -195,6 +218,7 @@ test('format with fixed point delete backspace', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -205,3 +229,65 @@ test('format with fixed point delete backspace', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('format works even if state is not updated on equal vals', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++  let stateValue_ = null;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            value={input.value}
++            onChange={v => {
++              if (input.value !== v) {
++                input.set(v);
++              }
++            }}
++            format={numberFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
++    </Value>
++  );
++
++  const exec = (cmd: InputCommand) => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++
++    expect(stateValue_).toEqual(getVal().value);
++
++    snaphot.push({
++      ...getVal(),
++      cmd,
++      withCaret: renderInputState(getVal()),
++    });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456' });
++  exec({ type: 'MOVE_CARET', payload: -3 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+35,a1150761179381e17174c59d73b6923a6d1a13c7,ee0110aaea9c13cf09c7ecb08e44addd5fe25cf7,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"closes #27 
+
+`+` does not call onChange if value is not changed","Add failing tests
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index 9493bb5..042ba76 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -15,27 +15,32 @@ test('mask behaviour', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -45,6 +50,7 @@ test('mask behaviour', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -94,27 +100,32 @@ test('mask behaviour with bad symbols', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -124,6 +135,7 @@ test('mask behaviour with bad symbols', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -138,27 +150,32 @@ test('mask behaviour with delete', async () => {
+   const snaphot = [];
+   let getVal = null;
+   let execCommand = null;
++  let stateValue_ = null;
+ 
+   TestRenderer.create(
+     <Value initial={''}>
+-      {input => (
+-        <Rifm
+-          replace={v => v.length >= 10}
+-          value={input.value}
+-          onChange={input.set}
+-          format={dateFormat}
+-        >
+-          {({ value, onChange }) => (
+-            <InputEmulator value={value} onChange={onChange}>
+-              {(exec, val) => {
+-                execCommand = exec;
+-                getVal = val;
+-                return null;
+-              }}
+-            </InputEmulator>
+-          )}
+-        </Rifm>
+-      )}
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={input.set}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
+     </Value>
+   );
+ 
+@@ -168,6 +185,7 @@ test('mask behaviour with delete', async () => {
+     }
+ 
+     execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
+     snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+   };
+ 
+@@ -196,3 +214,72 @@ test('mask behaviour with delete', async () => {
+ 
+   expect(snaphot).toMatchSnapshot();
+ });
++
++test('mask works even if state is not updated on equal vals', async () => {
++  const snaphot = [];
++  let getVal = null;
++  let execCommand = null;
++  let stateValue_ = null;
++  let callCount_ = 0;
++
++  TestRenderer.create(
++    <Value initial={''}>
++      {input => {
++        stateValue_ = input.value;
++
++        return (
++          <Rifm
++            replace={v => v.length >= 10}
++            value={input.value}
++            onChange={v => {
++              if (input.value !== v) {
++                callCount_++;
++                input.set(v);
++              }
++            }}
++            format={dateFormat}
++          >
++            {({ value, onChange }) => (
++              <InputEmulator value={value} onChange={onChange}>
++                {(exec, val) => {
++                  execCommand = exec;
++                  getVal = val;
++                  return null;
++                }}
++              </InputEmulator>
++            )}
++          </Rifm>
++        );
++      }}
++    </Value>
++  );
++
++  const exec = cmd => {
++    if (!execCommand || !getVal) {
++      throw Error('rifm is not initialized');
++    }
++
++    execCommand(cmd);
++    expect(stateValue_).toEqual(getVal().value);
++    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++  };
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -100 });
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'PUT_SYMBOL', payload: '1978' });
++  exec({ type: 'MOVE_CARET', payload: -4 });
++  exec({ type: 'BACKSPACE' });
++  exec({ type: 'DELETE' });
++
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: 'x' });
++  exec({ type: 'MOVE_CARET', payload: -1 });
++  exec({ type: 'PUT_SYMBOL', payload: '1' });
++
++  expect(callCount_).toEqual(1);
++
++  expect(snaphot).toMatchSnapshot();
++});
+",0,
+48,3618caeb0aacdb8a81e18e03d6f26a4a9b8bfe7f,696e42750938bf0cc1ef8111cd4142b1331fb897,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"tests updated to use inlineSnaphots
+duplicated exec code removed
+
+prettier for tests uses `""printWidth"": 120` for better snaphots readability
+","Update tests for simplicity and readability
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index 79d86c1..deddfe3 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -6,14 +6,9 @@ import TestRenderer, { act } from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+ import { numberFormat, currencyFormat, currencyFormat2 } from '../docs/format';
+-import {
+-  InputEmulator,
+-  renderInputState,
+-  type InputCommand,
+-} from './utils/InputEmulator';
++import { InputEmulator, renderInputState, type InputCommand } from './utils/InputEmulator';
+ 
+-test('format works', async () => {
+-  const snaphot = [];
++const createExec = props => {
+   let getVal = null;
+   let execCommand = null;
+   let stateValue_ = null;
+@@ -24,7 +19,7 @@ test('format works', async () => {
+         stateValue_ = input.value;
+ 
+         return (
+-          <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++          <Rifm value={input.value} onChange={input.set} {...props}>
+             {({ value, onChange }) => (
+               <InputEmulator value={value} onChange={onChange}>
+                 {(exec, val) => {
+@@ -55,268 +50,121 @@ test('format works', async () => {
+ 
+     expect(stateValue_).toEqual(getVal().value);
+ 
+-    snaphot.push({
+-      ...getVal(),
+-      cmd,
+-      withCaret: renderInputState(getVal()),
+-    });
++    return expect(renderInputState(getVal()));
+   };
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '46' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  expect(snaphot).toMatchSnapshot();
+-});
+-
+-test('format with custom refuse works', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            refuse={/[^\d.]/gi}
+-            value={input.value}
+-            onChange={input.set}
+-            format={currencyFormat2}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
++  return exec;
++};
+ 
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
++test('format works', async () => {
++  const exec = createExec({ format: numberFormat });
+ 
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '46' }).toMatchInlineSnapshot(`""146|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '46' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1|46""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12,3|46""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""12,34|6""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""123,45|6""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""1,239|,456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""12,398|,456""`);
+ 
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1,239|,456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123,|456""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' });
+-  exec({ type: 'MOVE_CARET', payload: -11 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 4 });
+-  exec({ type: 'DELETE' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""123,456|""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""12,345|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12,345""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""1|2,345""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|2,345""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|2,345""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""1|2,345""`);
++});
+ 
+-  expect(snaphot).toMatchSnapshot();
++test('format with custom refuse works', async () => {
++  const exec = createExec({
++    refuse: /[^\d.]/gi,
++    format: currencyFormat2,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '46' }).toMatchInlineSnapshot(`""146|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1|46""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12’3|46""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""12’34|6""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""123’45|6""`);
++
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""123’|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""1’239|’456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""12’398|’456""`);
++
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1’239|’456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’456""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123’|456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’456""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""123’456|""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""12’345|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12’345""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|2’345""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""12’345|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""12’345.|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""12’345.0|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""12’345.00|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""12’345.|00""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1’234’5|00""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""1’234’|500""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""1’234.|50""`);
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""1’2|34.50""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""12.|34""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""12|.34""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1|.34""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|0.34""`);
++
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""0|.34""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|34""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|4""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|""`);
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' }).toMatchInlineSnapshot(`""123’456’789.12|""`);
++  exec({ type: 'MOVE_CARET', payload: -11 }).toMatchInlineSnapshot(`""123|’456’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123’|456’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""12’3|56’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""1’23|6’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123|’789.12""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123’|789.12""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’789.12""`);
++  exec({ type: 'MOVE_CARET', payload: 4 }).toMatchInlineSnapshot(`""123’789|.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""12’378’9|12""`);
+ });
+ 
+ test('format with fixed point delete backspace', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            refuse={/[^\d.]/gi}
+-            value={input.value}
+-            onChange={input.set}
+-            format={currencyFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '123' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    refuse: /[^\d.]/gi,
++    format: currencyFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '123' }).toMatchInlineSnapshot(`""1.23|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1.|23""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1|.23""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""1.|23""`);
+ });
+ 
+ test('format works even if state is not updated on equal vals', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            value={input.value}
+-            onChange={v => {
+-              if (input.value !== v) {
+-                input.set(v);
+-              }
+-            }}
+-            format={numberFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-
+-    snaphot.push({
+-      ...getVal(),
+-      cmd,
+-      withCaret: renderInputState(getVal()),
+-    });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '123456' });
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    format: numberFormat,
++  });
++  exec({ type: 'PUT_SYMBOL', payload: '123456' }).toMatchInlineSnapshot(`""123,456|""`);
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""123|,456""`);
+ });
+",0,
+48,3618caeb0aacdb8a81e18e03d6f26a4a9b8bfe7f,696e42750938bf0cc1ef8111cd4142b1331fb897,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"tests updated to use inlineSnaphots
+duplicated exec code removed
+
+prettier for tests uses `""printWidth"": 120` for better snaphots readability
+","Update tests for simplicity and readability
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index acba24b..4a8b663 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -5,14 +5,9 @@ import TestRenderer, { act } from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+ import { dateFormat } from '../docs/format.js';
+-import {
+-  InputEmulator,
+-  renderInputState,
+-  type InputCommand,
+-} from './utils/InputEmulator';
++import { InputEmulator, renderInputState, type InputCommand } from './utils/InputEmulator';
+ 
+-test('mask behaviour', async () => {
+-  const snaphot = [];
++const createExec = props => {
+   let getVal = null;
+   let execCommand = null;
+   let stateValue_ = null;
+@@ -23,12 +18,7 @@ test('mask behaviour', async () => {
+         stateValue_ = input.value;
+ 
+         return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
++          <Rifm value={input.value} onChange={input.set} {...props}>
+             {({ value, onChange }) => (
+               <InputEmulator value={value} onChange={onChange}>
+                 {(exec, val) => {
+@@ -45,10 +35,6 @@ test('mask behaviour', async () => {
+   );
+ 
+   const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+     act(() => {
+       if (!execCommand) {
+         throw Error('rifm is not initialized');
+@@ -57,257 +43,126 @@ test('mask behaviour', async () => {
+       execCommand(cmd);
+     });
+ 
++    if (!getVal) {
++      throw Error('rifm is not initialized');
++    }
++
+     expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++
++    return expect(renderInputState(getVal()));
+   };
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '4' });
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++  return exec;
++};
++
++test('mask behaviour', async () => {
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12-3|""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""12-|3""`);
++  exec({ type: 'PUT_SYMBOL', payload: '4' }).toMatchInlineSnapshot(`""12-4|3""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12-43""`); // -100 at begin
++
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""5|1-24-3""`);
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-|12-43""`);
++  exec({ type: 'MOVE_CARET', payload: +100 }).toMatchInlineSnapshot(`""56-12-43|""`); // 100 at end
++  exec({ type: 'PUT_SYMBOL', payload: '789' }).toMatchInlineSnapshot(`""56-12-4378|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
+-  exec({ type: 'PUT_SYMBOL', payload: '789' });
+   // now check that replace works
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'PUT_SYMBOL', payload: '7' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""56-12-|4378""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""56-12-9|378""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""56-12-98|78""`);
++  exec({ type: 'PUT_SYMBOL', payload: '7' }).toMatchInlineSnapshot(`""56-12-987|8""`);
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-12-9876|""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12-987|""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-12-9876|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""56-12-9|876""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12|-876""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '01' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""56-12-0|876""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12|-876""`);
++  exec({ type: 'PUT_SYMBOL', payload: '01' }).toMatchInlineSnapshot(`""56-12-01|87""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-  exec({ type: 'MOVE_CARET', payload: 2 });
++  exec({ type: 'PUT_SYMBOL', payload: '2345678' }).toMatchInlineSnapshot(`""56-12-0123|""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|56-12-0123""`); // -100 at begin
++  exec({ type: 'MOVE_CARET', payload: 2 }).toMatchInlineSnapshot(`""56|-12-0123""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '9876' });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""5|1-20-123""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|12-01-23""`);
+ 
+-  expect(snaphot).toMatchSnapshot();
++  exec({ type: 'PUT_SYMBOL', payload: '9876' }).toMatchInlineSnapshot(`""98-76-|1201""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""98-76-5|201""`);
+ });
+ 
+ test('mask behaviour with bad symbols', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
+ });
+ 
+ test('mask behaviour with delete', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1978' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '18' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'MOVE_CARET', payload: 2 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '78' });
+-  exec({ type: 'MOVE_CARET', payload: -5 });
+-  exec({ type: 'DELETE' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|78""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|8""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08|""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|18-08-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|80-81-978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|08-19-78""`);
++  exec({ type: 'PUT_SYMBOL', payload: '18' }).toMatchInlineSnapshot(`""18-|08-1978""`);
++
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""18-0|8-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-0|1-978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: 2 }).toMatchInlineSnapshot(`""18-08-19|78""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|8""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '78' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -5 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|1978""`);
+ });
+ 
+ test('mask works even if state is not updated on equal vals', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-  let callCount_ = 0;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={v => {
+-              if (input.value !== v) {
+-                callCount_++;
+-                input.set(v);
+-              }
+-            }}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '1978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-
+-  expect(callCount_).toEqual(1);
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|18-08-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""18-08-1|978""`);
+ });
+",0,
+48,3618caeb0aacdb8a81e18e03d6f26a4a9b8bfe7f,696e42750938bf0cc1ef8111cd4142b1331fb897,tests/__snapshots__/RifmFormat.test.js.snap,tests/RifmFormat.test.js,"tests updated to use inlineSnaphots
+duplicated exec code removed
+
+prettier for tests uses `""printWidth"": 120` for better snaphots readability
+","Update tests for simplicity and readability
+","diff --git a/tests/RifmFormat.test.js b/tests/RifmFormat.test.js
+index 79d86c1..deddfe3 100644
+--- a/tests/RifmFormat.test.js
++++ b/tests/RifmFormat.test.js
+@@ -6,14 +6,9 @@ import TestRenderer, { act } from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+ import { numberFormat, currencyFormat, currencyFormat2 } from '../docs/format';
+-import {
+-  InputEmulator,
+-  renderInputState,
+-  type InputCommand,
+-} from './utils/InputEmulator';
++import { InputEmulator, renderInputState, type InputCommand } from './utils/InputEmulator';
+ 
+-test('format works', async () => {
+-  const snaphot = [];
++const createExec = props => {
+   let getVal = null;
+   let execCommand = null;
+   let stateValue_ = null;
+@@ -24,7 +19,7 @@ test('format works', async () => {
+         stateValue_ = input.value;
+ 
+         return (
+-          <Rifm value={input.value} onChange={input.set} format={numberFormat}>
++          <Rifm value={input.value} onChange={input.set} {...props}>
+             {({ value, onChange }) => (
+               <InputEmulator value={value} onChange={onChange}>
+                 {(exec, val) => {
+@@ -55,268 +50,121 @@ test('format works', async () => {
+ 
+     expect(stateValue_).toEqual(getVal().value);
+ 
+-    snaphot.push({
+-      ...getVal(),
+-      cmd,
+-      withCaret: renderInputState(getVal()),
+-    });
++    return expect(renderInputState(getVal()));
+   };
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '46' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  expect(snaphot).toMatchSnapshot();
+-});
+-
+-test('format with custom refuse works', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            refuse={/[^\d.]/gi}
+-            value={input.value}
+-            onChange={input.set}
+-            format={currencyFormat2}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
++  return exec;
++};
+ 
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
++test('format works', async () => {
++  const exec = createExec({ format: numberFormat });
+ 
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '46' }).toMatchInlineSnapshot(`""146|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '46' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1|46""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12,3|46""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""12,34|6""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""123,45|6""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: 100 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'PUT_SYMBOL', payload: '.' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""1,239|,456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""12,398|,456""`);
+ 
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1,239|,456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123,|456""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' });
+-  exec({ type: 'MOVE_CARET', payload: -11 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'MOVE_CARET', payload: 4 });
+-  exec({ type: 'DELETE' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""123,456|""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""12,345|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12,345""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""1|2,345""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|2,345""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|2,345""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""1|2,345""`);
++});
+ 
+-  expect(snaphot).toMatchSnapshot();
++test('format with custom refuse works', async () => {
++  const exec = createExec({
++    refuse: /[^\d.]/gi,
++    format: currencyFormat2,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '46' }).toMatchInlineSnapshot(`""146|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1|46""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12’3|46""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""12’34|6""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""123’45|6""`);
++
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""123’|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""1’239|’456""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""12’398|’456""`);
++
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1’239|’456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’456""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123’|456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’456""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""123’456|""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""12’345|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12’345""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|2’345""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""1|2’345""`);
++  exec({ type: 'MOVE_CARET', payload: 100 }).toMatchInlineSnapshot(`""12’345|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""12’345.|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""12’345.0|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""12’345.00|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""12’345.|00""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1’234’5|00""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""1’234’|500""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""1’234.|50""`);
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""1’2|34.50""`);
++  exec({ type: 'PUT_SYMBOL', payload: '.' }).toMatchInlineSnapshot(`""12.|34""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""12|.34""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1|.34""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|0.34""`);
++
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""0|.34""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|34""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|4""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|""`);
++
++  exec({ type: 'PUT_SYMBOL', payload: '123456789.12' }).toMatchInlineSnapshot(`""123’456’789.12|""`);
++  exec({ type: 'MOVE_CARET', payload: -11 }).toMatchInlineSnapshot(`""123|’456’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123’|456’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""12’3|56’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""1’23|6’789.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123|’789.12""`);
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""123’|789.12""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|’789.12""`);
++  exec({ type: 'MOVE_CARET', payload: 4 }).toMatchInlineSnapshot(`""123’789|.12""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""12’378’9|12""`);
+ });
+ 
+ test('format with fixed point delete backspace', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            refuse={/[^\d.]/gi}
+-            value={input.value}
+-            onChange={input.set}
+-            format={currencyFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '123' });
+-  exec({ type: 'MOVE_CARET', payload: -2 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    refuse: /[^\d.]/gi,
++    format: currencyFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '123' }).toMatchInlineSnapshot(`""1.23|""`);
++  exec({ type: 'MOVE_CARET', payload: -2 }).toMatchInlineSnapshot(`""1.|23""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""1|.23""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""1.|23""`);
+ });
+ 
+ test('format works even if state is not updated on equal vals', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            value={input.value}
+-            onChange={v => {
+-              if (input.value !== v) {
+-                input.set(v);
+-              }
+-            }}
+-            format={numberFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-
+-    snaphot.push({
+-      ...getVal(),
+-      cmd,
+-      withCaret: renderInputState(getVal()),
+-    });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '123456' });
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    format: numberFormat,
++  });
++  exec({ type: 'PUT_SYMBOL', payload: '123456' }).toMatchInlineSnapshot(`""123,456|""`);
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""123,|456""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""123|,456""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""123|,456""`);
+ });
+",0,
+48,3618caeb0aacdb8a81e18e03d6f26a4a9b8bfe7f,696e42750938bf0cc1ef8111cd4142b1331fb897,tests/__snapshots__/RifmMask.test.js.snap,tests/RifmMask.test.js,"tests updated to use inlineSnaphots
+duplicated exec code removed
+
+prettier for tests uses `""printWidth"": 120` for better snaphots readability
+","Update tests for simplicity and readability
+","diff --git a/tests/RifmMask.test.js b/tests/RifmMask.test.js
+index acba24b..4a8b663 100644
+--- a/tests/RifmMask.test.js
++++ b/tests/RifmMask.test.js
+@@ -5,14 +5,9 @@ import TestRenderer, { act } from 'react-test-renderer';
+ import { Value } from 'react-powerplug';
+ import { Rifm } from '../src';
+ import { dateFormat } from '../docs/format.js';
+-import {
+-  InputEmulator,
+-  renderInputState,
+-  type InputCommand,
+-} from './utils/InputEmulator';
++import { InputEmulator, renderInputState, type InputCommand } from './utils/InputEmulator';
+ 
+-test('mask behaviour', async () => {
+-  const snaphot = [];
++const createExec = props => {
+   let getVal = null;
+   let execCommand = null;
+   let stateValue_ = null;
+@@ -23,12 +18,7 @@ test('mask behaviour', async () => {
+         stateValue_ = input.value;
+ 
+         return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
++          <Rifm value={input.value} onChange={input.set} {...props}>
+             {({ value, onChange }) => (
+               <InputEmulator value={value} onChange={onChange}>
+                 {(exec, val) => {
+@@ -45,10 +35,6 @@ test('mask behaviour', async () => {
+   );
+ 
+   const exec = (cmd: InputCommand) => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+     act(() => {
+       if (!execCommand) {
+         throw Error('rifm is not initialized');
+@@ -57,257 +43,126 @@ test('mask behaviour', async () => {
+       execCommand(cmd);
+     });
+ 
++    if (!getVal) {
++      throw Error('rifm is not initialized');
++    }
++
+     expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
++
++    return expect(renderInputState(getVal()));
+   };
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-  exec({ type: 'PUT_SYMBOL', payload: '23' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '4' });
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
++  return exec;
++};
++
++test('mask behaviour', async () => {
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""1|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '23' }).toMatchInlineSnapshot(`""12-3|""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""12-|3""`);
++  exec({ type: 'PUT_SYMBOL', payload: '4' }).toMatchInlineSnapshot(`""12-4|3""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|12-43""`); // -100 at begin
++
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""5|1-24-3""`);
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-|12-43""`);
++  exec({ type: 'MOVE_CARET', payload: +100 }).toMatchInlineSnapshot(`""56-12-43|""`); // 100 at end
++  exec({ type: 'PUT_SYMBOL', payload: '789' }).toMatchInlineSnapshot(`""56-12-4378|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
+-  exec({ type: 'MOVE_CARET', payload: +100 }); // 100 at end
+-  exec({ type: 'PUT_SYMBOL', payload: '789' });
+   // now check that replace works
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '9' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'PUT_SYMBOL', payload: '7' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""56-12-|4378""`);
++  exec({ type: 'PUT_SYMBOL', payload: '9' }).toMatchInlineSnapshot(`""56-12-9|378""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""56-12-98|78""`);
++  exec({ type: 'PUT_SYMBOL', payload: '7' }).toMatchInlineSnapshot(`""56-12-987|8""`);
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-12-9876|""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '6' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12-987|""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -3 });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'PUT_SYMBOL', payload: '6' }).toMatchInlineSnapshot(`""56-12-9876|""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '0' });
++  exec({ type: 'MOVE_CARET', payload: -3 }).toMatchInlineSnapshot(`""56-12-9|876""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12|-876""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '01' });
++  exec({ type: 'PUT_SYMBOL', payload: '0' }).toMatchInlineSnapshot(`""56-12-0|876""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '2345678' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""56-12|-876""`);
++  exec({ type: 'PUT_SYMBOL', payload: '01' }).toMatchInlineSnapshot(`""56-12-01|87""`);
+ 
+-  exec({ type: 'MOVE_CARET', payload: -100 }); // -100 at begin
+-  exec({ type: 'MOVE_CARET', payload: 2 });
++  exec({ type: 'PUT_SYMBOL', payload: '2345678' }).toMatchInlineSnapshot(`""56-12-0123|""`);
+ 
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'BACKSPACE' });
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|56-12-0123""`); // -100 at begin
++  exec({ type: 'MOVE_CARET', payload: 2 }).toMatchInlineSnapshot(`""56|-12-0123""`);
+ 
+-  exec({ type: 'PUT_SYMBOL', payload: '9876' });
+-  exec({ type: 'PUT_SYMBOL', payload: '5' });
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""5|1-20-123""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""|12-01-23""`);
+ 
+-  expect(snaphot).toMatchSnapshot();
++  exec({ type: 'PUT_SYMBOL', payload: '9876' }).toMatchInlineSnapshot(`""98-76-|1201""`);
++  exec({ type: 'PUT_SYMBOL', payload: '5' }).toMatchInlineSnapshot(`""98-76-5|201""`);
+ });
+ 
+ test('mask behaviour with bad symbols', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
+ });
+ 
+ test('mask behaviour with delete', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={input.set}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '1978' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '18' });
+-  exec({ type: 'MOVE_CARET', payload: 1 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '8' });
+-  exec({ type: 'MOVE_CARET', payload: 2 });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'DELETE' });
+-  exec({ type: 'PUT_SYMBOL', payload: '78' });
+-  exec({ type: 'MOVE_CARET', payload: -5 });
+-  exec({ type: 'DELETE' });
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|78""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|8""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08|""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|18-08-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|80-81-978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""|08-19-78""`);
++  exec({ type: 'PUT_SYMBOL', payload: '18' }).toMatchInlineSnapshot(`""18-|08-1978""`);
++
++  exec({ type: 'MOVE_CARET', payload: 1 }).toMatchInlineSnapshot(`""18-0|8-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-0|1-978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '8' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: 2 }).toMatchInlineSnapshot(`""18-08-19|78""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|8""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-19|""`);
++  exec({ type: 'PUT_SYMBOL', payload: '78' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -5 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|1978""`);
+ });
+ 
+ test('mask works even if state is not updated on equal vals', async () => {
+-  const snaphot = [];
+-  let getVal = null;
+-  let execCommand = null;
+-  let stateValue_ = null;
+-  let callCount_ = 0;
+-
+-  TestRenderer.create(
+-    <Value initial={''}>
+-      {input => {
+-        stateValue_ = input.value;
+-
+-        return (
+-          <Rifm
+-            replace={v => v.length >= 10}
+-            value={input.value}
+-            onChange={v => {
+-              if (input.value !== v) {
+-                callCount_++;
+-                input.set(v);
+-              }
+-            }}
+-            format={dateFormat}
+-          >
+-            {({ value, onChange }) => (
+-              <InputEmulator value={value} onChange={onChange}>
+-                {(exec, val) => {
+-                  execCommand = exec;
+-                  getVal = val;
+-                  return null;
+-                }}
+-              </InputEmulator>
+-            )}
+-          </Rifm>
+-        );
+-      }}
+-    </Value>
+-  );
+-
+-  const exec = cmd => {
+-    if (!execCommand || !getVal) {
+-      throw Error('rifm is not initialized');
+-    }
+-
+-    act(() => {
+-      if (!execCommand) {
+-        throw Error('rifm is not initialized');
+-      }
+-
+-      execCommand(cmd);
+-    });
+-
+-    expect(stateValue_).toEqual(getVal().value);
+-    snaphot.push({ ...getVal(), cmd, withCaret: renderInputState(getVal()) });
+-  };
+-
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -100 });
+-  exec({ type: 'PUT_SYMBOL', payload: '18081978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'PUT_SYMBOL', payload: '1978' });
+-  exec({ type: 'MOVE_CARET', payload: -4 });
+-  exec({ type: 'BACKSPACE' });
+-  exec({ type: 'DELETE' });
+-
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: 'x' });
+-  exec({ type: 'MOVE_CARET', payload: -1 });
+-  exec({ type: 'PUT_SYMBOL', payload: '1' });
+-
+-  expect(callCount_).toEqual(1);
+-
+-  expect(snaphot).toMatchSnapshot();
++  const exec = createExec({
++    replace: v => v.length >= 10,
++    format: dateFormat,
++  });
++
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -100 }).toMatchInlineSnapshot(`""|18-08-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '18081978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1978' }).toMatchInlineSnapshot(`""18-08-1978|""`);
++  exec({ type: 'MOVE_CARET', payload: -4 }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'BACKSPACE' }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'DELETE' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: 'x' }).toMatchInlineSnapshot(`""18-08-|1978""`);
++  exec({ type: 'MOVE_CARET', payload: -1 }).toMatchInlineSnapshot(`""18-08|-1978""`);
++  exec({ type: 'PUT_SYMBOL', payload: '1' }).toMatchInlineSnapshot(`""18-08-1|978""`);
+ });
+",0,

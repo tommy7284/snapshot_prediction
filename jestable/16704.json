@@ -1,0 +1,140 @@
+{
+    "id": 7511932,
+    "name": "infinitered/nsfwjs",
+    "isFork": false,
+    "commits": 693,
+    "branches": 24,
+    "releases": 12,
+    "forks": 510,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://nsfwjs.com/",
+    "watchers": 82,
+    "stargazers": 7638,
+    "contributors": 32,
+    "size": 65202,
+    "createdAt": "2019-02-13T03:06:31",
+    "pushedAt": "2024-04-30T01:02:15",
+    "updatedAt": "2024-04-30T06:47:33",
+    "totalIssues": 181,
+    "openIssues": 72,
+    "totalPullRequests": 653,
+    "openPullRequests": 4,
+    "blankLines": 384,
+    "codeLines": 3691,
+    "commentLines": 130,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 81,
+            "blankLines": 2
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 15,
+            "codeLines": 345,
+            "blankLines": 162
+        },
+        {
+            "language": "HTML",
+            "commentLines": 23,
+            "codeLines": 205,
+            "blankLines": 22
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 251,
+            "blankLines": 47
+        },
+        {
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 1419,
+            "blankLines": 0
+        },
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 194,
+            "blankLines": 1
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 17,
+            "blankLines": 2
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 30,
+            "codeLines": 458,
+            "blankLines": 66
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 59,
+            "codeLines": 704,
+            "blankLines": 81
+        }
+    ],
+    "lastCommit": "2024-04-16T08:53:20",
+    "lastCommitSHA": "b9527bc3f89c9b0cbc6d18e1b375d33bf71d6318",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 15253,
+        "HTML": 7270,
+        "CSS": 4309,
+        "JavaScript": 3655,
+        "Shell": 26
+    },
+    "labels": [
+        "browser issues",
+        "bug",
+        "dependencies",
+        "design",
+        "duplicate",
+        "enhancement",
+        "extension issues",
+        "false negatives",
+        "false positives",
+        "fix in-progress",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "node.js",
+        "question",
+        "react native",
+        "security",
+        "upstream",
+        "wontfix"
+    ],
+    "topics": [
+        "content-management",
+        "javascript",
+        "machine-learning",
+        "machinelearning",
+        "node-module",
+        "nsfw-recognition",
+        "tensorflow-js",
+        "tensorflowjs"
+    ]
+}

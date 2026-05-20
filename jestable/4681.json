@@ -1,0 +1,109 @@
+{
+    "id": 5639394,
+    "name": "minimalchat/client",
+    "isFork": false,
+    "commits": 155,
+    "branches": 22,
+    "releases": 1,
+    "forks": 49,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": "https://minimal.chat",
+    "watchers": 17,
+    "stargazers": 676,
+    "contributors": 4,
+    "size": 3158,
+    "createdAt": "2016-08-14T11:12:11",
+    "pushedAt": "2022-12-30T04:41:23",
+    "updatedAt": "2022-12-16T03:33:01",
+    "totalIssues": 23,
+    "openIssues": 5,
+    "totalPullRequests": 58,
+    "openPullRequests": 20,
+    "blankLines": 367,
+    "codeLines": 17200,
+    "commentLines": 143,
+    "metrics": [
+        {
+            "blankLines": 11,
+            "language": "make",
+            "commentLines": 1,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 7,
+            "language": "HTML",
+            "commentLines": 15,
+            "codeLines": 81
+        },
+        {
+            "blankLines": 73,
+            "language": "CSS",
+            "commentLines": 27,
+            "codeLines": 320
+        },
+        {
+            "blankLines": 11,
+            "language": "Dockerfile",
+            "commentLines": 8,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 15708
+        },
+        {
+            "blankLines": 197,
+            "language": "JavaScript",
+            "commentLines": 92,
+            "codeLines": 861
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 68,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 159
+        }
+    ],
+    "lastCommit": "2019-10-31T06:56:57",
+    "lastCommitSHA": "111dcca5d63d68bdd460435923adb67c51628f33",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 29890,
+        "HTML": 12419,
+        "CSS": 7118,
+        "Dockerfile": 569,
+        "Makefile": 399
+    },
+    "labels": [
+        "bug",
+        "css",
+        "dependencies",
+        "docs",
+        "feature",
+        "good first issue",
+        "js",
+        "milestone",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

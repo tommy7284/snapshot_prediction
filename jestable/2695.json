@@ -1,0 +1,79 @@
+{
+    "id": 5177828,
+    "name": "rebassjs/grid",
+    "isFork": false,
+    "commits": 275,
+    "branches": 10,
+    "releases": 27,
+    "forks": 116,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://rebassjs.org/reflexbox",
+    "watchers": 25,
+    "stargazers": 2084,
+    "contributors": 18,
+    "size": 1967,
+    "createdAt": "2016-10-14T02:43:02",
+    "pushedAt": "2019-08-06T03:51:01",
+    "updatedAt": "2021-02-09T09:52:40",
+    "totalIssues": 132,
+    "openIssues": 0,
+    "totalPullRequests": 56,
+    "openPullRequests": 0,
+    "blankLines": 173,
+    "codeLines": 7496,
+    "commentLines": 4,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6939
+        },
+        {
+            "blankLines": 22,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 185
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 148,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 362
+        }
+    ],
+    "lastCommit": "2019-08-06T03:50:56",
+    "lastCommitSHA": "e57f673cf4e21706cdb8d277453d4809b8b19a83",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 4544,
+        "Dockerfile": 141
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

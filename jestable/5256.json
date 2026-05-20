@@ -1,0 +1,83 @@
+{
+    "id": 5742131,
+    "name": "jfairbank/redux-saga-test-plan",
+    "isFork": false,
+    "commits": 425,
+    "branches": 224,
+    "releases": 4,
+    "forks": 134,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://redux-saga-test-plan.jeremyfairbank.com",
+    "watchers": 15,
+    "stargazers": 1224,
+    "contributors": 45,
+    "size": 6188,
+    "createdAt": "2016-04-26T10:38:22",
+    "pushedAt": "2022-09-05T11:32:15",
+    "updatedAt": "2022-09-09T07:13:18",
+    "totalIssues": 254,
+    "openIssues": 125,
+    "totalPullRequests": 135,
+    "openPullRequests": 8,
+    "blankLines": 2847,
+    "codeLines": 12527,
+    "commentLines": 177,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 182
+        },
+        {
+            "blankLines": 31,
+            "language": "TypeScript",
+            "commentLines": 35,
+            "codeLines": 218
+        },
+        {
+            "blankLines": 1687,
+            "language": "JavaScript",
+            "commentLines": 142,
+            "codeLines": 8146
+        },
+        {
+            "blankLines": 1124,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3963
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 18
+        }
+    ],
+    "lastCommit": "2022-09-05T11:29:57",
+    "lastCommitSHA": "c2b086e2c9e2ba321e08619d3ed12ba9ae428c78",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 233063
+    },
+    "labels": [
+        "bug",
+        "critical",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "good-first-task",
+        "greenkeeper",
+        "invalid",
+        "need-more-info",
+        "question",
+        "up-for-grabs",
+        "wontfix"
+    ],
+    "topics": []
+}

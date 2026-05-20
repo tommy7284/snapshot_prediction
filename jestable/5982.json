@@ -1,0 +1,88 @@
+{
+    "id": 6213584,
+    "name": "mateodelnorte/meta",
+    "isFork": false,
+    "commits": 297,
+    "branches": 20,
+    "releases": 50,
+    "forks": 91,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 1995,
+    "contributors": 11,
+    "size": 1434,
+    "createdAt": "2016-12-14T12:06:35",
+    "pushedAt": "2024-03-12T06:10:23",
+    "updatedAt": "2024-03-12T07:12:32",
+    "totalIssues": 144,
+    "openIssues": 17,
+    "totalPullRequests": 188,
+    "openPullRequests": 8,
+    "blankLines": 194,
+    "codeLines": 8515,
+    "commentLines": 21,
+    "metrics": [
+        {
+            "blankLines": 149,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 307
+        },
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 39,
+            "language": "JavaScript",
+            "commentLines": 15,
+            "codeLines": 251
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7918
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        }
+    ],
+    "lastCommit": "2021-06-08T11:55:31",
+    "lastCommitSHA": "1b727d56b7f09d3f27788ac02346f184622d36de",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 9696,
+        "Shell": 150
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "os:windows",
+        "question",
+        "released",
+        "wontfix"
+    ],
+    "topics": [
+        "git",
+        "meta",
+        "productivity",
+        "repository",
+        "repository-utilities"
+    ]
+}

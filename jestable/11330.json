@@ -1,0 +1,145 @@
+{
+    "id": 7812415,
+    "name": "frctl/fractal",
+    "isFork": false,
+    "commits": 1929,
+    "branches": 33,
+    "releases": 169,
+    "forks": 180,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://fractal.build",
+    "watchers": 57,
+    "stargazers": 2081,
+    "contributors": 41,
+    "size": 23544,
+    "createdAt": "2015-07-07T08:48:05",
+    "pushedAt": "2023-04-21T12:06:33",
+    "updatedAt": "2023-04-22T03:22:01",
+    "totalIssues": 502,
+    "openIssues": 28,
+    "totalPullRequests": 770,
+    "openPullRequests": 21,
+    "blankLines": 3391,
+    "codeLines": 36680,
+    "commentLines": 513,
+    "metrics": [
+        {
+            "blankLines": 6,
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 60
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 75
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 334,
+            "language": "Sass",
+            "commentLines": 14,
+            "codeLines": 1493
+        },
+        {
+            "blankLines": 4,
+            "language": "Twig",
+            "commentLines": 0,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 162
+        },
+        {
+            "blankLines": 1548,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1426
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 24056
+        },
+        {
+            "blankLines": 2,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 1420,
+            "language": "JavaScript",
+            "commentLines": 492,
+            "codeLines": 9110
+        },
+        {
+            "blankLines": 76,
+            "language": "JSX",
+            "commentLines": 2,
+            "codeLines": 252
+        }
+    ],
+    "lastCommit": "2023-01-26T08:53:11",
+    "lastCommitSHA": "dd6cd938653b24cd23456d10b9c28d3bc436c4c3",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 323666,
+        "SCSS": 34662,
+        "Handlebars": 813,
+        "Shell": 58
+    },
+    "labels": [
+        "[adapter] handlebars",
+        "[adapter] nunjucks",
+        "[adapter] react",
+        "[adapter] twig",
+        "[area] cli",
+        "[area] fractal",
+        "[area] inspector",
+        "[area] internals",
+        "[priority] high",
+        "[priority] low",
+        "[theme] mandelbrot",
+        "[type] documentation",
+        "[type] improvement",
+        "[type] internal/refactor",
+        "[type] tests",
+        "[type] tooling",
+        "accessibility",
+        "breaking change",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "feature-request",
+        "github_actions",
+        "help-wanted",
+        "in progress",
+        "inactive",
+        "invalid conventional commit title",
+        "javascript",
+        "needs-investigation",
+        "question",
+        "security",
+        "v1.x",
+        "v2.x",
+        "windows",
+        "wontfix"
+    ],
+    "topics": []
+}

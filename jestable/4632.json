@@ -1,0 +1,118 @@
+{
+    "id": 5626897,
+    "name": "deanmcpherson/react-native-sortable-listview",
+    "isFork": false,
+    "commits": 121,
+    "branches": 18,
+    "releases": 0,
+    "forks": 248,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 900,
+    "contributors": 24,
+    "size": 5586,
+    "createdAt": "2016-02-01T10:24:57",
+    "pushedAt": "2022-02-10T03:34:52",
+    "updatedAt": "2022-02-11T09:29:22",
+    "totalIssues": 123,
+    "openIssues": 45,
+    "totalPullRequests": 82,
+    "openPullRequests": 27,
+    "blankLines": 239,
+    "codeLines": 1812,
+    "commentLines": 186,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 130
+        },
+        {
+            "blankLines": 6,
+            "language": "XML",
+            "commentLines": 4,
+            "codeLines": 466
+        },
+        {
+            "blankLines": 80,
+            "language": "JavaScript",
+            "commentLines": 18,
+            "codeLines": 709
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 13,
+            "language": "ProGuard",
+            "commentLines": 23,
+            "codeLines": 30
+        },
+        {
+            "blankLines": 11,
+            "language": "Java",
+            "commentLines": 4,
+            "codeLines": 42
+        },
+        {
+            "blankLines": 42,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 98
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 8,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 24,
+            "codeLines": 75
+        },
+        {
+            "blankLines": 20,
+            "language": "Bourne Again Shell",
+            "commentLines": 21,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 13,
+            "language": "Gradle",
+            "commentLines": 82,
+            "codeLines": 71
+        }
+    ],
+    "lastCommit": "2020-08-20T07:45:56",
+    "lastCommitSHA": "16a0ff582ce401cc2c222bd6c6a6a273e14dd70f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 20452,
+        "Objective-C": 4422,
+        "Starlark": 1641,
+        "Java": 1390
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

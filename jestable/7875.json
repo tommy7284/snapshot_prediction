@@ -1,0 +1,84 @@
+{
+    "id": 6684765,
+    "name": "salesforce-ux/theo",
+    "isFork": false,
+    "commits": 269,
+    "branches": 9,
+    "releases": 25,
+    "forks": 110,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": null,
+    "watchers": 40,
+    "stargazers": 1669,
+    "contributors": 25,
+    "size": 2315,
+    "createdAt": "2014-02-19T05:25:34",
+    "pushedAt": "2021-10-12T08:27:17",
+    "updatedAt": "2021-10-12T10:11:22",
+    "totalIssues": 96,
+    "openIssues": 21,
+    "totalPullRequests": 171,
+    "openPullRequests": 8,
+    "blankLines": 417,
+    "codeLines": 9946,
+    "commentLines": 185,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6881
+        },
+        {
+            "blankLines": 230,
+            "language": "JavaScript",
+            "commentLines": 157,
+            "codeLines": 2360
+        },
+        {
+            "blankLines": 176,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 621
+        },
+        {
+            "blankLines": 11,
+            "language": "Handlebars",
+            "commentLines": 28,
+            "codeLines": 74
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 10
+        }
+    ],
+    "lastCommit": "2021-10-12T08:27:17",
+    "lastCommitSHA": "c9efd76171439f3d5c0b0fb858b755555de22e75",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 63365,
+        "Handlebars": 4567
+    },
+    "labels": [
+        "bug",
+        "cla:missing",
+        "cla:signed",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "invalid",
+        "question",
+        "security",
+        "up for grabs",
+        "wontfix"
+    ],
+    "topics": []
+}

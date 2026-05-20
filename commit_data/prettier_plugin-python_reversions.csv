@@ -1,0 +1,477 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+102,656ce340cd5cacd1d3c8732dd06526af8ea50c74,0450a96115d1a9c87f98c5482870971db7a7ad4b,,"Add broken mixed call test for #101
+","diff --git a/tests/python_call_mixed/jsfmt.spec.js b/tests/python_call_mixed/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_call_mixed/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,3,28,1,2,4,38
+104,75dfc58507d6564e93d5f1bce6d0a1080541d5b3,5d50540298e855bbce24b4adc241d04dde35467f,,"Add failing test for multiline Attribute
+","diff --git a/tests/python_attributes/jsfmt.spec.js b/tests/python_attributes/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_attributes/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,3,33,1,2,5,53
+19,ef96fba47bd464074dfc4cd901af393bfd22e1a6,ef96fba47bd464074dfc4cd901af393bfd22e1a6,Ref: https://github.com/prettier/prettier-python/issues/12#issuecomment-355213828,"Improve tuple printing
+","diff --git a/tests/python_tuple/jsfmt.spec.js b/tests/python_tuple/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_tuple/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,156,1,1,4,156
+25,a83b4d832f246769366e97e5f8f02697e8167bd3,a314b9843b449b74b21a6fd250f4a2b0e13234af,"Bump the dependency on the main Prettier repo to the latest commit. This allows us to specify additional options (such as `pythonVersion`). Note that the Python version defaults to Python3, which I believe matches the behavior from before.
+
+The plugin API in the newer version requires plugins to provide a `locStart` and `locEnd` function. From what I've seen, this is to allow customization, which is something we want and will help with things like better comment rendering. However, I'm not totally sure what customizations we want/need in these functions, so for now this just copies in the old versions of those functions. This shouldn't actually be a functional change from before the upgrade, and still allows us to modify/customize that functionality in the future as needed.
+
+I also noticed a bug in how comments are detected within Python. There was a check that hard-coded the `COMMENT` token type as `57`, but it's actually different in different versions of Python. This fixes that check to use the proper value for the given version of Python and updates a test that mistakenly did not have comments in the expected output.","Upgrade Prettier version, fix comment discovery
+
+Bump the dependency on the main Prettier repo to the latest commit. This allows us to specify additional options (such as `pythonVersion`). Note that the version is defaulting to Python3, which I believe matches the behavior from before.
+
+The plugin API in the newer version requires plugins to provide a `locStart` and `locEnd` function. From what I've seen, this is to allow customization, which is something we want and will help with things like better comment rendering. However, I'm not totally sure what customizations we want/need in these functions, so for now this just copies in the old versions of those functions. This shouldn't actually be a functional change from before the upgrade, and still allows us to modify/customize that functionality in the future as needed.
+
+I also noticed a bug in how comments are detected within Python. There was a check that hard-coded the `COMMENT` token type as `57`, but it's actually different on different versions of Python. This fixes that check to use the proper value for the given version of Python and updates a test that mistakenly did not have comments in the expected output.
+","diff --git a/tests/python_comments/jsfmt.spec.js b/tests/python_comments/jsfmt.spec.js
+index 3afccf9..dc63c4d 100644
+--- a/tests/python_comments/jsfmt.spec.js
++++ b/tests/python_comments/jsfmt.spec.js
+@@ -1 +1,2 @@
+-run_spec(__dirname, [""python""]);
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,7,423,2,2,9,450
+26,ee06aae8ac5d24dc0a6104651488ecd5fe400395,2fa3dec4bcc4d9cf34f1ec8cc40ca13b24ac4fba,"This adds tests to ensure that `yield` and `yield from` AST nodes are understood and printed properly, and implements the printing for those nodes. This also modifies the printer to throw when it encounters an unknown node type so that the tests actually fail before the behavior is implemented.","Add functionality for `yield` and `yield from`
+
+This adds tests to ensure that `yield` and `yield from` AST nodes are understood and printed properly, and implements the printing for those nodes. This also modifiers the printer to throw when it encounters an unknown node type so that the tests actually fail before the behavior is implemented.
+","diff --git a/tests/python_yield/jsfmt.spec.js b/tests/python_yield/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_yield/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_yield_from/jsfmt.spec.js b/tests/python_yield_from/jsfmt.spec.js
+new file mode 100644
+index 0000000..007404f
+--- /dev/null
++++ b/tests/python_yield_from/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,8,64,2,4,7,138
+28,9cc68953378f8d15ecdeef73df2b2adb9dc41486,9cc68953378f8d15ecdeef73df2b2adb9dc41486,"This makes list-like literals consistently have the following behavior:
+- If the list is too long, it will split items onto their own lines, each indented.
+- If the option is set, the last item will have a trailing comma when split onto its own line.
+
+This also does some cleanup of Tuples to be a bit more consistent with best practices around when to have/not have parens (as I understand them). I realize this is a bit contentious and I'm certainly open to changing/reverting specific behaviors here. In general, the way I've coded in the past is to skip parens when on a single line and either unpacking into multiple variables or returning from a function; everything else has parens. Again, up for debate :)
+
+While I'm here, fix multi-assign (assignments with multiple equals signs) to be able to test how that interacts with tuples.","Clean up handling of list-like literals
+
+This makes list-like literals consistently have the following behavior:
+- If the list is too long, it will split items onto their own lines, each indented.
+- If the option is set, the list item will have a trailing comma when split onto its own line.
+
+This also does some cleanup of Tuples to be a bit more consistent with best practices around when to have/not have parens (as I understand them). I realize this is a bit contentious and I'm certainly open to changing/reverting specific behaviors here. In general, the way I've coded in the past is to skip parens when on a single line and either unpacking into multiple variables or returning from a function, and everything else has parens. Again, up for debate :)
+
+While I'm here, fix multi-assign (assignments with multiple equals signs) to be able to test how that interacts with tuples.
+","diff --git a/tests/python_dict/jsfmt.spec.js b/tests/python_dict/jsfmt.spec.js
+index dc63c4d..92df027 100644
+--- a/tests/python_dict/jsfmt.spec.js
++++ b/tests/python_dict/jsfmt.spec.js
+@@ -1,2 +1,3 @@
+-run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
+ run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_list/jsfmt.spec.js b/tests/python_list/jsfmt.spec.js
+new file mode 100644
+index 0000000..92df027
+--- /dev/null
++++ b/tests/python_list/jsfmt.spec.js
+@@ -0,0 +1,3 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_tuple/jsfmt.spec.js b/tests/python_tuple/jsfmt.spec.js
+index dc63c4d..92df027 100644
+--- a/tests/python_tuple/jsfmt.spec.js
++++ b/tests/python_tuple/jsfmt.spec.js
+@@ -1,2 +1,3 @@
+-run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
+ run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,15,610,6,1,15,610
+29,c27f75ea8075e2e23022cfee7230752419636a95,c27f75ea8075e2e23022cfee7230752419636a95,Add tests and a printer for set literals using the common list-like literal printer.,"Handle set literals
+
+Add tests and a printer for set literals using the common list-like literal printer.
+","diff --git a/tests/python_set/jsfmt.spec.js b/tests/python_set/jsfmt.spec.js
+new file mode 100644
+index 0000000..92df027
+--- /dev/null
++++ b/tests/python_set/jsfmt.spec.js
+@@ -0,0 +1,3 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,121,1,1,4,121
+30,a4d7b0bea9fbb291ebe71530470166201ce33791,a4d7b0bea9fbb291ebe71530470166201ce33791,"This diff changes lambdas so that they wrap if they're too long. They will first try just putting the body on a separate line, then if the arguments are still too long they will break each argument onto its own line. Since this adds trailing comma support to arguments lists, I also added a test that function parameters get trailing commas when arguments are wrapped onto separate lines.","Clean up wrapping of lambdas and function declarations
+
+This diff changes lambdas so that they wrap if they're too long. They will first try just putting the body on a separate line, then if the arguments are still too long they will break each argument onto its own line. Since this adds trailing comma support to arguments lists, I also added a test that parameters get trailing commas when arguments are wrapped onto separate lines.
+","diff --git a/tests/python_lambdas/jsfmt.spec.js b/tests/python_lambdas/jsfmt.spec.js
+index dc63c4d..92df027 100644
+--- a/tests/python_lambdas/jsfmt.spec.js
++++ b/tests/python_lambdas/jsfmt.spec.js
+@@ -1,2 +1,3 @@
+-run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
+ run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_long/jsfmt.spec.js b/tests/python_long/jsfmt.spec.js
+index dc63c4d..92df027 100644
+--- a/tests/python_long/jsfmt.spec.js
++++ b/tests/python_long/jsfmt.spec.js
+@@ -1,2 +1,3 @@
+-run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
+ run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,6,124,2,1,6,124
+31,0d1c9298a25ecd1ad0a70182421ce58de5a53f5b,0d1c9298a25ecd1ad0a70182421ce58de5a53f5b,Clean up how list comprehensions break across lines when long and add handlers to print out set and dict comprehensions. Added tests for the new breaking behavior and the new node types.,"Handle clean up list comprehension wrapping and handle dict and set comprehensions
+
+Clean up how list comprehensions break across lines when long and add handlers to print out set and dict comprehensions. Added tests for the new breaking behavior and the new node types.
+","diff --git a/tests/python_dict_comp/jsfmt.spec.js b/tests/python_dict_comp/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_dict_comp/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_set_comp/jsfmt.spec.js b/tests/python_set_comp/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_set_comp/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,9,316,3,1,9,316
+36,b52a8c86ba47d3860aaa425c44ef0b196a20bc59,b52a8c86ba47d3860aaa425c44ef0b196a20bc59,"The existing implementation adds a single blank line between every statement in any body of statements. This changes that in a few ways:
+ - Spacing will now be PEP8 compliant. In particular, this means things like top-level functions will now always have exactly two blank lines on either side of them and too many blank lines in a row will be condensed.
+ - Where not specified by PEP8, user preference/style is preserved. This means that two lines of code in a function that are right next to each other (without a blank line in between) will remain next to each other.
+
+ For implementation, for every statement in a body we look backwards to see how many newline characters precede it. We try to keep that number (as the preference), but adjust it based on constraints like PEP8.
+
+ This diff adds some tests for blank lines both at the top-level of a file and when indented (eg within a function). It also updates the existing tests, mainly due to no longer adding a bunch of blank lines between statements.
+
+One slightly unrelated change (which I can pull out into a separate PR) is that this removes the extra space that was printed after a bare `return` or `yield`, since my editor kept automatically stripping the trailing whitespace off the snapshots (and it's more correct to not have trailing spaces anyway).","Change statement spacing to conform to PEP8 and preserve user choices
+
+The existing implementation adds a single blank line between every statement in any body of statements. This changes that in a few ways:
+ - Spacing will now be PEP8 compliant. In particular, this means things like top-level functions will now always have exactly two blank lines on either side of them and too many blank lines in a row will be condensed.
+ - Where not specified by PEP8, user preference/style is preserved. This means that two lines of code in a function that are right next to each other (without a blank line in between) will remain next to each other.
+
+ For implementation, for every statement in a body we look backwards to see how many newline characters precede it. We try to keep that number (as the preference), but adjust it based on constraints like PEP8.
+
+ This diff adds some tests for blank lines both at the top-level of a file and when indented (eg within a function). It also updates the existing tests, mainly due to no longer adding a bunch of blank lines between statements.
+","diff --git a/tests/python_blank_lines_indented/jsfmt.spec.js b/tests/python_blank_lines_indented/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_blank_lines_indented/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_blank_lines_top_level/jsfmt.spec.js b/tests/python_blank_lines_top_level/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_blank_lines_top_level/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,30,1306,24,1,30,1306
+39,9b37ee1abd51b004cdf426403e928cea18edaaee,9b37ee1abd51b004cdf426403e928cea18edaaee,"Add logic to print out generator expressions, including eliding the parentheses when the expression is the only argument to a function call.","Handle generator expressions
+
+Add logic to print out generator expressions, including eliding the parentheses when the expression is the only argument to a function call.
+","diff --git a/tests/python_generator_expressions/jsfmt.spec.js b/tests/python_generator_expressions/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_generator_expressions/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,139,1,1,4,139
+40,c9c995ce3a4cbb1088d285d475001708d3420cab,c9c995ce3a4cbb1088d285d475001708d3420cab,"Add tests and functionality that Python 3 type annotations on function arguments, function return types, and locals are preserved and wrapped properly if too long.","Handle Python 3 type annotations
+
+Add tests and functionality that Python 3 type annotations on function arguments, function return types, and locals are preserved and wrapped properly if too long.
+","diff --git a/tests/python_ann_assign/jsfmt.spec.js b/tests/python_ann_assign/jsfmt.spec.js
+new file mode 100644
+index 0000000..007404f
+--- /dev/null
++++ b/tests/python_ann_assign/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+
+diff --git a/tests/python_arg_annotations/jsfmt.spec.js b/tests/python_arg_annotations/jsfmt.spec.js
+new file mode 100644
+index 0000000..007404f
+--- /dev/null
++++ b/tests/python_arg_annotations/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,7,170,2,1,7,170
+44,c9cb41168ba51645a4f760c1e2da9b2e5682dbde,c9cb41168ba51645a4f760c1e2da9b2e5682dbde,"Wrap long `import` statements so each module/package is on its own line. Break up the names of `from ... import ...` statements when there are too many to fit on a single line, with a trailing comma if the option is set.","Import formatting
+
+Wrap long `import` statements so each module/package is on its own line. Break up the names of `from ... import ...` statements when there are too many to fit on a single line, with a trailing comma if the option is set.
+","diff --git a/tests/python_import/jsfmt.spec.js b/tests/python_import/jsfmt.spec.js
+index dc63c4d..92df027 100644
+--- a/tests/python_import/jsfmt.spec.js
++++ b/tests/python_import/jsfmt.spec.js
+@@ -1,2 +1,3 @@
+-run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
+ run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,137,1,1,4,137
+53,d8fcdbafc332b1c35a9fe85aa7285f6a1762035f,d8fcdbafc332b1c35a9fe85aa7285f6a1762035f,"To be consistent with PEP8, set the default column margin to 79 characters. Add tests to check that 79 characters fits on one line but 80 characters breaks to another line.
+
+Fixes https://github.com/prettier/plugin-python/issues/14","Default print width to 79
+
+To be consistent with PEP8, set the default column margin to 79 characters. Add tests to check that 79 characters fits on one line but 80 characters breaks to another line.
+
+Fixes https://github.com/prettier/plugin-python/issues/14
+","diff --git a/tests/python_print_width/jsfmt.spec.js b/tests/python_print_width/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_print_width/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,31,1,1,4,31
+6,ab8ae14f73dc48271e9bf1aee321c277b2cf9a90,ab8ae14f73dc48271e9bf1aee321c277b2cf9a90,"What helped a ton at the beginning of prettier was to import all the tests in the flow codebase. This shows has a ton of edge cases around JavaScript. I haven't found a similar test suite yet but this file from pypy has a bunch of interesting ones.
+
+I've commented out all the tests that either fatal or output a different result.","Import expression tests from pypy
+
+What helped a ton at the beginning of prettier was to import all the tests in the flow codebase. This shows has a ton of edge cases around JavaScript. I haven't found a similar test suite yet but this file from pypy has a bunch of interesting ones.
+
+I've commented out all the tests that either fatal or output a different result.
+","diff --git a/tests/python_expressions/jsfmt.spec.js b/tests/python_expressions/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_expressions/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,3,1744,1,1,3,1744
+66,b5fa34b77f794a812a99cb7d0908f62334443c5f,b301d979151db1c6a726877e667bfcc74ac45730,Needs fix,"Add broken tests for #65
+","diff --git a/tests/python_raise/jsfmt.spec.js b/tests/python_raise/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_raise/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,3,89,1,6,4,127
+68,dc4800c2b6cd19e646ce54a87f965e850f4f60dc,dc4800c2b6cd19e646ce54a87f965e850f4f60dc,"Fix #60. Use same logic as prettier's printer-estree.js ""Program""
+case.","Don't add final empty line if file has no contents
+
+Fix #60. Use same logic as prettier's printer-estree.js ""Program""
+case.
+","diff --git a/tests/python_empty/jsfmt.spec.js b/tests/python_empty/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_empty/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,5,33,1,1,5,33
+7,b24b5735f65862dadcc57066287064d9cb315a53,53d1ae01fdb6198c2fe766f89d446c0c5020c264,Fixes #4,"Fix elif with multiple body
+
+Fixes #4
+","diff --git a/tests/python_elif_multi_body/jsfmt.spec.js b/tests/python_elif_multi_body/jsfmt.spec.js
+new file mode 100644
+index 0000000..3afccf9
+--- /dev/null
++++ b/tests/python_elif_multi_body/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""]);
+",0,,4,60,1,3,4,86
+72,3f5441265fc3937d991f6796ebabef99155fd4cc,3f5441265fc3937d991f6796ebabef99155fd4cc,Previously long binary/boolean expressions split up over multiple lines were not properly separated by escaped lines.,"Use escaped lines for binary and bool ops
+","diff --git a/tests/python_bin_op/jsfmt.spec.js b/tests/python_bin_op/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_bin_op/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,6,46,2,1,6,46
+87,de318147819319275b9135df57db6f733e0a4a21,de318147819319275b9135df57db6f733e0a4a21,Closes #86 ,"Add support for del keyword
+","diff --git a/tests/python_delete/jsfmt.spec.js b/tests/python_delete/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_delete/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,45,1,1,4,45
+88,c7c8e90b35b52a0b34985c33e2517b4579726948,c7c8e90b35b52a0b34985c33e2517b4579726948,"Closes #69 
+
+@azz I've copied the `printDanglingComments` from the prettier repo, shall I make a PR to export it from the main entry point? Like we do for the doc builders?
+
+EDIT: never mind, I had to change the code a bit :)","Fix dangling comments not printed
+","diff --git a/tests/python_dangling_comments/jsfmt.spec.js b/tests/python_dangling_comments/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_dangling_comments/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,5,74,1,1,5,74
+89,02209ec288e5c7fe3cbc78cbea3c458dfeda6b46,02209ec288e5c7fe3cbc78cbea3c458dfeda6b46,"Fixes #81 
+
+Needs #88 ","Fix inline comments
+","diff --git a/tests/python_inline_comments/jsfmt.spec.js b/tests/python_inline_comments/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_inline_comments/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,7,171,2,3,9,197
+9,d6d5df40c73912f31bc8542dcd4989d88c672f73,d6d5df40c73912f31bc8542dcd4989d88c672f73,"This wires up the comment logic from prettier. This needs some modification inside of prettier itself, so it won't work as is.
+
+- locStart/End is ast-specific, we need a way to set it up for each parser. In this case I reused on that already existed: https://github.com/prettier/prettier/blob/master/src/util.js#L260-L262
+
+- getSortedChildNodes as well, need a way to traverse the ast: https://github.com/prettier/prettier/blob/master/src/comments.js#L38
+
+```js
+        (node.kind && node.kind !== ""Comment"") ||
+        node.ast_type && node.ast_type !== ""comment"") // <-- added
+    ) {
+```
+
+- printComments as well: https://github.com/prettier/prettier/blob/master/src/comments.js#L928-L929
+
+```js
+  switch (comment.type || comment.kind || comment.ast_type) {
+    case ""comment"":
+      return comment.value;
+    case ""Comment"":
+```
+
+If we tweak those two small things in prettier itself, then it's able to print comments using the heuristic. @azz, do you think you'd be able to extract those out to be parser-specific?","Add support for comments
+
+This wires up the comment logic from prettier. This needs some modification inside of prettier itself, so it won't work as is.
+
+- locStart/End is ast-specific, we need a way to set it up for each parser. In this case I reused on that already existed: https://github.com/prettier/prettier/blob/master/src/util.js#L260-L262
+
+- getSortedChildNodes as well, need a way to traverse the ast: https://github.com/prettier/prettier/blob/master/src/comments.js#L38
+
+```js
+        (node.kind && node.kind !== ""Comment"") ||
+        node.ast_type && node.ast_type !== ""comment"") // <-- added
+    ) {
+```
+
+- printComments as well: https://github.com/prettier/prettier/blob/master/src/comments.js#L928-L929
+
+```js
+  switch (comment.type || comment.kind || comment.ast_type) {
+    case ""comment"":
+      return comment.value;
+    case ""Comment"":
+```
+
+If we tweak those two small things in prettier itself, then it's able to print comments using the heuristic. @azz, do you think you'd be able to extract those out to be parser-specific?
+","diff --git a/tests/python_comments/jsfmt.spec.js b/tests/python_comments/jsfmt.spec.js
+new file mode 100644
+index 0000000..3afccf9
+--- /dev/null
++++ b/tests/python_comments/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""]);
+",0,,7,238,2,1,7,238
+90,448abc8671585246bd2ca0e9f4e2da62419f7d7f,448abc8671585246bd2ca0e9f4e2da62419f7d7f,,"Fix str tokens causing a crash
+","diff --git a/tests/python_str_token/jsfmt.spec.js b/tests/python_str_token/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_str_token/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,21,1,1,4,21
+91,894e89704b2cbbe4dfa3a3bc6d98910592b4b803,c09394e4b2da15ada24ca0c4cfb637aef424faf0,,"Add support for bytes strings
+","diff --git a/tests/python_bytes/jsfmt.spec.js b/tests/python_bytes/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_bytes/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,26,1,2,6,67
+92,9a6eaec4939e7fdeb043a93bd9551f68ee7faa8b,9a6eaec4939e7fdeb043a93bd9551f68ee7faa8b,Closes #54,"Add support for global
+","diff --git a/tests/python_global/jsfmt.spec.js b/tests/python_global/jsfmt.spec.js
+new file mode 100644
+index 0000000..dc63c4d
+--- /dev/null
++++ b/tests/python_global/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,42,1,1,4,42
+93,94126d162acf01cb3624a5bc8f6012eeb3118f9d,94126d162acf01cb3624a5bc8f6012eeb3118f9d,"Adds some more slicing tests, and closes #83","Add support for extslice
+","diff --git a/tests/python_slices/jsfmt.spec.js b/tests/python_slices/jsfmt.spec.js
+new file mode 100644
+index 0000000..92df027
+--- /dev/null
++++ b/tests/python_slices/jsfmt.spec.js
+@@ -0,0 +1,3 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""none"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""2"", trailingComma: ""all"" });
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,93,1,1,4,93
+94,a5edf00a86fe40059497ab210eed46a023d9f4a5,a5edf00a86fe40059497ab210eed46a023d9f4a5,,"Add support for nonlocal
+","diff --git a/tests/python3_nonlocal/jsfmt.spec.js b/tests/python3_nonlocal/jsfmt.spec.js
+new file mode 100644
+index 0000000..007404f
+--- /dev/null
++++ b/tests/python3_nonlocal/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,64,1,1,4,64
+95,766b9d7b2ff590ec1e7fdd1eef5cb0953d788f79,766b9d7b2ff590ec1e7fdd1eef5cb0953d788f79,,"Add support for uadd
+","diff --git a/tests/python_uadd/jsfmt.spec.js b/tests/python_uadd/jsfmt.spec.js
+new file mode 100644
+index 0000000..007404f
+--- /dev/null
++++ b/tests/python_uadd/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, [""python""], { pythonVersion: ""3"" });
+",0,,4,20,1,1,4,20

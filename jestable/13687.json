@@ -1,0 +1,88 @@
+{
+    "id": 4034785,
+    "name": "alexzajac/react-native-skeleton-content",
+    "isFork": false,
+    "commits": 176,
+    "branches": 9,
+    "releases": 0,
+    "forks": 131,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/react-native-skeleton-content",
+    "watchers": 5,
+    "stargazers": 551,
+    "contributors": 13,
+    "size": 7120,
+    "createdAt": "2019-06-18T03:01:59",
+    "pushedAt": "2024-02-14T11:30:24",
+    "updatedAt": "2024-02-14T01:59:25",
+    "totalIssues": 41,
+    "openIssues": 4,
+    "totalPullRequests": 53,
+    "openPullRequests": 9,
+    "blankLines": 182,
+    "codeLines": 35677,
+    "commentLines": 22,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 21,
+            "codeLines": 791,
+            "blankLines": 60
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 34485,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 381,
+            "blankLines": 122
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-08-17T08:26:13",
+    "lastCommitSHA": "23fdb0ddcbcadc6af80f6770af62470a4a5054f2",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 26436,
+        "JavaScript": 132
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "animation",
+        "component",
+        "loader",
+        "react-native",
+        "skeleton"
+    ]
+}

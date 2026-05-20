@@ -1,0 +1,98 @@
+{
+    "id": 6234004,
+    "name": "nitin42/react-perf-devtool",
+    "isFork": false,
+    "commits": 271,
+    "branches": 21,
+    "releases": 8,
+    "forks": 73,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 25,
+    "stargazers": 2310,
+    "contributors": 6,
+    "size": 3767,
+    "createdAt": "2017-12-13T10:45:06",
+    "pushedAt": "2022-12-07T09:16:19",
+    "updatedAt": "2022-12-17T07:28:43",
+    "totalIssues": 39,
+    "openIssues": 8,
+    "totalPullRequests": 54,
+    "openPullRequests": 22,
+    "blankLines": 2649,
+    "codeLines": 15990,
+    "commentLines": 2736,
+    "metrics": [
+        {
+            "blankLines": 4,
+            "language": "TypeScript",
+            "commentLines": 1,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 2431,
+            "language": "JavaScript",
+            "commentLines": 2734,
+            "codeLines": 15357
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 182,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 357
+        },
+        {
+            "blankLines": 4,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 28,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 145
+        }
+    ],
+    "lastCommit": "2018-10-22T03:16:47",
+    "lastCommitSHA": "3f6d159c62b68f253ebc74b9bfc2d485c196ed63",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 129451,
+        "CSS": 2752,
+        "HTML": 376
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "on hold",
+        "question",
+        "self-assigned",
+        "waiting-for-changes",
+        "wontfix"
+    ],
+    "topics": []
+}

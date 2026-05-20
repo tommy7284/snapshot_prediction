@@ -1,0 +1,1185 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+628,79ca6c477fd43b4b0ab61c1b86de41e228a5de08,3bb9bdc269cf5fb95364ae499d7c673ce38f8a45,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+`createAnyOneOfProperty` has an incomplete implementation and doesn't display all possible types at the moment, but only 'object' type. Reusing `createAnyOneOf` helps with making it display all possible mods.
+
+## Motivation and Context
+
+A bug in `createAnyOneOfProperty` prevents from seeing all mods and shows `MOD1`, `MOD2`, etc for primitive types and arrays.
+
+## How Has This Been Tested?
+
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, and the tests you ran to -->
+<!--- see how your change affects other areas of the code, etc. -->
+
+See the snapshot of the before and after:
+https://github.com/PaloAltoNetworks/docusaurus-openapi-docs/commit/55a26858333f83b109868c931d63a55ec58b50d7
+
+## Screenshots (if appropriate)
+
+<!--- Drag any screenshots here or delete this section -->
+
+## Types of changes
+
+<!--- What types of changes does your code introduce? -->
+<!--- PICK ONE: -->
+
+- Bug fix (non-breaking change which fixes an issue)
+
+## Checklist
+
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+
+- [ ] I have updated the documentation accordingly.
+- [ ] I have read the **CONTRIBUTING** document.
+- [x] I have added tests to cover my changes if appropriate.
+- [ ] All new and existing tests passed.
+","Test oneOf tabs showing correct information
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+new file mode 100644
+index 0000000..0232ff4
+--- /dev/null
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -0,0 +1,56 @@
++/* ============================================================================
++ * Copyright (c) Palo Alto Networks
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ * ========================================================================== */
++
++import * as prettier from ""prettier"";
++
++import { SchemaObject } from ""../openapi/types"";
++import { createNodes } from ""./createSchema"";
++
++describe(""createNodes"", () => {
++  it(""should create readable MODs for oneOf primitive properties"", () => {
++    const schema: SchemaObject = {
++      type: ""object"",
++      properties: {
++        oneOfProperty: {
++          oneOf: [
++            {
++              type: ""object"",
++              properties: {
++                noseLength: {
++                  type: ""number"",
++                },
++              },
++              required: [""noseLength""],
++              description: ""Clown's nose length"",
++            },
++            {
++              type: ""array"",
++              items: {
++                type: ""string"",
++              },
++              description: ""Array of strings"",
++            },
++            {
++              type: ""boolean"",
++            },
++            {
++              type: ""number"",
++            },
++            {
++              type: ""string"",
++            },
++          ],
++        },
++      },
++    };
++    expect(
++      createNodes(schema).map((md: any) =>
++        prettier.format(md, { parser: ""babel"" })
++      )
++    ).toMatchSnapshot();
++  });
++});
+",0,
+628,79ca6c477fd43b4b0ab61c1b86de41e228a5de08,3bb9bdc269cf5fb95364ae499d7c673ce38f8a45,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+`createAnyOneOfProperty` has an incomplete implementation and doesn't display all possible types at the moment, but only 'object' type. Reusing `createAnyOneOf` helps with making it display all possible mods.
+
+## Motivation and Context
+
+A bug in `createAnyOneOfProperty` prevents from seeing all mods and shows `MOD1`, `MOD2`, etc for primitive types and arrays.
+
+## How Has This Been Tested?
+
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, and the tests you ran to -->
+<!--- see how your change affects other areas of the code, etc. -->
+
+See the snapshot of the before and after:
+https://github.com/PaloAltoNetworks/docusaurus-openapi-docs/commit/55a26858333f83b109868c931d63a55ec58b50d7
+
+## Screenshots (if appropriate)
+
+<!--- Drag any screenshots here or delete this section -->
+
+## Types of changes
+
+<!--- What types of changes does your code introduce? -->
+<!--- PICK ONE: -->
+
+- Bug fix (non-breaking change which fixes an issue)
+
+## Checklist
+
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+
+- [ ] I have updated the documentation accordingly.
+- [ ] I have read the **CONTRIBUTING** document.
+- [x] I have added tests to cover my changes if appropriate.
+- [ ] All new and existing tests passed.
+","Test oneOf tabs showing correct information
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+new file mode 100644
+index 0000000..0232ff4
+--- /dev/null
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -0,0 +1,56 @@
++/* ============================================================================
++ * Copyright (c) Palo Alto Networks
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ * ========================================================================== */
++
++import * as prettier from ""prettier"";
++
++import { SchemaObject } from ""../openapi/types"";
++import { createNodes } from ""./createSchema"";
++
++describe(""createNodes"", () => {
++  it(""should create readable MODs for oneOf primitive properties"", () => {
++    const schema: SchemaObject = {
++      type: ""object"",
++      properties: {
++        oneOfProperty: {
++          oneOf: [
++            {
++              type: ""object"",
++              properties: {
++                noseLength: {
++                  type: ""number"",
++                },
++              },
++              required: [""noseLength""],
++              description: ""Clown's nose length"",
++            },
++            {
++              type: ""array"",
++              items: {
++                type: ""string"",
++              },
++              description: ""Array of strings"",
++            },
++            {
++              type: ""boolean"",
++            },
++            {
++              type: ""number"",
++            },
++            {
++              type: ""string"",
++            },
++          ],
++        },
++      },
++    };
++    expect(
++      createNodes(schema).map((md: any) =>
++        prettier.format(md, { parser: ""babel"" })
++      )
++    ).toMatchSnapshot();
++  });
++});
+",0,
+765,266db8f2dd4bfe2adf3320e0157c6ac0a35f3322,266db8f2dd4bfe2adf3320e0157c6ac0a35f3322,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Adds qualifier to primitive schema items.
+
+## Motivation and Context
+
+Addresses #747 
+
+## How Has This Been Tested?
+
+Tested using the OpenAPI snippet provided in #747 
+
+## Screenshots (if appropriate)
+
+<img width=""462"" alt=""Screenshot 2024-03-21 at 12 20 51 PM"" src=""https://github.com/PaloAltoNetworks/docusaurus-openapi-docs/assets/9343811/26fb21fb-2140-4453-b1e1-7c1f610fa0ea"">
+","update createSchema test
+",,0,
+765,266db8f2dd4bfe2adf3320e0157c6ac0a35f3322,266db8f2dd4bfe2adf3320e0157c6ac0a35f3322,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Adds qualifier to primitive schema items.
+
+## Motivation and Context
+
+Addresses #747 
+
+## How Has This Been Tested?
+
+Tested using the OpenAPI snippet provided in #747 
+
+## Screenshots (if appropriate)
+
+<img width=""462"" alt=""Screenshot 2024-03-21 at 12 20 51 PM"" src=""https://github.com/PaloAltoNetworks/docusaurus-openapi-docs/assets/9343811/26fb21fb-2140-4453-b1e1-7c1f610fa0ea"">
+","update createSchema test
+",,0,
+803,894b88b98cf5238c8faff5333120b998656234d6,894b88b98cf5238c8faff5333120b998656234d6,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Handle various schemas inside `additionalProperties` correctly (as far as I can tell).
+
+## Motivation and Context
+
+Trying to fix issues I have with properly displaying types in `additionalProperties`.
+
+## How Has This Been Tested?
+
+In unit tests and documentation.
+
+## Screenshots (if appropriate)
+
+<!--- Drag any screenshots here or delete this section -->
+
+## Types of changes
+
+<!--- What types of changes does your code introduce? -->
+<!--- PICK ONE: -->
+
+- Bug fix (non-breaking change which fixes an issue)
+
+## Checklist
+
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+
+- [x] I have updated the documentation accordingly.
+- [x] I have read the **CONTRIBUTING** document.
+- [x] I have added tests to cover my changes if appropriate.
+- [x] All new and existing tests passed.
+","handle various additionalProperties cases
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index eba7ac8..d628c0b 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -55,4 +55,91 @@ describe(""createNodes"", () => {
+       )
+     ).toMatchSnapshot();
+   });
++
++  describe(""additionalProperties"", () => {
++    it.each([
++      [
++        {
++          allOf: [
++            {
++              oneOf: [
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""nose""],
++                    },
++                  },
++                  required: [""type""],
++                },
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""mouth""],
++                    },
++                  },
++                  required: [""type""],
++                },
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""eyes""],
++                    },
++                    default: {
++                      type: ""string"",
++                    },
++                  },
++                  required: [""type""],
++                },
++              ],
++            },
++            {
++              type: ""object"",
++              properties: {
++                description: {
++                  type: ""string"",
++                  description: ""Description of the body part."",
++                },
++              },
++              required: [""description""],
++            },
++          ],
++        },
++      ],
++      [
++        {
++          type: ""array"",
++          items: { type: ""object"", properties: { a: ""string"", b: ""number"" } },
++        },
++      ],
++      [{ type: ""string"" }],
++      [{ type: ""number"" }],
++      [{ type: ""integer"" }],
++      [{ type: ""boolean"" }],
++      [false],
++      [true],
++      [{}],
++    ] as [SchemaObject[""additionalProperties""]][])(
++      ""should handle additionalProperties: %p"",
++      async (additionalProperties) => {
++        const schema: SchemaObject = {
++          type: ""object"",
++          additionalProperties,
++        };
++
++        expect(
++          await Promise.all(
++            createNodes(schema, ""request"").map(
++              async (md: any) => await prettier.format(md, { parser: ""babel"" })
++            )
++          )
++        ).toMatchSnapshot();
++      }
++    );
++  });
+ });
+",0,
+803,894b88b98cf5238c8faff5333120b998656234d6,894b88b98cf5238c8faff5333120b998656234d6,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Handle various schemas inside `additionalProperties` correctly (as far as I can tell).
+
+## Motivation and Context
+
+Trying to fix issues I have with properly displaying types in `additionalProperties`.
+
+## How Has This Been Tested?
+
+In unit tests and documentation.
+
+## Screenshots (if appropriate)
+
+<!--- Drag any screenshots here or delete this section -->
+
+## Types of changes
+
+<!--- What types of changes does your code introduce? -->
+<!--- PICK ONE: -->
+
+- Bug fix (non-breaking change which fixes an issue)
+
+## Checklist
+
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+
+- [x] I have updated the documentation accordingly.
+- [x] I have read the **CONTRIBUTING** document.
+- [x] I have added tests to cover my changes if appropriate.
+- [x] All new and existing tests passed.
+","handle various additionalProperties cases
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index eba7ac8..d628c0b 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -55,4 +55,91 @@ describe(""createNodes"", () => {
+       )
+     ).toMatchSnapshot();
+   });
++
++  describe(""additionalProperties"", () => {
++    it.each([
++      [
++        {
++          allOf: [
++            {
++              oneOf: [
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""nose""],
++                    },
++                  },
++                  required: [""type""],
++                },
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""mouth""],
++                    },
++                  },
++                  required: [""type""],
++                },
++                {
++                  type: ""object"",
++                  properties: {
++                    type: {
++                      type: ""string"",
++                      enum: [""eyes""],
++                    },
++                    default: {
++                      type: ""string"",
++                    },
++                  },
++                  required: [""type""],
++                },
++              ],
++            },
++            {
++              type: ""object"",
++              properties: {
++                description: {
++                  type: ""string"",
++                  description: ""Description of the body part."",
++                },
++              },
++              required: [""description""],
++            },
++          ],
++        },
++      ],
++      [
++        {
++          type: ""array"",
++          items: { type: ""object"", properties: { a: ""string"", b: ""number"" } },
++        },
++      ],
++      [{ type: ""string"" }],
++      [{ type: ""number"" }],
++      [{ type: ""integer"" }],
++      [{ type: ""boolean"" }],
++      [false],
++      [true],
++      [{}],
++    ] as [SchemaObject[""additionalProperties""]][])(
++      ""should handle additionalProperties: %p"",
++      async (additionalProperties) => {
++        const schema: SchemaObject = {
++          type: ""object"",
++          additionalProperties,
++        };
++
++        expect(
++          await Promise.all(
++            createNodes(schema, ""request"").map(
++              async (md: any) => await prettier.format(md, { parser: ""babel"" })
++            )
++          )
++        ).toMatchSnapshot();
++      }
++    );
++  });
+ });
+",0,
+894,6009db029ace5ec38917cf360526eed93eb8d6fc,fa8ff33600f611d1e31a924e2c227c65ea50eb1b,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Addresses issue reported in #889 
+
+This adds fix to v2.0.0 branch. Will port to v3 and address the remaining formatting issues.","update test snapshot
+",,0,
+894,6009db029ace5ec38917cf360526eed93eb8d6fc,fa8ff33600f611d1e31a924e2c227c65ea50eb1b,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Addresses issue reported in #889 
+
+This adds fix to v2.0.0 branch. Will port to v3 and address the remaining formatting issues.","update test snapshot
+",,0,
+904,858cc80a0e0a4e2a5b47a2531ec3b708998f78d8,92c4345a4471f9472e6f81550022ca7835457b6b,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Addresses #902 and proposed fix in #903. The root cause appeared to stem from the order in which same-level properties and allOf were being evaluated which led to the properties being ignored.
+
+I added a small test to cover this case with plans to add coverage for additional variations in a later PR.","update tests
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index 978fcbf..cb89c06 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -11,50 +11,88 @@ import { createNodes } from ""./createSchema"";
+ import { SchemaObject } from ""../openapi/types"";
+ 
+ describe(""createNodes"", () => {
+-  it(""should create readable MODs for oneOf primitive properties"", async () => {
+-    const schema: SchemaObject = {
+-      ""x-tags"": [""clown""],
+-      type: ""object"",
+-      properties: {
+-        oneOfProperty: {
+-          oneOf: [
+-            {
+-              type: ""object"",
+-              properties: {
+-                noseLength: {
+-                  type: ""number"",
++  describe(""oneOf"", () => {
++    it(""should create readable MODs for oneOf primitive properties"", async () => {
++      const schema: SchemaObject = {
++        ""x-tags"": [""clown""],
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  noseLength: {
++                    type: ""number"",
++                  },
+                 },
++                required: [""noseLength""],
++                description: ""Clown's nose length"",
+               },
+-              required: [""noseLength""],
+-              description: ""Clown's nose length"",
+-            },
+-            {
+-              type: ""array"",
+-              items: {
++              {
++                type: ""array"",
++                items: {
++                  type: ""string"",
++                },
++                description: ""Array of strings"",
++              },
++              {
++                type: ""boolean"",
++              },
++              {
++                type: ""number"",
++              },
++              {
++                type: ""string"",
++              },
++            ],
++          },
++        },
++      };
++      expect(
++        await Promise.all(
++          createNodes(schema, ""request"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++  });
++
++  describe(""allOf"", () => {
++    it(""should render same-level properties with allOf"", async () => {
++      const schema: SchemaObject = {
++        allOf: [
++          {
++            type: ""object"",
++            properties: {
++              allOfProp1: {
++                type: ""string"",
++              },
++              allOfProp2: {
+                 type: ""string"",
+               },
+-              description: ""Array of strings"",
+-            },
+-            {
+-              type: ""boolean"",
+-            },
+-            {
+-              type: ""number"",
+-            },
+-            {
+-              type: ""string"",
+             },
+-          ],
++          },
++        ],
++        properties: {
++          parentProp1: {
++            type: ""string"",
++          },
++          parentProp2: {
++            type: ""string"",
++          },
+         },
+-      },
+-    };
+-    expect(
+-      await Promise.all(
+-        createNodes(schema, ""request"").map(
+-          async (md: any) => await prettier.format(md, { parser: ""babel"" })
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
+         )
+-      )
+-    ).toMatchSnapshot();
++      ).toMatchSnapshot();
++    });
+   });
+ 
+   describe(""additionalProperties"", () => {
+",0,
+904,858cc80a0e0a4e2a5b47a2531ec3b708998f78d8,92c4345a4471f9472e6f81550022ca7835457b6b,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Addresses #902 and proposed fix in #903. The root cause appeared to stem from the order in which same-level properties and allOf were being evaluated which led to the properties being ignored.
+
+I added a small test to cover this case with plans to add coverage for additional variations in a later PR.","update tests
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index 978fcbf..cb89c06 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -11,50 +11,88 @@ import { createNodes } from ""./createSchema"";
+ import { SchemaObject } from ""../openapi/types"";
+ 
+ describe(""createNodes"", () => {
+-  it(""should create readable MODs for oneOf primitive properties"", async () => {
+-    const schema: SchemaObject = {
+-      ""x-tags"": [""clown""],
+-      type: ""object"",
+-      properties: {
+-        oneOfProperty: {
+-          oneOf: [
+-            {
+-              type: ""object"",
+-              properties: {
+-                noseLength: {
+-                  type: ""number"",
++  describe(""oneOf"", () => {
++    it(""should create readable MODs for oneOf primitive properties"", async () => {
++      const schema: SchemaObject = {
++        ""x-tags"": [""clown""],
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  noseLength: {
++                    type: ""number"",
++                  },
+                 },
++                required: [""noseLength""],
++                description: ""Clown's nose length"",
+               },
+-              required: [""noseLength""],
+-              description: ""Clown's nose length"",
+-            },
+-            {
+-              type: ""array"",
+-              items: {
++              {
++                type: ""array"",
++                items: {
++                  type: ""string"",
++                },
++                description: ""Array of strings"",
++              },
++              {
++                type: ""boolean"",
++              },
++              {
++                type: ""number"",
++              },
++              {
++                type: ""string"",
++              },
++            ],
++          },
++        },
++      };
++      expect(
++        await Promise.all(
++          createNodes(schema, ""request"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++  });
++
++  describe(""allOf"", () => {
++    it(""should render same-level properties with allOf"", async () => {
++      const schema: SchemaObject = {
++        allOf: [
++          {
++            type: ""object"",
++            properties: {
++              allOfProp1: {
++                type: ""string"",
++              },
++              allOfProp2: {
+                 type: ""string"",
+               },
+-              description: ""Array of strings"",
+-            },
+-            {
+-              type: ""boolean"",
+-            },
+-            {
+-              type: ""number"",
+-            },
+-            {
+-              type: ""string"",
+             },
+-          ],
++          },
++        ],
++        properties: {
++          parentProp1: {
++            type: ""string"",
++          },
++          parentProp2: {
++            type: ""string"",
++          },
+         },
+-      },
+-    };
+-    expect(
+-      await Promise.all(
+-        createNodes(schema, ""request"").map(
+-          async (md: any) => await prettier.format(md, { parser: ""babel"" })
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
+         )
+-      )
+-    ).toMatchSnapshot();
++      ).toMatchSnapshot();
++    });
+   });
+ 
+   describe(""additionalProperties"", () => {
+",0,
+924,b09bad7eff5b3e23922ef12330f775cf6bd648a0,b09bad7eff5b3e23922ef12330f775cf6bd648a0,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Adds coverage for additional oneOf test cases. Tests cases not supported are commented out for future work.","Add additional oneOf tests
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index a9a4f96..35f0342 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -57,6 +57,193 @@ describe(""createNodes"", () => {
+         )
+       ).toMatchSnapshot();
+     });
++
++    it(""should handle oneOf with different primitive types"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              { type: ""string"" },
++              { type: ""number"" },
++              { type: ""boolean"" },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle oneOf with complex types"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  objectProp: { type: ""string"" },
++                },
++              },
++              {
++                type: ""array"",
++                items: { type: ""number"" },
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle nested oneOf clauses"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  nestedOneOfProp: {
++                    oneOf: [{ type: ""string"" }, { type: ""number"" }],
++                  },
++                },
++              },
++              { type: ""boolean"" },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    // TypeError: Cannot read properties of undefined (reading 'length')
++    // eslint-disable-next-line jest/no-commented-out-tests
++    // it(""should handle oneOf with discriminator"", async () => {
++    //   const schema: SchemaObject = {
++    //     type: ""object"",
++    //     discriminator: { propertyName: ""type"" },
++    //     properties: {
++    //       type: { type: ""string"" },
++    //     },
++    //     oneOf: [
++    //       {
++    //         type: ""object"",
++    //         properties: {
++    //           type: { type: ""string"", enum: [""typeA""] },
++    //           propA: { type: ""string"" },
++    //         },
++    //         required: [""type""],
++    //       },
++    //       {
++    //         type: ""object"",
++    //         properties: {
++    //           type: { type: ""string"", enum: [""typeB""] },
++    //           propB: { type: ""number"" },
++    //         },
++    //         required: [""type""],
++    //       },
++    //     ],
++    //   };
++
++    //   expect(
++    //     await Promise.all(
++    //       createNodes(schema, ""response"").map(
++    //         async (md: any) => await prettier.format(md, { parser: ""babel"" })
++    //       )
++    //     )
++    //   ).toMatchSnapshot();
++    // });
++
++    it(""should handle oneOf with shared properties"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          sharedProp: { type: ""string"" },
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  specificPropA: { type: ""string"" },
++                },
++              },
++              {
++                type: ""object"",
++                properties: {
++                  specificPropB: { type: ""number"" },
++                },
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle oneOf with required properties"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  requiredPropA: { type: ""string"" },
++                },
++                required: [""requiredPropA""],
++              },
++              {
++                type: ""object"",
++                properties: {
++                  requiredPropB: { type: ""number"" },
++                },
++                required: [""requiredPropB""],
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
+   });
+ 
+   describe(""allOf"", () => {
+",0,
+924,b09bad7eff5b3e23922ef12330f775cf6bd648a0,b09bad7eff5b3e23922ef12330f775cf6bd648a0,packages/docusaurus-plugin-openapi-docs/src/markdown/__snapshots__/createSchema.test.ts.snap,packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts,"## Description
+
+Adds coverage for additional oneOf test cases. Tests cases not supported are commented out for future work.","Add additional oneOf tests
+","diff --git a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+index a9a4f96..35f0342 100644
+--- a/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
++++ b/packages/docusaurus-plugin-openapi-docs/src/markdown/createSchema.test.ts
+@@ -57,6 +57,193 @@ describe(""createNodes"", () => {
+         )
+       ).toMatchSnapshot();
+     });
++
++    it(""should handle oneOf with different primitive types"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              { type: ""string"" },
++              { type: ""number"" },
++              { type: ""boolean"" },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle oneOf with complex types"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  objectProp: { type: ""string"" },
++                },
++              },
++              {
++                type: ""array"",
++                items: { type: ""number"" },
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle nested oneOf clauses"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  nestedOneOfProp: {
++                    oneOf: [{ type: ""string"" }, { type: ""number"" }],
++                  },
++                },
++              },
++              { type: ""boolean"" },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    // TypeError: Cannot read properties of undefined (reading 'length')
++    // eslint-disable-next-line jest/no-commented-out-tests
++    // it(""should handle oneOf with discriminator"", async () => {
++    //   const schema: SchemaObject = {
++    //     type: ""object"",
++    //     discriminator: { propertyName: ""type"" },
++    //     properties: {
++    //       type: { type: ""string"" },
++    //     },
++    //     oneOf: [
++    //       {
++    //         type: ""object"",
++    //         properties: {
++    //           type: { type: ""string"", enum: [""typeA""] },
++    //           propA: { type: ""string"" },
++    //         },
++    //         required: [""type""],
++    //       },
++    //       {
++    //         type: ""object"",
++    //         properties: {
++    //           type: { type: ""string"", enum: [""typeB""] },
++    //           propB: { type: ""number"" },
++    //         },
++    //         required: [""type""],
++    //       },
++    //     ],
++    //   };
++
++    //   expect(
++    //     await Promise.all(
++    //       createNodes(schema, ""response"").map(
++    //         async (md: any) => await prettier.format(md, { parser: ""babel"" })
++    //       )
++    //     )
++    //   ).toMatchSnapshot();
++    // });
++
++    it(""should handle oneOf with shared properties"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          sharedProp: { type: ""string"" },
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  specificPropA: { type: ""string"" },
++                },
++              },
++              {
++                type: ""object"",
++                properties: {
++                  specificPropB: { type: ""number"" },
++                },
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
++
++    it(""should handle oneOf with required properties"", async () => {
++      const schema: SchemaObject = {
++        type: ""object"",
++        properties: {
++          oneOfProperty: {
++            oneOf: [
++              {
++                type: ""object"",
++                properties: {
++                  requiredPropA: { type: ""string"" },
++                },
++                required: [""requiredPropA""],
++              },
++              {
++                type: ""object"",
++                properties: {
++                  requiredPropB: { type: ""number"" },
++                },
++                required: [""requiredPropB""],
++              },
++            ],
++          },
++        },
++      };
++
++      expect(
++        await Promise.all(
++          createNodes(schema, ""response"").map(
++            async (md: any) => await prettier.format(md, { parser: ""babel"" })
++          )
++        )
++      ).toMatchSnapshot();
++    });
+   });
+ 
+   describe(""allOf"", () => {
+",0,

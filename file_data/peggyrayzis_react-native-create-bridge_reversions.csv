@@ -1,0 +1,2613 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+new file mode 100644
+index 0000000..8301373
+--- /dev/null
++++ b/__tests__/android-java.js
+@@ -0,0 +1,40 @@
++import path from ""path"";
++import { readFile, parseFile } from ""../src/file-operations"";
++
++describe(""Android/Java"", () => {
++  const templateName = ""TestModule"";
++  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-java"");
++
++  it(""creates a TemplateManager.java"", async () => {
++    const fileData = await readFile(""TemplateManager.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplateModule.java"", async () => {
++    const fileData = await readFile(""TemplateModule.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplatePackage.java"", async () => {
++    const fileData = await readFile(""TemplatePackage.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+new file mode 100644
+index 0000000..f8bebc9
+--- /dev/null
++++ b/__tests__/android-kotlin.js
+@@ -0,0 +1,40 @@
++import path from ""path"";
++import { readFile, parseFile } from ""../src/file-operations"";
++
++describe(""Android/Kotlin"", () => {
++  const templateName = ""TestModule"";
++  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-kotlin"");
++
++  it(""creates a TemplateManager.kt"", async () => {
++    const fileData = await readFile(""TemplateManager.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplateModule.kt"", async () => {
++    const fileData = await readFile(""TemplateModule.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplatePackage.kt"", async () => {
++    const fileData = await readFile(""TemplatePackage.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android.test.js.snap,__tests__/android.test.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android.test.js b/__tests__/android.test.js
+deleted file mode 100644
+index 1850870..0000000
+--- a/__tests__/android.test.js
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('Android/Java', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'android')
+-
+-  it('creates a TemplateManager.java', async () => {
+-    const fileData = await readFile('TemplateManager.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-
+-  it('creates a TemplateModule.java', async () => {
+-    const fileData = await readFile('TemplateModule.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-
+-  it('creates a TemplatePackage.java', async () => {
+-    const fileData = await readFile('TemplatePackage.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
+",0,
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+new file mode 100644
+index 0000000..8301373
+--- /dev/null
++++ b/__tests__/android-java.js
+@@ -0,0 +1,40 @@
++import path from ""path"";
++import { readFile, parseFile } from ""../src/file-operations"";
++
++describe(""Android/Java"", () => {
++  const templateName = ""TestModule"";
++  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-java"");
++
++  it(""creates a TemplateManager.java"", async () => {
++    const fileData = await readFile(""TemplateManager.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplateModule.java"", async () => {
++    const fileData = await readFile(""TemplateModule.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplatePackage.java"", async () => {
++    const fileData = await readFile(""TemplatePackage.java"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+new file mode 100644
+index 0000000..f8bebc9
+--- /dev/null
++++ b/__tests__/android-kotlin.js
+@@ -0,0 +1,40 @@
++import path from ""path"";
++import { readFile, parseFile } from ""../src/file-operations"";
++
++describe(""Android/Kotlin"", () => {
++  const templateName = ""TestModule"";
++  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-kotlin"");
++
++  it(""creates a TemplateManager.kt"", async () => {
++    const fileData = await readFile(""TemplateManager.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplateModule.kt"", async () => {
++    const fileData = await readFile(""TemplateModule.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it(""creates a TemplatePackage.kt"", async () => {
++    const fileData = await readFile(""TemplatePackage.kt"", readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      ""testapp""
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+10,07cc2999ed82ecb922f592244e9be72bd0989781,188f9f04d341acb159bebe4a1391b225b4c516a9,__tests__/__snapshots__/android.test.js.snap,__tests__/android.test.js,"- added support for Kotlin
+- updated snapshots, wrote tests
+- added prettier commit hook
+
+todo: update README w/ instructions for adding kotlin runtime","feat(kotlin): added kotlin support & prettier commit hook
+","diff --git a/__tests__/android.test.js b/__tests__/android.test.js
+deleted file mode 100644
+index 1850870..0000000
+--- a/__tests__/android.test.js
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('Android/Java', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'android')
+-
+-  it('creates a TemplateManager.java', async () => {
+-    const fileData = await readFile('TemplateManager.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-
+-  it('creates a TemplateModule.java', async () => {
+-    const fileData = await readFile('TemplateModule.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-
+-  it('creates a TemplatePackage.java', async () => {
+-    const fileData = await readFile('TemplatePackage.java', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName, templateName.toLowerCase(), 'testapp')
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+index 8301373..cc988d3 100644
+--- a/__tests__/android-java.js
++++ b/__tests__/android-java.js
+@@ -1,39 +1,111 @@
+-import path from ""path"";
+-import { readFile, parseFile } from ""../src/file-operations"";
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe(""Android/Java"", () => {
+-  const templateName = ""TestModule"";
+-  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-java"");
++describe('Android/Java: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'android-java',
++  );
+ 
+-  it(""creates a TemplateManager.java"", async () => {
+-    const fileData = await readFile(""TemplateManager.java"", readDirPath);
++  it('creates a TemplateManager.java', async () => {
++    const fileData = await readFile('TemplateManager.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplateModule.java"", async () => {
+-    const fileData = await readFile(""TemplateModule.java"", readDirPath);
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Java: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'android-java',
++  );
++
++  it('creates a TemplateModule.java', async () => {
++    const fileData = await readFile('TemplateModule.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Java: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'android-java',
++  );
++
++  it('creates a TemplateManager.java', async () => {
++    const fileData = await readFile('TemplateManager.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateModule.java', async () => {
++    const fileData = await readFile('TemplateModule.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplatePackage.java"", async () => {
+-    const fileData = await readFile(""TemplatePackage.java"", readDirPath);
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+index f8bebc9..2ecbfa4 100644
+--- a/__tests__/android-kotlin.js
++++ b/__tests__/android-kotlin.js
+@@ -1,39 +1,111 @@
+-import path from ""path"";
+-import { readFile, parseFile } from ""../src/file-operations"";
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe(""Android/Kotlin"", () => {
+-  const templateName = ""TestModule"";
+-  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-kotlin"");
++describe('Android/Kotlin: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'android-kotlin',
++  );
+ 
+-  it(""creates a TemplateManager.kt"", async () => {
+-    const fileData = await readFile(""TemplateManager.kt"", readDirPath);
++  it('creates a TemplateManager.kt', async () => {
++    const fileData = await readFile('TemplateManager.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplateModule.kt"", async () => {
+-    const fileData = await readFile(""TemplateModule.kt"", readDirPath);
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Kotlin: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'android-kotlin',
++  );
++
++  it('creates a TemplateModule.kt', async () => {
++    const fileData = await readFile('TemplateModule.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Kotlin: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'android-kotlin',
++  );
++
++  it('creates a TemplateManager.kt', async () => {
++    const fileData = await readFile('TemplateManager.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateModule.kt', async () => {
++    const fileData = await readFile('TemplateModule.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplatePackage.kt"", async () => {
+-    const fileData = await readFile(""TemplatePackage.kt"", readDirPath);
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/ios-objc.test.js.snap,__tests__/ios-objc.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/ios-objc.test.js b/__tests__/ios-objc.test.js
+index 06e43a2..1114047 100644
+--- a/__tests__/ios-objc.test.js
++++ b/__tests__/ios-objc.test.js
+@@ -1,24 +1,83 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('iOS/Obj-C', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'ios-objc')
+-  const pkg = {
+-    dependencies: {
+-      'react-native': '0.4'
+-    }
+-  }
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
++
++describe('iOS/Obj-C: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'ios-objc',
++  );
++
++  it('creates a Template.h', async () => {
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.h', async () => {
++    const fileData = await readFile('TemplateManager.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.m', async () => {
++    const fileData = await readFile('TemplateManager.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Obj-C: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'ios-objc',
++  );
++
++  it('creates a Template.h', async () => {
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Obj-C: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'ios-objc',
++  );
+ 
+   it('creates a Template.h', async () => {
+-    const fileData = await readFile('Template.h', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateManager.m', async () => {
+-    const fileData = await readFile('TemplateManager.m', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateManager.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/ios-swift.test.js.snap,__tests__/ios-swift.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/ios-swift.test.js b/__tests__/ios-swift.test.js
+index 35fa616..05b258d 100644
+--- a/__tests__/ios-swift.test.js
++++ b/__tests__/ios-swift.test.js
+@@ -1,24 +1,95 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('iOS/Swift', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'ios-swift')
+-  const pkg = {
+-    dependencies: {
+-      'react-native': '0.4'
+-    }
+-  }
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
++
++describe('iOS/Swift: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.swift', async () => {
++    const fileData = await readFile('TemplateManager.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateView.swift', async () => {
++    const fileData = await readFile('TemplateView.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Swift: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.swift', async () => {
++    const fileData = await readFile('Template.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Swift: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a Template.m', async () => {
+-    const fileData = await readFile('Template.m', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateManager.swift', async () => {
+-    const fileData = await readFile('TemplateManager.swift', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateManager.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/javascript.test.js.snap,__tests__/javascript.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/javascript.test.js b/__tests__/javascript.test.js
+index 25de0cd..f2cef5f 100644
+--- a/__tests__/javascript.test.js
++++ b/__tests__/javascript.test.js
+@@ -1,19 +1,47 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe('JS', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'js')
++describe('JS: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(__dirname, '..', 'templates', 'combined', 'js');
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+-    const fileData = await readFile('TemplateNativeModule.js', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('TemplateNativeModule.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateNativeView.js', async () => {
+-    const fileData = await readFile('TemplateNativeView.js', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateNativeView.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('JS: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(__dirname, '..', 'templates', 'modules', 'js');
++
++  it('creates a TemplateNativeModule.js', async () => {
++    const fileData = await readFile('TemplateNativeModule.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('JS: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'js',
++  );
++
++  it('creates a TemplateNativeView.js', async () => {
++    const fileData = await readFile('TemplateNativeView.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+index 8301373..cc988d3 100644
+--- a/__tests__/android-java.js
++++ b/__tests__/android-java.js
+@@ -1,39 +1,111 @@
+-import path from ""path"";
+-import { readFile, parseFile } from ""../src/file-operations"";
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe(""Android/Java"", () => {
+-  const templateName = ""TestModule"";
+-  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-java"");
++describe('Android/Java: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'android-java',
++  );
+ 
+-  it(""creates a TemplateManager.java"", async () => {
+-    const fileData = await readFile(""TemplateManager.java"", readDirPath);
++  it('creates a TemplateManager.java', async () => {
++    const fileData = await readFile('TemplateManager.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplateModule.java"", async () => {
+-    const fileData = await readFile(""TemplateModule.java"", readDirPath);
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Java: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'android-java',
++  );
++
++  it('creates a TemplateModule.java', async () => {
++    const fileData = await readFile('TemplateModule.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Java: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'android-java',
++  );
++
++  it('creates a TemplateManager.java', async () => {
++    const fileData = await readFile('TemplateManager.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateModule.java', async () => {
++    const fileData = await readFile('TemplateModule.java', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplatePackage.java"", async () => {
+-    const fileData = await readFile(""TemplatePackage.java"", readDirPath);
++  it('creates a TemplatePackage.java', async () => {
++    const fileData = await readFile('TemplatePackage.java', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+index f8bebc9..2ecbfa4 100644
+--- a/__tests__/android-kotlin.js
++++ b/__tests__/android-kotlin.js
+@@ -1,39 +1,111 @@
+-import path from ""path"";
+-import { readFile, parseFile } from ""../src/file-operations"";
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe(""Android/Kotlin"", () => {
+-  const templateName = ""TestModule"";
+-  const readDirPath = path.join(__dirname, "".."", ""templates"", ""android-kotlin"");
++describe('Android/Kotlin: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'android-kotlin',
++  );
+ 
+-  it(""creates a TemplateManager.kt"", async () => {
+-    const fileData = await readFile(""TemplateManager.kt"", readDirPath);
++  it('creates a TemplateManager.kt', async () => {
++    const fileData = await readFile('TemplateManager.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplateModule.kt"", async () => {
+-    const fileData = await readFile(""TemplateModule.kt"", readDirPath);
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Kotlin: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'android-kotlin',
++  );
++
++  it('creates a TemplateModule.kt', async () => {
++    const fileData = await readFile('TemplateModule.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('Android/Kotlin: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'android-kotlin',
++  );
++
++  it('creates a TemplateManager.kt', async () => {
++    const fileData = await readFile('TemplateManager.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
++    );
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateModule.kt', async () => {
++    const fileData = await readFile('TemplateModule.kt', readDirPath);
++    const parsedFile = parseFile(
++      fileData,
++      templateName,
++      templateName.toLowerCase(),
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+-  it(""creates a TemplatePackage.kt"", async () => {
+-    const fileData = await readFile(""TemplatePackage.kt"", readDirPath);
++  it('creates a TemplatePackage.kt', async () => {
++    const fileData = await readFile('TemplatePackage.kt', readDirPath);
+     const parsedFile = parseFile(
+       fileData,
+       templateName,
+       templateName.toLowerCase(),
+-      ""testapp""
++      'testapp',
+     );
+     expect(parsedFile).toMatchSnapshot();
+   });
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/ios-objc.test.js.snap,__tests__/ios-objc.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/ios-objc.test.js b/__tests__/ios-objc.test.js
+index 06e43a2..1114047 100644
+--- a/__tests__/ios-objc.test.js
++++ b/__tests__/ios-objc.test.js
+@@ -1,24 +1,83 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('iOS/Obj-C', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'ios-objc')
+-  const pkg = {
+-    dependencies: {
+-      'react-native': '0.4'
+-    }
+-  }
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
++
++describe('iOS/Obj-C: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'ios-objc',
++  );
++
++  it('creates a Template.h', async () => {
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.h', async () => {
++    const fileData = await readFile('TemplateManager.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.m', async () => {
++    const fileData = await readFile('TemplateManager.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Obj-C: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'ios-objc',
++  );
++
++  it('creates a Template.h', async () => {
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Obj-C: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'ios-objc',
++  );
+ 
+   it('creates a Template.h', async () => {
+-    const fileData = await readFile('Template.h', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('Template.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateManager.m', async () => {
+-    const fileData = await readFile('TemplateManager.m', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateManager.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/ios-swift.test.js.snap,__tests__/ios-swift.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/ios-swift.test.js b/__tests__/ios-swift.test.js
+index 35fa616..05b258d 100644
+--- a/__tests__/ios-swift.test.js
++++ b/__tests__/ios-swift.test.js
+@@ -1,24 +1,95 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
+-
+-describe('iOS/Swift', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'ios-swift')
+-  const pkg = {
+-    dependencies: {
+-      'react-native': '0.4'
+-    }
+-  }
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
++
++describe('iOS/Swift: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateManager.swift', async () => {
++    const fileData = await readFile('TemplateManager.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a TemplateView.swift', async () => {
++    const fileData = await readFile('TemplateView.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Swift: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'modules',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.m', async () => {
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++
++  it('creates a Template.swift', async () => {
++    const fileData = await readFile('Template.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('iOS/Swift: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'combined',
++    'ios-swift',
++  );
++
++  it('creates a Template-Bridging-Header.h', async () => {
++    const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a Template.m', async () => {
+-    const fileData = await readFile('Template.m', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('Template.m', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateManager.swift', async () => {
+-    const fileData = await readFile('TemplateManager.swift', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateManager.swift', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+13,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,1563c9b6bedc0bd6b09a8bf9e4a063528efaf810,__tests__/__snapshots__/javascript.test.js.snap,__tests__/javascript.test.js,"Users will be able to choose whether they want to scaffold a native module or UI component. They also have the option of choosing both, in which case the templates will be the original ones.
+
+TODO:
+- Clean up `modules` templates
+- Make sure all links to the docs are up to date
+- Fix the tests","fix(tests): updated snapshots, added new tests for split out templates
+","diff --git a/__tests__/javascript.test.js b/__tests__/javascript.test.js
+index 25de0cd..f2cef5f 100644
+--- a/__tests__/javascript.test.js
++++ b/__tests__/javascript.test.js
+@@ -1,19 +1,47 @@
+-import path from 'path'
+-import { readFile, parseFile } from '../src/file-operations'
++import path from 'path';
++import { readFile, parseFile } from '../src/file-operations';
+ 
+-describe('JS', () => {
+-  const templateName = 'TestModule'
+-  const readDirPath = path.join(__dirname, '..', 'templates', 'js')
++describe('JS: Combined', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(__dirname, '..', 'templates', 'combined', 'js');
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+-    const fileData = await readFile('TemplateNativeModule.js', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
++    const fileData = await readFile('TemplateNativeModule.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
+ 
+   it('creates a TemplateNativeView.js', async () => {
+-    const fileData = await readFile('TemplateNativeView.js', readDirPath)
+-    const parsedFile = parseFile(fileData, templateName)
+-    expect(parsedFile).toMatchSnapshot()
+-  })
+-})
++    const fileData = await readFile('TemplateNativeView.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('JS: Native Modules', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(__dirname, '..', 'templates', 'modules', 'js');
++
++  it('creates a TemplateNativeModule.js', async () => {
++    const fileData = await readFile('TemplateNativeModule.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
++
++describe('JS: UI Components', () => {
++  const templateName = 'TestModule';
++  const readDirPath = path.join(
++    __dirname,
++    '..',
++    'templates',
++    'ui-components',
++    'js',
++  );
++
++  it('creates a TemplateNativeView.js', async () => {
++    const fileData = await readFile('TemplateNativeView.js', readDirPath);
++    const parsedFile = parseFile(fileData, templateName);
++    expect(parsedFile).toMatchSnapshot();
++  });
++});
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+index cc988d3..9ac01b4 100644
+--- a/__tests__/android-java.js
++++ b/__tests__/android-java.js
+@@ -10,26 +10,22 @@ describe('Android/Java: UI Components', () => {
+     'ui-components',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.java', async () => {
+     const fileData = await readFile('TemplateManager.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -43,26 +39,22 @@ describe('Android/Java: Native Modules', () => {
+     'modules',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateModule.java', async () => {
+     const fileData = await readFile('TemplateModule.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -76,37 +68,28 @@ describe('Android/Java: Combined', () => {
+     'combined',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.java', async () => {
+     const fileData = await readFile('TemplateManager.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateModule.java', async () => {
+     const fileData = await readFile('TemplateModule.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+index 2ecbfa4..a018218 100644
+--- a/__tests__/android-kotlin.js
++++ b/__tests__/android-kotlin.js
+@@ -10,26 +10,22 @@ describe('Android/Kotlin: UI Components', () => {
+     'ui-components',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.kt', async () => {
+     const fileData = await readFile('TemplateManager.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -43,26 +39,22 @@ describe('Android/Kotlin: Native Modules', () => {
+     'modules',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateModule.kt', async () => {
+     const fileData = await readFile('TemplateModule.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -76,37 +68,28 @@ describe('Android/Kotlin: Combined', () => {
+     'combined',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.kt', async () => {
+     const fileData = await readFile('TemplateManager.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateModule.kt', async () => {
+     const fileData = await readFile('TemplateModule.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/ios-objc.test.js.snap,__tests__/ios-objc.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/ios-objc.test.js b/__tests__/ios-objc.test.js
+index 1114047..fa7180e 100644
+--- a/__tests__/ios-objc.test.js
++++ b/__tests__/ios-objc.test.js
+@@ -13,25 +13,25 @@ describe('iOS/Obj-C: UI Components', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.h', async () => {
+     const fileData = await readFile('TemplateManager.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.m', async () => {
+     const fileData = await readFile('TemplateManager.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -48,13 +48,13 @@ describe('iOS/Obj-C: Native Modules', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -71,13 +71,13 @@ describe('iOS/Obj-C: Combined', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.m', async () => {
+     const fileData = await readFile('TemplateManager.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/ios-swift.test.js.snap,__tests__/ios-swift.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/ios-swift.test.js b/__tests__/ios-swift.test.js
+index 05b258d..5d002f0 100644
+--- a/__tests__/ios-swift.test.js
++++ b/__tests__/ios-swift.test.js
+@@ -13,25 +13,25 @@ describe('iOS/Swift: UI Components', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.swift', async () => {
+     const fileData = await readFile('TemplateManager.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateView.swift', async () => {
+     const fileData = await readFile('TemplateView.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -48,19 +48,19 @@ describe('iOS/Swift: Native Modules', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.swift', async () => {
+     const fileData = await readFile('Template.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -77,19 +77,19 @@ describe('iOS/Swift: Combined', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.swift', async () => {
+     const fileData = await readFile('TemplateManager.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/javascript.test.js.snap,__tests__/javascript.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/javascript.test.js b/__tests__/javascript.test.js
+index f2cef5f..0ff72ab 100644
+--- a/__tests__/javascript.test.js
++++ b/__tests__/javascript.test.js
+@@ -7,13 +7,13 @@ describe('JS: Combined', () => {
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+     const fileData = await readFile('TemplateNativeModule.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateNativeView.js', async () => {
+     const fileData = await readFile('TemplateNativeView.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -24,7 +24,7 @@ describe('JS: Native Modules', () => {
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+     const fileData = await readFile('TemplateNativeModule.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -41,7 +41,7 @@ describe('JS: UI Components', () => {
+ 
+   it('creates a TemplateNativeView.js', async () => {
+     const fileData = await readFile('TemplateNativeView.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/android-java.js.snap,__tests__/android-java.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/android-java.js b/__tests__/android-java.js
+index cc988d3..9ac01b4 100644
+--- a/__tests__/android-java.js
++++ b/__tests__/android-java.js
+@@ -10,26 +10,22 @@ describe('Android/Java: UI Components', () => {
+     'ui-components',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.java', async () => {
+     const fileData = await readFile('TemplateManager.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -43,26 +39,22 @@ describe('Android/Java: Native Modules', () => {
+     'modules',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateModule.java', async () => {
+     const fileData = await readFile('TemplateModule.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -76,37 +68,28 @@ describe('Android/Java: Combined', () => {
+     'combined',
+     'android-java',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.java', async () => {
+     const fileData = await readFile('TemplateManager.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateModule.java', async () => {
+     const fileData = await readFile('TemplateModule.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.java', async () => {
+     const fileData = await readFile('TemplatePackage.java', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/android-kotlin.js.snap,__tests__/android-kotlin.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/android-kotlin.js b/__tests__/android-kotlin.js
+index 2ecbfa4..a018218 100644
+--- a/__tests__/android-kotlin.js
++++ b/__tests__/android-kotlin.js
+@@ -10,26 +10,22 @@ describe('Android/Kotlin: UI Components', () => {
+     'ui-components',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.kt', async () => {
+     const fileData = await readFile('TemplateManager.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -43,26 +39,22 @@ describe('Android/Kotlin: Native Modules', () => {
+     'modules',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateModule.kt', async () => {
+     const fileData = await readFile('TemplateModule.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -76,37 +68,28 @@ describe('Android/Kotlin: Combined', () => {
+     'combined',
+     'android-kotlin',
+   );
++  const config = {
++    templateName,
++    packageName: templateName.toLowerCase(),
++    app: 'testapp',
++    rnVersion: '0.47.2',
++  };
+ 
+   it('creates a TemplateManager.kt', async () => {
+     const fileData = await readFile('TemplateManager.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateModule.kt', async () => {
+     const fileData = await readFile('TemplateModule.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplatePackage.kt', async () => {
+     const fileData = await readFile('TemplatePackage.kt', readDirPath);
+-    const parsedFile = parseFile(
+-      fileData,
+-      templateName,
+-      templateName.toLowerCase(),
+-      'testapp',
+-    );
++    const parsedFile = parseFile(fileData, config);
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/ios-objc.test.js.snap,__tests__/ios-objc.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/ios-objc.test.js b/__tests__/ios-objc.test.js
+index 1114047..fa7180e 100644
+--- a/__tests__/ios-objc.test.js
++++ b/__tests__/ios-objc.test.js
+@@ -13,25 +13,25 @@ describe('iOS/Obj-C: UI Components', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.h', async () => {
+     const fileData = await readFile('TemplateManager.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.m', async () => {
+     const fileData = await readFile('TemplateManager.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -48,13 +48,13 @@ describe('iOS/Obj-C: Native Modules', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -71,13 +71,13 @@ describe('iOS/Obj-C: Combined', () => {
+ 
+   it('creates a Template.h', async () => {
+     const fileData = await readFile('Template.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.m', async () => {
+     const fileData = await readFile('TemplateManager.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/ios-swift.test.js.snap,__tests__/ios-swift.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/ios-swift.test.js b/__tests__/ios-swift.test.js
+index 05b258d..5d002f0 100644
+--- a/__tests__/ios-swift.test.js
++++ b/__tests__/ios-swift.test.js
+@@ -13,25 +13,25 @@ describe('iOS/Swift: UI Components', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.swift', async () => {
+     const fileData = await readFile('TemplateManager.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateView.swift', async () => {
+     const fileData = await readFile('TemplateView.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -48,19 +48,19 @@ describe('iOS/Swift: Native Modules', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.swift', async () => {
+     const fileData = await readFile('Template.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -77,19 +77,19 @@ describe('iOS/Swift: Combined', () => {
+ 
+   it('creates a Template-Bridging-Header.h', async () => {
+     const fileData = await readFile('Template-Bridging-Header.h', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a Template.m', async () => {
+     const fileData = await readFile('Template.m', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateManager.swift', async () => {
+     const fileData = await readFile('TemplateManager.swift', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,
+31,066849d27979ee7d25d97e9255d7b7e93e91f8f8,ebef375c15f8f29c7f796d6cfc239d4c9ecb4852,__tests__/__snapshots__/javascript.test.js.snap,__tests__/javascript.test.js,"<!--
+Thanks for your interest in the project. I appreciate and welcome all PRs submitted!
+
+Please fill out the information below to expedite your PR review 😀
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here? Please include issue number if you are closing an issue.) -->
+## What: Closing #30 
+
+<!-- Why are these changes necessary? -->
+## Why: Breaking change in RN v.0.47.2
+
+<!-- How were these changes implemented? -->
+## How:
+- Check RN version from `package.json`
+- Override `createJSModules` in Android & Kotlin templates for the package if version is below v0.47.2
+- Take out `createJSModules` override if version is latest or above
+- Updated `readAndWriteFiles` & `parseFile` functions to take a config option as second param
+- Updated Jest tests
+
+## Checklist:
+<!-- to check an item, place an ""x"" in the box  -->
+- [x] I read the [contributor guidelines](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md)
+- [x] My commit messages & PR title follow [Conventional Changelog Standard](https://github.com/peggyrayzis/react-native-create-bridge/blob/master/CONTRIBUTING.md#how-should-i-format-my-commit-messages)
+- [x] I added tests for my new feature
+- [  ] I added documentation for my new feature
+
+<!-- feel free to add additional comments -->
+","fix(android): update templates & tests to fix RN v0.47.2 breaking change
+","diff --git a/__tests__/javascript.test.js b/__tests__/javascript.test.js
+index f2cef5f..0ff72ab 100644
+--- a/__tests__/javascript.test.js
++++ b/__tests__/javascript.test.js
+@@ -7,13 +7,13 @@ describe('JS: Combined', () => {
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+     const fileData = await readFile('TemplateNativeModule.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ 
+   it('creates a TemplateNativeView.js', async () => {
+     const fileData = await readFile('TemplateNativeView.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -24,7 +24,7 @@ describe('JS: Native Modules', () => {
+ 
+   it('creates a TemplateNativeModule.js', async () => {
+     const fileData = await readFile('TemplateNativeModule.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+@@ -41,7 +41,7 @@ describe('JS: UI Components', () => {
+ 
+   it('creates a TemplateNativeView.js', async () => {
+     const fileData = await readFile('TemplateNativeView.js', readDirPath);
+-    const parsedFile = parseFile(fileData, templateName);
++    const parsedFile = parseFile(fileData, { templateName });
+     expect(parsedFile).toMatchSnapshot();
+   });
+ });
+",0,

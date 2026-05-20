@@ -1,0 +1,143 @@
+{
+    "id": 69782898,
+    "name": "actualbudget/actual-server",
+    "isFork": false,
+    "commits": 256,
+    "branches": 2,
+    "releases": 0,
+    "forks": 486,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://actualbudget.org",
+    "watchers": 23,
+    "stargazers": 2576,
+    "contributors": 55,
+    "size": 3194,
+    "createdAt": "2022-03-31T05:14:34",
+    "pushedAt": "2024-04-22T07:19:42",
+    "updatedAt": "2024-04-22T10:55:53",
+    "totalIssues": 95,
+    "openIssues": 7,
+    "totalPullRequests": 222,
+    "openPullRequests": 1,
+    "blankLines": 961,
+    "codeLines": 6237,
+    "commentLines": 1015,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "SQL",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 101
+        },
+        {
+            "blankLines": 96,
+            "language": "TypeScript",
+            "commentLines": 338,
+            "codeLines": 211
+        },
+        {
+            "blankLines": 765,
+            "language": "JavaScript",
+            "commentLines": 649,
+            "codeLines": 5300
+        },
+        {
+            "blankLines": 34,
+            "language": "YAML",
+            "commentLines": 27,
+            "codeLines": 341
+        },
+        {
+            "blankLines": 19,
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 130
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 28,
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 3,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 8,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 33
+        }
+    ],
+    "lastCommit": "2024-04-22T05:27:04",
+    "lastCommitSHA": "c0b21a9f7e0a59e9e1cb27eb503f651cb46b9806",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 174392,
+        "TypeScript": 14073,
+        "Dockerfile": 5409,
+        "Shell": 349,
+        "HTML": 332
+    },
+    "labels": [
+        "api",
+        "blocked",
+        "bug",
+        "cant-replicate",
+        "dependencies",
+        "do not merge",
+        "duplicate",
+        "feature",
+        "fixed",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "major version",
+        "merge when passing",
+        "minor version",
+        "needs-testing",
+        "patch version",
+        "question",
+        "stale",
+        "wontfix",
+        "\u26a0\ufe0f changes requested",
+        "\u2705 approved",
+        "\u2728 merged",
+        "\ud83c\udf1f needs more approvals",
+        "\ud83d\udc4c ready for review",
+        "\ud83d\udea7 wip"
+    ],
+    "topics": []
+}

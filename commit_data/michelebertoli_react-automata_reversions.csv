@@ -1,0 +1,395 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+12,15c2c3550386cd6d045ec32df22b053cdfcf389b,0adfee5f4a7fa872d153f8cddc860ecbbef40d8e,,"why not both?
+","diff --git a/test/testStateMachine.spec.js b/test/testStateMachine.spec.js
+index c883aee..6891f27 100644
+--- a/test/testStateMachine.spec.js
++++ b/test/testStateMachine.spec.js
+@@ -1,5 +1,5 @@
+ import React from 'react'
+-import { Action, testStateMachine } from '../src'
++import { Action, State, testStateMachine } from '../src'
+ 
+ const secondMachine = {
+   initial: 'a',
+@@ -37,18 +37,30 @@ const firstMachine = {
+   },
+ }
+ 
+-const App = () => (
+-  <div>
+-    <Action initial hide=""onEnterB"">
+-      a
+-    </Action>
+-    <Action show=""onEnterBA"" hide=""onEnterBB"">
+-      b.a
+-    </Action>
+-    <Action show=""onEnterBB"">b.b</Action>
+-  </div>
+-)
++test('action', () => {
++  const App = () => (
++    <div>
++      <Action initial hide=""onEnterB"">
++        a
++      </Action>
++      <Action show=""onEnterBA"" hide=""onEnterBB"">
++        b.a
++      </Action>
++      <Action show=""onEnterBB"">b.b</Action>
++    </div>
++  )
++
++  testStateMachine({ statechart: firstMachine }, App)
++})
++
++test('state', () => {
++  const App = () => (
++    <div>
++      <State value=""a"">a</State>
++      <State value=""b.a"">b.a</State>
++      <State value=""b.b"">b.b</State>
++    </div>
++  )
+ 
+-test('it works', () => {
+   testStateMachine({ statechart: firstMachine }, App)
+ })
+",1,None=None,14,525,1,21,21,913
+18,1f4ef5abd368ddba5eba10ace6ea5f5d78e9e2b6,1f4ef5abd368ddba5eba10ace6ea5f5d78e9e2b6,close #8,"support parallel states
+","diff --git a/test/testStatechart.spec.js b/test/testStatechart.spec.js
+index 9d57d26..d01634b 100644
+--- a/test/testStatechart.spec.js
++++ b/test/testStatechart.spec.js
+@@ -62,3 +62,75 @@ test('state', () => {
+ 
+   testStatechart({ statechart: firstMachine }, App)
+ })
++
++test('parallel', () => {
++  const wordMachine = {
++    initial: 'bold.off',
++    parallel: true,
++    states: {
++      bold: {
++        initial: 'off',
++        states: {
++          on: {
++            on: { TOGGLE_BOLD: 'off' },
++          },
++          off: {
++            on: { TOGGLE_BOLD: 'on' },
++          },
++        },
++      },
++      underline: {
++        initial: 'off',
++        states: {
++          on: {
++            on: { TOGGLE_UNDERLINE: 'off' },
++          },
++          off: {
++            on: { TOGGLE_UNDERLINE: 'on' },
++          },
++        },
++      },
++      italics: {
++        initial: 'off',
++        states: {
++          on: {
++            on: { TOGGLE_ITALICS: 'off' },
++          },
++          off: {
++            on: { TOGGLE_ITALICS: 'on' },
++          },
++        },
++      },
++      list: {
++        initial: 'none',
++        states: {
++          none: {
++            on: { BULLETS: 'bullets', NUMBERS: 'numbers' },
++          },
++          bullets: {
++            on: { NONE: 'none', NUMBERS: 'numbers' },
++          },
++          numbers: {
++            on: { BULLETS: 'bullets', NONE: 'none' },
++          },
++        },
++      },
++    },
++  }
++
++  const App = () => (
++    <div>
++      <State value=""bold.on"">bold.on</State>
++      <State value=""bold.off"">bold.off</State>
++      <State value=""underline.on"">underline.on</State>
++      <State value=""underline.off"">underline.off</State>
++      <State value=""italics.on"">italics.on</State>
++      <State value=""italics.off"">italics.off</State>
++      <State value=""list.none"">list.none</State>
++      <State value=""list.bullets"">list.bullets</State>
++      <State value=""list.numbers"">list.numbers</State>
++    </div>
++  )
++
++  testStatechart({ statechart: wordMachine }, App)
++})
+",0,,7,331,1,4,13,1762
+27,7bee5d68aca3914b78f6444a27b814c7711b1025,f7b6e33d8bb53c6ef35e3bb7670b1ccf716134c4,,"channel
+
+closes #26
+","diff --git a/test/testStatechart.spec.js b/test/testStatechart.spec.js
+index 36456d7..d5fd527 100644
+--- a/test/testStatechart.spec.js
++++ b/test/testStatechart.spec.js
+@@ -1,5 +1,5 @@
+ import React from 'react'
+-import { Action, State, testStatechart } from '../src'
++import { Action, State, testStatechart, withStatechart } from '../src'
+ 
+ const secondMachine = {
+   initial: 'a',
+@@ -134,3 +134,40 @@ test('parallel', () => {
+ 
+   testStatechart({ statechart: wordMachine }, App)
+ })
++
++test('channel', () => {
++  const inner = {
++    key: 'inner',
++    initial: 'b',
++    states: {
++      b: {},
++    },
++  }
++
++  const Inner = () => (
++    <div>
++      <State channel=""inner"" value=""b"">
++        b
++      </State>
++      <State value=""a"">a</State>
++    </div>
++  )
++
++  const InnerMachine = withStatechart(inner)(Inner)
++
++  const outer = {
++    initial: 'a',
++    states: {
++      a: {},
++    },
++  }
++
++  const App = () => (
++    <div>
++      <State value=""a"">a</State>
++      <InnerMachine />
++    </div>
++  )
++
++  testStatechart({ statechart: outer }, App)
++})
+",0,,11,174,1,11,16,249
+54,df18c3b6c603b3c7f2de6fe175a749df48f081b7,df18c3b6c603b3c7f2de6fe175a749df48f081b7,close #49 ,"support cond in tests
+","diff --git a/test/testStatechart.spec.js b/test/testStatechart.spec.js
+index 5940602..12c3afa 100644
+--- a/test/testStatechart.spec.js
++++ b/test/testStatechart.spec.js
+@@ -1,67 +1,69 @@
+ import React from 'react'
+ import { Action, State, testStatechart, withStatechart } from '../src'
+ 
+-const secondMachine = {
+-  initial: 'a',
+-  states: {
+-    a: {
+-      on: {
+-        SECOND_NEXT: 'b',
++describe('conditional', () => {
++  const secondMachine = {
++    initial: 'a',
++    states: {
++      a: {
++        on: {
++          SECOND_NEXT: 'b',
++        },
++        onEntry: 'enterBA',
+       },
+-      onEntry: 'enterBA',
+-    },
+-    b: {
+-      on: {
+-        SECOND_NEXT: 'a',
++      b: {
++        on: {
++          SECOND_NEXT: 'a',
++        },
++        onEntry: 'enterBB',
+       },
+-      onEntry: 'enterBB',
+     },
+-  },
+-}
+-
+-const firstMachine = {
+-  initial: 'a',
+-  states: {
+-    a: {
+-      on: {
+-        FIRST_NEXT: 'b',
++  }
++
++  const firstMachine = {
++    initial: 'a',
++    states: {
++      a: {
++        on: {
++          FIRST_NEXT: 'b',
++        },
++        onEntry: 'enterA',
+       },
+-      onEntry: 'enterA',
+-    },
+-    b: {
+-      on: {
+-        FIRST_NEXT: 'a',
++      b: {
++        on: {
++          FIRST_NEXT: 'a',
++        },
++        onEntry: 'enterB',
++        ...secondMachine,
+       },
+-      onEntry: 'enterB',
+-      ...secondMachine,
+     },
+-  },
+-}
++  }
+ 
+-test('action', () => {
+-  const App = () => (
+-    <div>
+-      <Action show=""enterA"" hide=""enterB"">
+-        a
+-      </Action>
+-      <Action show=""enterBA"">b.a</Action>
+-      <Action show=""enterBB"">b.b</Action>
+-    </div>
+-  )
++  test('action', () => {
++    const App = () => (
++      <div>
++        <Action show=""enterA"" hide=""enterB"">
++          a
++        </Action>
++        <Action show=""enterBA"">b.a</Action>
++        <Action show=""enterBB"">b.b</Action>
++      </div>
++    )
+ 
+-  testStatechart({ statechart: firstMachine }, App)
+-})
++    testStatechart({ statechart: firstMachine }, App)
++  })
+ 
+-test('state', () => {
+-  const App = () => (
+-    <div>
+-      <State value=""a"">a</State>
+-      <State value=""b.a"">b.a</State>
+-      <State value=""b.b"">b.b</State>
+-    </div>
+-  )
++  test('state', () => {
++    const App = () => (
++      <div>
++        <State value=""a"">a</State>
++        <State value=""b.a"">b.a</State>
++        <State value=""b.b"">b.b</State>
++      </div>
++    )
+ 
+-  testStatechart({ statechart: firstMachine }, App)
++    testStatechart({ statechart: firstMachine }, App)
++  })
+ })
+ 
+ test('parallel', () => {
+@@ -171,3 +173,45 @@ test('channels', () => {
+ 
+   testStatechart({ statechart: outer, channel: 'outer' }, Outer)
+ })
++
++describe('cond', () => {
++  const statechart = {
++    initial: 'a',
++    states: {
++      a: {
++        on: {
++          EVENT: {
++            b: {
++              cond: extState => extState.shouldPass,
++            },
++          },
++        },
++      },
++      b: {},
++    },
++  }
++
++  const Cond = () => (
++    <React.Fragment>
++      <State value=""a"">A</State>
++      <State value=""b"">B</State>
++    </React.Fragment>
++  )
++
++  test('pass', () => {
++    const extendedState = {
++      shouldPass: true,
++    }
++    const fixtures = {
++      a: {
++        EVENT: extendedState,
++      },
++    }
++
++    testStatechart({ statechart, fixtures, extendedState }, Cond)
++  })
++
++  test('fail', () => {
++    testStatechart({ statechart }, Cond)
++  })
++})
+",0,,4,220,1,1,4,220
+64,b69618e77fa59ec182c1637be97f53a353b7d741,b82efae42b86f7bcd4fb356bf774be17ad9daa72,,"use new context API
+","diff --git a/test/utils.spec.js b/test/utils.spec.js
+index 47dec58..30cca1f 100644
+--- a/test/utils.spec.js
++++ b/test/utils.spec.js
+@@ -1,19 +1,5 @@
+ import React from 'react'
+-import { getContextValue, isStateless, stringify } from '../src/utils'
+-
+-describe('getContextValue', () => {
+-  test('context', () => {
+-    const context = {}
+-
+-    expect(() => getContextValue(context)).toThrowErrorMatchingSnapshot()
+-  })
+-
+-  test('channel', () => {
+-    const context = { automata: {} }
+-
+-    expect(() => getContextValue(context, 'foo')).toThrowErrorMatchingSnapshot()
+-  })
+-})
++import { isStateless, stringify } from '../src/utils'
+ 
+ describe('isStateless', () => {
+   test('true', () => {
+",0,,8,240,1,16,27,3529

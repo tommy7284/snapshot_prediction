@@ -1,0 +1,4675 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+214,5b2e89049569c55e0804c1361d94f29da3e72da3,5b2e89049569c55e0804c1361d94f29da3e72da3,"### `Notable Changes`
+
+- Refactor and standardizes tests
+
+### `Issues`
+
+- None","[WIP] test: init
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 23eea9a..b3a06fb 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,151 +1,20 @@
+-/* eslint-disable no-useless-escape, no-unused-vars */
+-import loader from '../src';
+-
+-const run = function run(resourcePath, query, content = new Buffer('1234')) {
+-  let file = null;
+-
+-  const context = {
+-    resourcePath,
+-    query: `?${query || ''}`,
+-    options: {
+-      context: '/this/is/the/context',
+-    },
+-    emitFile(url, content2) {
+-      expect(content2).toEqual(content);
+-      file = url;
+-    },
+-  };
+-
+-  const result = loader.call(context, content);
+-
+-  return {
+-    file,
+-    result,
+-  };
+-};
+-
+-function runWithOptions(resourcePath, options, content = new Buffer('1234')) {
+-  let file = null;
+-
+-  const context = {
+-    resourcePath,
+-    query: options,
+-    options: {
+-      context: '/this/is/the/context',
+-    },
+-    emitFile(url, content2) {
+-      expect(content2).toEqual(content);
+-      file = url;
+-    },
+-  };
+-
+-  const result = loader.call(context, content);
+-
+-  return {
+-    file,
+-    result,
+-  };
+-}
+-const test = function test(excepted, resourcePath, query, content) {
+-  expect(run(resourcePath, query, content).file).toEqual(excepted);
+-};
+-
+-describe('correct-filename', () => {
+-  it('should process defaults correctly', () => {
+-    test('81dc9bdb52d04dc20036dbd8313ed055.txt', '/file.txt', '');
+-    test('81dc9bdb52d04dc20036dbd8313ed055.png', '/file.png', '');
+-    test('81dc9bdb52d04dc20036dbd8313ed055.txt', 'file.txt', '');
+-    test('81dc9bdb52d04dc20036dbd8313ed055.bin', '', '');
+-  });
+-
+-  it('should process name correctly', () => {
+-    test('file.txt', '/file.txt', 'name=[name].[ext]');
+-    test('file.png', '/file.png', 'name=[name].[ext]');
+-    test('file.txt', 'file.txt', 'name=[name].[ext]');
+-    test('file.bin', '', 'name=[name].[ext]');
+-    test('file', '/file.txt', 'name=[name]');
+-    test('81dc9bdb52d04dc20036dbd8313ed055', '/file.txt', 'name=[hash]');
+-    test('81dc9bdb52d04dc20036dbd8313ed055/file.txt', '/file.txt', 'name=[hash]/[name].[ext]');
+-    test('file.txt', '/this/is/the/context/file.txt', 'name=[path][name].[ext]');
+-    test('dir/file.txt', '/this/is/the/context/dir/file.txt', 'name=[path][name].[ext]');
+-    test('dir/sub/file.txt', '/this/is/the/context/dir/sub/file.txt', 'name=[path][name].[ext]');
+-    test('_/_/dir/sub/file.txt', '/this/is/dir/sub/file.txt', 'name=[path][name].[ext]');
+-    test('dir/sub/file.txt', '/this/is/dir/sub/file.txt', 'name=[path][name].[ext]&context=/this/is');
+-  });
+-
+-  it('should process hash correctly', () => {
+-    test('d93591bdf7860e1e4ee2fca799911215.txt', '/file.txt', '', new Buffer('4321'));
+-  });
+-
+-  it('should process hash options correctly', () => {
+-    test('81dc9.txt', '/file.txt', 'name=[hash:5].[ext]');
+-    test('d4045.txt', '/file.txt', 'name=[sha512:hash:5].[ext]');
+-    test('1lQ3UNSdIS0c9dQ5brCZO1.txt', '/file.txt', 'name=[hash:base64].[ext]');
+-    test('caYJDUvUOiGAdDsiHKffIEj.txt', '/file.txt', 'name=[hash:base52].[ext]');
+-    test('sntmopgidsdqrofkjywoyldtiij.txt', '/file.txt', 'name=[hash:base26].[ext]');
+-    test('sntmopgids.txt', '/file.txt', 'name=[hash:base26:10].[ext]');
+-  });
+-});
+-
+-describe('publicPath option', () => {
+-  it('should be supported', () => {
+-    expect(run('/file.txt', 'publicPath=http://cdn/').result).toEqual(
+-      'module.exports = ""http://cdn/81dc9bdb52d04dc20036dbd8313ed055.txt"";',
+-    );
+-  });
+-
+-  it('should override public path when given empty string', () => {
+-    expect(run('/file.txt', 'publicPath=').result).toEqual(
+-      'module.exports = ""81dc9bdb52d04dc20036dbd8313ed055.txt"";',
+-    );
+-  });
+-
+-  it('should use webpack public path when not set', () => {
+-    expect(run('/file.txt').result).toEqual(
+-      'module.exports = __webpack_public_path__ + ""81dc9bdb52d04dc20036dbd8313ed055.txt"";',
+-    );
+-  });
+-});
+-
+-describe('useRelativePath option', () => {
+-  it('should be supported', () => {
+-    expect(run('/this/is/the/context/file.txt', 'useRelativePath=true').result).toEqual(
+-      'module.exports = __webpack_public_path__ + \""./81dc9bdb52d04dc20036dbd8313ed055.txt\"";',
+-    );
+-
+-    expect(run('/this/is/file.txt', 'useRelativePath=true').result).toEqual(
+-      'module.exports = __webpack_public_path__ + \""../../81dc9bdb52d04dc20036dbd8313ed055.txt\"";',
+-    );
+-
+-    expect(run('/this/file.txt', 'context=/this/is/the/&useRelativePath=true').result).toEqual(
+-      'module.exports = __webpack_public_path__ + \""../../81dc9bdb52d04dc20036dbd8313ed055.txt\"";',
+-    );
+-
+-    expect(run('/this/file.txt', 'context=/&useRelativePath=true').result).toEqual(
+-      'module.exports = __webpack_public_path__ + \""this/81dc9bdb52d04dc20036dbd8313ed055.txt\"";',
+-    );
+-  });
+-});
+-
+-describe('outputPath function', () => {
+-  it('should be supported', () => {
+-    const options = {};
+-    options.outputPath = value => '/path/set/by/func';
+-
+-    expect(runWithOptions('/this/is/the/context/file.txt', options).result)
+-      .toEqual(
+-        'module.exports = __webpack_public_path__ + \""/path/set/by/func\"";',
+-      );
+-  });
+-
+-  it('should be ignored if you set useRelativePath', () => {
+-    const options = {};
+-    options.outputPath = value => '/path/set/by/func';
+-    options.useRelativePath = true;
+-
+-    expect(runWithOptions('/this/is/the/context/file.txt', options).result)
+-      .toEqual(
+-        'module.exports = __webpack_public_path__ + \""./81dc9bdb52d04dc20036dbd8313ed055.txt\"";',
+-      );
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from './helpers/compiler';
++
++describe('Loader', () => {
++  test('Defaults', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {},
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const { source } = stats.toJson().modules[1];
++
++    expect(source).toMatchSnapshot();
+   });
+ });
+
+diff --git a/test/options/context.test.js b/test/options/context.test.js
+new file mode 100644
+index 0000000..dede935
+--- /dev/null
++++ b/test/options/context.test.js
+@@ -0,0 +1,24 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('context', () => {
++    test('{String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            context: `${__dirname}`,
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++  });
++});
+
+diff --git a/test/options/emitFile.test.js b/test/options/emitFile.test.js
+new file mode 100644
+index 0000000..2915e85
+--- /dev/null
++++ b/test/options/emitFile.test.js
+@@ -0,0 +1,42 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('emitFile', () => {
++    describe('{Boolean}', () => {
++      test('True (Default)', async () => {
++        const config = {
++          loader: {
++            test: /(png|jpg|svg)/,
++            options: {
++              emitFile: true,
++            },
++          },
++        };
++
++        const stats = await webpack('emitFile/fixture.js', config);
++        const { assets } = stats.toJson().modules[1];
++
++        expect(assets[0]).toMatchSnapshot();
++      });
++
++      test('False', async () => {
++        const config = {
++          loader: {
++            test: /(png|jpg|svg)/,
++            options: {
++              emitFile: false,
++            },
++          },
++        };
++
++        const stats = await webpack('emitFile/fixture.js', config);
++        const { assets } = stats.toJson().modules[1];
++
++        expect(assets[0]).toBe(undefined);
++      });
++    });
++  });
++});
+
+diff --git a/test/options/name.test.js b/test/options/name.test.js
+new file mode 100644
+index 0000000..89022e0
+--- /dev/null
++++ b/test/options/name.test.js
+@@ -0,0 +1,42 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('name', () => {
++    test('{String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            name: '[hash].[ext]',
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++
++    test('{Function}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            name() {
++              return '[hash].[ext]';
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++  });
++});
+
+diff --git a/test/options/outputPath.test.js b/test/options/outputPath.test.js
+new file mode 100644
+index 0000000..e58fc83
+--- /dev/null
++++ b/test/options/outputPath.test.js
+@@ -0,0 +1,42 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('outputPath', () => {
++    test('{String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            outputPath: '/test/',
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++
++    test('{Function}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            outputPath(url) {
++              return `test/${url}`;
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++  });
++});
+
+diff --git a/test/options/publicPath.test.js b/test/options/publicPath.test.js
+new file mode 100644
+index 0000000..b11ac83
+--- /dev/null
++++ b/test/options/publicPath.test.js
+@@ -0,0 +1,42 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('publicPath', () => {
++    test('{String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            publicPath: '/test/',
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++
++    test('{Function}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            publicPath(url) {
++              return `test/${url}`;
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++  });
++});
+
+diff --git a/test/options/useRelativePath.test.js b/test/options/useRelativePath.test.js
+new file mode 100644
+index 0000000..7858f29
+--- /dev/null
++++ b/test/options/useRelativePath.test.js
+@@ -0,0 +1,41 @@
++/* eslint-disable
++  prefer-destructuring,
++*/
++import webpack from '../helpers/compiler';
++
++describe('Options', () => {
++  describe('useRelativePath', () => {
++    test('this.options.context', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            useRelativePath: true,
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++
++    test('options.context', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            context: '/relative/',
++            useRelativePath: true,
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { source } = stats.toJson().modules[1];
++
++      expect(source).toMatchSnapshot();
++    });
++  });
++});
+",0,,26,653,7,1,26,4808
+216,3791cc1a3dee807c90e4df1c6a05f6d57558d5b6,3791cc1a3dee807c90e4df1c6a05f6d57558d5b6,"### Notable Changes
+---
+
+[loaderUtils#interpolateName](https://github.com/webpack/loader-utils/blob/master/lib/interpolateName.js#L27) accepts a `{Function}` for `name`
+
+### Issues
+---
+
+- Fixes #215 ","fix(schema): allow `name` to be a `{Function}` (`options.name`)
+","diff --git a/test/Errors.test.js b/test/Errors.test.js
+index 4209890..507964d 100644
+--- a/test/Errors.test.js
++++ b/test/Errors.test.js
+@@ -2,7 +2,10 @@ import loader from '../src';
+ 
+ describe('Errors', () => {
+   test('Validation Error', () => {
+-    const err = () => loader.call({ query: { name: 1 }, emitFile: true });
++    const err = () => loader.call({
++      query: { useRelativePath: 1 },
++      emitFile: true,
++    });
+ 
+     expect(err).toThrow();
+     expect(err).toThrowErrorMatchingSnapshot();
+",0,,3,11,1,1,3,11
+246,b663526c168eb41c256817325c3cb3eeb6740595,b663526c168eb41c256817325c3cb3eeb6740595,"Fixes #160
+","fix: don't concat `options.outputPath` and `options.publicPath`
+","diff --git a/test/options/outputPath.test.js b/test/options/outputPath.test.js
+index e58fc83..4d3db82 100644
+--- a/test/options/outputPath.test.js
++++ b/test/options/outputPath.test.js
+@@ -10,15 +10,15 @@ describe('Options', () => {
+         loader: {
+           test: /(png|jpg|svg)/,
+           options: {
+-            outputPath: '/test/',
++            outputPath: 'output_path/',
+           },
+         },
+       };
+ 
+       const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+     test('{Function}', async () => {
+@@ -27,16 +27,92 @@ describe('Options', () => {
+           test: /(png|jpg|svg)/,
+           options: {
+             outputPath(url) {
+-              return `test/${url}`;
++              return `output_path/${url}`;
+             },
+           },
+         },
+       };
+ 
+       const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('{String} with `publicPath` {String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            outputPath: 'output_path/',
++            publicPath: 'public_path/',
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('{Function} with `publicPath` {String}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            publicPath: 'public_path/',
++            outputPath(url) {
++              return `output_path/${url}`;
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('{String} with `publicPath` {Function}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            outputPath: 'output_path/',
++            publicPath(url) {
++              return `public_path/${url}`;
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('{Function} with `publicPath` {Function}', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            outputPath(url) {
++              return `output_path/${url}`;
++            },
++            publicPath(url) {
++              return `public_path/${url}`;
++            },
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
+     });
+   });
+ });
+
+diff --git a/test/options/publicPath.test.js b/test/options/publicPath.test.js
+index b11ac83..8f574f3 100644
+--- a/test/options/publicPath.test.js
++++ b/test/options/publicPath.test.js
+@@ -10,15 +10,15 @@ describe('Options', () => {
+         loader: {
+           test: /(png|jpg|svg)/,
+           options: {
+-            publicPath: '/test/',
++            publicPath: 'public_path/',
+           },
+         },
+       };
+ 
+       const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+     test('{Function}', async () => {
+@@ -27,16 +27,16 @@ describe('Options', () => {
+           test: /(png|jpg|svg)/,
+           options: {
+             publicPath(url) {
+-              return `test/${url}`;
++              return `public_path/${url}`;
+             },
+           },
+         },
+       };
+ 
+       const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
+     });
+   });
+ });
+",0,,5,184,2,1,5,184
+250,da9c60cde29937a1291d5bf30a7327d6141546cf,0b678fc63182a77e0bad42c7a9f54ddfe0e60291,"### `Issues`
+
+- Closes #249
+
+### `Notable Changes`
+
+- `publicPath` not set => `__webpack_public_path__ + ""output_path/file.ext""`
+- `publicPath` set => `__webpack_public_path__ + ""public_path/file.ext""`
+- fix broken `useRelativePath` and tests","fix(index): `context` takes precedence over `issuer.context` (`options.useRelativePath`)
+","diff --git a/test/options/useRelativePath.test.js b/test/options/useRelativePath.test.js
+index 7858f29..83633a6 100644
+--- a/test/options/useRelativePath.test.js
++++ b/test/options/useRelativePath.test.js
+@@ -5,37 +5,70 @@ import webpack from '../helpers/compiler';
+ 
+ describe('Options', () => {
+   describe('useRelativePath', () => {
+-    test('this.options.context', async () => {
++    test('`false`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+           options: {
++            useRelativePath: false,
++          },
++        },
++      };
++
++      const stats = await webpack('fixture-nested.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('`true`', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            useRelativePath: true,
++          },
++        },
++      };
++
++      const stats = await webpack('fixture-nested.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
++    test('`true` with relative `context`', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            context: './test/fixtures/nested/',
+             useRelativePath: true,
+           },
+         },
+       };
+ 
+-      const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const stats = await webpack('fixture-nested.js', config);
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+-    test('options.context', async () => {
++    test('`true` with absolute `context`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+           options: {
+-            context: '/relative/',
++            context: '../nested/',
+             useRelativePath: true,
+           },
+         },
+       };
+ 
+-      const stats = await webpack('fixture.js', config);
+-      const { source } = stats.toJson().modules[1];
++      const stats = await webpack('fixture-nested.js', config);
++      const { assets, source } = stats.toJson().modules[1];
+ 
+-      expect(source).toMatchSnapshot();
++      expect({ assets, source }).toMatchSnapshot();
+     });
+   });
+ });
+",0,,3,91,1,3,9,276
+253,65642e19ac427062426edd17d7305bd9973c0649,65642e19ac427062426edd17d7305bd9973c0649,"### `Issues`
+
+- Fixes #252
+
+### `Notable Changes`
+
+Since `publicPath` can be a full URL (which can contain protocols), using `path.join()` to concat file paths isn't sufficient here ","fix(index): handle protocol URL's correctly (`options.publicPath`)
+","diff --git a/test/options/publicPath.test.js b/test/options/publicPath.test.js
+index e70d1f8..dfaaa9b 100644
+--- a/test/options/publicPath.test.js
++++ b/test/options/publicPath.test.js
+@@ -21,7 +21,7 @@ describe('Options', () => {
+       expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+-    test('{String} without trailing slash', async () => {
++    test('{String} - Without trailing slash', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+@@ -37,6 +37,22 @@ describe('Options', () => {
+       expect({ assets, source }).toMatchSnapshot();
+     });
+ 
++    test('{String} - URL', async () => {
++      const config = {
++        loader: {
++          test: /(png|jpg|svg)/,
++          options: {
++            publicPath: 'https://cdn.com/',
++          },
++        },
++      };
++
++      const stats = await webpack('fixture.js', config);
++      const { assets, source } = stats.toJson().modules[1];
++
++      expect({ assets, source }).toMatchSnapshot();
++    });
++
+     test('{Function}', async () => {
+       const config = {
+         loader: {
+",0,,3,74,1,1,3,74
+260,aea46b8b94b15e53e38761e0109850868c7a7b2d,aea46b8b94b15e53e38761e0109850868c7a7b2d,"### `Issues`
+
+- Fixes #257 
+","revert(index): `context` takes precedence over `issuer.context` (`options.useRelativePath`)
+
+This reverts commit 3b071f5279ef6cb912d66560e38aa9bbe7214c30
+","diff --git a/test/options/useRelativePath.test.js b/test/options/useRelativePath.test.js
+index 83633a6..d8cc429 100644
+--- a/test/options/useRelativePath.test.js
++++ b/test/options/useRelativePath.test.js
+@@ -5,7 +5,7 @@ import webpack from '../helpers/compiler';
+ 
+ describe('Options', () => {
+   describe('useRelativePath', () => {
+-    test('`false`', async () => {
++    test('{Boolean} - `false`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+@@ -15,13 +15,13 @@ describe('Options', () => {
+         },
+       };
+ 
+-      const stats = await webpack('fixture-nested.js', config);
++      const stats = await webpack('nested/fixture.js', config);
+       const { assets, source } = stats.toJson().modules[1];
+ 
+       expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+-    test('`true`', async () => {
++    test('{Boolean} - `true`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+@@ -31,13 +31,13 @@ describe('Options', () => {
+         },
+       };
+ 
+-      const stats = await webpack('fixture-nested.js', config);
++      const stats = await webpack('nested/fixture.js', config);
+       const { assets, source } = stats.toJson().modules[1];
+ 
+       expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+-    test('`true` with relative `context`', async () => {
++    test('{Boolean} - `true` with relative `context`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+@@ -48,13 +48,13 @@ describe('Options', () => {
+         },
+       };
+ 
+-      const stats = await webpack('fixture-nested.js', config);
++      const stats = await webpack('nested/fixture.js', config);
+       const { assets, source } = stats.toJson().modules[1];
+ 
+       expect({ assets, source }).toMatchSnapshot();
+     });
+ 
+-    test('`true` with absolute `context`', async () => {
++    test('{Boolean} - `true` with absolute `context`', async () => {
+       const config = {
+         loader: {
+           test: /(png|jpg|svg)/,
+@@ -65,7 +65,7 @@ describe('Options', () => {
+         },
+       };
+ 
+-      const stats = await webpack('fixture-nested.js', config);
++      const stats = await webpack('nested/fixture.js', config);
+       const { assets, source } = stats.toJson().modules[1];
+ 
+       expect({ assets, source }).toMatchSnapshot();
+",0,,7,61,1,1,5,55
+302,e2adda90ca5f7b15fc030cad0a2927488b497b32,e2adda90ca5f7b15fc030cad0a2927488b497b32,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Just refactor tests
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","refactor: tests
+","diff --git a/test/Errors.test.js b/test/Errors.test.js
+deleted file mode 100644
+index 18eb5ba..0000000
+--- a/test/Errors.test.js
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import loader from '../src';
+-
+-describe('Errors', () => {
+-  test('Loader Error', () => {
+-    const err = () => loader.call({ emitFile: false });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-
+-  test('Validation Error', () => {
+-    const err = () =>
+-      loader.call({
+-        query: { useRelativePath: 1 },
+-        emitFile: true,
+-      });
+-
+-    expect(err).toThrow();
+-    expect(err).toThrowErrorMatchingSnapshot();
+-  });
+-});
+
+diff --git a/test/context-option.test.js b/test/context-option.test.js
+new file mode 100644
+index 0000000..64551db
+--- /dev/null
++++ b/test/context-option.test.js
+@@ -0,0 +1,20 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `context` option', () => {
++  it('matches snapshot for `{String}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          context: `${__dirname}`,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { source } = module;
++
++    expect(source).toMatchSnapshot();
++  });
++});
+
+diff --git a/test/emitFile-option.test.js b/test/emitFile-option.test.js
+new file mode 100644
+index 0000000..065c4df
+--- /dev/null
++++ b/test/emitFile-option.test.js
+@@ -0,0 +1,38 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `emitFile` option', () => {
++  it('matches snapshot for `true` (`{Boolean}`) (default)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          emitFile: true,
++        },
++      },
++    };
++
++    const stats = await webpack('emitFile/fixture.js', config);
++    const [, module] = stats.toJson().modules;
++    const { assets } = module;
++
++    expect(assets[0]).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `false` value  (`{Boolean}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          emitFile: false,
++        },
++      },
++    };
++
++    const stats = await webpack('emitFile/fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets } = module;
++
++    // eslint-disable-next-line no-undefined
++    expect(assets[0]).toBe(undefined);
++  });
++});
+
+diff --git a/test/errors.test.js b/test/errors.test.js
+new file mode 100644
+index 0000000..fb9f879
+--- /dev/null
++++ b/test/errors.test.js
+@@ -0,0 +1,14 @@
++import loader from '../src';
++
++describe('errors', () => {
++  it('validation errors', () => {
++    const err = () =>
++      loader.call({
++        query: { useRelativePath: 1 },
++        emitFile: true,
++      });
++
++    expect(err).toThrow();
++    expect(err).toThrowErrorMatchingSnapshot();
++  });
++});
+
+diff --git a/test/loader.test.js b/test/loader.test.js
+index 609d415..20ca40d 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,7 +1,7 @@
+ import webpack from './helpers/compiler';
+ 
+-describe('Loader', () => {
+-  test('Defaults', async () => {
++describe('loader', () => {
++  it('should works without options', async () => {
+     const config = {
+       loader: {
+         test: /(png|jpg|svg)/,
+
+diff --git a/test/name-option.test.js b/test/name-option.test.js
+new file mode 100644
+index 0000000..14fd84e
+--- /dev/null
++++ b/test/name-option.test.js
+@@ -0,0 +1,39 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `name` option', () => {
++  it('matches snapshot for `{String}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          name: '[hash].[ext]',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { source } = module;
++
++    expect(source).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          name() {
++            return '[hash].[ext]';
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { source } = module;
++
++    expect(source).toMatchSnapshot();
++  });
++});
+
+diff --git a/test/options/context.test.js b/test/options/context.test.js
+deleted file mode 100644
+index 3fb8c1e..0000000
+--- a/test/options/context.test.js
++++ /dev/null
+@@ -1,22 +0,0 @@
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('context', () => {
+-    test('{String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            context: `${__dirname}`,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { source } = module;
+-
+-      expect(source).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/test/options/emitFile.test.js b/test/options/emitFile.test.js
+deleted file mode 100644
+index cba0a06..0000000
+--- a/test/options/emitFile.test.js
++++ /dev/null
+@@ -1,42 +0,0 @@
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('emitFile', () => {
+-    describe('{Boolean}', () => {
+-      test('True (Default)', async () => {
+-        const config = {
+-          loader: {
+-            test: /(png|jpg|svg)/,
+-            options: {
+-              emitFile: true,
+-            },
+-          },
+-        };
+-
+-        const stats = await webpack('emitFile/fixture.js', config);
+-        const [, module] = stats.toJson().modules;
+-        const { assets } = module;
+-
+-        expect(assets[0]).toMatchSnapshot();
+-      });
+-
+-      test('False', async () => {
+-        const config = {
+-          loader: {
+-            test: /(png|jpg|svg)/,
+-            options: {
+-              emitFile: false,
+-            },
+-          },
+-        };
+-
+-        const stats = await webpack('emitFile/fixture.js', config);
+-        const [module] = stats.toJson().modules;
+-        const { assets } = module;
+-
+-        // eslint-disable-next-line no-undefined
+-        expect(assets[0]).toBe(undefined);
+-      });
+-    });
+-  });
+-});
+
+diff --git a/test/options/name.test.js b/test/options/name.test.js
+deleted file mode 100644
+index 8f9c20b..0000000
+--- a/test/options/name.test.js
++++ /dev/null
+@@ -1,44 +0,0 @@
+-/* eslint-disable
+-  prefer-destructuring,
+-*/
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('name', () => {
+-    test('{String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            name: '[hash].[ext]',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { source } = module;
+-
+-      expect(source).toMatchSnapshot();
+-    });
+-
+-    test('{Function}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            name() {
+-              return '[hash].[ext]';
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { source } = module;
+-
+-      expect(source).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/test/options/outputPath.test.js b/test/options/outputPath.test.js
+deleted file mode 100644
+index aa10169..0000000
+--- a/test/options/outputPath.test.js
++++ /dev/null
+@@ -1,194 +0,0 @@
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('outputPath', () => {
+-    test('{String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath: 'output_path/',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} without trailing slash', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath: 'output_path',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} with `options.name`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            name: '[path][name].[ext]',
+-            outputPath: 'output_path/',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Function}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath(url) {
+-              return `output_path_func/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Function} with `options.name`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            name: '[name].[ext]',
+-            outputPath(url) {
+-              return `output_path_func/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} with `publicPath` {String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath: 'output_path/',
+-            publicPath: 'public_path/',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} with `publicPath` {String} without trailing slash', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath: 'output_path',
+-            publicPath: 'public_path',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Function} with `publicPath` {String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            outputPath(url) {
+-              return `output_path_func/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} with `publicPath` {Function}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath: 'output_path/',
+-            publicPath(url) {
+-              return `public_path_func/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Function} with `publicPath` {Function}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            outputPath(url) {
+-              return `output_path_func/${url}`;
+-            },
+-            publicPath(url) {
+-              return `public_path_func/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/test/options/publicPath.test.js b/test/options/publicPath.test.js
+deleted file mode 100644
+index f6f5171..0000000
+--- a/test/options/publicPath.test.js
++++ /dev/null
+@@ -1,75 +0,0 @@
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('publicPath', () => {
+-    test('{String}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} - Without trailing slash', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{String} - URL', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'https://cdn.com/',
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Function}', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath(url) {
+-              return `public_path/${url}`;
+-            },
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/test/options/useRelativePath.test.js b/test/options/useRelativePath.test.js
+deleted file mode 100644
+index 4e75fe7..0000000
+--- a/test/options/useRelativePath.test.js
++++ /dev/null
+@@ -1,80 +0,0 @@
+-import webpack from '../helpers/compiler';
+-
+-describe('Options', () => {
+-  describe('useRelativePath', () => {
+-    test('{Boolean} - `false`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            useRelativePath: false,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('nested/fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Boolean} - `true`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            useRelativePath: true,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('nested/fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Boolean} - `true` with relative `context`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            context: './test/fixtures/nested/',
+-            useRelativePath: true,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('nested/fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-
+-    test('{Boolean} - `true` with absolute `context`', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            context: '../nested/',
+-            useRelativePath: true,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('nested/fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      let { assets, source } = module;
+-
+-      if (process.env.CIRCLECI) {
+-        assets = [assets[0].replace('project', 'file-loader')];
+-        source = source.replace('project', 'file-loader');
+-      }
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/test/outputPath-option.test.js b/test/outputPath-option.test.js
+new file mode 100644
+index 0000000..a6e565f
+--- /dev/null
++++ b/test/outputPath-option.test.js
+@@ -0,0 +1,192 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `outputPath` option', () => {
++  it('matches snapshot for `{String}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath: 'output_path/',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value without trailing slash', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath: 'output_path',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` with `name` option', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          name: '[path][name].[ext]',
++          outputPath: 'output_path/',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath(url) {
++            return `output_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value with `options.name`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          name: '[name].[ext]',
++          outputPath(url) {
++            return `output_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value with `publicPath` (`{String}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath: 'output_path/',
++          publicPath: 'public_path/',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value with `publicPath` (`{String}`) without trailing slash', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath: 'output_path',
++          publicPath: 'public_path',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value with `publicPath` (`{String}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'public_path/',
++          outputPath(url) {
++            return `output_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value with `publicPath` (`{Function}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath: 'output_path/',
++          publicPath(url) {
++            return `public_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value with `publicPath` (`{Function}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath(url) {
++            return `output_path_func/${url}`;
++          },
++          publicPath(url) {
++            return `public_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++});
+
+diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+new file mode 100644
+index 0000000..70e7cdc
+--- /dev/null
++++ b/test/publicPath-option.test.js
+@@ -0,0 +1,73 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `publicPath` option', () => {
++  it('matches snapshot for `{String}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'public_path/',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value without trailing slash', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'public_path',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value as URL', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'https://cdn.com/',
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url) {
++            return `public_path/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++});
+
+diff --git a/test/useRelativePath-option.test.js b/test/useRelativePath-option.test.js
+new file mode 100644
+index 0000000..f7e9dfb
+--- /dev/null
++++ b/test/useRelativePath-option.test.js
+@@ -0,0 +1,78 @@
++import webpack from './helpers/compiler';
++
++describe('when applied with `useRelativePath` option', () => {
++  it('matches snapshot for `false` value (`{Boolean}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          useRelativePath: false,
++        },
++      },
++    };
++
++    const stats = await webpack('nested/fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `true` value (`{Boolean}`)', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          useRelativePath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('nested/fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `true` value (`{Boolean}`) and with relative `context`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          context: './test/fixtures/nested/',
++          useRelativePath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('nested/fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `true` value (`{Boolean}`) and with absolute `context`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          context: '../nested/',
++          useRelativePath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('nested/fixture.js', config);
++    const [module] = stats.toJson().modules;
++    let { assets, source } = module;
++
++    if (process.env.CIRCLECI) {
++      assets = [assets[0].replace('project', 'file-loader')];
++      source = source.replace('project', 'file-loader');
++    }
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++});
+",0,,31,1315,15,1,28,1037
+304,3e24e08089f2d12bb4af6ba9f14625dda5aea945,3e24e08089f2d12bb4af6ba9f14625dda5aea945,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Allow to developers have original asset path
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: `resourcePath` is now available in `outputPath` and `publicPath`
+","diff --git a/test/outputPath-option.test.js b/test/outputPath-option.test.js
+index a6e565f..8998151 100644
+--- a/test/outputPath-option.test.js
++++ b/test/outputPath-option.test.js
+@@ -103,7 +103,7 @@ describe('when applied with `outputPath` option', () => {
+       },
+     };
+ 
+-    const stats = await webpack('fixture.js', config);
++    const stats = await webpack('nested/fixture.js', config);
+     const [module] = stats.toJson().modules;
+     const { assets, source } = module;
+ 
+@@ -189,4 +189,25 @@ describe('when applied with `outputPath` option', () => {
+ 
+     expect({ assets, source }).toMatchSnapshot();
+   });
++
++  it('matches snapshot for `{Function}` value and pass `resourcePath`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath(url, resourcePath) {
++            expect(resourcePath).toMatch('file.png');
++
++            return `output_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
+ });
+
+diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+index 70e7cdc..289a75d 100644
+--- a/test/publicPath-option.test.js
++++ b/test/publicPath-option.test.js
+@@ -70,4 +70,25 @@ describe('when applied with `publicPath` option', () => {
+ 
+     expect({ assets, source }).toMatchSnapshot();
+   });
++
++  it('matches snapshot for `{Function}` value and pass `resourcePath`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url, resourcePath) {
++            expect(resourcePath).toMatch('file.png');
++
++            return `public_path/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
+ });
+",0,,6,118,2,1,6,118
+305,9be957aa3a257ed5bc1b69ee223ba2a2dc244361,9be957aa3a257ed5bc1b69ee223ba2a2dc244361,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Pass `context` to function
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: `context` is now available in `outputPath` and `publicPath`
+","diff --git a/test/outputPath-option.test.js b/test/outputPath-option.test.js
+index 8998151..ac6b7a8 100644
+--- a/test/outputPath-option.test.js
++++ b/test/outputPath-option.test.js
+@@ -210,4 +210,25 @@ describe('when applied with `outputPath` option', () => {
+ 
+     expect({ assets, source }).toMatchSnapshot();
+   });
++
++  it('matches snapshot for `{Function}` value and pass `context`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          outputPath(url, resourcePath, context) {
++            expect(context).toMatch('fixtures');
++
++            return `output_path_func/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
+ });
+
+diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+index 289a75d..cc153d6 100644
+--- a/test/publicPath-option.test.js
++++ b/test/publicPath-option.test.js
+@@ -91,4 +91,25 @@ describe('when applied with `publicPath` option', () => {
+ 
+     expect({ assets, source }).toMatchSnapshot();
+   });
++
++  it('matches snapshot for `{Function}` value and pass `context`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url, resourcePath, context) {
++            expect(context).toMatch('fixtures');
++
++            return `public_path/${url}`;
++          },
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
+ });
+",0,,6,86,2,1,6,86
+306,2402fe91b1d0cee09cfe6e8bdb2e78b5715fd00f,378b58f1530ca3c56b69c8d0a0c7c1893d869252,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Remove `useRelativePath` option because it is break urls in many cases.
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No","refactor: loader
+","diff --git a/test/outputPath-option.test.js b/test/outputPath-option.test.js
+index ac6b7a8..9905584 100644
+--- a/test/outputPath-option.test.js
++++ b/test/outputPath-option.test.js
+@@ -1,6 +1,20 @@
+ import webpack from './helpers/compiler';
+ 
+ describe('when applied with `outputPath` option', () => {
++  it('matches snapshot without value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
+   it('matches snapshot for `{String}` value', async () => {
+     const config = {
+       loader: {
+
+diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+index cc153d6..6980fb2 100644
+--- a/test/publicPath-option.test.js
++++ b/test/publicPath-option.test.js
+@@ -1,6 +1,20 @@
+ import webpack from './helpers/compiler';
+ 
+ describe('when applied with `publicPath` option', () => {
++  it('matches snapshot without value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
+   it('matches snapshot for `{String}` value', async () => {
+     const config = {
+       loader: {
+",0,,5,54,2,2,11,384
+309,fa08e30c739eb9835d7dcd96b31ae6b53b17d4ba,fa08e30c739eb9835d7dcd96b31ae6b53b17d4ba,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #308
+
+### Breaking Changes
+
+no
+
+### Additional Info
+
+no","fix: relax options validation for additional properties
+","diff --git a/test/errors.test.js b/test/errors.test.js
+index 97510aa..44504ed 100644
+--- a/test/errors.test.js
++++ b/test/errors.test.js
+@@ -15,9 +15,9 @@ describe('validation', () => {
+         'a { color: red; }'
+       );
+ 
+-    expect(() =>
+-      validate({ unknown: 'unknown' })
+-    ).toThrowErrorMatchingSnapshot();
++    // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
++    // so we use `additionalProperties: false` to avoid problems.
++    expect(() => validate({ limit: 8192 })).not.toThrow();
+ 
+     expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
+     expect(() =>
+
+diff --git a/test/loader.test.js b/test/loader.test.js
+index 20ca40d..7e1a963 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -15,4 +15,52 @@ describe('loader', () => {
+ 
+     expect(source).toMatchSnapshot();
+   });
++
++  it('should works with `url-loader` when limit is less', async () => {
++    const config = {
++      rules: [
++        {
++          test: /\.(png|jpg|gif)$/i,
++          use: [
++            {
++              loader: 'url-loader',
++              options: {
++                limit: 1,
++              },
++            },
++          ],
++        },
++      ],
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { source } = module;
++
++    expect(source).toMatchSnapshot();
++  });
++
++  it('should works with `url-loader` when limit is more', async () => {
++    const config = {
++      rules: [
++        {
++          test: /\.(png|jpg|gif)$/i,
++          use: [
++            {
++              loader: 'url-loader',
++              options: {
++                limit: 8192,
++              },
++            },
++          ],
++        },
++      ],
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { source } = module;
++
++    expect(source).toMatchSnapshot();
++  });
+ });
+",0,,8,101,2,1,8,192
+334,1bc97dc0fec04662619793fc55aca0cd1c7293a9,e776945f8db0da6626955f2b33ca03131275a48f,"This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+We use the `file-loader` in a [next.js plugin](https://gist.github.com/fabb/cdaad150e79a1dc78aa97fc315d40cb7) to automatically generate asset urls by importing the assets. The asset file names will be hashed, which is good for caching indefinitely. The plugin supports next.js' `assetPrefix` which allows to provide a different cache server host url for static assets. Next.js [uses `__webpack_public_path__` by default](https://github.com/zeit/next.js/blob/7e7f2c0a6df2cf6a48fa4b34beb1d5befe13fa54/packages/next/client/index.js#L47).
+
+The problem is that in our case the `assetPrefix` is dynamic at runtime, and will be set based on environment variables which are **not present at compile time**. The plugin-static gets used during compile time though, and will only use the `assetPrefix` that is based on environment variables present at compile time. [The proper way around this is to make use of `__webpack_public_path__`](https://webpack.js.org/guides/public-path/#on-the-fly). The problem with `file-loader` is that when setting the `publicPath`, it is [not possible to use the `__webpack_public_path__`](https://github.com/webpack-contrib/file-loader/blob/011cc38d4ed470729ff0fbc6c1d7146896603598/src/index.js#L44). Therefore a new setting is needed which allows to prefix with `__webpack_public_path__`.
+
+### Breaking Changes
+
+No breaking changes.
+
+### Additional Info
+","feat: added unit tests
+added unit tests for option ""prefixPublicPathWithWebpackPublicPath""
+","diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+index 6980fb2..01e7616 100644
+--- a/test/publicPath-option.test.js
++++ b/test/publicPath-option.test.js
+@@ -127,3 +127,124 @@ describe('when applied with `publicPath` option', () => {
+     expect({ assets, source }).toMatchSnapshot();
+   });
+ });
++
++describe('when applied with `publicPath` and `prefixPublicPathWithWebpackPublicPath` options', () => {
++  it('matches snapshot for `{String}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'public_path/',
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{String}` value without trailing slash', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'public_path',
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  // notice that this case will produce invalid urls if __webpack_public_path__ is set to an absolute url
++  it('matches snapshot for `{String}` value as URL', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath: 'https://cdn.com/',
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url) {
++            return `public_path/${url}`;
++          },
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value and pass `resourcePath`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url, resourcePath) {
++            expect(resourcePath).toMatch('file.png');
++
++            return `public_path/${url}`;
++          },
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++
++  it('matches snapshot for `{Function}` value and pass `context`', async () => {
++    const config = {
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          publicPath(url, resourcePath, context) {
++            expect(context).toMatch('fixtures');
++
++            return `public_path/${url}`;
++          },
++          prefixPublicPathWithWebpackPublicPath: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++    const [module] = stats.toJson().modules;
++    const { assets, source } = module;
++
++    expect({ assets, source }).toMatchSnapshot();
++  });
++});
+",1,OID=OID,2,175,1,7,5,357
+339,3e819d78b035fe71fc54a9c4c9ff8713f6a38074,3e819d78b035fe71fc54a9c4c9ff8713f6a38074,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Better error messages
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: improved validation error messages
+","diff --git a/test/errors.test.js b/test/errors.test.js
+deleted file mode 100644
+index 44504ed..0000000
+--- a/test/errors.test.js
++++ /dev/null
+@@ -1,57 +0,0 @@
+-import loader from '../src';
+-
+-describe('validation', () => {
+-  it('errors', () => {
+-    const validate = (options) =>
+-      loader.call(
+-        Object.assign(
+-          {},
+-          {
+-            resourcePath: 'image.png',
+-            query: options,
+-            emitFile: () => {},
+-          }
+-        ),
+-        'a { color: red; }'
+-      );
+-
+-    // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
+-    // so we use `additionalProperties: false` to avoid problems.
+-    expect(() => validate({ limit: 8192 })).not.toThrow();
+-
+-    expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
+-    expect(() =>
+-      validate({
+-        name: () => '[hash].[ext]',
+-      })
+-    ).not.toThrow();
+-    expect(() => validate({ name: true })).toThrowErrorMatchingSnapshot();
+-
+-    expect(() => validate({ outputPath: 'assets' })).not.toThrow();
+-    expect(() =>
+-      validate({
+-        outputPath: () => 'assets',
+-      })
+-    ).not.toThrow();
+-    expect(() => validate({ outputPath: true })).toThrowErrorMatchingSnapshot();
+-
+-    expect(() => validate({ publicPath: 'assets' })).not.toThrow();
+-    expect(() =>
+-      validate({
+-        publicPath: () => 'assets',
+-      })
+-    ).not.toThrow();
+-    expect(() => validate({ publicPath: true })).toThrowErrorMatchingSnapshot();
+-
+-    expect(() => validate({ context: 'assets' })).not.toThrow();
+-    expect(() => validate({ context: true })).toThrowErrorMatchingSnapshot();
+-
+-    expect(() => validate({ emitFile: true })).not.toThrow();
+-    expect(() => validate({ emitFile: false })).not.toThrow();
+-    expect(() => validate({ emitFile: 'true' })).toThrowErrorMatchingSnapshot();
+-
+-    expect(() => validate({ regExp: /image\.png/ })).not.toThrow();
+-    expect(() => validate({ regExp: 'image\\.png' })).not.toThrow();
+-    expect(() => validate({ regExp: true })).toThrowErrorMatchingSnapshot();
+-  });
+-});
+
+diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..abb36f3
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,59 @@
++import loader from '../src';
++
++it('validate options', () => {
++  const validate = (options) =>
++    loader.call(
++      Object.assign(
++        {},
++        {
++          resourcePath: 'image.png',
++          query: options,
++          emitFile: () => {},
++        }
++      ),
++      'a { color: red; }'
++    );
++
++  expect(() => validate()).not.toThrow();
++
++  // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
++  // so we use `additionalProperties: false` to avoid problems.
++  expect(() => validate({ limit: 8192 })).not.toThrow();
++
++  expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
++  expect(() =>
++    validate({
++      name: () => '[hash].[ext]',
++    })
++  ).not.toThrow();
++  expect(() => validate({ name: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ outputPath: 'assets' })).not.toThrow();
++  expect(() =>
++    validate({
++      outputPath: () => 'assets',
++    })
++  ).not.toThrow();
++  expect(() => validate({ outputPath: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ publicPath: 'assets' })).not.toThrow();
++  expect(() =>
++    validate({
++      publicPath: () => 'assets',
++    })
++  ).not.toThrow();
++  expect(() => validate({ publicPath: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ context: 'assets' })).not.toThrow();
++  expect(() => validate({ context: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ emitFile: true })).not.toThrow();
++  expect(() => validate({ emitFile: false })).not.toThrow();
++  expect(() => validate({ emitFile: 'true' })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ regExp: /image\.png/ })).not.toThrow();
++  expect(() => validate({ regExp: 'image\\.png' })).not.toThrow();
++  expect(() => validate({ regExp: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ unknown: 'unknown' })).not.toThrow();
++});
+",0,,10,288,2,1,10,2092
+344,59ab89358d5d9c5f9c190b20080b5f9f4866556c,59ab89358d5d9c5f9c190b20080b5f9f4866556c,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+test with ModuleConcatenationPlugin + refactor + fix schema
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 3caa2e9..05aa851 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -78,4 +78,22 @@ describe('loader', () => {
+ 
+     expect(source).toMatchSnapshot();
+   });
++
++  it('should work with ModuleConcatenationPlugin', async () => {
++    const config = {
++      mode: 'production',
++      loader: {
++        test: /(png|jpg|svg)/,
++        options: {
++          esModules: true,
++        },
++      },
++    };
++
++    const stats = await webpack('fixture.js', config);
++
++    expect(
++      stats.compilation.assets['main.bundle.js'].source()
++    ).toMatchSnapshot();
++  });
+ });
+
+diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+deleted file mode 100644
+index abb36f3..0000000
+--- a/test/validate-options.test.js
++++ /dev/null
+@@ -1,59 +0,0 @@
+-import loader from '../src';
+-
+-it('validate options', () => {
+-  const validate = (options) =>
+-    loader.call(
+-      Object.assign(
+-        {},
+-        {
+-          resourcePath: 'image.png',
+-          query: options,
+-          emitFile: () => {},
+-        }
+-      ),
+-      'a { color: red; }'
+-    );
+-
+-  expect(() => validate()).not.toThrow();
+-
+-  // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
+-  // so we use `additionalProperties: false` to avoid problems.
+-  expect(() => validate({ limit: 8192 })).not.toThrow();
+-
+-  expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      name: () => '[hash].[ext]',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ name: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ outputPath: 'assets' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      outputPath: () => 'assets',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ outputPath: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ publicPath: 'assets' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      publicPath: () => 'assets',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ publicPath: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ context: 'assets' })).not.toThrow();
+-  expect(() => validate({ context: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ emitFile: true })).not.toThrow();
+-  expect(() => validate({ emitFile: false })).not.toThrow();
+-  expect(() => validate({ emitFile: 'true' })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ regExp: /image\.png/ })).not.toThrow();
+-  expect(() => validate({ regExp: 'image\\.png' })).not.toThrow();
+-  expect(() => validate({ regExp: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ unknown: 'unknown' })).not.toThrow();
+-});
+
+diff --git a/test/validation-options.test.js b/test/validation-options.test.js
+new file mode 100644
+index 0000000..1d7b796
+--- /dev/null
++++ b/test/validation-options.test.js
+@@ -0,0 +1,63 @@
++import loader from '../src';
++
++it('validate options', () => {
++  const validate = (options) =>
++    loader.call(
++      Object.assign(
++        {},
++        {
++          resourcePath: 'image.png',
++          query: options,
++          emitFile: () => {},
++        }
++      ),
++      'a { color: red; }'
++    );
++
++  expect(() => validate()).not.toThrow();
++
++  // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
++  // so we use `additionalProperties: false` to avoid problems.
++  expect(() => validate({ limit: 8192 })).not.toThrow();
++
++  expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
++  expect(() =>
++    validate({
++      name: () => '[hash].[ext]',
++    })
++  ).not.toThrow();
++  expect(() => validate({ name: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ outputPath: 'assets' })).not.toThrow();
++  expect(() =>
++    validate({
++      outputPath: () => 'assets',
++    })
++  ).not.toThrow();
++  expect(() => validate({ outputPath: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ publicPath: 'assets' })).not.toThrow();
++  expect(() =>
++    validate({
++      publicPath: () => 'assets',
++    })
++  ).not.toThrow();
++  expect(() => validate({ publicPath: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ context: 'assets' })).not.toThrow();
++  expect(() => validate({ context: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ emitFile: true })).not.toThrow();
++  expect(() => validate({ emitFile: false })).not.toThrow();
++  expect(() => validate({ emitFile: 'true' })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ regExp: /image\.png/ })).not.toThrow();
++  expect(() => validate({ regExp: 'image\\.png' })).not.toThrow();
++  expect(() => validate({ regExp: true })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ esModules: true })).not.toThrow();
++  expect(() => validate({ esModules: false })).not.toThrow();
++  expect(() => validate({ esModules: 'true' })).toThrowErrorMatchingSnapshot();
++
++  expect(() => validate({ unknown: 'unknown' })).not.toThrow();
++});
+",0,,11,419,3,1,9,3906
+345,0f920d2fead7ef2b8be5699fba018bdb233822d5,0f920d2fead7ef2b8be5699fba018bdb233822d5,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Update code + switch to ES modules by default + drop node@8
+
+### Breaking Changes
+
+Yes
+
+* minimum required nodejs version is `10.13.0`
+* switch to ES modules by default (option `esModules` now is `true` by default)
+
+### Additional Info
+
+No","refactor: next
+","diff --git a/test/context-option.test.js b/test/context-option.test.js
+index 64551db..3fcbc7c 100644
+--- a/test/context-option.test.js
++++ b/test/context-option.test.js
+@@ -1,20 +1,43 @@
+-import webpack from './helpers/compiler';
++import path from 'path';
+ 
+-describe('when applied with `context` option', () => {
+-  it('matches snapshot for `{String}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          context: `${__dirname}`,
+-        },
+-      },
+-    };
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
+ 
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { source } = module;
++describe('""context"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js', {
++      name: '[path][name].[ext]',
++      context: __dirname,
++    });
++    const stats = await compile(compiler);
+ 
+-    expect(source).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
++
++  it('should work with ""String"" value', async () => {
++    const compiler = getCompiler('simple.js', {
++      name: '[path][name].[ext]',
++      context: path.resolve(__dirname, '../'),
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/emitFile-option.test.js b/test/emitFile-option.test.js
+index 065c4df..eba57dc 100644
+--- a/test/emitFile-option.test.js
++++ b/test/emitFile-option.test.js
+@@ -1,38 +1,55 @@
+-import webpack from './helpers/compiler';
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
+ 
+-describe('when applied with `emitFile` option', () => {
+-  it('matches snapshot for `true` (`{Boolean}`) (default)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          emitFile: true,
+-        },
+-      },
+-    };
++describe('""emitFile"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
+ 
+-    const stats = await webpack('emitFile/fixture.js', config);
+-    const [, module] = stats.toJson().modules;
+-    const { assets } = module;
+-
+-    expect(assets[0]).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `false` value  (`{Boolean}`)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          emitFile: false,
+-        },
+-      },
+-    };
++  it('should work with ""Boolean"" value equal ""true""', async () => {
++    const compiler = getCompiler('simple.js', {
++      emitFile: true,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    const stats = await webpack('emitFile/fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets } = module;
++  it('should work with ""Boolean"" value equal ""false""', async () => {
++    const compiler = getCompiler('simple.js', {
++      emitFile: false,
++    });
++    const stats = await compile(compiler);
+ 
+-    // eslint-disable-next-line no-undefined
+-    expect(assets[0]).toBe(undefined);
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/esModules-option.test.js b/test/esModules-option.test.js
+index ddf6378..5ef4091 100644
+--- a/test/esModules-option.test.js
++++ b/test/esModules-option.test.js
+@@ -1,51 +1,52 @@
+-import webpack from './helpers/compiler';
+-
+-describe('when applied with `esModules` option', () => {
+-  it('matches snapshot without value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
++
++describe('""esModules"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `true` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          esModules: true,
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Boolean"" value equal ""true""', async () => {
++    const compiler = getCompiler('simple.js', {
++      esModules: true,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `false` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          esModules: false,
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Boolean"" value equal ""false""', async () => {
++    const compiler = getCompiler('simple.js', {
++      esModules: false,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/loader.test.js b/test/loader.test.js
+index 05aa851..5df92b7 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,99 +1,120 @@
+-import webpack from './helpers/compiler';
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
+ 
+ describe('loader', () => {
+   it('should works without options', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {},
+-      },
+-    };
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
+ 
+-    const stats = await webpack('fixture.js', config);
+-    const jsonStats = stats.toJson();
+-    const { modules, assets } = jsonStats;
+-    const [{ source }] = modules;
+-
+-    // eslint-disable-next-line no-new-func
+-    const assetName = new Function(
+-      'exports',
+-      'require',
+-      'module',
+-      '__filename',
+-      '__dirname',
+-      `'use strict'\nvar __webpack_public_path__ = '';\nreturn ${source}`
+-    )(exports, require, module, __filename, __dirname);
+-    const hasModuleAsAsset = Boolean(
+-      assets.find((asset) => asset.name === assetName)
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
+     );
+-
+-    expect(hasModuleAsAsset).toBe(true);
+-    expect(source).toMatchSnapshot();
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('should works with `url-loader` when limit is less', async () => {
+-    const config = {
+-      rules: [
+-        {
+-          test: /\.(png|jpg|gif)$/i,
+-          use: [
++  it('should work with ""url-loader"" when limit is less', async () => {
++    const compiler = getCompiler(
++      'simple.js',
++      {},
++      {
++        module: {
++          rules: [
+             {
+-              loader: 'url-loader',
+-              options: {
+-                limit: 1,
+-              },
++              test: /(png|jpg|svg)/i,
++              rules: [
++                {
++                  loader: 'url-loader',
++                  options: {
++                    limit: 1,
++                  },
++                },
++              ],
+             },
+           ],
+         },
+-      ],
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { source } = module;
++      }
++    );
++    const stats = await compile(compiler);
+ 
+-    expect(source).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('should works with `url-loader` when limit is more', async () => {
+-    const config = {
+-      rules: [
+-        {
+-          test: /\.(png|jpg|gif)$/i,
+-          use: [
++  it('should works with ""url-loader"" when limit is more', async () => {
++    const compiler = getCompiler(
++      'simple.js',
++      {},
++      {
++        module: {
++          rules: [
+             {
+-              loader: 'url-loader',
+-              options: {
+-                limit: 8192,
+-              },
++              test: /(png|jpg|svg)/i,
++              rules: [
++                {
++                  loader: 'url-loader',
++                  options: {
++                    limit: 8192,
++                  },
++                },
++              ],
+             },
+           ],
+         },
+-      ],
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { source } = module;
++      }
++    );
++    const stats = await compile(compiler);
+ 
+-    expect(source).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('should work with ModuleConcatenationPlugin', async () => {
+-    const config = {
+-      mode: 'production',
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          esModules: true,
++  it('should work with ""ModuleConcatenationPlugin"" plugin', async () => {
++    const compiler = getCompiler(
++      'simple.js',
++      {},
++      {
++        mode: 'production',
++        optimization: {
++          minimize: false,
+         },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
++      }
++    );
++    const stats = await compile(compiler);
+ 
+     expect(
+-      stats.compilation.assets['main.bundle.js'].source()
+-    ).toMatchSnapshot();
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++
++    if (stats.compilation.modules.size) {
++      expect(stats.compilation.modules.size).toBe(2);
++    } else {
++      expect(stats.compilation.modules.length).toBe(1);
++    }
+   });
+ });
+
+diff --git a/test/name-option.test.js b/test/name-option.test.js
+index 14fd84e..1f46850 100644
+--- a/test/name-option.test.js
++++ b/test/name-option.test.js
+@@ -1,39 +1,54 @@
+-import webpack from './helpers/compiler';
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
+ 
+-describe('when applied with `name` option', () => {
+-  it('matches snapshot for `{String}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          name: '[hash].[ext]',
+-        },
+-      },
+-    };
++describe('""name"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { source } = module;
++  it('should work with ""String"" value', async () => {
++    const compiler = getCompiler('simple.js', {
++      name: '[hash].string.[ext]',
++    });
++    const stats = await compile(compiler);
+ 
+-    expect(source).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          name() {
+-            return '[hash].[ext]';
+-          },
+-        },
++  it('should work with ""Function"" value', async () => {
++    const compiler = getCompiler('simple.js', {
++      name() {
++        return '[hash].function.[ext]';
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { source } = module;
++    });
++    const stats = await compile(compiler);
+ 
+-    expect(source).toMatchSnapshot();
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/outputPath-option.test.js b/test/outputPath-option.test.js
+index 9905584..0d44d48 100644
+--- a/test/outputPath-option.test.js
++++ b/test/outputPath-option.test.js
+@@ -1,248 +1,207 @@
+-import webpack from './helpers/compiler';
+-
+-describe('when applied with `outputPath` option', () => {
+-  it('matches snapshot without value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
++
++describe('""outputPath"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath: 'output_path/',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value', async () => {
++    const compiler = getCompiler('simple.js', {
++      outputPath: 'output_path/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value without trailing slash', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath: 'output_path',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value without trailing slash', async () => {
++    const compiler = getCompiler('simple.js', {
++      outputPath: 'output_path',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` with `name` option', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          name: '[path][name].[ext]',
+-          outputPath: 'output_path/',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value and with ""name"" option', async () => {
++    const compiler = getCompiler('simple.js', {
++      name: '[path][name].[ext]',
++      outputPath: 'output_path/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath(url) {
+-            return `output_path_func/${url}`;
+-          },
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
++  it('should work with ""Function"" value', async () => {
++    // TODO
++    const compiler = getCompiler('simple.js', {
++      outputPath(url, resourcePath, context) {
++        expect(url).toBe('9c87cbf3ba33126ffd25ae7f2f6bbafb.png');
++        expect(resourcePath).toMatch('file.png');
++        expect(context).toMatch('fixtures');
+ 
+-    expect({ assets, source }).toMatchSnapshot();
+-  });
+-
+-  it('matches snapshot for `{Function}` value with `options.name`', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          name: '[name].[ext]',
+-          outputPath(url) {
+-            return `output_path_func/${url}`;
+-          },
+-        },
++        return `output_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value with `publicPath` (`{String}`)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath: 'output_path/',
+-          publicPath: 'public_path/',
+-        },
++  it('should work with ""Function"" value and with ""name"" option', async () => {
++    const compiler = getCompiler('simple.js', {
++      name: '[name].[ext]',
++      outputPath(url) {
++        return `output_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('nested/fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value with `publicPath` (`{String}`) without trailing slash', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath: 'output_path',
+-          publicPath: 'public_path',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value and with ""publicPath"" option', async () => {
++    const compiler = getCompiler('simple.js', {
++      outputPath: 'output_path/',
++      publicPath: 'public_path/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value with `publicPath` (`{String}`)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath: 'public_path/',
+-          outputPath(url) {
+-            return `output_path_func/${url}`;
+-          },
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value and with ""publicPath"" option and without trailing slash', async () => {
++    const compiler = getCompiler('simple.js', {
++      outputPath: 'output_path',
++      publicPath: 'public_path',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value with `publicPath` (`{Function}`)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath: 'output_path/',
+-          publicPath(url) {
+-            return `public_path_func/${url}`;
+-          },
+-        },
++  it('should work with ""Function"" value and with ""publicPath"" as ""String""', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path/',
++      outputPath(url) {
++        return `output_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value with `publicPath` (`{Function}`)', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath(url) {
+-            return `output_path_func/${url}`;
+-          },
+-          publicPath(url) {
+-            return `public_path_func/${url}`;
+-          },
+-        },
++  it('should work with ""String"" value and with ""publicPath"" as ""Function""', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath(url) {
++        return `public_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++      outputPath: 'output_path/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value and pass `resourcePath`', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath(url, resourcePath) {
+-            expect(resourcePath).toMatch('file.png');
+-
+-            return `output_path_func/${url}`;
+-          },
+-        },
++  it('should work with ""Function"" value and with ""publicPath"" as ""Function""', async () => {
++    const compiler = getCompiler('simple.js', {
++      outputPath(url) {
++        return `output_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
+-  });
+-
+-  it('matches snapshot for `{Function}` value and pass `context`', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          outputPath(url, resourcePath, context) {
+-            expect(context).toMatch('fixtures');
+-
+-            return `output_path_func/${url}`;
+-          },
+-        },
++      publicPath(url) {
++        return `public_path_func/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(Object.keys(stats.compilation.assets)).toMatchSnapshot('assets');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/postTransformPublicPath-option.test.js b/test/postTransformPublicPath-option.test.js
+index d673e02..e634a19 100644
+--- a/test/postTransformPublicPath-option.test.js
++++ b/test/postTransformPublicPath-option.test.js
+@@ -1,173 +1,165 @@
+-import webpack from './helpers/compiler';
+-
+-describe('when applied with `postTransformPublicPath` option', () => {
+-  it('matches snapshot for returned input parameter value without modification', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          postTransformPublicPath: (p) => p,
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++import path from 'path';
++
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
++
++describe('""postTransformPublicPath"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for appending to input parameter value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          postTransformPublicPath: (p) => `${p} + ""/test""`,
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where return input parameter value without modification', async () => {
++    const compiler = getCompiler('simple.js', {
++      postTransformPublicPath: (p) => p,
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+-});
+ 
+-describe('when applied with `publicPath` and `postTransformPublicPath` option', () => {
+-  describe('`{String}` value', () => {
+-    it('matches snapshot for returned input parameter value without modification', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            postTransformPublicPath: (p) => p,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where append to input parameter value', async () => {
++    const compiler = getCompiler('simple.js', {
++      postTransformPublicPath: (p) => `${p} + ""/test""`,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    it('matches snapshot for appending to input parameter value', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            postTransformPublicPath: (p) => `${p} + ""?test=test""`,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where return input parameter value without modification and use ""publicPath"" option', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path/',
++      postTransformPublicPath: (p) => p,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    it('matches snapshot for prefixing with __webpack_public_path__', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where append to input parameter value and use ""publicPath"" option', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path/',
++      postTransformPublicPath: (p) => `${p} + ""?test=test""`,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  describe('`{Function}` value', () => {
+-    it('matches snapshot for returned input parameter value without modification', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath(url) {
+-              return `public_path/${url}`;
+-            },
+-            postTransformPublicPath: (p) => p,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" and ""publicPath"" option as ""Function""', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath(url) {
++        return `public_path/${url}`;
++      },
++      postTransformPublicPath: (p) => p,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    it('matches snapshot for appending to input parameter value', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath(url) {
+-              return `public_path/${url}`;
+-            },
+-            postTransformPublicPath: (p) => `${p} + ""?test=test""`,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where append to input parameter value and ""publicPath"" option as ""Function""', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath(url) {
++        return `public_path/${url}`;
++      },
++      postTransformPublicPath: (p) => `${p} + ""?test=test""`,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    it('matches snapshot for prefixing with string', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            postTransformPublicPath: (p) => `""path_prefix/"" + ${p}`,
+-          },
+-        },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""Function"" where prepend path and ""publicPath"" option as ""String""', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path/',
++      postTransformPublicPath: (p) => `""path_prefix/"" + ${p}`,
+     });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ 
+-    it('matches snapshot for prefixing with __webpack_public_path__', async () => {
+-      const config = {
+-        loader: {
+-          test: /(png|jpg|svg)/,
+-          options: {
+-            publicPath: 'public_path/',
+-            postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`,
+-          },
++  it('should work with ""Function"" where prepend ""__webpack_public_path__"" and ""publicPath"" option as ""String""', async () => {
++    const compiler = getCompiler(
++      'simple.js',
++      {
++        publicPath: 'public_path/',
++        postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`,
++      },
++      {
++        output: {
++          publicPath: 'http://code.com/',
++          path: path.resolve(__dirname, 'outputs'),
++          filename: '[name].bundle.js',
++          chunkFilename: '[name].chunk.js',
+         },
+-      };
+-
+-      const stats = await webpack('fixture.js', config);
+-      const [module] = stats.toJson().modules;
+-      const { assets, source } = module;
+-
+-      expect({ assets, source }).toMatchSnapshot();
+-    });
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/publicPath-option.test.js b/test/publicPath-option.test.js
+index 6980fb2..1e4b787 100644
+--- a/test/publicPath-option.test.js
++++ b/test/publicPath-option.test.js
+@@ -1,129 +1,90 @@
+-import webpack from './helpers/compiler';
+-
+-describe('when applied with `publicPath` option', () => {
+-  it('matches snapshot without value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++import {
++  compile,
++  execute,
++  getCompiler,
++  normalizeErrors,
++  readAsset,
++} from './helpers';
++
++describe('""publicPath"" option', () => {
++  it('should work without value', async () => {
++    const compiler = getCompiler('simple.js');
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath: 'public_path/',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value without trailing slash', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath: 'public_path',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value without trailing slash', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'public_path',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{String}` value as URL', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath: 'https://cdn.com/',
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++  it('should work with ""String"" value equal an URL', async () => {
++    const compiler = getCompiler('simple.js', {
++      publicPath: 'https://cdn.com/',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ 
+-  it('matches snapshot for `{Function}` value', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath(url) {
+-            return `public_path/${url}`;
+-          },
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
+-  });
+-
+-  it('matches snapshot for `{Function}` value and pass `resourcePath`', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath(url, resourcePath) {
+-            expect(resourcePath).toMatch('file.png');
+-
+-            return `public_path/${url}`;
+-          },
+-        },
+-      },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
+-  });
++  it('should work with ""Function"" value and pass ""url"", ""resourcePath"" and ""context"" as arguments', async () => {
++    expect.assertions(6);
+ 
+-  it('matches snapshot for `{Function}` value and pass `context`', async () => {
+-    const config = {
+-      loader: {
+-        test: /(png|jpg|svg)/,
+-        options: {
+-          publicPath(url, resourcePath, context) {
+-            expect(context).toMatch('fixtures');
++    const compiler = getCompiler('simple.js', {
++      publicPath(url, resourcePath, context) {
++        expect(url).toMatch('9c87cbf3ba33126ffd25ae7f2f6bbafb.png');
++        expect(resourcePath).toMatch('file.png');
++        expect(context).toMatch('fixtures');
+ 
+-            return `public_path/${url}`;
+-          },
+-        },
++        return `public_path/${url}`;
+       },
+-    };
+-
+-    const stats = await webpack('fixture.js', config);
+-    const [module] = stats.toJson().modules;
+-    const { assets, source } = module;
+-
+-    expect({ assets, source }).toMatchSnapshot();
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
+ });
+
+diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+new file mode 100644
+index 0000000..94bd17d
+--- /dev/null
++++ b/test/validate-options.test.js
+@@ -0,0 +1,84 @@
++import { getCompiler, compile } from './helpers';
++
++describe('validate options', () => {
++  const tests = {
++    name: {
++      success: ['[path][name].[ext]', () => '[path][name].[ext]'],
++      failure: [true],
++    },
++    outputPath: {
++      success: ['assets', () => 'assets'],
++      failure: [true],
++    },
++    publicPath: {
++      success: ['assets', () => 'assets'],
++      failure: [true],
++    },
++    context: {
++      success: ['assets'],
++      failure: [true],
++    },
++    emitFile: {
++      success: [true, false],
++      failure: ['true'],
++    },
++    regExp: {
++      success: [/image\.png/, 'image.png'],
++      failure: [true],
++    },
++    esModules: {
++      success: [true, false],
++      failure: ['true'],
++    },
++    unknown: {
++      success: [1, true, false, 'test', /test/, [], {}, { foo: 'bar' }],
++      failure: [],
++    },
++  };
++
++  function stringifyValue(value) {
++    if (
++      Array.isArray(value) ||
++      (value && typeof value === 'object' && value.constructor === Object)
++    ) {
++      return JSON.stringify(value);
++    }
++
++    return value;
++  }
++
++  async function createTestCase(key, value, type) {
++    it(`should ${
++      type === 'success' ? 'successfully validate' : 'throw an error on'
++    } the ""${key}"" option with ""${stringifyValue(value)}"" value`, async () => {
++      const compiler = getCompiler('simple.js', { [key]: value });
++
++      let stats;
++
++      try {
++        stats = await compile(compiler);
++      } finally {
++        if (type === 'success') {
++          expect(stats.hasErrors()).toBe(false);
++        } else if (type === 'failure') {
++          const {
++            compilation: { errors },
++          } = stats;
++
++          expect(errors).toHaveLength(1);
++          expect(() => {
++            throw new Error(errors[0].error.message);
++          }).toThrowErrorMatchingSnapshot();
++        }
++      }
++    });
++  }
++
++  for (const [key, values] of Object.entries(tests)) {
++    for (const type of Object.keys(values)) {
++      for (const value of values[type]) {
++        createTestCase(key, value, type);
++      }
++    }
++  }
++});
+
+diff --git a/test/validation-options.test.js b/test/validation-options.test.js
+deleted file mode 100644
+index 1d7b796..0000000
+--- a/test/validation-options.test.js
++++ /dev/null
+@@ -1,63 +0,0 @@
+-import loader from '../src';
+-
+-it('validate options', () => {
+-  const validate = (options) =>
+-    loader.call(
+-      Object.assign(
+-        {},
+-        {
+-          resourcePath: 'image.png',
+-          query: options,
+-          emitFile: () => {},
+-        }
+-      ),
+-      'a { color: red; }'
+-    );
+-
+-  expect(() => validate()).not.toThrow();
+-
+-  // The `file-loader` loader can be used as `fallback` loader and options can contain not only `file-loader` options
+-  // so we use `additionalProperties: false` to avoid problems.
+-  expect(() => validate({ limit: 8192 })).not.toThrow();
+-
+-  expect(() => validate({ name: '[path][name].[ext]' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      name: () => '[hash].[ext]',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ name: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ outputPath: 'assets' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      outputPath: () => 'assets',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ outputPath: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ publicPath: 'assets' })).not.toThrow();
+-  expect(() =>
+-    validate({
+-      publicPath: () => 'assets',
+-    })
+-  ).not.toThrow();
+-  expect(() => validate({ publicPath: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ context: 'assets' })).not.toThrow();
+-  expect(() => validate({ context: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ emitFile: true })).not.toThrow();
+-  expect(() => validate({ emitFile: false })).not.toThrow();
+-  expect(() => validate({ emitFile: 'true' })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ regExp: /image\.png/ })).not.toThrow();
+-  expect(() => validate({ regExp: 'image\\.png' })).not.toThrow();
+-  expect(() => validate({ regExp: true })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ esModules: true })).not.toThrow();
+-  expect(() => validate({ esModules: false })).not.toThrow();
+-  expect(() => validate({ esModules: 'true' })).toThrowErrorMatchingSnapshot();
+-
+-  expect(() => validate({ unknown: 'unknown' })).not.toThrow();
+-});
+",0,,44,2708,10,1,42,2690
+346,891355252c5a000f014c2d845b96a77292ec7d0f,891355252c5a000f014c2d845b96a77292ec7d0f,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fix typo with the `esModule` option name
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: name of `esModule`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 94bd17d..c98cf4f 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -26,7 +26,7 @@ describe('validate options', () => {
+       success: [/image\.png/, 'image.png'],
+       failure: [true],
+     },
+-    esModules: {
++    esModule: {
+       success: [true, false],
+       failure: ['true'],
+     },
+",0,,5,50,3,1,5,50
+366,cb6fafca67f429465ba568a454c238d35738f051,cb6fafca67f429465ba568a454c238d35738f051,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #364
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: support the `query` template for the `name` option
+","diff --git a/test/name-option.test.js b/test/name-option.test.js
+index 1f46850..22ca42c 100644
+--- a/test/name-option.test.js
++++ b/test/name-option.test.js
+@@ -1,3 +1,5 @@
++import path from 'path';
++
+ import {
+   compile,
+   execute,
+@@ -22,7 +24,7 @@ describe('""name"" option', () => {
+ 
+   it('should work with ""String"" value', async () => {
+     const compiler = getCompiler('simple.js', {
+-      name: '[hash].string.[ext]',
++      name: '[hash].string.[ext][query]',
+     });
+     const stats = await compile(compiler);
+ 
+@@ -37,8 +39,11 @@ describe('""name"" option', () => {
+ 
+   it('should work with ""Function"" value', async () => {
+     const compiler = getCompiler('simple.js', {
+-      name() {
+-        return '[hash].function.[ext]';
++      name(resourcePath, resourceQuery) {
++        expect(resourcePath).toBeDefined();
++        expect(resourceQuery).toBeDefined();
++
++        return '[hash].function.[ext][query]';
+       },
+     });
+     const stats = await compile(compiler);
+@@ -51,4 +56,30 @@ describe('""name"" option', () => {
+     );
+     expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
+   });
++
++  it('should work for CDN support query params', async () => {
++    const compiler = getCompiler(
++      'cdn.js',
++      {
++        name: '[path][name].[ext][query]',
++      },
++      {
++        output: {
++          path: path.resolve(__dirname, './outputs'),
++          publicPath: 'https://cdn.example.com/',
++          filename: '[name].bundle.js',
++          chunkFilename: '[name].chunk.js',
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(normalizeErrors(stats.compilation.warnings)).toMatchSnapshot(
++      'warnings'
++    );
++    expect(normalizeErrors(stats.compilation.errors)).toMatchSnapshot('errors');
++  });
+ });
+",0,,8,114,1,1,8,128

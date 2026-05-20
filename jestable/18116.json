@@ -1,0 +1,158 @@
+{
+    "id": 70358547,
+    "name": "lost-pixel/lost-pixel",
+    "isFork": false,
+    "commits": 1616,
+    "branches": 179,
+    "releases": 124,
+    "forks": 36,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://lost-pixel.com/",
+    "watchers": 8,
+    "stargazers": 1224,
+    "contributors": 17,
+    "size": 37083,
+    "createdAt": "2021-12-20T09:29:32",
+    "pushedAt": "2024-05-09T10:12:33",
+    "updatedAt": "2024-05-09T05:33:41",
+    "totalIssues": 69,
+    "openIssues": 22,
+    "totalPullRequests": 304,
+    "openPullRequests": 16,
+    "blankLines": 1977,
+    "codeLines": 220772,
+    "commentLines": 694,
+    "metrics": [
+        {
+            "language": "Dockerfile",
+            "commentLines": 4,
+            "codeLines": 24,
+            "blankLines": 15
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 209759,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 361,
+            "codeLines": 4723,
+            "blankLines": 820
+        },
+        {
+            "language": "CSS",
+            "commentLines": 22,
+            "codeLines": 598,
+            "blankLines": 75
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 310,
+            "blankLines": 55
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 2453,
+            "blankLines": 725
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 97,
+            "blankLines": 13
+        },
+        {
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 64,
+            "blankLines": 3
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 77,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "Svelte",
+            "commentLines": 102,
+            "codeLines": 1395,
+            "blankLines": 112
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 172,
+            "codeLines": 1237,
+            "blankLines": 155
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 1
+        },
+        {
+            "language": "TOML",
+            "commentLines": 10,
+            "codeLines": 18,
+            "blankLines": 3
+        }
+    ],
+    "lastCommit": "2024-03-09T03:18:58",
+    "lastCommitSHA": "6db31948aef97f10ea9c7b1a8fa8dd3a0ce2dd49",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 132654,
+        "Shell": 3789,
+        "JavaScript": 3087,
+        "Dockerfile": 974
+    },
+    "labels": [
+        "bug",
+        "clean up",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "cd",
+        "ci",
+        "developer-tools",
+        "development-tools",
+        "github-actions",
+        "histoire",
+        "ladle",
+        "platform",
+        "quality-assurance",
+        "saas",
+        "storybook",
+        "test-automation",
+        "testing-tools",
+        "tools",
+        "typescript",
+        "visual-regression-testing",
+        "visual-regressions",
+        "vue3"
+    ]
+}

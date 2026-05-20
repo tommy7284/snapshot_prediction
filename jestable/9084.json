@@ -1,0 +1,84 @@
+{
+    "id": 6805718,
+    "name": "styled-components/jest-styled-components",
+    "isFork": false,
+    "commits": 348,
+    "branches": 8,
+    "releases": 17,
+    "forks": 159,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 36,
+    "stargazers": 1576,
+    "contributors": 52,
+    "size": 3483,
+    "createdAt": "2017-03-18T11:22:41",
+    "pushedAt": "2023-12-01T05:56:50",
+    "updatedAt": "2024-01-04T04:12:27",
+    "totalIssues": 299,
+    "openIssues": 111,
+    "totalPullRequests": 143,
+    "openPullRequests": 5,
+    "blankLines": 433,
+    "codeLines": 1870,
+    "commentLines": 57,
+    "metrics": [
+        {
+            "blankLines": 126,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 371
+        },
+        {
+            "blankLines": 18,
+            "language": "YAML",
+            "commentLines": 32,
+            "codeLines": 70
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 108
+        },
+        {
+            "blankLines": 6,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 283,
+            "language": "JavaScript",
+            "commentLines": 25,
+            "codeLines": 1295
+        }
+    ],
+    "lastCommit": "2023-10-12T04:05:20",
+    "lastCommitSHA": "7cc67f78d92f747cee64d81b2ea711d6ec39e0a9",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 42734
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "no repro",
+        "question",
+        "react native",
+        "react testing library",
+        "styled components",
+        "typescript",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,569 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+11,dcf040266b7a4f88a0f38d6c3bc26c5004fff604,752d70169666e08da31cd85ad32ecec491de5494,See #10,"Implement `toMatchDiffSnapshot` jest matcher.
+","diff --git a/__tests__/toMatchDiffSnapshot.test.js b/__tests__/toMatchDiffSnapshot.test.js
+new file mode 100644
+index 0000000..74c16dd
+--- /dev/null
++++ b/__tests__/toMatchDiffSnapshot.test.js
+@@ -0,0 +1,49 @@
++// @flow
++
++const snapshotDiff = require('../src/index');
++
++const a = `
++    some
++    some
++    some
++    some
++    some
++    some
++    some
++    not
++    very
++    long
++    script
++`;
++const b = `
++    some
++    some
++    some
++    some
++    some
++    some
++    some
++    not
++    so
++    very
++    long
++    script
++`;
++
++beforeAll(() => {
++  expect.extend({ toMatchDiffSnapshot: snapshotDiff.toMatchDiffSnapshot });
++});
++
++test('foo', () => {
++  expect(a).toMatchDiffSnapshot(b);
++});
++
++[
++  { expand: true },
++  { colors: true },
++  { contextLines: 0 },
++].forEach((options: any) => {
++  test(`proxies ""${Object.keys(options).join(', ')}"" option(s)`, () => {
++    expect(a).toMatchDiffSnapshot(b, options);
++  });
++});
+",0,,7,218,1,9,8,250
+12,ee88216e3637bb620362485234323d1691513e41,2fea8fc4e6dc1dabd4e4c23634ff5b60e84d25c3,See #10,"Breaking Change. Add custom diff serializer.
+","diff --git a/__tests__/getSnapshotDiffSerializer.test.js b/__tests__/getSnapshotDiffSerializer.test.js
+new file mode 100644
+index 0000000..47abfd7
+--- /dev/null
++++ b/__tests__/getSnapshotDiffSerializer.test.js
+@@ -0,0 +1,24 @@
++// @flow
++
++const snapshotDiff = require('../src/index');
++
++expect.addSnapshotSerializer(snapshotDiff.getSnapshotDiffSerializer());
++
++test('serialize text diff output', () => {
++  expect(
++    snapshotDiff(
++      ['foo', 'bar', 'baz'].join('\n'),
++      ['foo', 'baz', 'quoz'].join('\n')
++    )
++  ).toMatchSnapshot();
++});
++
++test('serialize array diff output', () => {
++  expect(
++    snapshotDiff(['foo', 'bar', 'baz'], ['foo', 'baz', 'quoz'])
++  ).toMatchSnapshot();
++});
++
++test('serialize object diff output', () => {
++  expect(snapshotDiff({ foo: 'bar' }, { foo: 'baz' })).toMatchSnapshot();
++});
+",0,,8,151,3,2,8,155
+122,b48b6998c4f9c8b4d8ff0c5842baaf4cc667216a,f025628992db1ccb7ccaf0e346eaea617bf2a381,"Use same serializers as jest-snapshot when serializing React components
+rendered by react-test-renderer.
+
+With the React serializer updated to use `prettyFormat`, this now
+supports diffing React fragments when comparing a single element to
+multiple elements returned. Adding test to confirm output.
+
+Fixes #106
+Fixes #111","Output jest mock function names in snapshot diff
+
+Use same serializers as jest-snapshot when serializing react components
+rendered by react-test-renderer.
+
+Fixes #106
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 5ab0c04..9799903 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -87,7 +87,13 @@ class Component extends React.Component<Props> {
+         <span />
+         <span />
+         <span />
+-        <span>{this.props.test}</span>
++        <span
++          onBlur={() => {}}
++          onClick={jest.fn()}
++          onFocus={jest.fn().mockName('test-mock-name')}
++        >
++          {this.props.test}
++        </span>
+         <span>{this.props.test}</span>
+         <span />
+         <span />
+",0,,3,34,1,3,3,105
+128,e5979867ecc44c44ecae451abe5bfa6a9ef844a8,8bdf5510059806ff1d565fc560fa200d2c06f70c,"Also:
+- dropped Node 6, 
+- added engines requirement for >=10, since Jest dropped Node 8
+- fixed Flow errors","chore(breaking): bump Jest to 26
+",,0,,3,2356,1,3,7,2371
+173,f70d915dc1658f7367a6bafaa57cd4fd04bb3953,f70d915dc1658f7367a6bafaa57cd4fd04bb3953,"Updates to the latest jest-diff which now supports removing color codes
+from ""no visual difference"" message. A test has been added to confirm
+this and prevent regressions in the future.
+
+This is a follow-on PR from PR #123.
+There is a dependabot PR already up for this bump (PR #170) and other jest dependencies, but this PR includes a test for when there is no difference. These PRs should close automatically once this lands.
+
+Fixes #129","Update jest-diff to remove colors from no diff message
+
+Updates to the latest jest-diff which now supports removing color codes
+from ""no visual difference"" message. A test has been added to confirm
+this and prevent regressions in the future. All jest packages in use
+have been updated as part of this commit.
+
+Fixes #129
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 9e39cc9..2c9cc83 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -267,3 +267,7 @@ describe('failed optional deps', () => {
+     ).toThrowErrorMatchingSnapshot();
+   });
+ });
++
++test('no difference', () => {
++  expect(snapshotDiff('a', 'a')).toMatchSnapshot();
++});
+",0,,4,681,1,1,4,681
+21,2bd28e71211ce848f8cd9d295e9758fc7a758ccf,2bd28e71211ce848f8cd9d295e9758fc7a758ccf,(mostly to not rely on beta releases),"fix(package): update jest dependencies
+
+Breaking change: indentation of diff has changed
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index b108c3f..027137a 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -38,12 +38,8 @@ class Component extends React.Component {
+         <span />
+         <span />
+         <span />
+-        <span>
+-          {this.props.test}
+-        </span>
+-        <span>
+-          {this.props.test}
+-        </span>
++        <span>{this.props.test}</span>
++        <span>{this.props.test}</span>
+         <span />
+         <span />
+         <span />
+@@ -64,9 +60,7 @@ class Component extends React.Component {
+         <span />
+         <span />
+         <span />
+-        <span>
+-          {this.props.test}
+-        </span>
++        <span>{this.props.test}</span>
+         <span />
+         <span />
+         <span />
+
+diff --git a/__tests__/toMatchDiffSnapshot.test.js b/__tests__/toMatchDiffSnapshot.test.js
+index ee06499..ddac07d 100644
+--- a/__tests__/toMatchDiffSnapshot.test.js
++++ b/__tests__/toMatchDiffSnapshot.test.js
+@@ -39,13 +39,11 @@ test('works with default options', () => {
+   expect(a).toMatchDiffSnapshot(b);
+ });
+ 
+-[
+-  { expand: true },
+-  { colors: true },
+-  { contextLines: 0 },
+-].forEach((options: any) => {
+-  test(`proxies ""${Object.keys(options).join(', ')}"" option(s)`, () => {
+-    // $FlowFixMe
+-    expect(a).toMatchDiffSnapshot(b, options);
+-  });
+-});
++[{ expand: true }, { colors: true }, { contextLines: 0 }].forEach(
++  (options: any) => {
++    test(`proxies ""${Object.keys(options).join(', ')}"" option(s)`, () => {
++      // $FlowFixMe
++      expect(a).toMatchDiffSnapshot(b, options);
++    });
++  }
++);
+",0,,7,2218,3,1,7,2218
+26,bae0ef3b842790020f2203131fae12573ed658f9,5a9f7224bace7398b748a77c0678097ec0110cf6,Fixes #20 ,"Adding a verbose, human-friendly message thrown if loading react-test-renderer fails.
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 027137a..6663a38 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -149,3 +149,26 @@ test('can use contextLines with React components', () => {
+     })
+   ).toMatchSnapshot();
+ });
++
++describe('failed optional deps', () => {
++  beforeEach(() => {
++    jest.mock('react-test-renderer', () => {
++      // $FlowFixMe -- this is intended.
++      require('non-existent-module-for-testing'); // eslint-disable-line
++    });
++  });
++
++  afterEach(() => {
++    jest.resetModules();
++  });
++
++  test('throws with sensible message on missing react-test-renderer', () => {
++    const testComponentA = <Component test=""a"" />;
++    const testComponentB = <Component test=""b"" />;
++    try {
++      snapshotDiff(testComponentA, testComponentB);
++    } catch (error) {
++      expect(error.message).toMatchSnapshot();
++    }
++  });
++});
+",0,,3,42,1,5,4,47
+6,8ccaf4c123e1a050ec997a26d514e2263dfd7c29,8ccaf4c123e1a050ec997a26d514e2263dfd7c29,"Fixes #2.
+
+- It needs to wait for Jest to release https://github.com/facebook/jest/pull/4152
+- After that release, the test snapshot will need to be updated","Add contextLines as option.
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 812d097..099cc55 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -128,6 +128,10 @@ test('can colorize diff', () => {
+   expect(snapshotDiff(a, b, {colors: true})).toMatchSnapshot();
+ });
+ 
++test('can use contextLines on diff', () => {
++  expect(snapshotDiff(a, b, {contextLines: 0})).toMatchSnapshot();
++});
++
+ test('diffs short strings', () => {
+   const x = `
+   abcx
+",0,,3,31,1,1,3,31
+64,133a1118e19db47421db9cd18c1bcdc47345c338,133a1118e19db47421db9cd18c1bcdc47345c338,Fixes #56,"feat: add testName to toMatchDiffSnapshot
+","diff --git a/__tests__/toMatchDiffSnapshot.test.js b/__tests__/toMatchDiffSnapshot.test.js
+index ddac07d..1dbdf70 100644
+--- a/__tests__/toMatchDiffSnapshot.test.js
++++ b/__tests__/toMatchDiffSnapshot.test.js
+@@ -47,3 +47,8 @@ test('works with default options', () => {
+     });
+   }
+ );
++
++test('works with custom name', () => {
++  // $FlowFixMe
++  expect(a).toMatchDiffSnapshot(b, {}, 'slim');
++});
+",0,,5,82,1,1,5,82
+72,93f451bbc1ad8a2b00c3b77db8e48491c7172925,da0826c657c63a64be91fbfe73d9185935bb46cc,"Solves https://github.com/jest-community/snapshot-diff/issues/69.
+
+I'm identifying patch marks with a simple regex that looks for a line starting with `@`. This seems safe since `jest-diff` appears to add whitespace at the start of all lines. Therefore, even a line of content that begins with `@` will end up padded with whitespace in the diff itself.
+
+And rather than simply stripping out the patchmarks, I'm replacing them with `-------------`. Since the point of this is to avoid broken diffs, this solves that issue while still giving some indication that there are hidden lines in between those parts of the diff. Perhaps there's a better replacement indicator than that. We could certainly preserve the patch mark `@@` notation like `@@ ------------- @@` if we think that helps communicate the meaning of the new mark.","Add omitPatchMarks option
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 29ce66b..99d7a98 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -30,6 +30,51 @@ const b = `
+     long
+     script
+ `;
++const noIndentA = `
++some
++some
++some
++some
++some
++foo
++some
++some
++some
++some
++some
++some
++some
++some
++some
++some
++not
++very
++long
++script
++`;
++const noIndentB = `
++some
++some
++some
++some
++some
++bar
++some
++some
++some
++some
++some
++some
++some
++some
++some
++some
++not
++so
++very
++long
++script
++`;
+ 
+ type Props = {
+   test: string,
+@@ -154,6 +199,10 @@ test('can use contextLines with React components', () => {
+   ).toMatchSnapshot();
+ });
+ 
++test('can omitPatchMarks on diff', () => {
++  expect(snapshotDiff(noIndentA, noIndentB, { omitPatchMarks: true })).toMatchSnapshot();
++});
++
+ describe('failed optional deps', () => {
+   beforeEach(() => {
+     jest.mock('react-test-renderer', () => {
+",0,,4,87,1,6,4,87
+8,d18b1b661ecb890e4e9246f9fab61432c39f000a,d18b1b661ecb890e4e9246f9fab61432c39f000a,"- Uses `test` jest branch
+- Merge `defaultOptions`
+- Update snapshots","Fix contextLines (which needs options merged) + update snapshots.
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 784c74f..b108c3f 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -129,7 +129,7 @@ test('can colorize diff', () => {
+ });
+ 
+ test('can use contextLines on diff', () => {
+-  expect(snapshotDiff(a, b, {contextLines: 0})).toMatchSnapshot();
++  expect(snapshotDiff(a, b, { contextLines: 0 })).toMatchSnapshot();
+ });
+ 
+ test('diffs short strings', () => {
+@@ -147,3 +147,11 @@ test('detects React components', () => {
+     snapshotDiff(<Component test=""say"" />, <Component test=""my name"" />)
+   ).toMatchSnapshot();
+ });
++
++test('can use contextLines with React components', () => {
++  expect(
++    snapshotDiff(<Component test=""say"" />, <Component test=""my name"" />, {
++      contextLines: 0,
++    })
++  ).toMatchSnapshot();
++});
+",0,,6,449,1,1,6,449
+91,6afc4a09c92f30819de4fb22f88223c3fedba43a,6afc4a09c92f30819de4fb22f88223c3fedba43a,"Provides new `setSerializers` function to set the serializer objects to
+be used before diffing. React component serializer implementation using
+`react-test-renderer` has been extracted out.
+
+Fixes #18
+Fixes #30
+Fixes #31","feat: Allow custom serializers through setSerializers
+
+Provides new setSerializers function to set the serializer objects to
+be used before diffing. React component serializer implementation using
+`react-test-renderer` has been extracted out.
+
+Fixes #18
+Fixes #30
+Fixes #31
+","diff --git a/__tests__/setSerializers.test.js b/__tests__/setSerializers.test.js
+new file mode 100644
+index 0000000..bb1ea72
+--- /dev/null
++++ b/__tests__/setSerializers.test.js
+@@ -0,0 +1,117 @@
++// @flow
++const React = require('react');
++const { configure, shallow: enzymeShallow } = require('enzyme');
++const ReactShallowRenderer = require('react-test-renderer/shallow');
++const Adapter = require('enzyme-adapter-react-16');
++const enzymeToJson = require('enzyme-to-json/serializer');
++const snapshotDiff = require('../src/index');
++
++configure({ adapter: new Adapter() });
++const reactShallow = new ReactShallowRenderer();
++
++snapshotDiff.setSerializers([...snapshotDiff.defaultSerializers, enzymeToJson]);
++
++type Props = {
++  test: string,
++};
++
++const Component = ({ value }) => <div>I have value {value}</div>;
++
++const NestedComponent = (props: Props) => (
++  <div>
++    <span>Hello World - {props.test}</span>
++    <Component value={1234} />
++  </div>
++);
++
++describe('default rendered components', () => {
++  test('diffs components', () => {
++    expect(
++      snapshotDiff(
++        <NestedComponent test=""say"" />,
++        <NestedComponent test=""my name"" />
++      )
++    ).toMatchSnapshot();
++  });
++
++  test('can use contextLines', () => {
++    expect(
++      snapshotDiff(
++        <NestedComponent test=""say"" />,
++        <NestedComponent test=""my name"" />,
++        {
++          contextLines: 0,
++        }
++      )
++    ).toMatchSnapshot();
++  });
++});
++
++describe('enzyme shallow rendered components', () => {
++  test('diffs components', () => {
++    expect(
++      snapshotDiff(
++        enzymeShallow(<NestedComponent test=""say"" />),
++        enzymeShallow(<NestedComponent test=""my name"" />)
++      )
++    ).toMatchSnapshot();
++  });
++
++  test('can use contextLines', () => {
++    expect(
++      snapshotDiff(
++        enzymeShallow(<NestedComponent test=""say"" />),
++        enzymeShallow(<NestedComponent test=""my name"" />),
++        {
++          contextLines: 0,
++        }
++      )
++    ).toMatchSnapshot();
++  });
++});
++
++describe('react test-renderer shallow rendered components', () => {
++  test('diffs components', () => {
++    expect(
++      snapshotDiff(
++        reactShallow.render(<NestedComponent test=""say"" />),
++        reactShallow.render(<NestedComponent test=""my name"" />)
++      )
++    ).toMatchSnapshot();
++  });
++
++  test('can use contextLines', () => {
++    expect(
++      snapshotDiff(
++        reactShallow.render(<NestedComponent test=""say"" />),
++        reactShallow.render(<NestedComponent test=""my name"" />),
++        {
++          contextLines: 0,
++        }
++      )
++    ).toMatchSnapshot();
++  });
++});
++
++describe('values which are not components', () => {
++  test('diffs objects', () => {
++    expect(
++      snapshotDiff(
++        { foo: 'bar', hello: 'world', testing: 123 },
++        { foo: 'bar', hello: 'there', testing: 123 }
++      )
++    ).toMatchSnapshot();
++  });
++
++  test('can use contextLines', () => {
++    expect(
++      snapshotDiff(
++        { foo: 'bar', hello: 'world', testing: 123 },
++        { foo: 'bar', hello: 'there', testing: 123 },
++        {
++          contextLines: 0,
++        }
++      )
++    ).toMatchSnapshot();
++  });
++});
+",0,,8,903,1,1,8,903
+94,47152f144dfab59504f8a7142eb52a6ba9404195,4ce25ae1956a083f548e8dcdb5f075ca3062f059,,"fix: rework tests to not output color snapshots
+","diff --git a/__tests__/snapshotDiff.test.js b/__tests__/snapshotDiff.test.js
+index 2c9cc83..9347626 100644
+--- a/__tests__/snapshotDiff.test.js
++++ b/__tests__/snapshotDiff.test.js
+@@ -197,7 +197,8 @@ test('can expand diff', () => {
+ });
+ 
+ test('can colorize diff', () => {
+-  expect(snapshotDiff(a, b, { colors: true })).toMatchSnapshot();
++  expect(snapshotDiff(a, b)).not.toMatch('[32m-');
++  expect(snapshotDiff(a, b, { colors: true })).toMatch('[32m-');
+ });
+ 
+ test('can use contextLines on diff', () => {
+
+diff --git a/__tests__/toMatchDiffSnapshot.test.js b/__tests__/toMatchDiffSnapshot.test.js
+index 1dbdf70..751188a 100644
+--- a/__tests__/toMatchDiffSnapshot.test.js
++++ b/__tests__/toMatchDiffSnapshot.test.js
+@@ -39,14 +39,12 @@ test('works with default options', () => {
+   expect(a).toMatchDiffSnapshot(b);
+ });
+ 
+-[{ expand: true }, { colors: true }, { contextLines: 0 }].forEach(
+-  (options: any) => {
+-    test(`proxies ""${Object.keys(options).join(', ')}"" option(s)`, () => {
+-      // $FlowFixMe
+-      expect(a).toMatchDiffSnapshot(b, options);
+-    });
+-  }
+-);
++[{ expand: true }, { contextLines: 0 }].forEach((options: any) => {
++  test(`proxies ""${Object.keys(options).join(', ')}"" option(s)`, () => {
++    // $FlowFixMe
++    expect(a).toMatchDiffSnapshot(b, options);
++  });
++});
+ 
+ test('works with custom name', () => {
+   // $FlowFixMe
+",0,,4,53,2,5,6,97

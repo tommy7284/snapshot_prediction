@@ -1,0 +1,132 @@
+{
+    "id": 7512560,
+    "name": "webpack/webpack-dev-middleware",
+    "isFork": false,
+    "commits": 1415,
+    "branches": 5,
+    "releases": 69,
+    "forks": 361,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 33,
+    "stargazers": 2471,
+    "contributors": 103,
+    "size": 13874,
+    "createdAt": "2012-08-08T08:20:33",
+    "pushedAt": "2024-04-25T07:22:41",
+    "updatedAt": "2024-04-24T03:40:32",
+    "totalIssues": 297,
+    "openIssues": 4,
+    "totalPullRequests": 1510,
+    "openPullRequests": 3,
+    "blankLines": 2287,
+    "codeLines": 28147,
+    "commentLines": 1081,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 25,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 96
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 18317
+        },
+        {
+            "blankLines": 487,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 893
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 325,
+            "codeLines": 448
+        },
+        {
+            "blankLines": 1770,
+            "language": "JavaScript",
+            "commentLines": 693,
+            "codeLines": 8343
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 1
+        }
+    ],
+    "lastCommit": "2024-04-24T03:40:27",
+    "lastCommitSHA": "381545cc3dec52866dab38f5a7856a1f5088aa94",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 285045,
+        "Shell": 138
+    },
+    "labels": [
+        "dependencies",
+        "help wanted",
+        "pr: review",
+        "pr: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (important)",
+        "priority: 4 (nice to have)",
+        "question",
+        "renovate",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "send a pr",
+        "severity: 1 (confusing)",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (inconvenient)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: discuss",
+        "status: pending",
+        "status: stale",
+        "type: bug",
+        "type: chore",
+        "type: ci",
+        "type: docs",
+        "type: feature",
+        "type: perf",
+        "type: refactor"
+    ],
+    "topics": [
+        "middleware",
+        "webpack",
+        "webpack-dev-middleware"
+    ]
+}

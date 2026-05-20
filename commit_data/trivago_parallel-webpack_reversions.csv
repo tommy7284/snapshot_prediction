@@ -1,0 +1,21 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+84,8d7df7b414ad82644ab71dc9483eb864ae10bb11,8d7df7b414ad82644ab71dc9483eb864ae10bb11,"For #76 .
+I've changed a little how `startFarm` and `webpackWorker` get config and added a test for config function return promise of config object array.
+After the change, there are some tests get failed. And I'm not sure how to handle them. @pago @efegurkan I need some advices about them:
+
+**webpackWorker.spec.js**
+
+* webpackWorker › arguments › multi config options › should fail if expectedConfigLength > 1 in case of single config
+* webpackWorker › arguments › multi config options › should fail if expectedConfigLength dont match with config.length
+
+This two all expect `Promise.reject` will be called when call `webpackWorker` function. Before this change they will be called immediately. But since we have to get the config array after promise resolved,
+I move the config length checking part into the `then` part, so they will not be called immediately and we cannot check the mock synchronously. I have tried checking calls asynchronously in test (`webpackWorker.then(...)`) but it seems that `webpackWorker` will not finish until jest test time out.
+
+**index.spec.js**
+
+* index.js › run › error callback › should log and reject with error
+* index.js › run › then callback › should filter non-truthy and return results
+* index.js › run › shutdownCallback › should call end  and remove callback
+
+The above three snapshot tests will lose one line `""[WEBPACK] Building 1 target""` since we have to move the `console.log` into promise(again now we have to resolve config function promise before we know its length). Not sure if it's ok to pass those snapshot tests. ","Update snapshot
+",,0,,1,9,1,4,6,141

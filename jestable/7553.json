@@ -1,0 +1,120 @@
+{
+    "id": 6645521,
+    "name": "ankurk91/vue-loading-overlay",
+    "isFork": false,
+    "commits": 212,
+    "branches": 5,
+    "releases": 0,
+    "forks": 96,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://ankurk91.github.io/vue-loading-overlay/",
+    "watchers": 10,
+    "stargazers": 1188,
+    "contributors": 5,
+    "size": 1929,
+    "createdAt": "2018-01-01T07:06:22",
+    "pushedAt": "2024-03-10T04:36:49",
+    "updatedAt": "2024-03-07T01:40:07",
+    "totalIssues": 105,
+    "openIssues": 3,
+    "totalPullRequests": 14,
+    "openPullRequests": 0,
+    "blankLines": 1049,
+    "codeLines": 7101,
+    "commentLines": 49,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 4,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 5,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 40,
+            "language": "Vuejs Component",
+            "commentLines": 31,
+            "codeLines": 504
+        },
+        {
+            "blankLines": 777,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5513
+        },
+        {
+            "blankLines": 144,
+            "language": "Markdown",
+            "commentLines": 10,
+            "codeLines": 393
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 10,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 61,
+            "language": "JavaScript",
+            "commentLines": 8,
+            "codeLines": 494
+        }
+    ],
+    "lastCommit": "2024-03-10T04:36:12",
+    "lastCommitSHA": "1435d99bb871c42fa31c1805e052a4f163b26194",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 12251,
+        "Vue": 7783,
+        "CSS": 529
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "support",
+        "waiting-for-reply",
+        "wontfix"
+    ],
+    "topics": [
+        "indicator",
+        "loader",
+        "loading",
+        "overlay",
+        "spinner",
+        "vue"
+    ]
+}

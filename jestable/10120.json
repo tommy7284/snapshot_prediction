@@ -1,0 +1,110 @@
+{
+    "id": 6903556,
+    "name": "jondot/hygen",
+    "isFork": false,
+    "commits": 539,
+    "branches": 6,
+    "releases": 62,
+    "forks": 246,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://www.hygen.io",
+    "watchers": 50,
+    "stargazers": 5484,
+    "contributors": 49,
+    "size": 10500,
+    "createdAt": "2017-08-13T07:38:43",
+    "pushedAt": "2024-03-20T05:22:42",
+    "updatedAt": "2024-03-20T07:16:45",
+    "totalIssues": 271,
+    "openIssues": 79,
+    "totalPullRequests": 170,
+    "openPullRequests": 15,
+    "blankLines": 1225,
+    "codeLines": 7632,
+    "commentLines": 236,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 145
+        },
+        {
+            "blankLines": 185,
+            "language": "TypeScript",
+            "commentLines": 126,
+            "codeLines": 1783
+        },
+        {
+            "blankLines": 355,
+            "language": "JavaScript",
+            "commentLines": 84,
+            "codeLines": 2885
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 102
+        },
+        {
+            "blankLines": 536,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1308
+        },
+        {
+            "blankLines": 135,
+            "language": "CSS",
+            "commentLines": 18,
+            "codeLines": 917
+        },
+        {
+            "blankLines": 4,
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 5,
+            "codeLines": 478
+        }
+    ],
+    "lastCommit": "2023-03-15T12:54:21",
+    "lastCommitSHA": "26f76d8dede565b2bf38d0b9e9f3009ee2c8f9ae",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 67783,
+        "TypeScript": 49557,
+        "EJS": 12061,
+        "CSS": 11338,
+        "Perl": 343,
+        "Raku": 64
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "experimental",
+        "help wanted",
+        "invalid",
+        "question",
+        "reproduce",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "generator",
+        "nodejs",
+        "tools"
+    ]
+}

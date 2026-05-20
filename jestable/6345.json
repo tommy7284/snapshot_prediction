@@ -1,0 +1,87 @@
+{
+    "id": 6251583,
+    "name": "braposo/graphql-css",
+    "isFork": false,
+    "commits": 55,
+    "branches": 8,
+    "releases": 4,
+    "forks": 20,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://codesandbox.io/s/5vljjr4zo4",
+    "watchers": 25,
+    "stargazers": 670,
+    "contributors": 5,
+    "size": 721,
+    "createdAt": "2018-03-11T06:50:16",
+    "pushedAt": "2021-03-30T07:18:21",
+    "updatedAt": "2021-04-10T01:29:14",
+    "totalIssues": 4,
+    "openIssues": 0,
+    "totalPullRequests": 19,
+    "openPullRequests": 7,
+    "blankLines": 181,
+    "codeLines": 1266,
+    "commentLines": 12,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 88,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 349
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 96
+        },
+        {
+            "blankLines": 79,
+            "language": "JavaScript",
+            "commentLines": 12,
+            "codeLines": 707
+        },
+        {
+            "blankLines": 8,
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 93
+        }
+    ],
+    "lastCommit": "2019-10-24T09:24:06",
+    "lastCommitSHA": "cf5a929bf32799788334fec89d2fa3081a68bd14",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 17591,
+        "Shell": 158
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

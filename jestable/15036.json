@@ -1,0 +1,88 @@
+{
+    "id": 4057201,
+    "name": "outline/rich-markdown-editor",
+    "isFork": false,
+    "commits": 923,
+    "branches": 23,
+    "releases": 20,
+    "forks": 437,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": "https://www.getoutline.com",
+    "watchers": 34,
+    "stargazers": 2567,
+    "contributors": 46,
+    "size": 3418,
+    "createdAt": "2018-02-25T06:35:15",
+    "pushedAt": "2022-01-17T09:00:09",
+    "updatedAt": "2022-01-19T04:27:39",
+    "totalIssues": 282,
+    "openIssues": 29,
+    "totalPullRequests": 210,
+    "openPullRequests": 6,
+    "blankLines": 1633,
+    "codeLines": 10594,
+    "commentLines": 463,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 28,
+            "blankLines": 8
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 239,
+            "blankLines": 127
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 338,
+            "codeLines": 9894,
+            "blankLines": 1457
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 118,
+            "codeLines": 269,
+            "blankLines": 41
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 164,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2021-12-18T07:07:29",
+    "lastCommitSHA": "be1b9426a292fd41beb4db8d70d6695a9416dbea",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 300931,
+        "JavaScript": 14105
+    },
+    "labels": [
+        "$$$",
+        "blocked",
+        "bug",
+        "dependencies",
+        "design needed",
+        "duplicate",
+        "enhancement",
+        "firefox",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "more-information-needed",
+        "prosemirror",
+        "question",
+        "safari",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,102 @@
+{
+    "id": 6235389,
+    "name": "cedricblondeau/world-cup-2018-cli-dashboard",
+    "isFork": false,
+    "commits": 87,
+    "branches": 16,
+    "releases": 0,
+    "forks": 40,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/world-cup-cli-dashboard",
+    "watchers": 10,
+    "stargazers": 543,
+    "contributors": 4,
+    "size": 2875,
+    "createdAt": "2018-06-17T05:47:21",
+    "pushedAt": "2023-09-03T01:04:06",
+    "updatedAt": "2023-05-12T04:51:29",
+    "totalIssues": 16,
+    "openIssues": 2,
+    "totalPullRequests": 45,
+    "openPullRequests": 15,
+    "blankLines": 209,
+    "codeLines": 2220,
+    "commentLines": 3,
+    "metrics": [
+        {
+            "blankLines": 98,
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 570
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1161
+        },
+        {
+            "blankLines": 71,
+            "language": "JavaScript",
+            "commentLines": 3,
+            "codeLines": 407
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 31,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 56
+        },
+        {
+            "blankLines": 3,
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 15
+        }
+    ],
+    "lastCommit": "2023-09-03T01:04:06",
+    "lastCommitSHA": "a852a80bcdde9b2004de3163bf76391220f7ec25",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 31038,
+        "Dockerfile": 592
+    },
+    "labels": [
+        "api",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "npm",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "blessed",
+        "cli",
+        "dashboard",
+        "football",
+        "nodejs",
+        "react",
+        "react-blessed",
+        "soccer",
+        "soccer-matches",
+        "terminal",
+        "worldcup",
+        "worldcup2018"
+    ]
+}

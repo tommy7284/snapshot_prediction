@@ -1,0 +1,4973 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index cca8220..e21bb97 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	Immer,
+ 	nothing,
+@@ -15,7 +16,9 @@ import * as lodash from ""lodash""
+ enablePatches()
+ enableMapSet()
+ 
+-jest.setTimeout(1000)
++vi.setConfig({
++	testTimeout: 1000
++})
+ 
+ const isProd = process.env.NODE_ENV === ""production""
+ 
+@@ -2093,7 +2096,7 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 	})
+ 
+ 	if (!autoFreeze) {
+-		describe(""#613"", () => {
++		test(""#613"", () => {
+ 			const x1 = {}
+ 			const y1 = produce(x1, draft => {
+ 				draft.foo = produce({bar: ""baz""}, draft1 => {
+@@ -2239,7 +2242,7 @@ function testObjectTypes(produce) {
+ 		})
+ 	})
+ 
+-	describe(""setter only"", () => {
++	test(""setter only"", () => {
+ 		let setterCalled = 0
+ 		class State {
+ 			[immerable] = true
+@@ -2261,7 +2264,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""getter only"", () => {
++	test(""getter only"", () => {
+ 		let getterCalled = 0
+ 		class State {
+ 			[immerable] = true
+@@ -2286,7 +2289,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""own setter only"", () => {
++	test(""own setter only"", () => {
+ 		let setterCalled = 0
+ 		const state = {
+ 			x: 0,
+@@ -2309,7 +2312,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""own getter only"", () => {
++	test(""own getter only"", () => {
+ 		let getterCalled = 0
+ 		const state = {
+ 			x: 0,
+@@ -2332,7 +2335,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""#620"", () => {
++	test(""#620"", () => {
+ 		const customSymbol = Symbol(""customSymbol"")
+ 
+ 		class TestClass {
+@@ -2365,7 +2368,7 @@ function testObjectTypes(produce) {
+ 		})
+ 	})
+ 
+-	describe(""#1096 / #1087 / proxies"", () => {
++	test(""#1096 / #1087 / proxies"", () => {
+ 		const sym = Symbol()
+ 
+ 		let state = {
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/curry.js.snap,__tests__/curry.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/frozen.js.snap,__tests__/frozen.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/manual.js.snap,__tests__/manual.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/manual.js b/__tests__/manual.js
+index 6b17aaa..6fa919c 100644
+--- a/__tests__/manual.js
++++ b/__tests__/manual.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	setUseProxies,
+ 	createDraft,
+@@ -68,7 +69,7 @@ function runTests(name) {
+ 			draft.a = 2
+ 			draft.b = 3
+ 
+-			const listener = jest.fn()
++			const listener = vi.fn()
+ 			const result = finishDraft(draft, listener)
+ 
+ 			expect(result).not.toBe(state)
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/patch.js.snap,__tests__/patch.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/patch.js b/__tests__/patch.js
+index 4046785..ea73ccd 100644
+--- a/__tests__/patch.js
++++ b/__tests__/patch.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	produce,
+ 	applyPatches,
+@@ -13,47 +14,128 @@ import {
+ enablePatches()
+ enableMapSet()
+ 
+-jest.setTimeout(1000)
++vi.setConfig({
++	testTimeout: 1000
++})
+ 
+ const isProd = process.env.NODE_ENV === ""production""
+ 
+-function runPatchTest(base, producer, patches, inversePathes, expectedResult) {
+-	let resultProxies, resultEs5
++function createPatchTestData(
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	let recordedPatches, recordedInversePatches
++	const res = produce(base, producer, (p, i) => {
++		recordedPatches = p
++		recordedInversePatches = i
++	})
+ 
+-	function runPatchTestHelper() {
+-		let recordedPatches
+-		let recordedInversePatches
+-		const res = produce(base, producer, (p, i) => {
+-			recordedPatches = p
+-			recordedInversePatches = i
+-		})
++	return {
++		result: res,
++		patches: recordedPatches,
++		inversePatches: recordedInversePatches,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		base
++	}
++}
+ 
+-		if (expectedResult !== undefined)
++function runPatchTests(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult,
++	options = {}
++) {
++	const {only = false, skip = false} = options
++
++	// Choose the appropriate describe function
++	let describeFn = describe
++	if (testName === """") describeFn = (name, fn) => fn()
++	if (only) describeFn = describe.only
++	if (skip) describeFn = describe.skip
++
++	let testData = createPatchTestData(
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult
++	)
++
++	describeFn(testName, () => {
++		if (expectedResult !== undefined) {
+ 			test(""produced the correct result"", () => {
+-				expect(res).toEqual(expectedResult)
++				expect(testData.result).toEqual(expectedResult)
+ 			})
++		}
+ 
+ 		test(""produces the correct patches"", () => {
+-			expect(recordedPatches).toEqual(patches)
+-			if (inversePathes) expect(recordedInversePatches).toEqual(inversePathes)
++			expect(testData.patches).toEqual(expectedPatches)
++			if (expectedInversePatches) {
++				expect(testData.inversePatches).toEqual(expectedInversePatches)
++			}
+ 		})
+ 
+ 		test(""patches are replayable"", () => {
+-			expect(applyPatches(base, recordedPatches)).toEqual(res)
++			expect(applyPatches(base, testData.patches)).toEqual(testData.result)
+ 		})
+ 
+ 		test(""patches can be reversed"", () => {
+-			expect(applyPatches(res, recordedInversePatches)).toEqual(base)
++			if (expectedInversePatches) {
++				expect(applyPatches(testData.result, testData.inversePatches)).toEqual(
++					base
++				)
++			}
+ 		})
++	})
+ 
+-		return res
+-	}
++	return testData
++}
+ 
+-	describe(`proxy`, () => {
+-		resultProxies = runPatchTestHelper()
+-	})
++// Convenience functions for common use cases
++runPatchTests.only = function(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	return runPatchTests(
++		testName,
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		{only: true}
++	)
++}
+ 
+-	return resultProxies
++runPatchTests.skip = function(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	return runPatchTests(
++		testName,
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		{skip: true}
++	)
+ }
+ 
+ describe(""applyPatches"", () => {
+@@ -116,81 +198,91 @@ describe(""applyPatches"", () => {
+ 	})
+ })
+ 
+-describe(""simple assignment - 1"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x++
+-		},
+-		[{op: ""replace"", path: [""x""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 2"", () => {
+-	runPatchTest(
+-		{x: {y: 4}},
+-		d => {
+-			d.x.y++
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}]
+-	)
+-})
+-
+-describe(""simple assignment - 3"", () => {
+-	runPatchTest(
+-		{x: [{y: 4}]},
+-		d => {
+-			d.x[0].y++
+-		},
+-		[{op: ""replace"", path: [""x"", 0, ""y""], value: 5}]
+-	)
+-})
+-
+-describe(""simple assignment - 4"", () => {
+-	runPatchTest(
+-		new Map([[""x"", {y: 4}]]),
+-		d => {
+-			d.get(""x"").y++
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}],
+-		[{op: ""replace"", path: [""x"", ""y""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 5"", () => {
+-	runPatchTest(
+-		{x: new Map([[""y"", 4]])},
+-		d => {
+-			d.x.set(""y"", 5)
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}],
+-		[{op: ""replace"", path: [""x"", ""y""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 6"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 1]]),
+-		d => {
+-			// Map.prototype.set should return the Map itself
+-			const res = d.set(""x"", 2)
+-			res.set(""y"", 3)
+-		},
+-		[
+-			{op: ""replace"", path: [""x""], value: 2},
+-			{op: ""add"", path: [""y""], value: 3}
+-		],
+-		[
+-			{op: ""replace"", path: [""x""], value: 1},
+-			{op: ""remove"", path: [""y""]}
+-		]
+-	)
+-})
+-
++// New macro-style test
++runPatchTests(
++	""simple assignment - 1"",
++	{x: 3},
++	d => {
++		d.x++
++	},
++	[{op: ""replace"", path: [""x""], value: 4}]
++)
++
++// Original test (commented out for comparison)
++// describe(""simple assignment - 1"", () => {
++// 	runPatchTest(
++// 		{x: 3},
++// 		d => {
++// 			d.x++
++// 		},
++// 		[{op: ""replace"", path: [""x""], value: 4}]
++// 	)
++// })
++
++// New macro-style tests
++runPatchTests(
++	""simple assignment - 2"",
++	{x: {y: 4}},
++	d => {
++		d.x.y++
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}]
++)
++
++runPatchTests(
++	""simple assignment - 3"",
++	{x: [{y: 4}]},
++	d => {
++		d.x[0].y++
++	},
++	[{op: ""replace"", path: [""x"", 0, ""y""], value: 5}]
++)
++
++runPatchTests(
++	""simple assignment - 4"",
++	new Map([[""x"", {y: 4}]]),
++	d => {
++		d.get(""x"").y++
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}],
++	[{op: ""replace"", path: [""x"", ""y""], value: 4}]
++)
++
++runPatchTests(
++	""simple assignment - 5"",
++	{x: new Map([[""y"", 4]])},
++	d => {
++		d.x.set(""y"", 5)
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}],
++	[{op: ""replace"", path: [""x"", ""y""], value: 4}]
++)
++
++runPatchTests(
++	""simple assignment - 6"",
++	new Map([[""x"", 1]]),
++	d => {
++		// Map.prototype.set should return the Map itself
++		const res = d.set(""x"", 2)
++		res.set(""y"", 3)
++	},
++	[
++		{op: ""replace"", path: [""x""], value: 2},
++		{op: ""add"", path: [""y""], value: 3}
++	],
++	[
++		{op: ""replace"", path: [""x""], value: 1},
++		{op: ""remove"", path: [""y""]}
++	]
++)
++
++// Complex test with external variables - keep as individual describe
+ describe(""simple assignment - 7"", () => {
+ 	const key1 = {prop: ""val1""}
+ 	const key2 = {prop: ""val2""}
+-	runPatchTest(
++
++	runPatchTests(
++		"""",
+ 		{x: new Map([[key1, 4]])},
+ 		d => {
+ 			d.x.set(key1, 5)
+@@ -207,60 +299,58 @@ describe(""simple assignment - 7"", () => {
+ 	)
+ })
+ 
+-describe(""simple assignment - 8"", () => {
+-	runPatchTest(
+-		new Map([[0, new Map([[1, 4]])]]),
+-		d => {
+-			d.get(0).set(1, 5)
+-			d.get(0).set(2, 6)
+-		},
+-		[
+-			{op: ""replace"", path: [0, 1], value: 5},
+-			{op: ""add"", path: [0, 2], value: 6}
+-		],
+-		[
+-			{op: ""replace"", path: [0, 1], value: 4},
+-			{op: ""remove"", path: [0, 2]}
+-		]
+-	)
+-})
+-
+-describe(""delete 1"", () => {
+-	runPatchTest(
+-		{x: {y: 4}},
+-		d => {
+-			delete d.x
+-		},
+-		[{op: ""remove"", path: [""x""]}]
+-	)
+-})
+-
+-describe(""delete 2"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 1]]),
+-		d => {
+-			d.delete(""x"")
+-		},
+-		[{op: ""remove"", path: [""x""]}],
+-		[{op: ""add"", path: [""x""], value: 1}]
+-	)
+-})
+-
+-describe(""delete 3"", () => {
+-	runPatchTest(
+-		{x: new Map([[""y"", 1]])},
+-		d => {
+-			d.x.delete(""y"")
+-		},
+-		[{op: ""remove"", path: [""x"", ""y""]}],
+-		[{op: ""add"", path: [""x"", ""y""], value: 1}]
+-	)
+-})
++runPatchTests(
++	""simple assignment - 8"",
++	new Map([[0, new Map([[1, 4]])]]),
++	d => {
++		d.get(0).set(1, 5)
++		d.get(0).set(2, 6)
++	},
++	[
++		{op: ""replace"", path: [0, 1], value: 5},
++		{op: ""add"", path: [0, 2], value: 6}
++	],
++	[
++		{op: ""replace"", path: [0, 1], value: 4},
++		{op: ""remove"", path: [0, 2]}
++	]
++)
++
++runPatchTests(
++	""delete 1"",
++	{x: {y: 4}},
++	d => {
++		delete d.x
++	},
++	[{op: ""remove"", path: [""x""]}]
++)
++
++runPatchTests(
++	""delete 2"",
++	new Map([[""x"", 1]]),
++	d => {
++		d.delete(""x"")
++	},
++	[{op: ""remove"", path: [""x""]}],
++	[{op: ""add"", path: [""x""], value: 1}]
++)
++
++runPatchTests(
++	""delete 3"",
++	{x: new Map([[""y"", 1]])},
++	d => {
++		d.x.delete(""y"")
++	},
++	[{op: ""remove"", path: [""x"", ""y""]}],
++	[{op: ""add"", path: [""x"", ""y""], value: 1}]
++)
+ 
+ describe(""delete 5"", () => {
+ 	const key1 = {prop: ""val1""}
+ 	const key2 = {prop: ""val2""}
+-	runPatchTest(
++
++	runPatchTests(
++		"""",
+ 		{
+ 			x: new Map([
+ 				[key1, 1],
+@@ -282,471 +372,443 @@ describe(""delete 5"", () => {
+ 	)
+ })
+ 
+-describe(""delete 6"", () => {
+-	runPatchTest(
+-		new Set([""x"", 1]),
+-		d => {
+-			d.delete(""x"")
+-		},
+-		[{op: ""remove"", path: [0], value: ""x""}],
+-		[{op: ""add"", path: [0], value: ""x""}]
+-	)
+-})
+-
+-describe(""delete 7"", () => {
+-	runPatchTest(
+-		{x: new Set([""y"", 1])},
+-		d => {
+-			d.x.delete(""y"")
+-		},
+-		[{op: ""remove"", path: [""x"", 0], value: ""y""}],
+-		[{op: ""add"", path: [""x"", 0], value: ""y""}]
+-	)
+-})
++runPatchTests(
++	""delete 6"",
++	new Set([""x"", 1]),
++	d => {
++		d.delete(""x"")
++	},
++	[{op: ""remove"", path: [0], value: ""x""}],
++	[{op: ""add"", path: [0], value: ""x""}]
++)
++
++runPatchTests(
++	""delete 7"",
++	{x: new Set([""y"", 1])},
++	d => {
++		d.x.delete(""y"")
++	},
++	[{op: ""remove"", path: [""x"", 0], value: ""y""}],
++	[{op: ""add"", path: [""x"", 0], value: ""y""}]
++)
+ 
+ describe(""renaming properties"", () => {
+-	describe(""nested object (no changes)"", () => {
+-		runPatchTest(
+-			{a: {b: 1}},
+-			d => {
+-				d.x = d.a
+-				delete d.a
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: {b: 1}},
+-				{op: ""remove"", path: [""a""]}
+-			]
+-		)
+-	})
+-
+-	describe(""nested change in object"", () => {
+-		runPatchTest(
+-			{
+-				a: {b: 1}
+-			},
+-			d => {
+-				d.a.b++
+-			},
+-			[{op: ""replace"", path: [""a"", ""b""], value: 2}],
+-			[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested change in map"", () => {
+-		runPatchTest(
+-			new Map([[""a"", new Map([[""b"", 1]])]]),
+-			d => {
+-				d.get(""a"").set(""b"", 2)
+-			},
+-			[{op: ""replace"", path: [""a"", ""b""], value: 2}],
+-			[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested change in array"", () => {
+-		runPatchTest(
+-			[[{b: 1}]],
+-			d => {
+-				d[0][0].b++
+-			},
+-			[{op: ""replace"", path: [0, 0, ""b""], value: 2}],
+-			[{op: ""replace"", path: [0, 0, ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested map (no changes)"", () => {
+-		runPatchTest(
+-			new Map([[""a"", new Map([[""b"", 1]])]]),
+-			d => {
+-				d.set(""x"", d.get(""a""))
+-				d.delete(""a"")
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: new Map([[""b"", 1]])},
+-				{op: ""remove"", path: [""a""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""x""]},
+-				{op: ""add"", path: [""a""], value: new Map([[""b"", 1]])}
+-			]
+-		)
+-	})
+-
+-	describe(""nested object (with changes)"", () => {
+-		runPatchTest(
+-			{a: {b: 1, c: 1}},
+-			d => {
+-				let a = d.a
+-				a.b = 2 // change
+-				delete a.c // delete
+-				a.y = 2 // add
+-
+-				// rename
+-				d.x = a
+-				delete d.a
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: {b: 2, y: 2}},
+-				{op: ""remove"", path: [""a""]}
+-			]
+-		)
+-	})
+-
+-	describe(""nested map (with changes)"", () => {
+-		runPatchTest(
+-			new Map([
+-				[
+-					""a"",
+-					new Map([
+-						[""b"", 1],
+-						[""c"", 1]
+-					])
+-				]
+-			]),
+-			d => {
+-				let a = d.get(""a"")
+-				a.set(""b"", 2) // change
+-				a.delete(""c"") // delete
+-				a.set(""y"", 2) // add
+-
+-				// rename
+-				d.set(""x"", a)
+-				d.delete(""a"")
+-			},
+-			[
+-				{
+-					op: ""add"",
+-					path: [""x""],
+-					value: new Map([
+-						[""b"", 2],
+-						[""y"", 2]
+-					])
+-				},
+-				{op: ""remove"", path: [""a""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""x""]},
+-				{
+-					op: ""add"",
+-					path: [""a""],
+-					value: new Map([
+-						[""b"", 1],
+-						[""c"", 1]
+-					])
+-				}
+-			]
+-		)
+-	})
+-
+-	describe(""deeply nested object (with changes)"", () => {
+-		runPatchTest(
+-			{a: {b: {c: 1, d: 1}}},
+-			d => {
+-				let b = d.a.b
+-				b.c = 2 // change
+-				delete b.d // delete
+-				b.y = 2 // add
+-
+-				// rename
+-				d.a.x = b
+-				delete d.a.b
+-			},
+-			[
+-				{op: ""add"", path: [""a"", ""x""], value: {c: 2, y: 2}},
+-				{op: ""remove"", path: [""a"", ""b""]}
+-			]
+-		)
+-	})
+-
+-	describe(""deeply nested map (with changes)"", () => {
+-		runPatchTest(
+-			new Map([
+-				[
+-					""a"",
+-					new Map([
+-						[
+-							""b"",
+-							new Map([
+-								[""c"", 1],
+-								[""d"", 1]
+-							])
+-						]
+-					])
+-				]
+-			]),
+-			d => {
+-				let b = d.get(""a"").get(""b"")
+-				b.set(""c"", 2) // change
+-				b.delete(""d"") // delete
+-				b.set(""y"", 2) // add
+-
+-				// rename
+-				d.get(""a"").set(""x"", b)
+-				d.get(""a"").delete(""b"")
+-			},
+-			[
+-				{
+-					op: ""add"",
+-					path: [""a"", ""x""],
+-					value: new Map([
+-						[""c"", 2],
+-						[""y"", 2]
+-					])
+-				},
+-				{op: ""remove"", path: [""a"", ""b""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""a"", ""x""]},
+-				{
+-					op: ""add"",
+-					path: [""a"", ""b""],
+-					value: new Map([
+-						[""c"", 1],
+-						[""d"", 1]
+-					])
+-				}
+-			]
+-		)
+-	})
+-})
+-
+-describe(""minimum amount of changes"", () => {
+-	runPatchTest(
+-		{x: 3, y: {a: 4}, z: 3},
++	runPatchTests(
++		""nested object (no changes)"",
++		{a: {b: 1}},
+ 		d => {
+-			d.y.a = 4
+-			d.y.b = 5
+-			Object.assign(d, {x: 4, y: {a: 2}})
++			d.x = d.a
++			delete d.a
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x""], value: 4},
+-			{op: ""replace"", path: [""y""], value: {a: 2}}
++			{op: ""add"", path: [""x""], value: {b: 1}},
++			{op: ""remove"", path: [""a""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.unshift(4)
++	runPatchTests(
++		""nested change in object"",
++		{
++			a: {b: 1}
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1},
+-			{op: ""replace"", path: [""x"", 2], value: 2},
+-			{op: ""add"", path: [""x"", 3], value: 3}
+-		]
+-	)
+-})
+-
+-describe(""arrays - multiple prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+ 		d => {
+-			d.x.unshift(4)
+-			d.x.unshift(5)
+-			// 4,5,1,2,3
++			d.a.b++
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 5},
+-			{op: ""replace"", path: [""x"", 1], value: 4},
+-			{op: ""replace"", path: [""x"", 2], value: 1},
+-			{op: ""add"", path: [""x"", 3], value: 2},
+-			{op: ""add"", path: [""x"", 4], value: 3}
+-		]
++		[{op: ""replace"", path: [""a"", ""b""], value: 2}],
++		[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - splice middle"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested change in map"",
++		new Map([[""a"", new Map([[""b"", 1]])]]),
+ 		d => {
+-			d.x.splice(1, 1)
++			d.get(""a"").set(""b"", 2)
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 3},
+-			{op: ""remove"", path: [""x"", 2]}
+-		]
++		[{op: ""replace"", path: [""a"", ""b""], value: 2}],
++		[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - multiple splice"", () => {
+-	runPatchTest(
+-		[0, 1, 2, 3, 4, 5, 0],
++	runPatchTests(
++		""nested change in array"",
++		[[{b: 1}]],
+ 		d => {
+-			d.splice(4, 2, 3)
+-			// [0,1,2,3,3,0]
+-			d.splice(1, 2, 3)
+-			// [0,3,3,3,0]
+-			expect(d.slice()).toEqual([0, 3, 3, 3, 0])
++			d[0][0].b++
+ 		},
+-		[
+-			{op: ""replace"", path: [1], value: 3},
+-			{op: ""replace"", path: [2], value: 3},
+-			{op: ""replace"", path: [4], value: 0},
+-			{op: ""remove"", path: [6]},
+-			{op: ""remove"", path: [5]}
+-		]
++		[{op: ""replace"", path: [0, 0, ""b""], value: 2}],
++		[{op: ""replace"", path: [0, 0, ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - modify and shrink"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested map (no changes)"",
++		new Map([[""a"", new Map([[""b"", 1]])]]),
+ 		d => {
+-			d.x[0] = 4
+-			d.x.length = 2
+-			// [0, 2]
++			d.set(""x"", d.get(""a""))
++			d.delete(""a"")
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""remove"", path: [""x"", 2]}
++			{op: ""add"", path: [""x""], value: new Map([[""b"", 1]])},
++			{op: ""remove"", path: [""a""]}
+ 		],
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 1},
+-			{op: ""add"", path: [""x"", 2], value: 3}
++			{op: ""remove"", path: [""x""]},
++			{op: ""add"", path: [""a""], value: new Map([[""b"", 1]])}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - prepend then splice middle"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested object (with changes)"",
++		{a: {b: 1, c: 1}},
+ 		d => {
+-			d.x.unshift(4)
+-			d.x.splice(2, 1)
+-			// 4, 1, 3
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1}
+-		]
+-	)
+-})
++			let a = d.a
++			a.b = 2 // change
++			delete a.c // delete
++			a.y = 2 // add
+ 
+-describe(""arrays - splice middle then prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.splice(1, 1)
+-			d.x.unshift(4)
+-			// [4, 1, 3]
++			// rename
++			d.x = a
++			delete d.a
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1}
++			{op: ""add"", path: [""x""], value: {b: 2, y: 2}},
++			{op: ""remove"", path: [""a""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - truncate"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested map (with changes)"",
++		new Map([
++			[
++				""a"",
++				new Map([
++					[""b"", 1],
++					[""c"", 1]
++				])
++			]
++		]),
+ 		d => {
+-			d.x.length -= 2
++			let a = d.get(""a"")
++			a.set(""b"", 2) // change
++			a.delete(""c"") // delete
++			a.set(""y"", 2) // add
++
++			// rename
++			d.set(""x"", a)
++			d.delete(""a"")
+ 		},
+ 		[
+-			{op: ""remove"", path: [""x"", 2]},
+-			{op: ""remove"", path: [""x"", 1]}
++			{
++				op: ""add"",
++				path: [""x""],
++				value: new Map([
++					[""b"", 2],
++					[""y"", 2]
++				])
++			},
++			{op: ""remove"", path: [""a""]}
+ 		],
+ 		[
+-			{op: ""add"", path: [""x"", 1], value: 2},
+-			{op: ""add"", path: [""x"", 2], value: 3}
++			{op: ""remove"", path: [""x""]},
++			{
++				op: ""add"",
++				path: [""a""],
++				value: new Map([
++					[""b"", 1],
++					[""c"", 1]
++				])
++			}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - pop twice"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""deeply nested object (with changes)"",
++		{a: {b: {c: 1, d: 1}}},
+ 		d => {
+-			d.x.pop()
+-			d.x.pop()
++			let b = d.a.b
++			b.c = 2 // change
++			delete b.d // delete
++			b.y = 2 // add
++
++			// rename
++			d.a.x = b
++			delete d.a.b
+ 		},
+ 		[
+-			{op: ""remove"", path: [""x"", 2]},
+-			{op: ""remove"", path: [""x"", 1]}
++			{op: ""add"", path: [""a"", ""x""], value: {c: 2, y: 2}},
++			{op: ""remove"", path: [""a"", ""b""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - push multiple"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""deeply nested map (with changes)"",
++		new Map([
++			[
++				""a"",
++				new Map([
++					[
++						""b"",
++						new Map([
++							[""c"", 1],
++							[""d"", 1]
++						])
++					]
++				])
++			]
++		]),
+ 		d => {
+-			d.x.push(4, 5)
++			let b = d.get(""a"").get(""b"")
++			b.set(""c"", 2) // change
++			b.delete(""d"") // delete
++			b.set(""y"", 2) // add
++
++			// rename
++			d.get(""a"").set(""x"", b)
++			d.get(""a"").delete(""b"")
+ 		},
+ 		[
+-			{op: ""add"", path: [""x"", 3], value: 4},
+-			{op: ""add"", path: [""x"", 4], value: 5}
++			{
++				op: ""add"",
++				path: [""a"", ""x""],
++				value: new Map([
++					[""c"", 2],
++					[""y"", 2]
++				])
++			},
++			{op: ""remove"", path: [""a"", ""b""]}
+ 		],
+ 		[
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
++			{op: ""remove"", path: [""a"", ""x""]},
++			{
++				op: ""add"",
++				path: [""a"", ""b""],
++				value: new Map([
++					[""c"", 1],
++					[""d"", 1]
++				])
++			}
+ 		]
+ 	)
+ })
+ 
+-describe(""arrays - splice (expand)"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.splice(1, 1, 4, 5, 6) // [1,4,5,6,3]
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 4},
+-			{op: ""replace"", path: [""x"", 2], value: 5},
+-			{op: ""add"", path: [""x"", 3], value: 6},
+-			{op: ""add"", path: [""x"", 4], value: 3}
+-		],
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 2},
+-			{op: ""replace"", path: [""x"", 2], value: 3},
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
++runPatchTests(
++	""minimum amount of changes"",
++	{x: 3, y: {a: 4}, z: 3},
++	d => {
++		d.y.a = 4
++		d.y.b = 5
++		Object.assign(d, {x: 4, y: {a: 2}})
++	},
++	[
++		{op: ""replace"", path: [""x""], value: 4},
++		{op: ""replace"", path: [""y""], value: {a: 2}}
++	]
++)
++
++runPatchTests(
++	""arrays - prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1},
++		{op: ""replace"", path: [""x"", 2], value: 2},
++		{op: ""add"", path: [""x"", 3], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - multiple prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++		d.x.unshift(5)
++		// 4,5,1,2,3
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 5},
++		{op: ""replace"", path: [""x"", 1], value: 4},
++		{op: ""replace"", path: [""x"", 2], value: 1},
++		{op: ""add"", path: [""x"", 3], value: 2},
++		{op: ""add"", path: [""x"", 4], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - splice middle"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1)
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 3},
++		{op: ""remove"", path: [""x"", 2]}
++	]
++)
++
++runPatchTests(
++	""arrays - multiple splice"",
++	[0, 1, 2, 3, 4, 5, 0],
++	d => {
++		d.splice(4, 2, 3)
++		// [0,1,2,3,3,0]
++		d.splice(1, 2, 3)
++		// [0,3,3,3,0]
++		expect(d.slice()).toEqual([0, 3, 3, 3, 0])
++	},
++	[
++		{op: ""replace"", path: [1], value: 3},
++		{op: ""replace"", path: [2], value: 3},
++		{op: ""replace"", path: [4], value: 0},
++		{op: ""remove"", path: [6]},
++		{op: ""remove"", path: [5]}
++	]
++)
++
++runPatchTests(
++	""arrays - modify and shrink"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x[0] = 4
++		d.x.length = 2
++		// [0, 2]
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""remove"", path: [""x"", 2]}
++	],
++	[
++		{op: ""replace"", path: [""x"", 0], value: 1},
++		{op: ""add"", path: [""x"", 2], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - prepend then splice middle"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++		d.x.splice(2, 1)
++		// 4, 1, 3
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1}
++	]
++)
++
++runPatchTests(
++	""arrays - splice middle then prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1)
++		d.x.unshift(4)
++		// [4, 1, 3]
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1}
++	]
++)
++
++runPatchTests(
++	""arrays - truncate"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.length -= 2
++	},
++	[
++		{op: ""remove"", path: [""x"", 2]},
++		{op: ""remove"", path: [""x"", 1]}
++	],
++	[
++		{op: ""add"", path: [""x"", 1], value: 2},
++		{op: ""add"", path: [""x"", 2], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - pop twice"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.pop()
++		d.x.pop()
++	},
++	[
++		{op: ""remove"", path: [""x"", 2]},
++		{op: ""remove"", path: [""x"", 1]}
++	]
++)
++
++runPatchTests(
++	""arrays - push multiple"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.push(4, 5)
++	},
++	[
++		{op: ""add"", path: [""x"", 3], value: 4},
++		{op: ""add"", path: [""x"", 4], value: 5}
++	],
++	[
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	]
++)
++
++runPatchTests(
++	""arrays - splice (expand)"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1, 4, 5, 6) // [1,4,5,6,3]
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 4},
++		{op: ""replace"", path: [""x"", 2], value: 5},
++		{op: ""add"", path: [""x"", 3], value: 6},
++		{op: ""add"", path: [""x"", 4], value: 3}
++	],
++	[
++		{op: ""replace"", path: [""x"", 1], value: 2},
++		{op: ""replace"", path: [""x"", 2], value: 3},
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	]
++)
++
++runPatchTests(
++	""arrays - splice (shrink)"",
++	{x: [1, 2, 3, 4, 5]},
++	d => {
++		d.x.splice(1, 3, 6) // [1, 6, 5]
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 6},
++		{op: ""replace"", path: [""x"", 2], value: 5},
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	],
++	[
++		{op: ""replace"", path: [""x"", 1], value: 2},
++		{op: ""replace"", path: [""x"", 2], value: 3},
++		{op: ""add"", path: [""x"", 3], value: 4},
++		{op: ""add"", path: [""x"", 4], value: 5}
++	]
++)
++
++runPatchTests(
++	""arrays - delete"",
++	{
++		x: [
++			{a: 1, b: 2},
++			{c: 3, d: 4}
+ 		]
+-	)
+-})
+-
+-describe(""arrays - splice (shrink)"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3, 4, 5]},
+-		d => {
+-			d.x.splice(1, 3, 6) // [1, 6, 5]
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 6},
+-			{op: ""replace"", path: [""x"", 2], value: 5},
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
+-		],
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 2},
+-			{op: ""replace"", path: [""x"", 2], value: 3},
+-			{op: ""add"", path: [""x"", 3], value: 4},
+-			{op: ""add"", path: [""x"", 4], value: 5}
+-		]
+-	)
+-})
+-
+-describe(""arrays - delete"", () => {
+-	runPatchTest(
+-		{
+-			x: [
+-				{a: 1, b: 2},
+-				{c: 3, d: 4}
+-			]
+-		},
+-		d => {
+-			delete d.x[1].c
+-		},
+-		[{op: ""remove"", path: [""x"", 1, ""c""]}]
+-	)
+-})
++	},
++	d => {
++		delete d.x[1].c
++	},
++	[{op: ""remove"", path: [""x"", 1, ""c""]}]
++)
+ 
+ describe(""arrays - append"", () => {
+ 	test(""appends to array when last part of path is '-'"", () => {
+@@ -764,42 +826,39 @@ describe(""arrays - append"", () => {
+ 	})
+ })
+ 
+-describe(""sets - add - 1"", () => {
+-	runPatchTest(
+-		new Set([1]),
+-		d => {
+-			d.add(2)
+-		},
+-		[{op: ""add"", path: [1], value: 2}],
+-		[{op: ""remove"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""sets - add, delete, add - 1"", () => {
+-	runPatchTest(
+-		new Set([1]),
+-		d => {
+-			d.add(2)
+-			d.delete(2)
+-			d.add(2)
+-		},
+-		[{op: ""add"", path: [1], value: 2}],
+-		[{op: ""remove"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""sets - add, delete, add - 2"", () => {
+-	runPatchTest(
+-		new Set([2, 1]),
+-		d => {
+-			d.add(2)
+-			d.delete(2)
+-			d.add(2)
+-		},
+-		[],
+-		[]
+-	)
+-})
++runPatchTests(
++	""sets - add - 1"",
++	new Set([1]),
++	d => {
++		d.add(2)
++	},
++	[{op: ""add"", path: [1], value: 2}],
++	[{op: ""remove"", path: [1], value: 2}]
++)
++
++runPatchTests(
++	""sets - add, delete, add - 1"",
++	new Set([1]),
++	d => {
++		d.add(2)
++		d.delete(2)
++		d.add(2)
++	},
++	[{op: ""add"", path: [1], value: 2}],
++	[{op: ""remove"", path: [1], value: 2}]
++)
++
++runPatchTests(
++	""sets - add, delete, add - 2"",
++	new Set([2, 1]),
++	d => {
++		d.add(2)
++		d.delete(2)
++		d.add(2)
++	},
++	[],
++	[]
++)
+ 
+ describe(""sets - mutate - 1"", () => {
+ 	const findById = (set, id) => {
+@@ -807,7 +866,8 @@ describe(""sets - mutate - 1"", () => {
+ 			if (item.id === id) return item
+ 		}
+ 	}
+-	runPatchTest(
++	runPatchTests(
++		"""",
+ 		new Set([
+ 			{id: 1, val: ""We""},
+ 			{id: 2, val: ""will""}
+@@ -833,147 +893,144 @@ describe(""sets - mutate - 1"", () => {
+ 	)
+ })
+ 
+-describe(""arrays - splice should should result in remove op."", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		[1, 2],
+-		d => {
+-			d.splice(1, 1)
+-		},
+-		[{op: ""remove"", path: [1]}],
+-		[{op: ""add"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""arrays - NESTED splice should should result in remove op."", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{a: {b: {c: [1, 2]}}},
+-		d => {
+-			d.a.b.c.splice(1, 1)
+-		},
+-		[{op: ""remove"", path: [""a"", ""b"", ""c"", 1]}],
+-		[{op: ""add"", path: [""a"", ""b"", ""c"", 1], value: 2}]
+-	)
+-})
+-
+-describe(""simple replacement"", () => {
+-	runPatchTest({x: 3}, _d => 4, [{op: ""replace"", path: [], value: 4}])
+-})
+-
+-describe(""same value replacement - 1"", () => {
+-	runPatchTest(
+-		{x: {y: 3}},
+-		d => {
+-			const a = d.x
+-			d.x = a
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 2"", () => {
+-	runPatchTest(
+-		{x: {y: 3}},
+-		d => {
+-			const a = d.x
+-			d.x = 4
+-			d.x = a
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 3"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x = 3
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 4"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x = 4
+-			d.x = 3
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 5"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 3]]),
+-		d => {
+-			d.set(""x"", 4)
+-			d.set(""x"", 3)
+-		},
+-		[],
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 6"", () => {
+-	runPatchTest(
+-		new Set([""x"", 3]),
+-		d => {
+-			d.delete(""x"")
+-			d.add(""x"")
+-		},
+-		[],
+-		[]
+-	)
+-})
++// These patches were more optimal pre immer 7, but not always correct
++runPatchTests(
++	""arrays - splice should should result in remove op."",
++	[1, 2],
++	d => {
++		d.splice(1, 1)
++	},
++	[{op: ""remove"", path: [1]}],
++	[{op: ""add"", path: [1], value: 2}]
++)
++
++// These patches were more optimal pre immer 7, but not always correct
++runPatchTests(
++	""arrays - NESTED splice should should result in remove op."",
++	{a: {b: {c: [1, 2]}}},
++	d => {
++		d.a.b.c.splice(1, 1)
++	},
++	[{op: ""remove"", path: [""a"", ""b"", ""c"", 1]}],
++	[{op: ""add"", path: [""a"", ""b"", ""c"", 1], value: 2}]
++)
++
++runPatchTests(""simple replacement"", {x: 3}, _d => 4, [
++	{op: ""replace"", path: [], value: 4}
++])
++
++runPatchTests(
++	""same value replacement - 1"",
++	{x: {y: 3}},
++	d => {
++		const a = d.x
++		d.x = a
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 2"",
++	{x: {y: 3}},
++	d => {
++		const a = d.x
++		d.x = 4
++		d.x = a
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 3"",
++	{x: 3},
++	d => {
++		d.x = 3
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 4"",
++	{x: 3},
++	d => {
++		d.x = 4
++		d.x = 3
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 5"",
++	new Map([[""x"", 3]]),
++	d => {
++		d.set(""x"", 4)
++		d.set(""x"", 3)
++	},
++	[],
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 6"",
++	new Set([""x"", 3]),
++	d => {
++		d.delete(""x"")
++		d.add(""x"")
++	},
++	[],
++	[]
++)
++
++runPatchTests(
++	""simple delete"",
++	{x: 2},
++	d => {
++		delete d.x
++	},
++	[
++		{
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
++)
+ 
+-describe(""simple delete"", () => {
+-	runPatchTest(
+-		{x: 2},
+-		d => {
+-			delete d.x
+-		},
+-		[
+-			{
+-				op: ""remove"",
+-				path: [""x""]
++describe(""patch compressions yields correct results"", () => {
++	let p1 = [
++		{
++			op: ""add"",
++			path: [""x""],
++			value: {
++				test: true
+ 			}
+-		]
+-	)
+-})
++		}
++	]
++	let p2 = [
++		{
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
+ 
+-describe(""patch compressions yields correct results"", () => {
+-	let p1, p2
+-	runPatchTest(
++	runPatchTests(
++		""add only"",
+ 		{},
+ 		d => {
+ 			d.x = {test: true}
+ 		},
+-		(p1 = [
+-			{
+-				op: ""add"",
+-				path: [""x""],
+-				value: {
+-					test: true
+-				}
+-			}
+-		])
++		p1
+ 	)
+-	runPatchTest(
++
++	runPatchTests(
++		""delete only"",
+ 		{x: {test: true}},
+ 		d => {
+ 			delete d.x
+ 		},
+-		(p2 = [
+-			{
+-				op: ""remove"",
+-				path: [""x""]
+-			}
+-		])
++		p2
+ 	)
+-	const res = runPatchTest(
++	const testData = runPatchTests(
++		""add and delete together cancel"",
+ 		{},
+ 		d => {
+ 			applyPatches(d, [...p1, ...p2])
+@@ -981,29 +1038,25 @@ describe(""patch compressions yields correct results"", () => {
+ 		[]
+ 	)
+ 
+-	expect(res).toEqual({})
++	expect(testData.result).toEqual({})
+ })
+ 
+-describe(""change then delete property"", () => {
+-	const res = runPatchTest(
++runPatchTests(
++	""change then delete property"",
++	{
++		x: 1
++	},
++	d => {
++		d.x = 2
++		delete d.x
++	},
++	[
+ 		{
+-			x: 1
+-		},
+-		d => {
+-			d.x = 2
+-			delete d.x
+-		},
+-		[
+-			{
+-				op: ""remove"",
+-				path: [""x""]
+-			}
+-		]
+-	)
+-	test(""valid result"", () => {
+-		expect(res).toEqual({})
+-	})
+-})
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
++)
+ 
+ test(""replaying patches with interweaved replacements should work correctly"", () => {
+ 	const patches = []
+@@ -1147,7 +1200,8 @@ describe(""#588"", () => {
+ 
+ 	let base = new Base()
+ 
+-	runPatchTest(
++	runPatchTests(
++		"""",
+ 		base,
+ 		vdraft => {
+ 			reference.value = vdraft
+@@ -1409,29 +1463,27 @@ test(""#888 patch to a primitive produces the primitive"", () => {
+ 	}
+ })
+ 
+-describe(""#879 delete item from array"", () => {
+-	runPatchTest(
+-		[1, 2, 3],
+-		draft => {
+-			delete draft[1]
+-		},
+-		[{op: ""replace"", path: [1], value: undefined}],
+-		[{op: ""replace"", path: [1], value: 2}],
+-		[1, undefined, 3]
+-	)
+-})
+-
+-describe(""#879 delete item from array - 2"", () => {
+-	runPatchTest(
+-		[1, 2, 3],
+-		draft => {
+-			delete draft[2]
+-		},
+-		[{op: ""replace"", path: [2], value: undefined}],
+-		[{op: ""replace"", path: [2], value: 3}],
+-		[1, 2, undefined]
+-	)
+-})
++runPatchTests(
++	""#879 delete item from array"",
++	[1, 2, 3],
++	draft => {
++		delete draft[1]
++	},
++	[{op: ""replace"", path: [1], value: undefined}],
++	[{op: ""replace"", path: [1], value: 2}],
++	[1, undefined, 3]
++)
++
++runPatchTests(
++	""#879 delete item from array - 2"",
++	[1, 2, 3],
++	draft => {
++		delete draft[2]
++	},
++	[{op: ""replace"", path: [2], value: undefined}],
++	[{op: ""replace"", path: [2], value: 3}],
++	[1, 2, undefined]
++)
+ 
+ test(""#897 appendPatch"", () => {
+ 	const state0 = {a: []}
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/plugins.js.snap,__tests__/plugins.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/readme.js.snap,__tests__/readme.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/curry.js.snap,__tests__/__prod_snapshots__/curry.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/frozen.js.snap,__tests__/__prod_snapshots__/frozen.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/manual.js.snap,__tests__/__prod_snapshots__/manual.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/patch.js.snap,__tests__/__prod_snapshots__/patch.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/plugins.js.snap,__tests__/__prod_snapshots__/plugins.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/readme.js.snap,__tests__/__prod_snapshots__/readme.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index cca8220..e21bb97 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	Immer,
+ 	nothing,
+@@ -15,7 +16,9 @@ import * as lodash from ""lodash""
+ enablePatches()
+ enableMapSet()
+ 
+-jest.setTimeout(1000)
++vi.setConfig({
++	testTimeout: 1000
++})
+ 
+ const isProd = process.env.NODE_ENV === ""production""
+ 
+@@ -2093,7 +2096,7 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 	})
+ 
+ 	if (!autoFreeze) {
+-		describe(""#613"", () => {
++		test(""#613"", () => {
+ 			const x1 = {}
+ 			const y1 = produce(x1, draft => {
+ 				draft.foo = produce({bar: ""baz""}, draft1 => {
+@@ -2239,7 +2242,7 @@ function testObjectTypes(produce) {
+ 		})
+ 	})
+ 
+-	describe(""setter only"", () => {
++	test(""setter only"", () => {
+ 		let setterCalled = 0
+ 		class State {
+ 			[immerable] = true
+@@ -2261,7 +2264,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""getter only"", () => {
++	test(""getter only"", () => {
+ 		let getterCalled = 0
+ 		class State {
+ 			[immerable] = true
+@@ -2286,7 +2289,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""own setter only"", () => {
++	test(""own setter only"", () => {
+ 		let setterCalled = 0
+ 		const state = {
+ 			x: 0,
+@@ -2309,7 +2312,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""own getter only"", () => {
++	test(""own getter only"", () => {
+ 		let getterCalled = 0
+ 		const state = {
+ 			x: 0,
+@@ -2332,7 +2335,7 @@ function testObjectTypes(produce) {
+ 		expect(state.x).toBe(0)
+ 	})
+ 
+-	describe(""#620"", () => {
++	test(""#620"", () => {
+ 		const customSymbol = Symbol(""customSymbol"")
+ 
+ 		class TestClass {
+@@ -2365,7 +2368,7 @@ function testObjectTypes(produce) {
+ 		})
+ 	})
+ 
+-	describe(""#1096 / #1087 / proxies"", () => {
++	test(""#1096 / #1087 / proxies"", () => {
+ 		const sym = Symbol()
+ 
+ 		let state = {
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/curry.js.snap,__tests__/curry.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/frozen.js.snap,__tests__/frozen.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/manual.js.snap,__tests__/manual.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/manual.js b/__tests__/manual.js
+index 6b17aaa..6fa919c 100644
+--- a/__tests__/manual.js
++++ b/__tests__/manual.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	setUseProxies,
+ 	createDraft,
+@@ -68,7 +69,7 @@ function runTests(name) {
+ 			draft.a = 2
+ 			draft.b = 3
+ 
+-			const listener = jest.fn()
++			const listener = vi.fn()
+ 			const result = finishDraft(draft, listener)
+ 
+ 			expect(result).not.toBe(state)
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/patch.js.snap,__tests__/patch.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+","diff --git a/__tests__/patch.js b/__tests__/patch.js
+index 4046785..ea73ccd 100644
+--- a/__tests__/patch.js
++++ b/__tests__/patch.js
+@@ -1,4 +1,5 @@
+ ""use strict""
++import {vi} from ""vitest""
+ import {
+ 	produce,
+ 	applyPatches,
+@@ -13,47 +14,128 @@ import {
+ enablePatches()
+ enableMapSet()
+ 
+-jest.setTimeout(1000)
++vi.setConfig({
++	testTimeout: 1000
++})
+ 
+ const isProd = process.env.NODE_ENV === ""production""
+ 
+-function runPatchTest(base, producer, patches, inversePathes, expectedResult) {
+-	let resultProxies, resultEs5
++function createPatchTestData(
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	let recordedPatches, recordedInversePatches
++	const res = produce(base, producer, (p, i) => {
++		recordedPatches = p
++		recordedInversePatches = i
++	})
+ 
+-	function runPatchTestHelper() {
+-		let recordedPatches
+-		let recordedInversePatches
+-		const res = produce(base, producer, (p, i) => {
+-			recordedPatches = p
+-			recordedInversePatches = i
+-		})
++	return {
++		result: res,
++		patches: recordedPatches,
++		inversePatches: recordedInversePatches,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		base
++	}
++}
+ 
+-		if (expectedResult !== undefined)
++function runPatchTests(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult,
++	options = {}
++) {
++	const {only = false, skip = false} = options
++
++	// Choose the appropriate describe function
++	let describeFn = describe
++	if (testName === """") describeFn = (name, fn) => fn()
++	if (only) describeFn = describe.only
++	if (skip) describeFn = describe.skip
++
++	let testData = createPatchTestData(
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult
++	)
++
++	describeFn(testName, () => {
++		if (expectedResult !== undefined) {
+ 			test(""produced the correct result"", () => {
+-				expect(res).toEqual(expectedResult)
++				expect(testData.result).toEqual(expectedResult)
+ 			})
++		}
+ 
+ 		test(""produces the correct patches"", () => {
+-			expect(recordedPatches).toEqual(patches)
+-			if (inversePathes) expect(recordedInversePatches).toEqual(inversePathes)
++			expect(testData.patches).toEqual(expectedPatches)
++			if (expectedInversePatches) {
++				expect(testData.inversePatches).toEqual(expectedInversePatches)
++			}
+ 		})
+ 
+ 		test(""patches are replayable"", () => {
+-			expect(applyPatches(base, recordedPatches)).toEqual(res)
++			expect(applyPatches(base, testData.patches)).toEqual(testData.result)
+ 		})
+ 
+ 		test(""patches can be reversed"", () => {
+-			expect(applyPatches(res, recordedInversePatches)).toEqual(base)
++			if (expectedInversePatches) {
++				expect(applyPatches(testData.result, testData.inversePatches)).toEqual(
++					base
++				)
++			}
+ 		})
++	})
+ 
+-		return res
+-	}
++	return testData
++}
+ 
+-	describe(`proxy`, () => {
+-		resultProxies = runPatchTestHelper()
+-	})
++// Convenience functions for common use cases
++runPatchTests.only = function(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	return runPatchTests(
++		testName,
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		{only: true}
++	)
++}
+ 
+-	return resultProxies
++runPatchTests.skip = function(
++	testName,
++	base,
++	producer,
++	expectedPatches,
++	expectedInversePatches,
++	expectedResult
++) {
++	return runPatchTests(
++		testName,
++		base,
++		producer,
++		expectedPatches,
++		expectedInversePatches,
++		expectedResult,
++		{skip: true}
++	)
+ }
+ 
+ describe(""applyPatches"", () => {
+@@ -116,81 +198,91 @@ describe(""applyPatches"", () => {
+ 	})
+ })
+ 
+-describe(""simple assignment - 1"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x++
+-		},
+-		[{op: ""replace"", path: [""x""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 2"", () => {
+-	runPatchTest(
+-		{x: {y: 4}},
+-		d => {
+-			d.x.y++
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}]
+-	)
+-})
+-
+-describe(""simple assignment - 3"", () => {
+-	runPatchTest(
+-		{x: [{y: 4}]},
+-		d => {
+-			d.x[0].y++
+-		},
+-		[{op: ""replace"", path: [""x"", 0, ""y""], value: 5}]
+-	)
+-})
+-
+-describe(""simple assignment - 4"", () => {
+-	runPatchTest(
+-		new Map([[""x"", {y: 4}]]),
+-		d => {
+-			d.get(""x"").y++
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}],
+-		[{op: ""replace"", path: [""x"", ""y""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 5"", () => {
+-	runPatchTest(
+-		{x: new Map([[""y"", 4]])},
+-		d => {
+-			d.x.set(""y"", 5)
+-		},
+-		[{op: ""replace"", path: [""x"", ""y""], value: 5}],
+-		[{op: ""replace"", path: [""x"", ""y""], value: 4}]
+-	)
+-})
+-
+-describe(""simple assignment - 6"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 1]]),
+-		d => {
+-			// Map.prototype.set should return the Map itself
+-			const res = d.set(""x"", 2)
+-			res.set(""y"", 3)
+-		},
+-		[
+-			{op: ""replace"", path: [""x""], value: 2},
+-			{op: ""add"", path: [""y""], value: 3}
+-		],
+-		[
+-			{op: ""replace"", path: [""x""], value: 1},
+-			{op: ""remove"", path: [""y""]}
+-		]
+-	)
+-})
+-
++// New macro-style test
++runPatchTests(
++	""simple assignment - 1"",
++	{x: 3},
++	d => {
++		d.x++
++	},
++	[{op: ""replace"", path: [""x""], value: 4}]
++)
++
++// Original test (commented out for comparison)
++// describe(""simple assignment - 1"", () => {
++// 	runPatchTest(
++// 		{x: 3},
++// 		d => {
++// 			d.x++
++// 		},
++// 		[{op: ""replace"", path: [""x""], value: 4}]
++// 	)
++// })
++
++// New macro-style tests
++runPatchTests(
++	""simple assignment - 2"",
++	{x: {y: 4}},
++	d => {
++		d.x.y++
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}]
++)
++
++runPatchTests(
++	""simple assignment - 3"",
++	{x: [{y: 4}]},
++	d => {
++		d.x[0].y++
++	},
++	[{op: ""replace"", path: [""x"", 0, ""y""], value: 5}]
++)
++
++runPatchTests(
++	""simple assignment - 4"",
++	new Map([[""x"", {y: 4}]]),
++	d => {
++		d.get(""x"").y++
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}],
++	[{op: ""replace"", path: [""x"", ""y""], value: 4}]
++)
++
++runPatchTests(
++	""simple assignment - 5"",
++	{x: new Map([[""y"", 4]])},
++	d => {
++		d.x.set(""y"", 5)
++	},
++	[{op: ""replace"", path: [""x"", ""y""], value: 5}],
++	[{op: ""replace"", path: [""x"", ""y""], value: 4}]
++)
++
++runPatchTests(
++	""simple assignment - 6"",
++	new Map([[""x"", 1]]),
++	d => {
++		// Map.prototype.set should return the Map itself
++		const res = d.set(""x"", 2)
++		res.set(""y"", 3)
++	},
++	[
++		{op: ""replace"", path: [""x""], value: 2},
++		{op: ""add"", path: [""y""], value: 3}
++	],
++	[
++		{op: ""replace"", path: [""x""], value: 1},
++		{op: ""remove"", path: [""y""]}
++	]
++)
++
++// Complex test with external variables - keep as individual describe
+ describe(""simple assignment - 7"", () => {
+ 	const key1 = {prop: ""val1""}
+ 	const key2 = {prop: ""val2""}
+-	runPatchTest(
++
++	runPatchTests(
++		"""",
+ 		{x: new Map([[key1, 4]])},
+ 		d => {
+ 			d.x.set(key1, 5)
+@@ -207,60 +299,58 @@ describe(""simple assignment - 7"", () => {
+ 	)
+ })
+ 
+-describe(""simple assignment - 8"", () => {
+-	runPatchTest(
+-		new Map([[0, new Map([[1, 4]])]]),
+-		d => {
+-			d.get(0).set(1, 5)
+-			d.get(0).set(2, 6)
+-		},
+-		[
+-			{op: ""replace"", path: [0, 1], value: 5},
+-			{op: ""add"", path: [0, 2], value: 6}
+-		],
+-		[
+-			{op: ""replace"", path: [0, 1], value: 4},
+-			{op: ""remove"", path: [0, 2]}
+-		]
+-	)
+-})
+-
+-describe(""delete 1"", () => {
+-	runPatchTest(
+-		{x: {y: 4}},
+-		d => {
+-			delete d.x
+-		},
+-		[{op: ""remove"", path: [""x""]}]
+-	)
+-})
+-
+-describe(""delete 2"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 1]]),
+-		d => {
+-			d.delete(""x"")
+-		},
+-		[{op: ""remove"", path: [""x""]}],
+-		[{op: ""add"", path: [""x""], value: 1}]
+-	)
+-})
+-
+-describe(""delete 3"", () => {
+-	runPatchTest(
+-		{x: new Map([[""y"", 1]])},
+-		d => {
+-			d.x.delete(""y"")
+-		},
+-		[{op: ""remove"", path: [""x"", ""y""]}],
+-		[{op: ""add"", path: [""x"", ""y""], value: 1}]
+-	)
+-})
++runPatchTests(
++	""simple assignment - 8"",
++	new Map([[0, new Map([[1, 4]])]]),
++	d => {
++		d.get(0).set(1, 5)
++		d.get(0).set(2, 6)
++	},
++	[
++		{op: ""replace"", path: [0, 1], value: 5},
++		{op: ""add"", path: [0, 2], value: 6}
++	],
++	[
++		{op: ""replace"", path: [0, 1], value: 4},
++		{op: ""remove"", path: [0, 2]}
++	]
++)
++
++runPatchTests(
++	""delete 1"",
++	{x: {y: 4}},
++	d => {
++		delete d.x
++	},
++	[{op: ""remove"", path: [""x""]}]
++)
++
++runPatchTests(
++	""delete 2"",
++	new Map([[""x"", 1]]),
++	d => {
++		d.delete(""x"")
++	},
++	[{op: ""remove"", path: [""x""]}],
++	[{op: ""add"", path: [""x""], value: 1}]
++)
++
++runPatchTests(
++	""delete 3"",
++	{x: new Map([[""y"", 1]])},
++	d => {
++		d.x.delete(""y"")
++	},
++	[{op: ""remove"", path: [""x"", ""y""]}],
++	[{op: ""add"", path: [""x"", ""y""], value: 1}]
++)
+ 
+ describe(""delete 5"", () => {
+ 	const key1 = {prop: ""val1""}
+ 	const key2 = {prop: ""val2""}
+-	runPatchTest(
++
++	runPatchTests(
++		"""",
+ 		{
+ 			x: new Map([
+ 				[key1, 1],
+@@ -282,471 +372,443 @@ describe(""delete 5"", () => {
+ 	)
+ })
+ 
+-describe(""delete 6"", () => {
+-	runPatchTest(
+-		new Set([""x"", 1]),
+-		d => {
+-			d.delete(""x"")
+-		},
+-		[{op: ""remove"", path: [0], value: ""x""}],
+-		[{op: ""add"", path: [0], value: ""x""}]
+-	)
+-})
+-
+-describe(""delete 7"", () => {
+-	runPatchTest(
+-		{x: new Set([""y"", 1])},
+-		d => {
+-			d.x.delete(""y"")
+-		},
+-		[{op: ""remove"", path: [""x"", 0], value: ""y""}],
+-		[{op: ""add"", path: [""x"", 0], value: ""y""}]
+-	)
+-})
++runPatchTests(
++	""delete 6"",
++	new Set([""x"", 1]),
++	d => {
++		d.delete(""x"")
++	},
++	[{op: ""remove"", path: [0], value: ""x""}],
++	[{op: ""add"", path: [0], value: ""x""}]
++)
++
++runPatchTests(
++	""delete 7"",
++	{x: new Set([""y"", 1])},
++	d => {
++		d.x.delete(""y"")
++	},
++	[{op: ""remove"", path: [""x"", 0], value: ""y""}],
++	[{op: ""add"", path: [""x"", 0], value: ""y""}]
++)
+ 
+ describe(""renaming properties"", () => {
+-	describe(""nested object (no changes)"", () => {
+-		runPatchTest(
+-			{a: {b: 1}},
+-			d => {
+-				d.x = d.a
+-				delete d.a
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: {b: 1}},
+-				{op: ""remove"", path: [""a""]}
+-			]
+-		)
+-	})
+-
+-	describe(""nested change in object"", () => {
+-		runPatchTest(
+-			{
+-				a: {b: 1}
+-			},
+-			d => {
+-				d.a.b++
+-			},
+-			[{op: ""replace"", path: [""a"", ""b""], value: 2}],
+-			[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested change in map"", () => {
+-		runPatchTest(
+-			new Map([[""a"", new Map([[""b"", 1]])]]),
+-			d => {
+-				d.get(""a"").set(""b"", 2)
+-			},
+-			[{op: ""replace"", path: [""a"", ""b""], value: 2}],
+-			[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested change in array"", () => {
+-		runPatchTest(
+-			[[{b: 1}]],
+-			d => {
+-				d[0][0].b++
+-			},
+-			[{op: ""replace"", path: [0, 0, ""b""], value: 2}],
+-			[{op: ""replace"", path: [0, 0, ""b""], value: 1}]
+-		)
+-	})
+-
+-	describe(""nested map (no changes)"", () => {
+-		runPatchTest(
+-			new Map([[""a"", new Map([[""b"", 1]])]]),
+-			d => {
+-				d.set(""x"", d.get(""a""))
+-				d.delete(""a"")
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: new Map([[""b"", 1]])},
+-				{op: ""remove"", path: [""a""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""x""]},
+-				{op: ""add"", path: [""a""], value: new Map([[""b"", 1]])}
+-			]
+-		)
+-	})
+-
+-	describe(""nested object (with changes)"", () => {
+-		runPatchTest(
+-			{a: {b: 1, c: 1}},
+-			d => {
+-				let a = d.a
+-				a.b = 2 // change
+-				delete a.c // delete
+-				a.y = 2 // add
+-
+-				// rename
+-				d.x = a
+-				delete d.a
+-			},
+-			[
+-				{op: ""add"", path: [""x""], value: {b: 2, y: 2}},
+-				{op: ""remove"", path: [""a""]}
+-			]
+-		)
+-	})
+-
+-	describe(""nested map (with changes)"", () => {
+-		runPatchTest(
+-			new Map([
+-				[
+-					""a"",
+-					new Map([
+-						[""b"", 1],
+-						[""c"", 1]
+-					])
+-				]
+-			]),
+-			d => {
+-				let a = d.get(""a"")
+-				a.set(""b"", 2) // change
+-				a.delete(""c"") // delete
+-				a.set(""y"", 2) // add
+-
+-				// rename
+-				d.set(""x"", a)
+-				d.delete(""a"")
+-			},
+-			[
+-				{
+-					op: ""add"",
+-					path: [""x""],
+-					value: new Map([
+-						[""b"", 2],
+-						[""y"", 2]
+-					])
+-				},
+-				{op: ""remove"", path: [""a""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""x""]},
+-				{
+-					op: ""add"",
+-					path: [""a""],
+-					value: new Map([
+-						[""b"", 1],
+-						[""c"", 1]
+-					])
+-				}
+-			]
+-		)
+-	})
+-
+-	describe(""deeply nested object (with changes)"", () => {
+-		runPatchTest(
+-			{a: {b: {c: 1, d: 1}}},
+-			d => {
+-				let b = d.a.b
+-				b.c = 2 // change
+-				delete b.d // delete
+-				b.y = 2 // add
+-
+-				// rename
+-				d.a.x = b
+-				delete d.a.b
+-			},
+-			[
+-				{op: ""add"", path: [""a"", ""x""], value: {c: 2, y: 2}},
+-				{op: ""remove"", path: [""a"", ""b""]}
+-			]
+-		)
+-	})
+-
+-	describe(""deeply nested map (with changes)"", () => {
+-		runPatchTest(
+-			new Map([
+-				[
+-					""a"",
+-					new Map([
+-						[
+-							""b"",
+-							new Map([
+-								[""c"", 1],
+-								[""d"", 1]
+-							])
+-						]
+-					])
+-				]
+-			]),
+-			d => {
+-				let b = d.get(""a"").get(""b"")
+-				b.set(""c"", 2) // change
+-				b.delete(""d"") // delete
+-				b.set(""y"", 2) // add
+-
+-				// rename
+-				d.get(""a"").set(""x"", b)
+-				d.get(""a"").delete(""b"")
+-			},
+-			[
+-				{
+-					op: ""add"",
+-					path: [""a"", ""x""],
+-					value: new Map([
+-						[""c"", 2],
+-						[""y"", 2]
+-					])
+-				},
+-				{op: ""remove"", path: [""a"", ""b""]}
+-			],
+-			[
+-				{op: ""remove"", path: [""a"", ""x""]},
+-				{
+-					op: ""add"",
+-					path: [""a"", ""b""],
+-					value: new Map([
+-						[""c"", 1],
+-						[""d"", 1]
+-					])
+-				}
+-			]
+-		)
+-	})
+-})
+-
+-describe(""minimum amount of changes"", () => {
+-	runPatchTest(
+-		{x: 3, y: {a: 4}, z: 3},
++	runPatchTests(
++		""nested object (no changes)"",
++		{a: {b: 1}},
+ 		d => {
+-			d.y.a = 4
+-			d.y.b = 5
+-			Object.assign(d, {x: 4, y: {a: 2}})
++			d.x = d.a
++			delete d.a
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x""], value: 4},
+-			{op: ""replace"", path: [""y""], value: {a: 2}}
++			{op: ""add"", path: [""x""], value: {b: 1}},
++			{op: ""remove"", path: [""a""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.unshift(4)
++	runPatchTests(
++		""nested change in object"",
++		{
++			a: {b: 1}
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1},
+-			{op: ""replace"", path: [""x"", 2], value: 2},
+-			{op: ""add"", path: [""x"", 3], value: 3}
+-		]
+-	)
+-})
+-
+-describe(""arrays - multiple prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+ 		d => {
+-			d.x.unshift(4)
+-			d.x.unshift(5)
+-			// 4,5,1,2,3
++			d.a.b++
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 5},
+-			{op: ""replace"", path: [""x"", 1], value: 4},
+-			{op: ""replace"", path: [""x"", 2], value: 1},
+-			{op: ""add"", path: [""x"", 3], value: 2},
+-			{op: ""add"", path: [""x"", 4], value: 3}
+-		]
++		[{op: ""replace"", path: [""a"", ""b""], value: 2}],
++		[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - splice middle"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested change in map"",
++		new Map([[""a"", new Map([[""b"", 1]])]]),
+ 		d => {
+-			d.x.splice(1, 1)
++			d.get(""a"").set(""b"", 2)
+ 		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 3},
+-			{op: ""remove"", path: [""x"", 2]}
+-		]
++		[{op: ""replace"", path: [""a"", ""b""], value: 2}],
++		[{op: ""replace"", path: [""a"", ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - multiple splice"", () => {
+-	runPatchTest(
+-		[0, 1, 2, 3, 4, 5, 0],
++	runPatchTests(
++		""nested change in array"",
++		[[{b: 1}]],
+ 		d => {
+-			d.splice(4, 2, 3)
+-			// [0,1,2,3,3,0]
+-			d.splice(1, 2, 3)
+-			// [0,3,3,3,0]
+-			expect(d.slice()).toEqual([0, 3, 3, 3, 0])
++			d[0][0].b++
+ 		},
+-		[
+-			{op: ""replace"", path: [1], value: 3},
+-			{op: ""replace"", path: [2], value: 3},
+-			{op: ""replace"", path: [4], value: 0},
+-			{op: ""remove"", path: [6]},
+-			{op: ""remove"", path: [5]}
+-		]
++		[{op: ""replace"", path: [0, 0, ""b""], value: 2}],
++		[{op: ""replace"", path: [0, 0, ""b""], value: 1}]
+ 	)
+-})
+ 
+-describe(""arrays - modify and shrink"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested map (no changes)"",
++		new Map([[""a"", new Map([[""b"", 1]])]]),
+ 		d => {
+-			d.x[0] = 4
+-			d.x.length = 2
+-			// [0, 2]
++			d.set(""x"", d.get(""a""))
++			d.delete(""a"")
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""remove"", path: [""x"", 2]}
++			{op: ""add"", path: [""x""], value: new Map([[""b"", 1]])},
++			{op: ""remove"", path: [""a""]}
+ 		],
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 1},
+-			{op: ""add"", path: [""x"", 2], value: 3}
++			{op: ""remove"", path: [""x""]},
++			{op: ""add"", path: [""a""], value: new Map([[""b"", 1]])}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - prepend then splice middle"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested object (with changes)"",
++		{a: {b: 1, c: 1}},
+ 		d => {
+-			d.x.unshift(4)
+-			d.x.splice(2, 1)
+-			// 4, 1, 3
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1}
+-		]
+-	)
+-})
++			let a = d.a
++			a.b = 2 // change
++			delete a.c // delete
++			a.y = 2 // add
+ 
+-describe(""arrays - splice middle then prepend"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.splice(1, 1)
+-			d.x.unshift(4)
+-			// [4, 1, 3]
++			// rename
++			d.x = a
++			delete d.a
+ 		},
+ 		[
+-			{op: ""replace"", path: [""x"", 0], value: 4},
+-			{op: ""replace"", path: [""x"", 1], value: 1}
++			{op: ""add"", path: [""x""], value: {b: 2, y: 2}},
++			{op: ""remove"", path: [""a""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - truncate"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""nested map (with changes)"",
++		new Map([
++			[
++				""a"",
++				new Map([
++					[""b"", 1],
++					[""c"", 1]
++				])
++			]
++		]),
+ 		d => {
+-			d.x.length -= 2
++			let a = d.get(""a"")
++			a.set(""b"", 2) // change
++			a.delete(""c"") // delete
++			a.set(""y"", 2) // add
++
++			// rename
++			d.set(""x"", a)
++			d.delete(""a"")
+ 		},
+ 		[
+-			{op: ""remove"", path: [""x"", 2]},
+-			{op: ""remove"", path: [""x"", 1]}
++			{
++				op: ""add"",
++				path: [""x""],
++				value: new Map([
++					[""b"", 2],
++					[""y"", 2]
++				])
++			},
++			{op: ""remove"", path: [""a""]}
+ 		],
+ 		[
+-			{op: ""add"", path: [""x"", 1], value: 2},
+-			{op: ""add"", path: [""x"", 2], value: 3}
++			{op: ""remove"", path: [""x""]},
++			{
++				op: ""add"",
++				path: [""a""],
++				value: new Map([
++					[""b"", 1],
++					[""c"", 1]
++				])
++			}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - pop twice"", () => {
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""deeply nested object (with changes)"",
++		{a: {b: {c: 1, d: 1}}},
+ 		d => {
+-			d.x.pop()
+-			d.x.pop()
++			let b = d.a.b
++			b.c = 2 // change
++			delete b.d // delete
++			b.y = 2 // add
++
++			// rename
++			d.a.x = b
++			delete d.a.b
+ 		},
+ 		[
+-			{op: ""remove"", path: [""x"", 2]},
+-			{op: ""remove"", path: [""x"", 1]}
++			{op: ""add"", path: [""a"", ""x""], value: {c: 2, y: 2}},
++			{op: ""remove"", path: [""a"", ""b""]}
+ 		]
+ 	)
+-})
+ 
+-describe(""arrays - push multiple"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3]},
++	runPatchTests(
++		""deeply nested map (with changes)"",
++		new Map([
++			[
++				""a"",
++				new Map([
++					[
++						""b"",
++						new Map([
++							[""c"", 1],
++							[""d"", 1]
++						])
++					]
++				])
++			]
++		]),
+ 		d => {
+-			d.x.push(4, 5)
++			let b = d.get(""a"").get(""b"")
++			b.set(""c"", 2) // change
++			b.delete(""d"") // delete
++			b.set(""y"", 2) // add
++
++			// rename
++			d.get(""a"").set(""x"", b)
++			d.get(""a"").delete(""b"")
+ 		},
+ 		[
+-			{op: ""add"", path: [""x"", 3], value: 4},
+-			{op: ""add"", path: [""x"", 4], value: 5}
++			{
++				op: ""add"",
++				path: [""a"", ""x""],
++				value: new Map([
++					[""c"", 2],
++					[""y"", 2]
++				])
++			},
++			{op: ""remove"", path: [""a"", ""b""]}
+ 		],
+ 		[
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
++			{op: ""remove"", path: [""a"", ""x""]},
++			{
++				op: ""add"",
++				path: [""a"", ""b""],
++				value: new Map([
++					[""c"", 1],
++					[""d"", 1]
++				])
++			}
+ 		]
+ 	)
+ })
+ 
+-describe(""arrays - splice (expand)"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3]},
+-		d => {
+-			d.x.splice(1, 1, 4, 5, 6) // [1,4,5,6,3]
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 4},
+-			{op: ""replace"", path: [""x"", 2], value: 5},
+-			{op: ""add"", path: [""x"", 3], value: 6},
+-			{op: ""add"", path: [""x"", 4], value: 3}
+-		],
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 2},
+-			{op: ""replace"", path: [""x"", 2], value: 3},
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
++runPatchTests(
++	""minimum amount of changes"",
++	{x: 3, y: {a: 4}, z: 3},
++	d => {
++		d.y.a = 4
++		d.y.b = 5
++		Object.assign(d, {x: 4, y: {a: 2}})
++	},
++	[
++		{op: ""replace"", path: [""x""], value: 4},
++		{op: ""replace"", path: [""y""], value: {a: 2}}
++	]
++)
++
++runPatchTests(
++	""arrays - prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1},
++		{op: ""replace"", path: [""x"", 2], value: 2},
++		{op: ""add"", path: [""x"", 3], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - multiple prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++		d.x.unshift(5)
++		// 4,5,1,2,3
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 5},
++		{op: ""replace"", path: [""x"", 1], value: 4},
++		{op: ""replace"", path: [""x"", 2], value: 1},
++		{op: ""add"", path: [""x"", 3], value: 2},
++		{op: ""add"", path: [""x"", 4], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - splice middle"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1)
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 3},
++		{op: ""remove"", path: [""x"", 2]}
++	]
++)
++
++runPatchTests(
++	""arrays - multiple splice"",
++	[0, 1, 2, 3, 4, 5, 0],
++	d => {
++		d.splice(4, 2, 3)
++		// [0,1,2,3,3,0]
++		d.splice(1, 2, 3)
++		// [0,3,3,3,0]
++		expect(d.slice()).toEqual([0, 3, 3, 3, 0])
++	},
++	[
++		{op: ""replace"", path: [1], value: 3},
++		{op: ""replace"", path: [2], value: 3},
++		{op: ""replace"", path: [4], value: 0},
++		{op: ""remove"", path: [6]},
++		{op: ""remove"", path: [5]}
++	]
++)
++
++runPatchTests(
++	""arrays - modify and shrink"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x[0] = 4
++		d.x.length = 2
++		// [0, 2]
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""remove"", path: [""x"", 2]}
++	],
++	[
++		{op: ""replace"", path: [""x"", 0], value: 1},
++		{op: ""add"", path: [""x"", 2], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - prepend then splice middle"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.unshift(4)
++		d.x.splice(2, 1)
++		// 4, 1, 3
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1}
++	]
++)
++
++runPatchTests(
++	""arrays - splice middle then prepend"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1)
++		d.x.unshift(4)
++		// [4, 1, 3]
++	},
++	[
++		{op: ""replace"", path: [""x"", 0], value: 4},
++		{op: ""replace"", path: [""x"", 1], value: 1}
++	]
++)
++
++runPatchTests(
++	""arrays - truncate"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.length -= 2
++	},
++	[
++		{op: ""remove"", path: [""x"", 2]},
++		{op: ""remove"", path: [""x"", 1]}
++	],
++	[
++		{op: ""add"", path: [""x"", 1], value: 2},
++		{op: ""add"", path: [""x"", 2], value: 3}
++	]
++)
++
++runPatchTests(
++	""arrays - pop twice"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.pop()
++		d.x.pop()
++	},
++	[
++		{op: ""remove"", path: [""x"", 2]},
++		{op: ""remove"", path: [""x"", 1]}
++	]
++)
++
++runPatchTests(
++	""arrays - push multiple"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.push(4, 5)
++	},
++	[
++		{op: ""add"", path: [""x"", 3], value: 4},
++		{op: ""add"", path: [""x"", 4], value: 5}
++	],
++	[
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	]
++)
++
++runPatchTests(
++	""arrays - splice (expand)"",
++	{x: [1, 2, 3]},
++	d => {
++		d.x.splice(1, 1, 4, 5, 6) // [1,4,5,6,3]
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 4},
++		{op: ""replace"", path: [""x"", 2], value: 5},
++		{op: ""add"", path: [""x"", 3], value: 6},
++		{op: ""add"", path: [""x"", 4], value: 3}
++	],
++	[
++		{op: ""replace"", path: [""x"", 1], value: 2},
++		{op: ""replace"", path: [""x"", 2], value: 3},
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	]
++)
++
++runPatchTests(
++	""arrays - splice (shrink)"",
++	{x: [1, 2, 3, 4, 5]},
++	d => {
++		d.x.splice(1, 3, 6) // [1, 6, 5]
++	},
++	[
++		{op: ""replace"", path: [""x"", 1], value: 6},
++		{op: ""replace"", path: [""x"", 2], value: 5},
++		{op: ""remove"", path: [""x"", 4]},
++		{op: ""remove"", path: [""x"", 3]}
++	],
++	[
++		{op: ""replace"", path: [""x"", 1], value: 2},
++		{op: ""replace"", path: [""x"", 2], value: 3},
++		{op: ""add"", path: [""x"", 3], value: 4},
++		{op: ""add"", path: [""x"", 4], value: 5}
++	]
++)
++
++runPatchTests(
++	""arrays - delete"",
++	{
++		x: [
++			{a: 1, b: 2},
++			{c: 3, d: 4}
+ 		]
+-	)
+-})
+-
+-describe(""arrays - splice (shrink)"", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{x: [1, 2, 3, 4, 5]},
+-		d => {
+-			d.x.splice(1, 3, 6) // [1, 6, 5]
+-		},
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 6},
+-			{op: ""replace"", path: [""x"", 2], value: 5},
+-			{op: ""remove"", path: [""x"", 4]},
+-			{op: ""remove"", path: [""x"", 3]}
+-		],
+-		[
+-			{op: ""replace"", path: [""x"", 1], value: 2},
+-			{op: ""replace"", path: [""x"", 2], value: 3},
+-			{op: ""add"", path: [""x"", 3], value: 4},
+-			{op: ""add"", path: [""x"", 4], value: 5}
+-		]
+-	)
+-})
+-
+-describe(""arrays - delete"", () => {
+-	runPatchTest(
+-		{
+-			x: [
+-				{a: 1, b: 2},
+-				{c: 3, d: 4}
+-			]
+-		},
+-		d => {
+-			delete d.x[1].c
+-		},
+-		[{op: ""remove"", path: [""x"", 1, ""c""]}]
+-	)
+-})
++	},
++	d => {
++		delete d.x[1].c
++	},
++	[{op: ""remove"", path: [""x"", 1, ""c""]}]
++)
+ 
+ describe(""arrays - append"", () => {
+ 	test(""appends to array when last part of path is '-'"", () => {
+@@ -764,42 +826,39 @@ describe(""arrays - append"", () => {
+ 	})
+ })
+ 
+-describe(""sets - add - 1"", () => {
+-	runPatchTest(
+-		new Set([1]),
+-		d => {
+-			d.add(2)
+-		},
+-		[{op: ""add"", path: [1], value: 2}],
+-		[{op: ""remove"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""sets - add, delete, add - 1"", () => {
+-	runPatchTest(
+-		new Set([1]),
+-		d => {
+-			d.add(2)
+-			d.delete(2)
+-			d.add(2)
+-		},
+-		[{op: ""add"", path: [1], value: 2}],
+-		[{op: ""remove"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""sets - add, delete, add - 2"", () => {
+-	runPatchTest(
+-		new Set([2, 1]),
+-		d => {
+-			d.add(2)
+-			d.delete(2)
+-			d.add(2)
+-		},
+-		[],
+-		[]
+-	)
+-})
++runPatchTests(
++	""sets - add - 1"",
++	new Set([1]),
++	d => {
++		d.add(2)
++	},
++	[{op: ""add"", path: [1], value: 2}],
++	[{op: ""remove"", path: [1], value: 2}]
++)
++
++runPatchTests(
++	""sets - add, delete, add - 1"",
++	new Set([1]),
++	d => {
++		d.add(2)
++		d.delete(2)
++		d.add(2)
++	},
++	[{op: ""add"", path: [1], value: 2}],
++	[{op: ""remove"", path: [1], value: 2}]
++)
++
++runPatchTests(
++	""sets - add, delete, add - 2"",
++	new Set([2, 1]),
++	d => {
++		d.add(2)
++		d.delete(2)
++		d.add(2)
++	},
++	[],
++	[]
++)
+ 
+ describe(""sets - mutate - 1"", () => {
+ 	const findById = (set, id) => {
+@@ -807,7 +866,8 @@ describe(""sets - mutate - 1"", () => {
+ 			if (item.id === id) return item
+ 		}
+ 	}
+-	runPatchTest(
++	runPatchTests(
++		"""",
+ 		new Set([
+ 			{id: 1, val: ""We""},
+ 			{id: 2, val: ""will""}
+@@ -833,147 +893,144 @@ describe(""sets - mutate - 1"", () => {
+ 	)
+ })
+ 
+-describe(""arrays - splice should should result in remove op."", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		[1, 2],
+-		d => {
+-			d.splice(1, 1)
+-		},
+-		[{op: ""remove"", path: [1]}],
+-		[{op: ""add"", path: [1], value: 2}]
+-	)
+-})
+-
+-describe(""arrays - NESTED splice should should result in remove op."", () => {
+-	// These patches were more optimal pre immer 7, but not always correct
+-	runPatchTest(
+-		{a: {b: {c: [1, 2]}}},
+-		d => {
+-			d.a.b.c.splice(1, 1)
+-		},
+-		[{op: ""remove"", path: [""a"", ""b"", ""c"", 1]}],
+-		[{op: ""add"", path: [""a"", ""b"", ""c"", 1], value: 2}]
+-	)
+-})
+-
+-describe(""simple replacement"", () => {
+-	runPatchTest({x: 3}, _d => 4, [{op: ""replace"", path: [], value: 4}])
+-})
+-
+-describe(""same value replacement - 1"", () => {
+-	runPatchTest(
+-		{x: {y: 3}},
+-		d => {
+-			const a = d.x
+-			d.x = a
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 2"", () => {
+-	runPatchTest(
+-		{x: {y: 3}},
+-		d => {
+-			const a = d.x
+-			d.x = 4
+-			d.x = a
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 3"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x = 3
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 4"", () => {
+-	runPatchTest(
+-		{x: 3},
+-		d => {
+-			d.x = 4
+-			d.x = 3
+-		},
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 5"", () => {
+-	runPatchTest(
+-		new Map([[""x"", 3]]),
+-		d => {
+-			d.set(""x"", 4)
+-			d.set(""x"", 3)
+-		},
+-		[],
+-		[]
+-	)
+-})
+-
+-describe(""same value replacement - 6"", () => {
+-	runPatchTest(
+-		new Set([""x"", 3]),
+-		d => {
+-			d.delete(""x"")
+-			d.add(""x"")
+-		},
+-		[],
+-		[]
+-	)
+-})
++// These patches were more optimal pre immer 7, but not always correct
++runPatchTests(
++	""arrays - splice should should result in remove op."",
++	[1, 2],
++	d => {
++		d.splice(1, 1)
++	},
++	[{op: ""remove"", path: [1]}],
++	[{op: ""add"", path: [1], value: 2}]
++)
++
++// These patches were more optimal pre immer 7, but not always correct
++runPatchTests(
++	""arrays - NESTED splice should should result in remove op."",
++	{a: {b: {c: [1, 2]}}},
++	d => {
++		d.a.b.c.splice(1, 1)
++	},
++	[{op: ""remove"", path: [""a"", ""b"", ""c"", 1]}],
++	[{op: ""add"", path: [""a"", ""b"", ""c"", 1], value: 2}]
++)
++
++runPatchTests(""simple replacement"", {x: 3}, _d => 4, [
++	{op: ""replace"", path: [], value: 4}
++])
++
++runPatchTests(
++	""same value replacement - 1"",
++	{x: {y: 3}},
++	d => {
++		const a = d.x
++		d.x = a
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 2"",
++	{x: {y: 3}},
++	d => {
++		const a = d.x
++		d.x = 4
++		d.x = a
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 3"",
++	{x: 3},
++	d => {
++		d.x = 3
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 4"",
++	{x: 3},
++	d => {
++		d.x = 4
++		d.x = 3
++	},
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 5"",
++	new Map([[""x"", 3]]),
++	d => {
++		d.set(""x"", 4)
++		d.set(""x"", 3)
++	},
++	[],
++	[]
++)
++
++runPatchTests(
++	""same value replacement - 6"",
++	new Set([""x"", 3]),
++	d => {
++		d.delete(""x"")
++		d.add(""x"")
++	},
++	[],
++	[]
++)
++
++runPatchTests(
++	""simple delete"",
++	{x: 2},
++	d => {
++		delete d.x
++	},
++	[
++		{
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
++)
+ 
+-describe(""simple delete"", () => {
+-	runPatchTest(
+-		{x: 2},
+-		d => {
+-			delete d.x
+-		},
+-		[
+-			{
+-				op: ""remove"",
+-				path: [""x""]
++describe(""patch compressions yields correct results"", () => {
++	let p1 = [
++		{
++			op: ""add"",
++			path: [""x""],
++			value: {
++				test: true
+ 			}
+-		]
+-	)
+-})
++		}
++	]
++	let p2 = [
++		{
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
+ 
+-describe(""patch compressions yields correct results"", () => {
+-	let p1, p2
+-	runPatchTest(
++	runPatchTests(
++		""add only"",
+ 		{},
+ 		d => {
+ 			d.x = {test: true}
+ 		},
+-		(p1 = [
+-			{
+-				op: ""add"",
+-				path: [""x""],
+-				value: {
+-					test: true
+-				}
+-			}
+-		])
++		p1
+ 	)
+-	runPatchTest(
++
++	runPatchTests(
++		""delete only"",
+ 		{x: {test: true}},
+ 		d => {
+ 			delete d.x
+ 		},
+-		(p2 = [
+-			{
+-				op: ""remove"",
+-				path: [""x""]
+-			}
+-		])
++		p2
+ 	)
+-	const res = runPatchTest(
++	const testData = runPatchTests(
++		""add and delete together cancel"",
+ 		{},
+ 		d => {
+ 			applyPatches(d, [...p1, ...p2])
+@@ -981,29 +1038,25 @@ describe(""patch compressions yields correct results"", () => {
+ 		[]
+ 	)
+ 
+-	expect(res).toEqual({})
++	expect(testData.result).toEqual({})
+ })
+ 
+-describe(""change then delete property"", () => {
+-	const res = runPatchTest(
++runPatchTests(
++	""change then delete property"",
++	{
++		x: 1
++	},
++	d => {
++		d.x = 2
++		delete d.x
++	},
++	[
+ 		{
+-			x: 1
+-		},
+-		d => {
+-			d.x = 2
+-			delete d.x
+-		},
+-		[
+-			{
+-				op: ""remove"",
+-				path: [""x""]
+-			}
+-		]
+-	)
+-	test(""valid result"", () => {
+-		expect(res).toEqual({})
+-	})
+-})
++			op: ""remove"",
++			path: [""x""]
++		}
++	]
++)
+ 
+ test(""replaying patches with interweaved replacements should work correctly"", () => {
+ 	const patches = []
+@@ -1147,7 +1200,8 @@ describe(""#588"", () => {
+ 
+ 	let base = new Base()
+ 
+-	runPatchTest(
++	runPatchTests(
++		"""",
+ 		base,
+ 		vdraft => {
+ 			reference.value = vdraft
+@@ -1409,29 +1463,27 @@ test(""#888 patch to a primitive produces the primitive"", () => {
+ 	}
+ })
+ 
+-describe(""#879 delete item from array"", () => {
+-	runPatchTest(
+-		[1, 2, 3],
+-		draft => {
+-			delete draft[1]
+-		},
+-		[{op: ""replace"", path: [1], value: undefined}],
+-		[{op: ""replace"", path: [1], value: 2}],
+-		[1, undefined, 3]
+-	)
+-})
+-
+-describe(""#879 delete item from array - 2"", () => {
+-	runPatchTest(
+-		[1, 2, 3],
+-		draft => {
+-			delete draft[2]
+-		},
+-		[{op: ""replace"", path: [2], value: undefined}],
+-		[{op: ""replace"", path: [2], value: 3}],
+-		[1, 2, undefined]
+-	)
+-})
++runPatchTests(
++	""#879 delete item from array"",
++	[1, 2, 3],
++	draft => {
++		delete draft[1]
++	},
++	[{op: ""replace"", path: [1], value: undefined}],
++	[{op: ""replace"", path: [1], value: 2}],
++	[1, undefined, 3]
++)
++
++runPatchTests(
++	""#879 delete item from array - 2"",
++	[1, 2, 3],
++	draft => {
++		delete draft[2]
++	},
++	[{op: ""replace"", path: [2], value: undefined}],
++	[{op: ""replace"", path: [2], value: 3}],
++	[1, 2, undefined]
++)
+ 
+ test(""#897 appendPatch"", () => {
+ 	const state0 = {a: []}
+",0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/plugins.js.snap,__tests__/plugins.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,49cb4a158f0bf0a3c653640c98f79c508fd2a938,__tests__/__snapshots__/readme.js.snap,__tests__/readme.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update tests for Vitest
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/curry.js.snap,__tests__/__prod_snapshots__/curry.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/frozen.js.snap,__tests__/__prod_snapshots__/frozen.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/manual.js.snap,__tests__/__prod_snapshots__/manual.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/patch.js.snap,__tests__/__prod_snapshots__/patch.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/plugins.js.snap,__tests__/__prod_snapshots__/plugins.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1162,a68eb42a9b51f84744005e5a7e0e5d7f705148e2,e877e9f83150384a10a79e5e068d40ef8dc1acb5,__tests__/__prod_snapshots__/readme.js.snap,__tests__/__prod_snapshots__/readme.js,"I've spent the last few days doing a significant amount of work trying to benchmark and improve Immer's performance, to address #1152 .
+
+As part of that, I frequently needed to rerun the tests, but the current Jest + TS-Jest setup was annoyingly slow.
+
+We switched over to use Vitest for the Redux repos a while back.  I've been very happy with it, and part of that is that it seems to run our own tests noticeably faster.
+
+I tried migrating Immer's tests to Vitest, and got them working.  They also seem to run significantly faster.  So, I'm submitting the Vitest migration as a PR in case you're interested.
+
+Note that the work for this PR includes a lot of AI-generated code from Claude.  This is a relatively new experiment for me, and I've done a lot of careful babysitting to keep it going in the right direction and tried to review and check the results.
+
+Overall, the changes in this PR:
+
+- Added Vitest config files, including a new reporter that tries to mimic the existing ""skip obsolete snapshot changes"" behavior
+- Updated tests to work with Vitest:
+  - Changed `jest` references to `vi`
+  - Restructured `patch.js`, as the existing `runPatchTest` abstraction was resulting in Vitest thinking no tests were in the file.  Created a similar `runPatchTests` method and updated all usages to call that method instead, and ensured that all tests are being run.
+  - changed some `describe` blocks to `test` to ensure they're executed correctly
+- Removed Jest config files","Update prod snapshots
+",,0,
+1183,cfae1acf073e160d3e3f3450a312bb6f08334d7a,cfb50aa66a1866d1e2e6838a3f909a235ece6264,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"Stacked on top of #1164 for assorted smaller perf tweaks, followed by #1184 for array method overrides:
+
+This PR ports Mutative's ""finalization callback"" approach as a more targeted and performant implementation for finalization compared to the existing recursive tree traversal approach:
+
+- Added cleanup callbacks for each draft that's created
+- Added callbacks to handle root drafts, assigned values, and recursing
+  inside of plain values
+- Updated state creation to return `[draft, state]` to avoid a lookup
+- Rewrote patch generation system to work with callbacks instead of
+  during tree traversal
+
+It also makes some additional tweaks to perf and internal logic:
+
+- Sets `strictIteration: false` (technically a breaking change) to get the benefits of faster loose iteration
+- Updates `has / get / set` to allow passing `type? = getArchetype(value)` as the last argument. We know this in most places we call them, so we can pass it in without calling `getArchetype()` repeatedly
+- Converts `assigned_` from a `Record` to a `Map` to enable size lookups
+- Tweaks `freeze()` to remove an `isDraftable` check that wasn't necessary (and slightly expensive), and to use `each(val, cb, false)` for consistency with loose iteration
+
+## Performance 
+
+Stacked on top of the misc perf improvements from #1164 , and with `strictIteration: false`, this branch shows:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ remove-high-reuse   │        9.3ms │        2.8ms │      +70.0% │
+│ mixed-sequence      │        3.3ms │        1.2ms │      +63.5% │
+│ concat              │      132.4µs │       50.5µs │      +61.8% │
+│ update-reuse        │        3.5ms │        1.7ms │      +52.0% │
+│ update-high         │      105.5µs │       53.8µs │      +49.0% │
+│ rtkq-sequence       │       14.8ms │        7.6ms │      +48.3% │
+│ update-high-reuse   │        3.6ms │        2.0ms │      +44.6% │
+│ updateLargeObject-r │       10.4ms │        6.2ms │      +40.2% │
+│ update-multiple     │       49.2µs │       29.6µs │      +39.9% │
+│ remove-reuse        │        4.6ms │        3.2ms │      +31.0% │
+│ updateLargeObject   │      219.7µs │      158.3µs │      +28.0% │
+│ update              │       24.8µs │       18.6µs │      +24.9% │
+│ add                 │       26.2µs │       22.2µs │      +15.0% │
+│ remove-high         │      118.3µs │      107.0µs │       +9.6% │
+│ sortById-reverse    │      149.1µs │      144.0µs │       +3.4% │
+│ remove              │      123.4µs │      144.3µs │      -16.9% │
+│ reverse-array       │      110.6µs │      140.5µs │      -27.0% │
+│ filter              │       50.1µs │       65.5µs │      -30.7% │
+│ mapNested           │      129.6µs │      184.9µs │      -42.7% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 24.4% performance improvement over immer10
+```
+
+Since #1164 was ~20% faster than v10, this is another ~4.5% faster.
+
+I'll note that's with some of the array scenarios actually showing regressions, so the other scenarios appear to be a bigger improvement than 4-5%.  I don't have a full explanation for why those scenarios got a bit slower.  Some of it may be doing additional work when creating proxies - I'd still like to dig into it a bit further.  However, the array scenarios are all in the microsecond range already, so not like it's a huge difference.  Additionally, the next architectural PR that adds overriding the array methods results in drastic improvements for all of those.
+
+## Bundle Size
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by about 1700 bytes, from ~12K to ~14K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- This PR with callbacks: 9.38K
+
+I'm always very sensitive to increasing bundle size, so there's a very real question of whether adding a couple K here is worth it for a net 5-7% perf increase, especially when the larger benefits seem to be from the smaller tweaks and the array method overrides.","Update self-reference test with new behavior
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index b1a07b9..b09500a 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -2756,13 +2756,31 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 				expect(next[0]).toBe(next[1])
+ 			})
+ 
+-			// This actually seems to pass now!
+-			it.skip(""cannot return an object that references itself"", () => {
++			// As of the finalization callback rewrite, the
++			// the original `() => res.self` check passes without throwing,
++			// but we still will not have self-references
++			// when returning updated values
++			it(""can return self-references, but not for modified values"", () => {
+ 				const res = {}
+ 				res.self = res
+-				expect(() => {
+-					produce(res, () => res.self)
+-				}).toThrowErrorMatchingSnapshot()
++
++				// the call will pass
++				const next = produce(res, draft => {
++					draft.a = 42
++					draft.self.b = 99
++				})
++
++				// Root object and first child were both copied
++				expect(next).not.toBe(next.self)
++				// Second child is the first circular reference
++				expect(next.self.self).not.toBe(next.self)
++				// And it's turtles all the way down
++				expect(next.self.self.self).toBe(next.self.self.self.self)
++				expect(next.a).toBe(42)
++				expect(next.self.b).toBe(99)
++				// The child copy did not receive the update
++				// to the root object
++				expect(next.self.a).toBe(undefined)
+ 			})
+ 		})
+ 
+",0,
+1183,cfae1acf073e160d3e3f3450a312bb6f08334d7a,cfb50aa66a1866d1e2e6838a3f909a235ece6264,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"Stacked on top of #1164 for assorted smaller perf tweaks, followed by #1184 for array method overrides:
+
+This PR ports Mutative's ""finalization callback"" approach as a more targeted and performant implementation for finalization compared to the existing recursive tree traversal approach:
+
+- Added cleanup callbacks for each draft that's created
+- Added callbacks to handle root drafts, assigned values, and recursing
+  inside of plain values
+- Updated state creation to return `[draft, state]` to avoid a lookup
+- Rewrote patch generation system to work with callbacks instead of
+  during tree traversal
+
+It also makes some additional tweaks to perf and internal logic:
+
+- Sets `strictIteration: false` (technically a breaking change) to get the benefits of faster loose iteration
+- Updates `has / get / set` to allow passing `type? = getArchetype(value)` as the last argument. We know this in most places we call them, so we can pass it in without calling `getArchetype()` repeatedly
+- Converts `assigned_` from a `Record` to a `Map` to enable size lookups
+- Tweaks `freeze()` to remove an `isDraftable` check that wasn't necessary (and slightly expensive), and to use `each(val, cb, false)` for consistency with loose iteration
+
+## Performance 
+
+Stacked on top of the misc perf improvements from #1164 , and with `strictIteration: false`, this branch shows:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ remove-high-reuse   │        9.3ms │        2.8ms │      +70.0% │
+│ mixed-sequence      │        3.3ms │        1.2ms │      +63.5% │
+│ concat              │      132.4µs │       50.5µs │      +61.8% │
+│ update-reuse        │        3.5ms │        1.7ms │      +52.0% │
+│ update-high         │      105.5µs │       53.8µs │      +49.0% │
+│ rtkq-sequence       │       14.8ms │        7.6ms │      +48.3% │
+│ update-high-reuse   │        3.6ms │        2.0ms │      +44.6% │
+│ updateLargeObject-r │       10.4ms │        6.2ms │      +40.2% │
+│ update-multiple     │       49.2µs │       29.6µs │      +39.9% │
+│ remove-reuse        │        4.6ms │        3.2ms │      +31.0% │
+│ updateLargeObject   │      219.7µs │      158.3µs │      +28.0% │
+│ update              │       24.8µs │       18.6µs │      +24.9% │
+│ add                 │       26.2µs │       22.2µs │      +15.0% │
+│ remove-high         │      118.3µs │      107.0µs │       +9.6% │
+│ sortById-reverse    │      149.1µs │      144.0µs │       +3.4% │
+│ remove              │      123.4µs │      144.3µs │      -16.9% │
+│ reverse-array       │      110.6µs │      140.5µs │      -27.0% │
+│ filter              │       50.1µs │       65.5µs │      -30.7% │
+│ mapNested           │      129.6µs │      184.9µs │      -42.7% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 24.4% performance improvement over immer10
+```
+
+Since #1164 was ~20% faster than v10, this is another ~4.5% faster.
+
+I'll note that's with some of the array scenarios actually showing regressions, so the other scenarios appear to be a bigger improvement than 4-5%.  I don't have a full explanation for why those scenarios got a bit slower.  Some of it may be doing additional work when creating proxies - I'd still like to dig into it a bit further.  However, the array scenarios are all in the microsecond range already, so not like it's a huge difference.  Additionally, the next architectural PR that adds overriding the array methods results in drastic improvements for all of those.
+
+## Bundle Size
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by about 1700 bytes, from ~12K to ~14K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- This PR with callbacks: 9.38K
+
+I'm always very sensitive to increasing bundle size, so there's a very real question of whether adding a couple K here is worth it for a net 5-7% perf increase, especially when the larger benefits seem to be from the smaller tweaks and the array method overrides.","Update self-reference test with new behavior
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index b1a07b9..b09500a 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -2756,13 +2756,31 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 				expect(next[0]).toBe(next[1])
+ 			})
+ 
+-			// This actually seems to pass now!
+-			it.skip(""cannot return an object that references itself"", () => {
++			// As of the finalization callback rewrite, the
++			// the original `() => res.self` check passes without throwing,
++			// but we still will not have self-references
++			// when returning updated values
++			it(""can return self-references, but not for modified values"", () => {
+ 				const res = {}
+ 				res.self = res
+-				expect(() => {
+-					produce(res, () => res.self)
+-				}).toThrowErrorMatchingSnapshot()
++
++				// the call will pass
++				const next = produce(res, draft => {
++					draft.a = 42
++					draft.self.b = 99
++				})
++
++				// Root object and first child were both copied
++				expect(next).not.toBe(next.self)
++				// Second child is the first circular reference
++				expect(next.self.self).not.toBe(next.self)
++				// And it's turtles all the way down
++				expect(next.self.self.self).toBe(next.self.self.self.self)
++				expect(next.a).toBe(42)
++				expect(next.self.b).toBe(99)
++				// The child copy did not receive the update
++				// to the root object
++				expect(next.self.a).toBe(undefined)
+ 			})
+ 		})
+ 
+",0,
+1184,ed5347c7d4c45815bd52037e8a6490a6ad0df105,ae2a20844726e636339d2f43a50a8e76e08556a2,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,"Stacked on top of #1164 (perf tweaks) and #1183 (finalization callbacks).
+
+This PR:
+
+- adds a set of interception overrides for both mutating and non-mutating array methods that operate directly on the underlying copy, in order to avoid creating proxies every time we read and write to an array index.
+
+## Implementation
+
+We have a known list of both mutating and non-mutating array methods in `proxy.ts`.  We check field access in the `get` trap, and if it's one of the known array methods, track which method to indicate we're in an array operation.  
+
+We then manually implement the operation by calling the method on the underlying `state.copy_`, or in some cases reimplementing some of the behavior.  For example, `filter` does a manual iteration and calls the predicate with the existing values to avoid accessing the draft array and creating proxies for every accessed field.  But, for consistency and further updates, it does then do `result.push(state.draft[i])` every time the predicate returns `true`.  That means we avoid _some_ proxy creation overhead and only create proxies for values included in the result array.  For methods like `sort` and `reverse`, we mutate the `copy_` array, and manually set the `assigned_` indices, avoiding any access to the drafted array and thus no proxy creation for fields.
+
+This gives a significant speedup for almost all array benchmark scenarios.
+
+Note that for `filter / find` etc, we're now passing likely-raw values into the callbacks.  _If_ the user were to mutate those, they'd be really mutated and we wouldn't prevent or pick up on that.  Since those are semantically read-only operations and you shouldn't be mutating in those callbacks in the first place, this seems like a reasonable tradeoff to me.
+
+I've opted to _not_ override `map / flatMap / reduce / reduceRight`.  Those can return arbitrary values, and also added noticeably more bundle size from implementation.  I decided it wasn't worth the complexity to optimize those methods.
+
+## Performance
+
+Running the perf benchmarks with this PR, I get:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ reverse-array       │      117.5µs │       14.4µs │      +87.7% │
+│ sortById-reverse    │      128.0µs │       17.7µs │      +86.2% │
+│ remove-high         │      119.6µs │       16.9µs │      +85.8% │
+│ remove              │      128.4µs │       20.9µs │      +83.7% │
+│ update-high         │       89.7µs │       14.7µs │      +83.7% │
+│ filter              │       49.1µs │       11.7µs │      +76.1% │
+│ remove-reuse        │        4.1ms │        1.2ms │      +69.5% │
+│ remove-high-reuse   │        3.9ms │        1.2ms │      +69.4% │
+│ update-reuse        │        3.5ms │        1.3ms │      +63.6% │
+│ mixed-sequence      │        3.5ms │        1.3ms │      +61.8% │
+│ update-high-reuse   │        3.3ms │        1.4ms │      +59.3% │
+│ concat              │      117.1µs │       51.2µs │      +56.3% │
+│ rtkq-sequence       │       12.5ms │        7.0ms │      +44.1% │
+│ updateLargeObject   │      235.7µs │      132.1µs │      +44.0% │
+│ update-multiple     │       47.1µs │       27.9µs │      +40.8% │
+│ updateLargeObject-r │        9.6ms │        6.0ms │      +37.6% │
+│ add                 │       24.4µs │       17.0µs │      +30.4% │
+│ update              │       22.7µs │       18.6µs │      +18.1% │
+│ mapNested           │      120.0µs │      128.8µs │       -7.3% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 57.4% performance improvement over immer10
+```
+
+That's a very sizeable 30%+ increase over #1183 , which is not surprising given that all the array behaviors suddenly have significantly less overhead.
+
+## Bundle Size
+
+Per #1183, the series of PRs does increase bundle size noticeably:
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by another 1-1.5K on top of #1183, from ~14K to ~15K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- #1183 with callbacks: 9.38K
+- This PR: 11.17K
+
+As I said, I'm very sensitive to bundle size changes.  I have been assuming we would probably want to make this PR into a new plugin, so that users can opt-in to whether they want the extra bundle size to gain better array perf.
+
+Right now the plugin system only has methods for loading and getting a plugin.  We'd probably want to add a util to see if a plugin is currently loaded, roughly like `const isPluginLoaded = (name: string) => !!plugins[name]`.  That way we can do a quick check inside of `get`.  Alternately, we could have `proxy.ts` expose a setter to indicate this plugin is available, and have the plugin logic update that flag when this plugin is loaded.","Run additional base tests with array method plugin enabled
+",,0,
+1184,ed5347c7d4c45815bd52037e8a6490a6ad0df105,ae2a20844726e636339d2f43a50a8e76e08556a2,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"Stacked on top of #1164 (perf tweaks) and #1183 (finalization callbacks).
+
+This PR:
+
+- adds a set of interception overrides for both mutating and non-mutating array methods that operate directly on the underlying copy, in order to avoid creating proxies every time we read and write to an array index.
+
+## Implementation
+
+We have a known list of both mutating and non-mutating array methods in `proxy.ts`.  We check field access in the `get` trap, and if it's one of the known array methods, track which method to indicate we're in an array operation.  
+
+We then manually implement the operation by calling the method on the underlying `state.copy_`, or in some cases reimplementing some of the behavior.  For example, `filter` does a manual iteration and calls the predicate with the existing values to avoid accessing the draft array and creating proxies for every accessed field.  But, for consistency and further updates, it does then do `result.push(state.draft[i])` every time the predicate returns `true`.  That means we avoid _some_ proxy creation overhead and only create proxies for values included in the result array.  For methods like `sort` and `reverse`, we mutate the `copy_` array, and manually set the `assigned_` indices, avoiding any access to the drafted array and thus no proxy creation for fields.
+
+This gives a significant speedup for almost all array benchmark scenarios.
+
+Note that for `filter / find` etc, we're now passing likely-raw values into the callbacks.  _If_ the user were to mutate those, they'd be really mutated and we wouldn't prevent or pick up on that.  Since those are semantically read-only operations and you shouldn't be mutating in those callbacks in the first place, this seems like a reasonable tradeoff to me.
+
+I've opted to _not_ override `map / flatMap / reduce / reduceRight`.  Those can return arbitrary values, and also added noticeably more bundle size from implementation.  I decided it wasn't worth the complexity to optimize those methods.
+
+## Performance
+
+Running the perf benchmarks with this PR, I get:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ reverse-array       │      117.5µs │       14.4µs │      +87.7% │
+│ sortById-reverse    │      128.0µs │       17.7µs │      +86.2% │
+│ remove-high         │      119.6µs │       16.9µs │      +85.8% │
+│ remove              │      128.4µs │       20.9µs │      +83.7% │
+│ update-high         │       89.7µs │       14.7µs │      +83.7% │
+│ filter              │       49.1µs │       11.7µs │      +76.1% │
+│ remove-reuse        │        4.1ms │        1.2ms │      +69.5% │
+│ remove-high-reuse   │        3.9ms │        1.2ms │      +69.4% │
+│ update-reuse        │        3.5ms │        1.3ms │      +63.6% │
+│ mixed-sequence      │        3.5ms │        1.3ms │      +61.8% │
+│ update-high-reuse   │        3.3ms │        1.4ms │      +59.3% │
+│ concat              │      117.1µs │       51.2µs │      +56.3% │
+│ rtkq-sequence       │       12.5ms │        7.0ms │      +44.1% │
+│ updateLargeObject   │      235.7µs │      132.1µs │      +44.0% │
+│ update-multiple     │       47.1µs │       27.9µs │      +40.8% │
+│ updateLargeObject-r │        9.6ms │        6.0ms │      +37.6% │
+│ add                 │       24.4µs │       17.0µs │      +30.4% │
+│ update              │       22.7µs │       18.6µs │      +18.1% │
+│ mapNested           │      120.0µs │      128.8µs │       -7.3% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 57.4% performance improvement over immer10
+```
+
+That's a very sizeable 30%+ increase over #1183 , which is not surprising given that all the array behaviors suddenly have significantly less overhead.
+
+## Bundle Size
+
+Per #1183, the series of PRs does increase bundle size noticeably:
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by another 1-1.5K on top of #1183, from ~14K to ~15K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- #1183 with callbacks: 9.38K
+- This PR: 11.17K
+
+As I said, I'm very sensitive to bundle size changes.  I have been assuming we would probably want to make this PR into a new plugin, so that users can opt-in to whether they want the extra bundle size to gain better array perf.
+
+Right now the plugin system only has methods for loading and getting a plugin.  We'd probably want to add a util to see if a plugin is currently loaded, roughly like `const isPluginLoaded = (name: string) => !!plugins[name]`.  That way we can do a quick check inside of `get`.  Alternately, we could have `proxy.ts` expose a setter to indicate this plugin is available, and have the plugin logic update that flag when this plugin is loaded.","Run additional base tests with array method plugin enabled
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index d5c87be..7106347 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -7,9 +7,17 @@ import {
+ 	isDraft,
+ 	immerable,
+ 	enablePatches,
+-	enableMapSet
++	enableMapSet,
++	enableArrayMethods
+ } from ""../src/immer""
+-import {each, shallowCopy, DRAFT_STATE} from ""../src/internal""
++
++import {
++	each,
++	shallowCopy,
++	DRAFT_STATE,
++	clearPlugin,
++	PluginArrayMethods
++} from ""../src/internal""
+ import deepFreeze from ""deep-freeze""
+ import * as lodash from ""lodash""
+ 
+@@ -37,10 +45,22 @@ for (const autoFreeze of [true, false]) {
+ 	}
+ }
+ 
++// Run one additional test suite with the array methods plugin enabled,
++// as that should be a separate concern from the other settings
++const testArrayMethodsName = `array-plugin=true:auto-freeze=true:shallow-copy=false:use-listener=false`
++runBaseTest(testArrayMethodsName, true, false, false, true)
++
+ class Foo {}
+ 
+-function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
++function runBaseTest(
++	name,
++	autoFreeze,
++	useStrictShallowCopy,
++	useListener,
++	useArrayMethods = false
++) {
+ 	const listener = useListener ? function() {} : undefined
++
+ 	const {produce, produceWithPatches} = createPatchedImmer({
+ 		autoFreeze,
+ 		useStrictShallowCopy
+@@ -67,6 +87,13 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 
+ 		beforeEach(() => {
+ 			origBaseState = baseState = createBaseState()
++
++			// Allow running our tests with and without the array method plugin
++			if (useArrayMethods) {
++				enableArrayMethods()
++			} else {
++				clearPlugin(PluginArrayMethods)
++			}
+ 		})
+ 
+ 		it(""returns the original state when no changes are made"", () => {
+",0,
+1184,ed5347c7d4c45815bd52037e8a6490a6ad0df105,ae2a20844726e636339d2f43a50a8e76e08556a2,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,"Stacked on top of #1164 (perf tweaks) and #1183 (finalization callbacks).
+
+This PR:
+
+- adds a set of interception overrides for both mutating and non-mutating array methods that operate directly on the underlying copy, in order to avoid creating proxies every time we read and write to an array index.
+
+## Implementation
+
+We have a known list of both mutating and non-mutating array methods in `proxy.ts`.  We check field access in the `get` trap, and if it's one of the known array methods, track which method to indicate we're in an array operation.  
+
+We then manually implement the operation by calling the method on the underlying `state.copy_`, or in some cases reimplementing some of the behavior.  For example, `filter` does a manual iteration and calls the predicate with the existing values to avoid accessing the draft array and creating proxies for every accessed field.  But, for consistency and further updates, it does then do `result.push(state.draft[i])` every time the predicate returns `true`.  That means we avoid _some_ proxy creation overhead and only create proxies for values included in the result array.  For methods like `sort` and `reverse`, we mutate the `copy_` array, and manually set the `assigned_` indices, avoiding any access to the drafted array and thus no proxy creation for fields.
+
+This gives a significant speedup for almost all array benchmark scenarios.
+
+Note that for `filter / find` etc, we're now passing likely-raw values into the callbacks.  _If_ the user were to mutate those, they'd be really mutated and we wouldn't prevent or pick up on that.  Since those are semantically read-only operations and you shouldn't be mutating in those callbacks in the first place, this seems like a reasonable tradeoff to me.
+
+I've opted to _not_ override `map / flatMap / reduce / reduceRight`.  Those can return arbitrary values, and also added noticeably more bundle size from implementation.  I decided it wasn't worth the complexity to optimize those methods.
+
+## Performance
+
+Running the perf benchmarks with this PR, I get:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ reverse-array       │      117.5µs │       14.4µs │      +87.7% │
+│ sortById-reverse    │      128.0µs │       17.7µs │      +86.2% │
+│ remove-high         │      119.6µs │       16.9µs │      +85.8% │
+│ remove              │      128.4µs │       20.9µs │      +83.7% │
+│ update-high         │       89.7µs │       14.7µs │      +83.7% │
+│ filter              │       49.1µs │       11.7µs │      +76.1% │
+│ remove-reuse        │        4.1ms │        1.2ms │      +69.5% │
+│ remove-high-reuse   │        3.9ms │        1.2ms │      +69.4% │
+│ update-reuse        │        3.5ms │        1.3ms │      +63.6% │
+│ mixed-sequence      │        3.5ms │        1.3ms │      +61.8% │
+│ update-high-reuse   │        3.3ms │        1.4ms │      +59.3% │
+│ concat              │      117.1µs │       51.2µs │      +56.3% │
+│ rtkq-sequence       │       12.5ms │        7.0ms │      +44.1% │
+│ updateLargeObject   │      235.7µs │      132.1µs │      +44.0% │
+│ update-multiple     │       47.1µs │       27.9µs │      +40.8% │
+│ updateLargeObject-r │        9.6ms │        6.0ms │      +37.6% │
+│ add                 │       24.4µs │       17.0µs │      +30.4% │
+│ update              │       22.7µs │       18.6µs │      +18.1% │
+│ mapNested           │      120.0µs │      128.8µs │       -7.3% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 57.4% performance improvement over immer10
+```
+
+That's a very sizeable 30%+ increase over #1183 , which is not surprising given that all the array behaviors suddenly have significantly less overhead.
+
+## Bundle Size
+
+Per #1183, the series of PRs does increase bundle size noticeably:
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by another 1-1.5K on top of #1183, from ~14K to ~15K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- #1183 with callbacks: 9.38K
+- This PR: 11.17K
+
+As I said, I'm very sensitive to bundle size changes.  I have been assuming we would probably want to make this PR into a new plugin, so that users can opt-in to whether they want the extra bundle size to gain better array perf.
+
+Right now the plugin system only has methods for loading and getting a plugin.  We'd probably want to add a util to see if a plugin is currently loaded, roughly like `const isPluginLoaded = (name: string) => !!plugins[name]`.  That way we can do a quick check inside of `get`.  Alternately, we could have `proxy.ts` expose a setter to indicate this plugin is available, and have the plugin logic update that flag when this plugin is loaded.","Run additional base tests with array method plugin enabled
+",,0,
+1184,ed5347c7d4c45815bd52037e8a6490a6ad0df105,ae2a20844726e636339d2f43a50a8e76e08556a2,__tests__/__snapshots__/base.js.snap,__tests__/base.js,"Stacked on top of #1164 (perf tweaks) and #1183 (finalization callbacks).
+
+This PR:
+
+- adds a set of interception overrides for both mutating and non-mutating array methods that operate directly on the underlying copy, in order to avoid creating proxies every time we read and write to an array index.
+
+## Implementation
+
+We have a known list of both mutating and non-mutating array methods in `proxy.ts`.  We check field access in the `get` trap, and if it's one of the known array methods, track which method to indicate we're in an array operation.  
+
+We then manually implement the operation by calling the method on the underlying `state.copy_`, or in some cases reimplementing some of the behavior.  For example, `filter` does a manual iteration and calls the predicate with the existing values to avoid accessing the draft array and creating proxies for every accessed field.  But, for consistency and further updates, it does then do `result.push(state.draft[i])` every time the predicate returns `true`.  That means we avoid _some_ proxy creation overhead and only create proxies for values included in the result array.  For methods like `sort` and `reverse`, we mutate the `copy_` array, and manually set the `assigned_` indices, avoiding any access to the drafted array and thus no proxy creation for fields.
+
+This gives a significant speedup for almost all array benchmark scenarios.
+
+Note that for `filter / find` etc, we're now passing likely-raw values into the callbacks.  _If_ the user were to mutate those, they'd be really mutated and we wouldn't prevent or pick up on that.  Since those are semantically read-only operations and you shouldn't be mutating in those callbacks in the first place, this seems like a reasonable tradeoff to me.
+
+I've opted to _not_ override `map / flatMap / reduce / reduceRight`.  Those can return arbitrary values, and also added noticeably more bundle size from implementation.  I decided it wasn't worth the complexity to optimize those methods.
+
+## Performance
+
+Running the perf benchmarks with this PR, I get:
+
+```
+┌─────────────────────┬──────────────┬──────────────┬─────────────┐
+│ Scenario            │ immer10      │ immer10Perf  │ Improvement │
+├─────────────────────┼──────────────┼──────────────┼─────────────┤
+│ reverse-array       │      117.5µs │       14.4µs │      +87.7% │
+│ sortById-reverse    │      128.0µs │       17.7µs │      +86.2% │
+│ remove-high         │      119.6µs │       16.9µs │      +85.8% │
+│ remove              │      128.4µs │       20.9µs │      +83.7% │
+│ update-high         │       89.7µs │       14.7µs │      +83.7% │
+│ filter              │       49.1µs │       11.7µs │      +76.1% │
+│ remove-reuse        │        4.1ms │        1.2ms │      +69.5% │
+│ remove-high-reuse   │        3.9ms │        1.2ms │      +69.4% │
+│ update-reuse        │        3.5ms │        1.3ms │      +63.6% │
+│ mixed-sequence      │        3.5ms │        1.3ms │      +61.8% │
+│ update-high-reuse   │        3.3ms │        1.4ms │      +59.3% │
+│ concat              │      117.1µs │       51.2µs │      +56.3% │
+│ rtkq-sequence       │       12.5ms │        7.0ms │      +44.1% │
+│ updateLargeObject   │      235.7µs │      132.1µs │      +44.0% │
+│ update-multiple     │       47.1µs │       27.9µs │      +40.8% │
+│ updateLargeObject-r │        9.6ms │        6.0ms │      +37.6% │
+│ add                 │       24.4µs │       17.0µs │      +30.4% │
+│ update              │       22.7µs │       18.6µs │      +18.1% │
+│ mapNested           │      120.0µs │      128.8µs │       -7.3% │
+└─────────────────────┴──────────────┴──────────────┴─────────────┘
+
+✓ immer10Perf shows an average 57.4% performance improvement over immer10
+```
+
+That's a very sizeable 30%+ increase over #1183 , which is not surprising given that all the array behaviors suddenly have significantly less overhead.
+
+## Bundle Size
+
+Per #1183, the series of PRs does increase bundle size noticeably:
+
+Eyeballing bundle sizes, this PR increases the `immer.production.js` minified bundle size by another 1-1.5K on top of #1183, from ~14K to ~15K.  If I build a Vite app and measure using Sonda, actual size in a built app appears to have grown from:
+
+- v10.0.3 (which is out of date but what my branches were based from): 7.52K
+- The original set of perf tweaks: 8.11K (which may include some of the other recent PRs that were merged - not sure my changes would have added that much)
+- #1183 with callbacks: 9.38K
+- This PR: 11.17K
+
+As I said, I'm very sensitive to bundle size changes.  I have been assuming we would probably want to make this PR into a new plugin, so that users can opt-in to whether they want the extra bundle size to gain better array perf.
+
+Right now the plugin system only has methods for loading and getting a plugin.  We'd probably want to add a util to see if a plugin is currently loaded, roughly like `const isPluginLoaded = (name: string) => !!plugins[name]`.  That way we can do a quick check inside of `get`.  Alternately, we could have `proxy.ts` expose a setter to indicate this plugin is available, and have the plugin logic update that flag when this plugin is loaded.","Run additional base tests with array method plugin enabled
+","diff --git a/__tests__/base.js b/__tests__/base.js
+index d5c87be..7106347 100644
+--- a/__tests__/base.js
++++ b/__tests__/base.js
+@@ -7,9 +7,17 @@ import {
+ 	isDraft,
+ 	immerable,
+ 	enablePatches,
+-	enableMapSet
++	enableMapSet,
++	enableArrayMethods
+ } from ""../src/immer""
+-import {each, shallowCopy, DRAFT_STATE} from ""../src/internal""
++
++import {
++	each,
++	shallowCopy,
++	DRAFT_STATE,
++	clearPlugin,
++	PluginArrayMethods
++} from ""../src/internal""
+ import deepFreeze from ""deep-freeze""
+ import * as lodash from ""lodash""
+ 
+@@ -37,10 +45,22 @@ for (const autoFreeze of [true, false]) {
+ 	}
+ }
+ 
++// Run one additional test suite with the array methods plugin enabled,
++// as that should be a separate concern from the other settings
++const testArrayMethodsName = `array-plugin=true:auto-freeze=true:shallow-copy=false:use-listener=false`
++runBaseTest(testArrayMethodsName, true, false, false, true)
++
+ class Foo {}
+ 
+-function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
++function runBaseTest(
++	name,
++	autoFreeze,
++	useStrictShallowCopy,
++	useListener,
++	useArrayMethods = false
++) {
+ 	const listener = useListener ? function() {} : undefined
++
+ 	const {produce, produceWithPatches} = createPatchedImmer({
+ 		autoFreeze,
+ 		useStrictShallowCopy
+@@ -67,6 +87,13 @@ function runBaseTest(name, autoFreeze, useStrictShallowCopy, useListener) {
+ 
+ 		beforeEach(() => {
+ 			origBaseState = baseState = createBaseState()
++
++			// Allow running our tests with and without the array method plugin
++			if (useArrayMethods) {
++				enableArrayMethods()
++			} else {
++				clearPlugin(PluginArrayMethods)
++			}
+ 		})
+ 
+ 		it(""returns the original state when no changes are made"", () => {
+",0,
+370,2d855512e8083499e49459285d536f0d8acb6edd,cc4d91e7fbe4d2b8037d4321e5c537421457158a,__tests__/__snapshots__/hooks.js.snap,__tests__/hooks.js,,feat: `onAssign` for `Maps`,"diff --git a/__tests__/hooks.js b/__tests__/hooks.js
+index 759b41e..3e2abaf 100644
+--- a/__tests__/hooks.js
++++ b/__tests__/hooks.js
+@@ -118,6 +118,55 @@ function createHookTests(useProxies) {
+                 expect(calls).toEqual([""b"", ""d"", ""c"", ""x""])
+             })
+         })
++
++        if (useProxies) {
++            describe(""when draft is a Map"", () => {
++                test(""assign"", () => {
++                    const key1 = {prop: ""val1""}
++                    const key2 = {prop: ""val2""}
++                    produce(new Map([[""a"", 0], [key1, 1], [key2, 2]]), s => {
++                        s.set(""a"", 10)
++                        s.set(key1, 11)
++                    })
++                    expectCalls(onAssign)
++                })
++                test(""assign (no change)"", () => {
++                    produce(new Map([[""a"", 0]]), s => {
++                        s.set(""a"", 0)
++                    })
++                    expect(onAssign).not.toBeCalled()
++                })
++                test(""delete"", () => {
++                    produce(new Map([[""a"", 0]]), s => {
++                        s.delete(""a"")
++                    })
++                    expect(onAssign).not.toBeCalled()
++                })
++                test(""nested assignments"", () => {
++                    const key1 = {prop: ""val1""}
++                    produce(
++                        new Map([
++                            [
++                                ""a"",
++                                new Map([
++                                    [
++                                        key1,
++                                        new Map([[""b"", 1], [""c"", 1], [""d"", 1]])
++                                    ]
++                                ])
++                            ]
++                        ]),
++                        s => {
++                            const nested = s.get(""a"").get(key1)
++                            nested.set(""b"", 2)
++                            nested.delete(""c"")
++                            nested.set(""d"", 1) // no-op
++                        }
++                    )
++                    expectCalls(onAssign)
++                })
++            })
++        }
+     })
+ 
+     describe(""onDelete()"", () => {
+",0,
+370,2d855512e8083499e49459285d536f0d8acb6edd,cc4d91e7fbe4d2b8037d4321e5c537421457158a,__tests__/__snapshots__/hooks.js.snap,__tests__/hooks.js,,feat: `onAssign` for `Maps`,"diff --git a/__tests__/hooks.js b/__tests__/hooks.js
+index 759b41e..3e2abaf 100644
+--- a/__tests__/hooks.js
++++ b/__tests__/hooks.js
+@@ -118,6 +118,55 @@ function createHookTests(useProxies) {
+                 expect(calls).toEqual([""b"", ""d"", ""c"", ""x""])
+             })
+         })
++
++        if (useProxies) {
++            describe(""when draft is a Map"", () => {
++                test(""assign"", () => {
++                    const key1 = {prop: ""val1""}
++                    const key2 = {prop: ""val2""}
++                    produce(new Map([[""a"", 0], [key1, 1], [key2, 2]]), s => {
++                        s.set(""a"", 10)
++                        s.set(key1, 11)
++                    })
++                    expectCalls(onAssign)
++                })
++                test(""assign (no change)"", () => {
++                    produce(new Map([[""a"", 0]]), s => {
++                        s.set(""a"", 0)
++                    })
++                    expect(onAssign).not.toBeCalled()
++                })
++                test(""delete"", () => {
++                    produce(new Map([[""a"", 0]]), s => {
++                        s.delete(""a"")
++                    })
++                    expect(onAssign).not.toBeCalled()
++                })
++                test(""nested assignments"", () => {
++                    const key1 = {prop: ""val1""}
++                    produce(
++                        new Map([
++                            [
++                                ""a"",
++                                new Map([
++                                    [
++                                        key1,
++                                        new Map([[""b"", 1], [""c"", 1], [""d"", 1]])
++                                    ]
++                                ])
++                            ]
++                        ]),
++                        s => {
++                            const nested = s.get(""a"").get(key1)
++                            nested.set(""b"", 2)
++                            nested.delete(""c"")
++                            nested.set(""d"", 1) // no-op
++                        }
++                    )
++                    expectCalls(onAssign)
++                })
++            })
++        }
+     })
+ 
+     describe(""onDelete()"", () => {
+",0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,,"chore: fix prod-build-issues
+",,0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/patch.js.snap,__tests__/__prod_snapshots__/patch.js,,"chore: fix prod-build-issues
+",,0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/plugins.js.snap,__tests__/__prod_snapshots__/plugins.js,,"chore: fix prod-build-issues
+",,0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/base.js.snap,__tests__/__prod_snapshots__/base.js,,"chore: fix prod-build-issues
+",,0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/patch.js.snap,__tests__/__prod_snapshots__/patch.js,,"chore: fix prod-build-issues
+",,0,
+701,51ac39431b8729f5674d6f38df9440ca219ed476,51ac39431b8729f5674d6f38df9440ca219ed476,__tests__/__prod_snapshots__/plugins.js.snap,__tests__/__prod_snapshots__/plugins.js,,"chore: fix prod-build-issues
+",,0,

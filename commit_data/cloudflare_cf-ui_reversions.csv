@@ -1,0 +1,4331 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+115,fc7e566489a0ede71a9d79d99a58925e1c1c3780,1ec2cf2b45b09439539b8327013876304af774bc,"according to feedback from @tajo:
+
+* using plain object for applying styles
+* exports components as `TextUnstyled`, `HeaderUnstyled` in tests to follow same style
+* fix for text titlecase
+* fix for text small size","fix text size small rendering
+","diff --git a/packages/cf-component-text/test/Text.js b/packages/cf-component-text/test/Text.js
+index a0a2b27..df342ce 100644
+--- a/packages/cf-component-text/test/Text.js
++++ b/packages/cf-component-text/test/Text.js
+@@ -4,7 +4,7 @@ import { Text } from '../../cf-component-text/src/index';
+ import felaTestContext from '../../../felaTestContext';
+ import { applyTheme } from 'cf-style-container';
+ 
+-test('should render size', () => {
++test('should render normal size', () => {
+   const StyledText = applyTheme(Text, () => ({
+     fontSizeNormal: '1rem',
+     fontWeightNormal: 400
+@@ -16,6 +16,18 @@ test('should render size', () => {
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
++test('should render small size', () => {
++  const StyledText = applyTheme(Text, () => ({
++    fontSizeSmallß: '0.8em',
++    lineHeightSmall: 1.3
++  }));
++
++  const component = renderer.create(
++    felaTestContext(<StyledText size=""small"">Hello</StyledText>)
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
+ test('should render align', () => {
+   const StyledText = applyTheme(Text, () => ({
+     textAlignCenter: 'center'
+",0,,4,30,1,4,8,179
+125,f5f9820b032f730179645c4a7d0a5c230666473c,9ffb757b16e451d78489b5fa37379a439e9febc1,"Whenever you're using the `CardDrawers` sub-component of `Card` you need
+to add some keys to your state and handle all the events yourself. This
+is fine if you want to control the flow very tightly but the most common
+case is just to switch to the drawers selected.
+
+This patch changes the `CardDrawers` sub-component so it still takes in
+the props and those will control the component but falls back to the
+local state if the props `active` and `onClick` are not present.
+
+Not sure if there are more tests to be written or if the snapshots are enough.","card: Keep a local state of drawers if no props
+
+Whenever you're using the `CardDrawers` sub-component of `Card` you need
+to add some keys to your state and handle all the events yourself. This
+is fine if you want to control the flow very tightly but the most common
+case is just to switch to the drawers selected.
+
+This patch changes the `CardDrawers` sub-component so it still takes in
+the props and those will control the component but falls back to the
+local state if the props `active` and `onClick` are not present.
+","diff --git a/packages/cf-component-card/test/CardDrawers.js b/packages/cf-component-card/test/CardDrawers.js
+index 0148490..ed5c656 100644
+--- a/packages/cf-component-card/test/CardDrawers.js
++++ b/packages/cf-component-card/test/CardDrawers.js
+@@ -6,7 +6,7 @@ import {
+   CardToolbarLink
+ } from '../../cf-component-card/src/index';
+ 
+-test('should render', () => {
++test('should render when given all the props', () => {
+   const component = renderer.create(
+     <CardDrawers
+       onClick={() => {}}
+@@ -19,3 +19,15 @@ test('should render', () => {
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
++
++test('should render when not given props', () => {
++  const component = renderer.create(
++    <CardDrawers
++      drawers={[
++        { id: 'one', name: 'One', content: 'One Content' },
++        { id: 'two', name: 'Two', content: 'Two Content' }
++      ]}
++    />
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",0,,3,92,1,2,3,94
+128,fbaf7463384bbc0916a02be3192ebbb9b71e6b66,476ed384f45311e4186905e31a35df69ac893abe,"Explained here https://github.com/cloudflare/cf-ui/issues/123.
+
+It's already dogfooded by the `/example` and tests (felaTestContext). Once published, I will introduce it into cf-styleguide, cf-ux and cf-www-next as well.","add a test for cf-style-provider
+","diff --git a/packages/cf-style-provider/test/index.js b/packages/cf-style-provider/test/index.js
+new file mode 100644
+index 0000000..d6def53
+--- /dev/null
++++ b/packages/cf-style-provider/test/index.js
+@@ -0,0 +1,9 @@
++import React, { PropTypes } from 'react';
++import { createProvider } from '../../cf-style-provider/src/index';
++import renderer from 'react-test-renderer';
++
++test('StyleProvider should render', () => {
++  const StyleProvider = createProvider();
++  const component = renderer.create(<StyleProvider><div /></StyleProvider>);
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",0,,2,12,1,9,13,477
+133,e6d6612038a8f1aa09438dea6f9d90ed1ffbb84e,723e7944d2f02bbf49dc3c968429aaec82ca9ecd,This is ready to go!,"fix Form tests, update README, example
+","diff --git a/packages/cf-component-form/test/Form.js b/packages/cf-component-form/test/Form.js
+index 59910ca..4e82e67 100644
+--- a/packages/cf-component-form/test/Form.js
++++ b/packages/cf-component-form/test/Form.js
+@@ -1,17 +1,24 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { Form } from '../../cf-component-form/src/index';
++import { Form } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render horizontal layout', () => {
+   const component = renderer.create(
+-    <Form layout=""horizontal"" onSubmit={() => console.log('submit')}>Form</Form>
++    felaTestContext(
++      <Form layout=""horizontal"" onSubmit={() => console.log('submit')}>
++        Form
++      </Form>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render vertical layout', () => {
+   const component = renderer.create(
+-    <Form layout=""vertical"" onSubmit={() => console.log('submit')}>Form</Form>
++    felaTestContext(
++      <Form layout=""vertical"" onSubmit={() => console.log('submit')}>Form</Form>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFieldError.js b/packages/cf-component-form/test/FormFieldError.js
+index 1865203..5324f75 100644
+--- a/packages/cf-component-form/test/FormFieldError.js
++++ b/packages/cf-component-form/test/FormFieldError.js
+@@ -1,27 +1,34 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+ import { renderToStaticMarkup } from 'react-dom/server';
+-import { FormFieldError } from '../../cf-component-form/src/index';
++import { FormFieldError } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render valid state', () => {
+   expect(
+-    renderToStaticMarkup(<FormFieldError field={{}} validations={{}} />)
++    renderToStaticMarkup(
++      felaTestContext(<FormFieldError field={{}} validations={{}} />)
++    )
+   ).toBe('');
+ });
+ 
+ test('should render invalid state', () => {
+   const component = renderer.create(
+-    <FormFieldError field={{ invalid: true }} validations={{}} />
++    felaTestContext(
++      <FormFieldError field={{ invalid: true }} validations={{}} />
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render invalid state with validation errors', () => {
+   const component = renderer.create(
+-    <FormFieldError
+-      field={{ invalid: true }}
+-      validations={{ required: 'This is required' }}
+-    />
++    felaTestContext(
++      <FormFieldError
++        field={{ invalid: true }}
++        validations={{ required: 'This is required' }}
++      />
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFieldset.js b/packages/cf-component-form/test/FormFieldset.js
+index 053f604..7651d96 100644
+--- a/packages/cf-component-form/test/FormFieldset.js
++++ b/packages/cf-component-form/test/FormFieldset.js
+@@ -1,10 +1,11 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { FormFieldset } from '../../cf-component-form/src/index';
++import { FormFieldset } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+   const component = renderer.create(
+-    <FormFieldset legend=""Legend"">FormFieldset</FormFieldset>
++    felaTestContext(<FormFieldset legend=""Legend"">FormFieldset</FormFieldset>)
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFooter.js b/packages/cf-component-form/test/FormFooter.js
+index 57c4fa2..0121a91 100644
+--- a/packages/cf-component-form/test/FormFooter.js
++++ b/packages/cf-component-form/test/FormFooter.js
+@@ -1,8 +1,11 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { FormFooter } from '../../cf-component-form/src/index';
++import { FormFooter } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<FormFooter>FormFooter</FormFooter>);
++  const component = renderer.create(
++    felaTestContext(<FormFooter>FormFooter</FormFooter>)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormHeader.js b/packages/cf-component-form/test/FormHeader.js
+index f185454..eb24551 100644
+--- a/packages/cf-component-form/test/FormHeader.js
++++ b/packages/cf-component-form/test/FormHeader.js
+@@ -1,8 +1,11 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { FormHeader } from '../../cf-component-form/src/index';
++import { FormHeader } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<FormHeader title=""FormHeader"" />);
++  const component = renderer.create(
++    felaTestContext(<FormHeader title=""FormHeader"" />)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormLabel.js b/packages/cf-component-form/test/FormLabel.js
+index 5e1564e..a4c79d6 100644
+--- a/packages/cf-component-form/test/FormLabel.js
++++ b/packages/cf-component-form/test/FormLabel.js
+@@ -1,13 +1,18 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { FormLabel } from '../../cf-component-form/src/index';
++import { FormLabel } from '../src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<FormLabel>FormLabel</FormLabel>);
++  const component = renderer.create(
++    felaTestContext(<FormLabel>FormLabel</FormLabel>)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render hidden', function() {
+-  const component = renderer.create(<FormLabel hidden>FormLabel</FormLabel>);
++  const component = renderer.create(
++    felaTestContext(<FormLabel hidden>FormLabel</FormLabel>)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+",0,,15,131,6,13,32,683
+135,f7d6f8b1d9c207185423ce4e86369d684bd285e1,729bc89c563f0d2a8cdcb783d1da48a92988bd94,,"update pagination tests to Fela
+","diff --git a/packages/cf-component-pagination/test/Pagination.js b/packages/cf-component-pagination/test/Pagination.js
+index 3083171..a9021e8 100644
+--- a/packages/cf-component-pagination/test/Pagination.js
++++ b/packages/cf-component-pagination/test/Pagination.js
+@@ -1,15 +1,27 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { Pagination } from '../../cf-component-pagination/src/index';
++import {
++  Pagination,
++  PaginationRoot
++} from '../../cf-component-pagination/src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Pagination>Pagination</Pagination>);
++  const component = renderer.create(
++    felaTestContext(
++      <Pagination PaginationRoot={PaginationRoot}>Pagination</Pagination>
++    )
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render with info', () => {
+   const component = renderer.create(
+-    <Pagination info=""Pagination Info"">Pagination</Pagination>
++    felaTestContext(
++      <Pagination info=""Pagination Info"" PaginationRoot={PaginationRoot}>
++        Pagination
++      </Pagination>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-pagination/test/PaginationItem.js b/packages/cf-component-pagination/test/PaginationItem.js
+index 03fc951..b4b29f0 100644
+--- a/packages/cf-component-pagination/test/PaginationItem.js
++++ b/packages/cf-component-pagination/test/PaginationItem.js
+@@ -1,40 +1,57 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { PaginationItem } from '../../cf-component-pagination/src/index';
++import {
++  PaginationItem,
++  PaginationLink
++} from '../../cf-component-pagination/src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+   const component = renderer.create(
+-    <PaginationItem type=""number"" label=""PaginationLabel"" onClick={() => {}}>
+-      PaginationItem
+-    </PaginationItem>
++    felaTestContext(
++      <PaginationItem
++        type=""number""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render active', () => {
+   const component = renderer.create(
+-    <PaginationItem
+-      active
+-      type=""number""
+-      label=""PaginationLabel""
+-      onClick={() => {}}
+-    >
+-      PaginationItem
+-    </PaginationItem>
++    felaTestContext(
++      <PaginationItem
++        active
++        type=""number""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render disabled', () => {
+   const component = renderer.create(
+-    <PaginationItem
+-      disabled
+-      type=""number""
+-      label=""PaginationLabel""
+-      onClick={() => {}}
+-    >
+-      PaginationItem
+-    </PaginationItem>
++    felaTestContext(
++      <PaginationItem
++        disabled
++        type=""number""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+",0,,5,104,2,15,21,774
+144,2a9f90fd722ed426a37f8ce6f1862599a0ff3454,2a9f90fd722ed426a37f8ce6f1862599a0ff3454,"We're embarking on a massive overhaul of some recent feature work and I'd like to clean house while we have the chance. I'd like to avoid the further proliferation of div and span with custom css in our growing codebase. 
+
+This is sort of a stop gap as we implement fela in all of our cf-ui components and work out the kinks in usage, which may take a little time. The cf-component-flex overhaul was super awesome, and fixed most of the styling problems we hit in our recent LB work.
+
+My thinking is that replacing the usage of a single component in several places will be easier to undo than transitioning a ton of css to css-in-js. To make this component conducive to that, the interface is identical to a fela rule.
+
+I'm not super fond of the name box, but I could really thing of a better name. <antidiv/> perhaps? 
+
+As an added benefit, we can add some safety for developers by checking for styling gotchas, should they attempt to do reckless things. 
+","Adds Box component similar to cf-component-flex
+
+This should allow us to eliminate all usage of div and span
+in conjunction with css to hack the styles of cf-ui components.
+","diff --git a/packages/cf-component-box/test/Box.js b/packages/cf-component-box/test/Box.js
+new file mode 100644
+index 0000000..20e1751
+--- /dev/null
++++ b/packages/cf-component-box/test/Box.js
+@@ -0,0 +1,29 @@
++import React from 'react';
++import { Box } from '../../cf-component-box/src/index';
++import renderer from 'react-test-renderer';
++import felaTestContext from '../../../felaTestContext';
++
++test('should render all props as styles', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <Box
++        borderWidth={1}
++        borderStyle=""solid""
++        borderColor=""black""
++        margin=""1rem""
++        padding=""1rem""
++        display=""inline-block""
++        position=""relative""
++        top={1}
++        bottom={1}
++        minWidth={100}
++        width={100}
++        minHeight={100}
++        height={100}
++      >
++        Box
++      </Box>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",0,,13,891,1,1,13,891
+147,f312d51ce3884973d489e1a130f0b67cf5491814,f312d51ce3884973d489e1a130f0b67cf5491814,"The original button CSS styles had this rule:
+
+```css
+'& + &': {
+  marginLeft: '0.4rem'
+}
+```
+
+If you put two cf-component-buttons next to each other, the right one would get the left margin. However, this selector doesn't work with Fela since all classNames are random and atomic. So we need a different solution.
+
+This PR adds a new prop `spaced` to the component `<ButtonGroup>`, so if you want to have spaces between `<Button>`s wrap them by `<ButtonGroup spaced>...</ButtonGroup>`.
+
+Also, I made the `styles` function a little bit cleaner with `...function()` replacing `Object.assign()`.
+
+<img width=""704"" alt=""screen shot 2017-04-03 at 11 05 07 pm"" src=""https://cloud.githubusercontent.com/assets/1387913/24643398/92d16360-18c2-11e7-8dd1-36505b2043e7.png"">
+","add test for spaced ButtonGroup and update snapshots
+","diff --git a/packages/cf-component-button/test/ButtonGroup.js b/packages/cf-component-button/test/ButtonGroup.js
+index 7228f46..21e709f 100644
+--- a/packages/cf-component-button/test/ButtonGroup.js
++++ b/packages/cf-component-button/test/ButtonGroup.js
+@@ -45,3 +45,16 @@ test('should render 3 buttons', () => {
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
++
++test('should render 3 buttons with spacing', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <ButtonGroup spaced>
++        <Button type=""primary"" onClick={() => {}}>Button</Button>
++        <Button type=""primary"" onClick={() => {}}>Button</Button>
++        <Button type=""primary"" onClick={() => {}}>Button</Button>
++      </ButtonGroup>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",0,,3,66,2,2,7,289
+149,b62bbdd469d2445921cd7b89378b60e81d373306,ffae759eaa60cee1bec8c3a0b896eeda962effd4,Solves skipped tests for @sejoker. I also added a full integration test for Fela within cf-style-provider.,"replace regexp by a full nicely formatted snapshot, snapshot testing ftw
+","diff --git a/packages/cf-style-provider/test/index.js b/packages/cf-style-provider/test/index.js
+index 3c481ee..01bf079 100644
+--- a/packages/cf-style-provider/test/index.js
++++ b/packages/cf-style-provider/test/index.js
+@@ -6,6 +6,7 @@ import renderer from 'react-test-renderer';
+ import { render } from 'react-dom';
+ import { mount } from 'enzyme';
+ import jsdom from 'jsdom';
++import { html as beautify } from 'js-beautify';
+ 
+ test('StyleProvider should render', () => {
+   const component = renderer.create(<StyleProvider><div /></StyleProvider>);
+@@ -14,24 +15,20 @@ test('StyleProvider should render', () => {
+ 
+ test('StyleProvider should render styles', () => {
+   const doc = jsdom.jsdom(
+-    `
+-	  <!doctype html>
+-	  <html>
+-	  <head>
+-	    <style id=""stylesheet""></style>
+-	    <style id=""font-stylesheet""></style>
+-	  </head>
+-	  <asd></asd>
+-	  <body>
+-	    <div id=""react-app""></div>
+-	  </body>
+-	  </html>`
++    `<!doctype html>
++     <html>
++     <head>
++       <style id=""stylesheet""></style>
++     </head>
++     <body>
++       <div id=""react-app""></div>
++     </body>
++     </html>`
+   );
+ 
+   global.document = doc;
+   global.window = doc.defaultView;
+ 
+-  const fontNode = doc.getElementById('font-stylesheet');
+   const cssNode = doc.getElementById('stylesheet');
+   const htmlNode = doc.getElementById('react-app');
+ 
+@@ -41,15 +38,15 @@ test('StyleProvider should render styles', () => {
+   }));
+ 
+   render(
+-    <StyleProvider fontNode={fontNode} cssNode={cssNode}>
++    <StyleProvider cssNode={cssNode}>
+       <Foo />
+     </StyleProvider>,
+     htmlNode
+   );
+ 
+-  expect(doc.documentElement.outerHTML).toMatch(
+-    /.cf-a{margin:10px}.cf-b{color:red}/
+-  );
++  expect(
++    beautify(jsdom.serializeDocument(doc), { indent_size: 2 })
++  ).toMatchSnapshot();
+ });
+ 
+ test('StyleProvider should pass custom props through', () => {
+",0,,4,120,1,5,6,157
+152,b81366a8d1dde9d3e64d565373fc4213528f637f,85156f662dcbb01eaa324949b813c0d8a159eb56,"- postcss-color has an akward API
+- postcss-color spams debug console
+- we already use polished
+- the output color is tiny-beanie different but not distinguishable by an eye (that's why snapshots were updated)
+- polished prefers to output the shortest possible notation and not always rgba as postcss-color
+- babel-plugin-polished is used for es build as well
+","replace postcss-color-function by polished
+",,0,,15,311,11,3,19,328
+178,6367a415790ba402b8a820b53eccbaec5bb1a85c,3ba9b02cf5d4e350d937b7c41a162c01d1873c5a,,"added text size bold
+","diff --git a/packages/cf-component-text/test/Text.js b/packages/cf-component-text/test/Text.js
+index 0a45e28..24783a1 100644
+--- a/packages/cf-component-text/test/Text.js
++++ b/packages/cf-component-text/test/Text.js
+@@ -28,6 +28,18 @@ test('should render small size', () => {
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
++test('should render bold size', () => {
++  const Text = applyTheme(TextUnstyled, () => ({
++    fontSizeBold: '1rem',
++    fontWeightBold: 600
++  }));
++
++  const component = renderer.create(
++    felaTestContext(<Text size=""bold"">Hello</Text>)
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
+ test('should render align', () => {
+   const Text = applyTheme(TextUnstyled, () => ({
+     textAlignCenter: 'center'
+",0,,5,25,1,3,5,61
+179,c5f8bfbe9ff8fdc12de25e3d456acd7e7db29e2b,a7fef47b4086fbbd92dc3ad8c81fc72031488034,"![screen shot 2017-04-16 at 2 50 04 pm](https://cloud.githubusercontent.com/assets/125466/25071621/0e4d9c2a-22b4-11e7-82ba-68f9284147bf.png)
+![screen shot 2017-04-16 at 2 50 17 pm](https://cloud.githubusercontent.com/assets/125466/25071622/0e5d9012-22b4-11e7-9ae3-4b8b2ca5150c.png)
+","add tests for item type dot, prev, next
+","diff --git a/packages/cf-component-pagination/test/PaginationItem.js b/packages/cf-component-pagination/test/PaginationItem.js
+index b4b29f0..79639b9 100644
+--- a/packages/cf-component-pagination/test/PaginationItem.js
++++ b/packages/cf-component-pagination/test/PaginationItem.js
+@@ -55,3 +55,105 @@ test('should render disabled', () => {
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
++
++test('should render active dot', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        active
++        type=""dot""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render disabled dot', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        disabled
++        type=""dot""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render active next', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        active
++        type=""next""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render disabled next', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        disabled
++        type=""next""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render active prev', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        active
++        type=""prev""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render disabled prev', () => {
++  const component = renderer.create(
++    felaTestContext(
++      <PaginationItem
++        disabled
++        type=""prev""
++        label=""PaginationLabel""
++        onClick={() => {}}
++        PaginationLink={PaginationLink}
++      >
++        PaginationItem
++      </PaginationItem>
++    )
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",0,,3,196,2,4,10,359
+182,2459dd85a3c8fe8b2d3951e2bb00116f678da9b3,0f38d9c45c4ab20c946ba8bfc3e486f69f789c43,- allows to override styles from the default (main) theme.,"pass customTheme optional parameter to override styles from mainTheme
+","diff --git a/packages/cf-style-container/test/index.js b/packages/cf-style-container/test/index.js
+index b3600d9..d4a2d6a 100644
+--- a/packages/cf-style-container/test/index.js
++++ b/packages/cf-style-container/test/index.js
+@@ -22,6 +22,22 @@ test('applyTheme should overwrite the baseTheme and update the context', () => {
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
++test('applyTheme should overwrite the mainTheme and update the context', () => {
++  const ThemedFoo = applyTheme(
++    createComponent(props => ({
++      color: props.theme.color
++    })),
++    () => ({
++      color: 'yellow'
++    }),
++    () => ({
++      color: 'blue'
++    })
++  );
++  const component = renderer.create(felaTestContext(<ThemedFoo />));
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
+ test('createComponent creates empty component', () => {
+   const FelaComponent = createComponent(() => {});
+   const component = renderer.create(felaTestContext(<FelaComponent />));
+",0,,4,40,1,4,6,48
+206,e5b3371e38f8d760e815a1723dfa48ff6eada8c0,e5b3371e38f8d760e815a1723dfa48ff6eada8c0,"![minimal-paginator](https://cloud.githubusercontent.com/assets/318208/26456572/6162c960-4165-11e7-9353-9179fab226aa.gif)
+
+Related-to: #204","fix: update the snapshots for the 1000th time
+
+:cry:
+",,0,,1,10,1,17,13,811
+235,8d1d963a28aa00c1a510f254ff1bedc7f0bb8a17,de8ad334dfd5deec666f99f50443b1612e1de334,"<img width=""1267"" alt=""screen shot 2017-09-21 at 4 13 45 pm"" src=""https://user-images.githubusercontent.com/125466/30703542-e879aa74-9ee7-11e7-8eb0-d7d9c1adef47.png"">
+
+
+```
+     <Card>
+          <CardToolbar
+            controls={[]}
+            links={[
+              <CardToolbarLink
+                expandable={false}
+                onClick={() =>
+                  window.open('https://en.wikipedia.org/wiki/Main_Page')}
+              >
+                Wikipedia
+              </CardToolbarLink>
+            ]}
+          />
+    </Card>
+```","allow to render card link without drawer
+","diff --git a/packages/cf-component-card/test/CardDrawerLink.js b/packages/cf-component-card/test/CardDrawerLink.js
+new file mode 100644
+index 0000000..ce74da7
+--- /dev/null
++++ b/packages/cf-component-card/test/CardDrawerLink.js
+@@ -0,0 +1,21 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import CardDrawerLink from '../src/CardDrawerLink';
++
++test('should render', () => {
++  const component = renderer.create(
++    <CardDrawerLink id=""link"" isActive={false} onClick={() => {}}>
++      CardDrawerLink
++    </CardDrawerLink>
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
++
++test('should render with isActive', () => {
++  const component = renderer.create(
++    <CardDrawerLink id=""link"" isActive={true} onClick={() => {}}>
++      CardDrawerLink
++    </CardDrawerLink>
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+",1,OID=OID,9,254,3,3,7,131
+248,babcb5134d7733cdfe6f0251d978fac37da35902,960dad0380ef932e29d1dfde7461fb65be9f363b,":star: New major version of CSS-in-JS Fela [just landed](https://twitter.com/rofrischmann/status/872552144045559808) :star:
+
+**This PR updates cf-ui to v5:**
+- it removes `id={undefined}` and `style={undefined}` from our snapshots
+- `react-fela/connect` has a new API that matches our `cf-style-provider/createComponentStyles` perfectly, so that is updated
+- font renderer is deprecated and replaced by [fela-plugin-embedded](https://github.com/rofrischmann/fela/tree/master/packages/fela-plugin-embedded), @koddsson should like this
+- no need to specify style nodes, fela is now smarter and creates its own nodes automatically (one node for rules, one node for every media query, one node for fonts, ... -> better performance)
+- should remove a lot of React.PropType warnings, there are still some left, I'm actually not sure where they are coming from
+- fixes fela validator that was unhappy with any media queries
+- tree shaking
+
+(The biggest change in v5 fela in on the background. It now uses lerna and does builds correctly. Also, it has better test coverage.)
+
+I already have (tested) PRs ready for next and styleguide once this is published.","fix provider test
+","diff --git a/packages/cf-style-provider/test/index.js b/packages/cf-style-provider/test/index.js
+index 39cd112..fe067f6 100644
+--- a/packages/cf-style-provider/test/index.js
++++ b/packages/cf-style-provider/test/index.js
+@@ -6,7 +6,6 @@ import { Button } from '../../cf-component-button/src/index';
+ import renderer from 'react-test-renderer';
+ import { render } from 'react-dom';
+ import { mount } from 'enzyme';
+-import jsdom from 'jsdom';
+ import { html as beautify } from 'js-beautify';
+ 
+ test('StyleProvider should render', () => {
+@@ -15,23 +14,8 @@ test('StyleProvider should render', () => {
+ });
+ 
+ test('StyleProvider should render styles', () => {
+-  const doc = jsdom.jsdom(
+-    `<!doctype html>
+-     <html>
+-     <head>
+-       <style id=""stylesheet""></style>
+-     </head>
+-     <body>
+-       <div id=""react-app""></div>
+-     </body>
+-     </html>`
+-  );
+-
+-  global.document = doc;
+-  global.window = doc.defaultView;
+-
+-  const cssNode = doc.getElementById('stylesheet');
+-  const htmlNode = doc.getElementById('react-app');
++  const htmlNode = document.createElement('div');
++  document.body.appendChild(htmlNode);
+ 
+   const Foo = createComponent(() => ({
+     margin: '10px',
+@@ -39,14 +23,14 @@ test('StyleProvider should render styles', () => {
+   }));
+ 
+   render(
+-    <StyleProvider cssNode={cssNode}>
++    <StyleProvider>
+       <Foo />
+     </StyleProvider>,
+     htmlNode
+   );
+ 
+   expect(
+-    beautify(jsdom.serializeDocument(doc), { indent_size: 2 })
++    beautify(document.documentElement.outerHTML, { indent_size: 2 })
+   ).toMatchSnapshot();
+ });
+ 
+",0,,2,40,1,5,10,206
+262,0a215e13659846fd51425e598b044e9c707dc4c0,0a215e13659846fd51425e598b044e9c707dc4c0,"This PR is extracted from #256 
+
+Improvements:
+- breakpoint constants
+- applyTheme now takes an object as the theme as well as a function
+- A number of convenient functions to batch process style objects","Styling utils improvements
+","diff --git a/packages/cf-style-container/test/index.js b/packages/cf-style-container/test/index.js
+index 6b1b17d..01f63ef 100644
+--- a/packages/cf-style-container/test/index.js
++++ b/packages/cf-style-container/test/index.js
+@@ -2,40 +2,51 @@ import React from 'react';
+ import {
+   createComponent,
+   createComponentStyles,
+-  applyTheme,
+-  ThemeProvider
++  mergeThemes,
++  filterNone,
++  filterStyle,
++  mapChildren
+ } from '../../cf-style-container/src/index';
++import { variables } from 'cf-style-const';
+ import renderer from 'react-test-renderer';
+-import { mount } from 'enzyme';
+ import felaTestContext from '../../../felaTestContext';
+ 
+-test('applyTheme should overwrite the baseTheme and update the context', () => {
+-  const ThemedFoo = applyTheme(
+-    createComponent(props => ({
+-      color: props.theme.color
+-    })),
+-    () => ({
+-      color: 'yellow'
+-    })
+-  );
+-  const component = renderer.create(felaTestContext(<ThemedFoo />));
+-  expect(component.toJSON()).toMatchSnapshot();
++test('mergesThemes should accept functions themes', () => {
++  const theme = mergeThemes(variables, () => ({
++    color: 'yellow'
++  }));
++  expect(theme).toMatchSnapshot();
++});
++
++test('mergesThemes should accept object themes', () => {
++  const theme = mergeThemes(variables, {
++    color: 'yellow'
++  });
++  expect(theme).toMatchSnapshot();
+ });
+ 
+-test('applyTheme should overwrite the mainTheme and update the context', () => {
+-  const ThemedFoo = applyTheme(
+-    createComponent(props => ({
+-      color: props.theme.color
+-    })),
++test('mergeThemes should override the baseTheme if more than one theme is provided', () => {
++  const theme = mergeThemes(
++    variables,
+     () => ({
+-      color: 'yellow'
++      color: 'yellow',
++      breakpoints: {
++        desktop: '1px',
++        tv: '2px'
++      }
+     }),
+-    () => ({
+-      color: 'blue'
+-    })
++    {
++      breakpoints: {
++        desktop: '3px'
++      }
++    }
+   );
+-  const component = renderer.create(felaTestContext(<ThemedFoo />));
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(theme).toMatchSnapshot();
++});
++
++test('mergeThemes should return the baseTheme if no extra theme is provided', () => {
++  const theme = mergeThemes(variables);
++  expect(theme).toMatchSnapshot();
+ });
+ 
+ test('createComponent creates empty component', () => {
+@@ -62,3 +73,21 @@ test('createComponentStyles creates a component', () => {
+   const component = renderer.create(felaTestContext(<FelaComponent />));
+   expect(component.toJSON()).toMatchSnapshot();
+ });
++
++test('filterNone will filter out all keys with undefined or null values', () => {
++  expect(filterNone({ a: undefined, b: null, c: 1 })).toEqual({ c: 1 });
++});
++
++test('filterStyle will filter out the style key from an object', () => {
++  expect(filterStyle({ a: 1, b: 2, style: 3 })).toEqual({ a: 1, b: 2 });
++});
++
++test('mapChildren will call a function for each child, passing its index and the entire list of children as an array', () => {
++  const result = mapChildren([<div />], (child, i, children) => {
++    expect(child).toBeTruthy();
++    expect(i).toBeGreaterThanOrEqual(0);
++    expect(children.length).toBe(1);
++    return child;
++  });
++  expect(result).toHaveLength(1);
++});
+",0,,7,546,1,1,7,546
+268,e88c5ae3a5149afb2f2db43aea136bb9dc14d5ba,8821a33dad87e883116275e2a2967085a837e65d,"This does a few things:
+  1. Migrates Page to fela
+  2. Adds a new PageContent component for handling horizontal spacing","Migrate Page to fela and add PageContent component
+
+This does a few things:
+  1. Migrates Page to fela
+  2. Adds a new PageContent component for handling horizontal spacing
+  3. Adds the namedMediaQuery plugin for easier breakpoints
+","diff --git a/packages/cf-component-page/test/Page.js b/packages/cf-component-page/test/Page.js
+index 9f4e5ad..0e84daa 100644
+--- a/packages/cf-component-page/test/Page.js
++++ b/packages/cf-component-page/test/Page.js
+@@ -1,8 +1,11 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+ import { Page } from '../../cf-component-page/src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Page>Hello World</Page>);
++  const component = renderer.create(
++    felaTestContext(<Page>Hello World</Page>)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-page/test/PageContent.js b/packages/cf-component-page/test/PageContent.js
+new file mode 100644
+index 0000000..df6cf47
+--- /dev/null
++++ b/packages/cf-component-page/test/PageContent.js
+@@ -0,0 +1,11 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import { PageContent } from '../../cf-component-page/src/index';
++import felaTestContext from '../../../felaTestContext';
++
++test('should render', () => {
++  const component = renderer.create(
++    felaTestContext(<PageContent>Hello World</PageContent>)
++  );
++  expect(component.toJSON()).toMatchSnapshot();
++});
+
+diff --git a/packages/cf-component-page/test/PageHeader.js b/packages/cf-component-page/test/PageHeader.js
+index c11bd1a..7f866c0 100644
+--- a/packages/cf-component-page/test/PageHeader.js
++++ b/packages/cf-component-page/test/PageHeader.js
+@@ -1,15 +1,18 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+ import { PageHeader } from '../../cf-component-page/src/index';
++import felaTestContext from '../../../felaTestContext';
+ 
+ test('should render title', () => {
+-  const component = renderer.create(<PageHeader title=""Title"" />);
++  const component = renderer.create(
++    felaTestContext(<PageHeader title=""Title"" />)
++  );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render title/subtitle', () => {
+   const component = renderer.create(
+-    <PageHeader title=""Title"" subtitle=""Subtitle"" />
++    felaTestContext(<PageHeader title=""Title"" subtitle=""Subtitle"" />)
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+",0,,14,187,4,2,14,185
+271,01d14d2af313dd6fae35fd472d42e81a6be8091d,ad06f94a357d0c0ab0fbba2f2e7d1df34e31d2b9,"Solves https://github.com/cloudflare/cf-ui/issues/242. 
+
+I've added snapshots of styles so we can see what property exactly changed, not only that something (classname) changed. That makes snapshots really useful. Here's the example what happened when I replaced
+
+```js
+const styles = ({ theme }) => ({
+  background: theme.background,
+  border: theme.border,
+  boxShadow: theme.boxShadow
+});
+```
+
+by
+
+```js
+const styles = ({ theme }) => ({
+  background: theme.background,
+  border: 'yellow',
+  boxShadow: theme.boxShadow
+});
+```
+
+in `<Form>`:
+
+```diff
+● should render vertical layout
+
+    expect(value).toMatchSnapshot()
+    
+    Received value does not match stored snapshot 1.
+    
+-     Snapshot
++     Received
+    
+     <form
+-      className=""od1cvd""
++      className=""nfgsvf""
+       onSubmit={[Function]}
+     >
+       Form
+     </form>
+      
+      at Object.<anonymous> (packages/cf-component-form/test/Form.js:19:30)
+      at Promise.resolve.then.el (node_modules/p-map/index.js:42:16)
+      at process._tickCallback (internal/process/next_tick.js:109:7)
+
+  ● should render vertical layout
+
+    expect(value).toMatchSnapshot()
+    
+    Received value does not match stored snapshot 2.
+    
+-     Snapshot
++     Received
+    
+     ""
+-    .od1cvd {
++    .nfgsvf {
+       background: white;
+-      border: 1px solid #dedede;
++      border: yellow;
+       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05)
+     }""
+      
+      at Object.<anonymous> (packages/cf-component-form/test/Form.js:20:27)
+      at Promise.resolve.then.el (node_modules/p-map/index.js:42:16)
+      at process._tickCallback (internal/process/next_tick.js:109:7)
+```
+
+The first part is the current state. But the second part actually tells you what property has changed in that CSS class. Isn't that cool, guys? ✋  Here's the way how you can write such a test:
+
+```js
+import React from 'react';
+import { Form } from '../src/index';
+import { felaSnapshot } from 'cf-style-provider';
+
+test('should render horizontal layout', () => {
+  const snapshot = felaSnapshot(
+    <Form layout=""horizontal"" onSubmit={() => console.log('submit')}>
+      Form
+    </Form>
+  );
+  expect(snapshot.component).toMatchSnapshot();
+  expect(snapshot.styles).toMatchSnapshot();
+});
+```
+
+Why to save two separate snapshots and not just 
+
+```js
+expect(snapshot).toMatchSnapshot();
+```
+
+? This way it preserves nice indentation. And those two snapshots are always displayed right after each  other.
+
+Also, I moved `felaTestContext()` and this new `felaSnapshot()` into `cf-style-provider` so we can easily share the same thing in next na cf-ux.
+
+The last thing, I've removed `cf-` prefix, so all classnames can be shorter. Saving bytes.","Update all snapshots
+","diff --git a/packages/cf-builder-pagination/test/PaginationBuilder.js b/packages/cf-builder-pagination/test/PaginationBuilder.js
+index c73c94a..e25b962 100644
+--- a/packages/cf-builder-pagination/test/PaginationBuilder.js
++++ b/packages/cf-builder-pagination/test/PaginationBuilder.js
+@@ -1,87 +1,81 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { mount } from 'enzyme';
+ import { PaginationBuilder } from '../../cf-builder-pagination/src/index';
+ import { createStub } from '../../cf-test-stub/src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot, felaTestContext } from 'cf-style-provider';
+ 
+ test('should render pagination', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationBuilder
+-        onPageChange={() => {}}
+-        totalCount={100}
+-        page={1}
+-        perPage={20}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationBuilder
++      onPageChange={() => {}}
++      totalCount={100}
++      page={1}
++      perPage={20}
++    />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render pagination with the last page active', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationBuilder
+-        onPageChange={() => {}}
+-        totalCount={100}
+-        page={5}
+-        perPage={20}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationBuilder
++      onPageChange={() => {}}
++      totalCount={100}
++      page={5}
++      perPage={20}
++    />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with collapsed items', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationBuilder
+-        onPageChange={() => {}}
+-        totalCount={20}
+-        page={6}
+-        perPage={1}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationBuilder
++      onPageChange={() => {}}
++      totalCount={20}
++      page={6}
++      perPage={1}
++    />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render pagination loading', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationBuilder
+-        onPageChange={() => {}}
+-        totalCount={100}
+-        page={1}
+-        perPage={20}
+-        loading={true}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationBuilder
++      onPageChange={() => {}}
++      totalCount={100}
++      page={1}
++      perPage={20}
++      loading={true}
++    />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render pagination with an infoFormatter', () => {
+   let called = false;
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationBuilder
+-        onPageChange={() => {}}
+-        totalCount={100}
+-        page={2}
+-        perPage={20}
+-        infoFormatter={(start, end, totalItems) => {
+-          expect(start).toBe(21);
+-          expect(end).toBe(40);
+-          expect(totalItems).toBe(100);
+-          called = true;
+-        }}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationBuilder
++      onPageChange={() => {}}
++      totalCount={100}
++      page={2}
++      perPage={20}
++      infoFormatter={(start, end, totalItems) => {
++        expect(start).toBe(21);
++        expect(end).toBe(40);
++        expect(totalItems).toBe(100);
++        called = true;
++      }}
++    />
+   );
+   expect(called).toBeTruthy();
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should call onPageChange when clicking another page', () => {
+
+diff --git a/packages/cf-component-box/test/Box.js b/packages/cf-component-box/test/Box.js
+index ab911a6..b63984a 100644
+--- a/packages/cf-component-box/test/Box.js
++++ b/packages/cf-component-box/test/Box.js
+@@ -1,29 +1,27 @@
+ import React from 'react';
+-import { Box } from '../../cf-component-box/src/index';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { Box } from '../src/index';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render all props as styles', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Box
+-        borderWidth={1}
+-        borderStyle=""solid""
+-        borderColor=""black""
+-        margin=""1rem""
+-        padding=""1rem""
+-        display=""inline-block""
+-        position=""relative""
+-        top={1}
+-        bottom={1}
+-        minWidth={100}
+-        width={100}
+-        minHeight={100}
+-        height={100}
+-      >
+-        Box
+-      </Box>
+-    )
++  const snapshot = felaSnapshot(
++    <Box
++      borderWidth={1}
++      borderStyle=""solid""
++      borderColor=""black""
++      margin=""1rem""
++      padding=""1rem""
++      display=""inline-block""
++      position=""relative""
++      top={1}
++      bottom={1}
++      minWidth={100}
++      width={100}
++      minHeight={100}
++      height={100}
++    >
++      Box
++    </Box>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-button/test/Button.js b/packages/cf-component-button/test/Button.js
+index 865a5b0..a4087e4 100644
+--- a/packages/cf-component-button/test/Button.js
++++ b/packages/cf-component-button/test/Button.js
+@@ -1,49 +1,45 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ import { Button } from '../../cf-component-button/src/index';
+ 
+ test('should render with type', () => {
+-  const component = renderer.create(
+-    felaTestContext(<Button type=""primary"" onClick={() => {}}>Button</Button>)
++  const snapshot = felaSnapshot(
++    <Button type=""primary"" onClick={() => {}}>Button</Button>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with type/disabled', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Button type=""primary"" disabled onClick={() => {}}>Button</Button>
+-    )
++  const snapshot = felaSnapshot(
++    <Button type=""primary"" disabled onClick={() => {}}>Button</Button>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render as submit', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Button type=""primary"" submit onClick={() => {}}>Button</Button>
+-    )
++  const snapshot = felaSnapshot(
++    <Button type=""primary"" submit onClick={() => {}}>Button</Button>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with loading', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Button type=""primary"" loading onClick={() => {}}>Button</Button>
+-    )
++  const snapshot = felaSnapshot(
++    <Button type=""primary"" loading onClick={() => {}}>Button</Button>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with loading and disabled overridden', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Button type=""primary"" loading disabled={false} onClick={() => {}}>
+-        Button
+-      </Button>
+-    )
++  const snapshot = felaSnapshot(
++    <Button type=""primary"" loading disabled={false} onClick={() => {}}>
++      Button
++    </Button>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-button/test/ButtonGroup.js b/packages/cf-component-button/test/ButtonGroup.js
+index f3b5474..9e298df 100644
+--- a/packages/cf-component-button/test/ButtonGroup.js
++++ b/packages/cf-component-button/test/ButtonGroup.js
+@@ -1,60 +1,54 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ import { ButtonGroup, Button } from '../../cf-component-button/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<ButtonGroup>Hello</ButtonGroup>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<ButtonGroup>Hello</ButtonGroup>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render 1 button', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <ButtonGroup>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-      </ButtonGroup>
+-    )
++  const snapshot = felaSnapshot(
++    <ButtonGroup>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++    </ButtonGroup>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render 2 buttons', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <ButtonGroup>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-      </ButtonGroup>
+-    )
++  const snapshot = felaSnapshot(
++    <ButtonGroup>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++    </ButtonGroup>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render 3 buttons', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <ButtonGroup>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-      </ButtonGroup>
+-    )
++  const snapshot = felaSnapshot(
++    <ButtonGroup>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++    </ButtonGroup>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render 3 buttons with spacing', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <ButtonGroup spaced>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-        <Button type=""primary"" onClick={() => {}}>Button</Button>
+-      </ButtonGroup>
+-    )
++  const snapshot = felaSnapshot(
++    <ButtonGroup spaced>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++      <Button type=""primary"" onClick={() => {}}>Button</Button>
++    </ButtonGroup>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/Form.js b/packages/cf-component-form/test/Form.js
+index 9337602..23a274b 100644
+--- a/packages/cf-component-form/test/Form.js
++++ b/packages/cf-component-form/test/Form.js
+@@ -1,24 +1,21 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { Form } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render horizontal layout', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Form layout=""horizontal"" onSubmit={() => console.log('submit')}>
+-        Form
+-      </Form>
+-    )
++  const snapshot = felaSnapshot(
++    <Form layout=""horizontal"" onSubmit={() => console.log('submit')}>
++      Form
++    </Form>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render vertical layout', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Form layout=""vertical"" onSubmit={() => console.log('submit')}>Form</Form>
+-    )
++  const snapshot = felaSnapshot(
++    <Form layout=""vertical"" onSubmit={() => console.log('submit')}>Form</Form>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFieldError.js b/packages/cf-component-form/test/FormFieldError.js
+index bf373b4..c262f56 100644
+--- a/packages/cf-component-form/test/FormFieldError.js
++++ b/packages/cf-component-form/test/FormFieldError.js
+@@ -1,8 +1,7 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { renderToStaticMarkup } from 'react-dom/server';
+ import { FormFieldError } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot, felaTestContext } from 'cf-style-provider';
+ 
+ test('should render valid state', () => {
+   expect(
+@@ -13,22 +12,20 @@ test('should render valid state', () => {
+ });
+ 
+ test('should render invalid state', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <FormFieldError field={{ invalid: true }} validations={{}} />
+-    )
++  const snapshot = felaSnapshot(
++    <FormFieldError field={{ invalid: true }} validations={{}} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render invalid state with validation errors', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <FormFieldError
+-        field={{ invalid: true }}
+-        validations={{ required: 'This is required' }}
+-      />
+-    )
++  const snapshot = felaSnapshot(
++    <FormFieldError
++      field={{ invalid: true }}
++      validations={{ required: 'This is required' }}
++    />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFieldset.js b/packages/cf-component-form/test/FormFieldset.js
+index ac40fa2..cbf9eb2 100644
+--- a/packages/cf-component-form/test/FormFieldset.js
++++ b/packages/cf-component-form/test/FormFieldset.js
+@@ -1,15 +1,13 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { FormFieldset } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <FormFieldset legend=""Legend"" layout=""horizontal"">
+-        FormFieldset
+-      </FormFieldset>
+-    )
++  const snapshot = felaSnapshot(
++    <FormFieldset legend=""Legend"" layout=""horizontal"">
++      FormFieldset
++    </FormFieldset>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormFooter.js b/packages/cf-component-form/test/FormFooter.js
+index 7a3b766..9645a45 100644
+--- a/packages/cf-component-form/test/FormFooter.js
++++ b/packages/cf-component-form/test/FormFooter.js
+@@ -1,11 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { FormFooter } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<FormFooter>FormFooter</FormFooter>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FormFooter>FormFooter</FormFooter>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormHeader.js b/packages/cf-component-form/test/FormHeader.js
+index ab34495..c8e43f7 100644
+--- a/packages/cf-component-form/test/FormHeader.js
++++ b/packages/cf-component-form/test/FormHeader.js
+@@ -1,11 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { FormHeader } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<FormHeader title=""FormHeader"" />)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FormHeader title=""FormHeader"" />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-form/test/FormLabel.js b/packages/cf-component-form/test/FormLabel.js
+index c3c0f74..898a47b 100644
+--- a/packages/cf-component-form/test/FormLabel.js
++++ b/packages/cf-component-form/test/FormLabel.js
+@@ -1,18 +1,15 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { FormLabel } from '../src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<FormLabel>FormLabel</FormLabel>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FormLabel>FormLabel</FormLabel>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render hidden', function() {
+-  const component = renderer.create(
+-    felaTestContext(<FormLabel hidden>FormLabel</FormLabel>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FormLabel hidden>FormLabel</FormLabel>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-heading/test/Heading.js b/packages/cf-component-heading/test/Heading.js
+index 368c8ba..1292ec1 100644
+--- a/packages/cf-component-heading/test/Heading.js
++++ b/packages/cf-component-heading/test/Heading.js
+@@ -1,11 +1,9 @@
+ import React from 'react';
+ import { Heading } from '../../cf-component-heading/src/index';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render size', () => {
+-  const component = renderer.create(
+-    felaTestContext(<Heading size={2}>Heading</Heading>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Heading size={2}>Heading</Heading>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-heading/test/HeadingCaption.js b/packages/cf-component-heading/test/HeadingCaption.js
+index 62252c4..e29b787 100644
+--- a/packages/cf-component-heading/test/HeadingCaption.js
++++ b/packages/cf-component-heading/test/HeadingCaption.js
+@@ -1,11 +1,11 @@
+ import React from 'react';
+ import { HeadingCaption } from '../../cf-component-heading/src/index';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<HeadingCaption>Heading Caption</HeadingCaption>)
++  const snapshot = felaSnapshot(
++    <HeadingCaption>Heading Caption</HeadingCaption>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-label/test/Label.js b/packages/cf-component-label/test/Label.js
+index 9941e0f..d4ba2c8 100644
+--- a/packages/cf-component-label/test/Label.js
++++ b/packages/cf-component-label/test/Label.js
+@@ -1,11 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ import { Label } from '../../cf-component-label/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<Label type=""default"">A Label</Label>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Label type=""default"">A Label</Label>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-modal/test/ModalTitle.js b/packages/cf-component-modal/test/ModalTitle.js
+index 6a5fa91..5084b59 100644
+--- a/packages/cf-component-modal/test/ModalTitle.js
++++ b/packages/cf-component-modal/test/ModalTitle.js
+@@ -1,12 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { ModalTitle } from '../../cf-component-modal/src/index';
+ import { Heading } from '../../cf-component-heading/src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(<ModalTitle>ModalTitle</ModalTitle>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<ModalTitle>ModalTitle</ModalTitle>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-pagination/test/Pagination.js b/packages/cf-component-pagination/test/Pagination.js
+index a3e74b6..5cac256 100644
+--- a/packages/cf-component-pagination/test/Pagination.js
++++ b/packages/cf-component-pagination/test/Pagination.js
+@@ -1,27 +1,24 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import {
+   Pagination,
+   PaginationRoot
+ } from '../../cf-component-pagination/src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Pagination PaginationRoot={PaginationRoot}>Pagination</Pagination>
+-    )
++  const snapshot = felaSnapshot(
++    <Pagination PaginationRoot={PaginationRoot}>Pagination</Pagination>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with info', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Pagination info=""Pagination Info"" PaginationRoot={PaginationRoot}>
+-        Pagination
+-      </Pagination>
+-    )
++  const snapshot = felaSnapshot(
++    <Pagination info=""Pagination Info"" PaginationRoot={PaginationRoot}>
++      Pagination
++    </Pagination>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-pagination/test/PaginationItem.js b/packages/cf-component-pagination/test/PaginationItem.js
+index 85f7f10..398875a 100644
+--- a/packages/cf-component-pagination/test/PaginationItem.js
++++ b/packages/cf-component-pagination/test/PaginationItem.js
+@@ -1,143 +1,133 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { PaginationItem } from '../../cf-component-pagination/src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem type=""number"" label=""PaginationLabel"" onClick={() => {}}>
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem type=""number"" label=""PaginationLabel"" onClick={() => {}}>
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render active', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        active
+-        type=""number""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      active
++      type=""number""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render disabled', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        disabled
+-        type=""number""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      disabled
++      type=""number""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render active dot', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        active
+-        type=""dot""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      active
++      type=""dot""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render disabled dot', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        disabled
+-        type=""dot""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      disabled
++      type=""dot""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render active next', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        active
+-        type=""next""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      active
++      type=""next""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render disabled next', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        disabled
+-        type=""next""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      disabled
++      type=""next""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render active prev', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        active
+-        type=""prev""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      active
++      type=""prev""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render disabled prev', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <PaginationItem
+-        disabled
+-        type=""prev""
+-        label=""PaginationLabel""
+-        onClick={() => {}}
+-      >
+-        PaginationItem
+-      </PaginationItem>
+-    )
++  const snapshot = felaSnapshot(
++    <PaginationItem
++      disabled
++      type=""prev""
++      label=""PaginationLabel""
++      onClick={() => {}}
++    >
++      PaginationItem
++    </PaginationItem>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-text/test/Text.js b/packages/cf-component-text/test/Text.js
+index 66026ca..b8f85e8 100644
+--- a/packages/cf-component-text/test/Text.js
++++ b/packages/cf-component-text/test/Text.js
+@@ -1,7 +1,6 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import { Text, TextUnstyled } from '../../cf-component-text/src/index';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ import { applyTheme } from 'cf-style-container';
+ 
+ test('should render normal size', () => {
+@@ -9,11 +8,9 @@ test('should render normal size', () => {
+     fontSizeNormal: '1rem',
+     fontWeightNormal: 400
+   }));
+-
+-  const component = renderer.create(
+-    felaTestContext(<Text size=""normal"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text size=""normal"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render small size', () => {
+@@ -22,10 +19,9 @@ test('should render small size', () => {
+     lineHeightSmall: 1.3
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text size=""small"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text size=""small"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render bold size', () => {
+@@ -34,10 +30,9 @@ test('should render bold size', () => {
+     fontWeightBold: 700
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text size=""normal"" weight=""bold"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text size=""normal"" weight=""bold"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render semi-bold size', () => {
+@@ -46,10 +41,11 @@ test('should render semi-bold size', () => {
+     fontWeightSemiBold: 600
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text size=""normal"" weight=""semi-bold"">Hello</Text>)
++  const snapshot = felaSnapshot(
++    <Text size=""normal"" weight=""semi-bold"">Hello</Text>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render align', () => {
+@@ -57,10 +53,9 @@ test('should render align', () => {
+     textAlignCenter: 'center'
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text align=""center"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text align=""center"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render type', () => {
+@@ -68,10 +63,9 @@ test('should render type', () => {
+     colorInfo: '#434148'
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text type=""info"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text type=""info"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render lowercase', () => {
+@@ -79,10 +73,9 @@ test('should render lowercase', () => {
+     textTransformLowercase: 'lowercase'
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text case=""lowercase"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text case=""lowercase"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render titlecase case', () => {
+@@ -90,8 +83,7 @@ test('should render titlecase case', () => {
+     'textTransformTitlecase:first-letter': 'capitalize'
+   }));
+ 
+-  const component = renderer.create(
+-    felaTestContext(<Text case=""titlecase"">Hello</Text>)
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Text case=""titlecase"">Hello</Text>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-style-container/test/index.js b/packages/cf-style-container/test/index.js
+index c505645..d9ac89c 100644
+--- a/packages/cf-style-container/test/index.js
++++ b/packages/cf-style-container/test/index.js
+@@ -8,8 +8,7 @@ import {
+   mapChildren
+ } from '../../cf-style-container/src/index';
+ import { variables } from 'cf-style-const';
+-import renderer from 'react-test-renderer';
+-import { felaTestContext } from 'cf-style-provider';
++import { felaSnapshot } from 'cf-style-provider';
+ 
+ test('mergeThemes should return an immutable and deeply cloned object', () => {
+   const themeA = () => ({ color: 'yellow' });
+@@ -78,8 +77,9 @@ test('mergeThemes should return the baseTheme if no extra theme is provided', ()
+ 
+ test('createComponent creates empty component', () => {
+   const FelaComponent = createComponent(() => {});
+-  const component = renderer.create(felaTestContext(<FelaComponent />));
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FelaComponent />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('createComponentStyles creates a component', () => {
+@@ -97,8 +97,9 @@ test('createComponentStyles creates a component', () => {
+     },
+     Foo
+   );
+-  const component = renderer.create(felaTestContext(<FelaComponent />));
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<FelaComponent />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('filterNone will filter out all keys with undefined or null values', () => {
+
+diff --git a/packages/cf-style-provider/test/index.js b/packages/cf-style-provider/test/index.js
+index 33b96c5..ed06ff9 100644
+--- a/packages/cf-style-provider/test/index.js
++++ b/packages/cf-style-provider/test/index.js
+@@ -26,7 +26,7 @@ test('StyleProvider should render styles', () => {
+   }));
+ 
+   render(
+-    <StyleProvider selectorPrefix=""cf-"">
++    <StyleProvider>
+       <Foo />
+     </StyleProvider>,
+     htmlNode
+",0,,42,3246,19,8,61,6247
+276,0d21a841b397a84296ebbfcff3a7e65660825ece,2465eb28868e77b9d06403894a22607c54b2e094,"…onents/polished#140
+
+This PR fixes 4 issues:
+
+1. #271 introduced style snapshotting but Fela renderer's formatting for media query isn't ideal, this PR improves on it by using clean-css to format the styles Fela generates.
+2. #271 missed requiring `js-beautify` in `cf-style-provider`
+3. styled-components/polished#140 is causing Fela to generate `content: ;` for clear fix, clean-css can't parse it and obviously the styles sent down the client is also wrong. Fixed.
+3. #271 removed the selectorPrefix. Fela just hashes the CSS props which sometimes generates names that start with a number. That's not a valid CSS identifier. This PR puts it back.","Format media query snapshots and upgrade polished because styled-components/polished#140
+","diff --git a/packages/cf-style-provider/test/index.js b/packages/cf-style-provider/test/index.js
+index ed06ff9..31e1c42 100644
+--- a/packages/cf-style-provider/test/index.js
++++ b/packages/cf-style-provider/test/index.js
+@@ -1,6 +1,6 @@
+ import React from 'react';
+ import PropTypes from 'prop-types';
+-import { StyleProvider } from '../src/index';
++import { StyleProvider, felaSnapshot } from '../src/index';
+ import { createComponent } from '../../cf-style-container/src/index';
+ import { Button } from '../../cf-component-button/src/index';
+ import renderer from 'react-test-renderer';
+@@ -8,39 +8,49 @@ import { render } from 'react-dom';
+ import { mount } from 'enzyme';
+ import { html as beautify } from 'js-beautify';
+ 
+-test('StyleProvider should render', () => {
+-  const component = renderer.create(<StyleProvider><div /></StyleProvider>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
++describe('StyleProvider', () => {
++  it('should render', () => {
++    const component = renderer.create(<StyleProvider><div /></StyleProvider>);
++    expect(component.toJSON()).toMatchSnapshot();
++  });
++
++  it('should render styles', () => {
++    const htmlNode = document.createElement('div');
++    document.body.appendChild(htmlNode);
+ 
+-test('StyleProvider should render styles', () => {
+-  const htmlNode = document.createElement('div');
+-  document.body.appendChild(htmlNode);
++    const Foo = createComponent(() => ({
++      margin: '10px',
++      color: 'red',
++      desktop: {
++        fontSize: '1px'
++      }
++    }));
+ 
+-  const Foo = createComponent(() => ({
+-    margin: '10px',
+-    color: 'red',
+-    desktop: {
+-      fontSize: '1px'
+-    }
+-  }));
++    render(
++      <StyleProvider>
++        <Foo />
++      </StyleProvider>,
++      htmlNode
++    );
+ 
+-  render(
+-    <StyleProvider>
+-      <Foo />
+-    </StyleProvider>,
+-    htmlNode
+-  );
++    expect(
++      beautify(document.documentElement.outerHTML, { indent_size: 2 })
++    ).toMatchSnapshot();
++  });
+ 
+-  expect(
+-    beautify(document.documentElement.outerHTML, { indent_size: 2 })
+-  ).toMatchSnapshot();
++  it('should pass custom props through', () => {
++    const Foo = () => <div />;
++    const wrapper = mount(<StyleProvider number={10}><Foo /></StyleProvider>);
++    wrapper.setProps({ something: true });
++    expect(wrapper.prop('something')).toBeTruthy();
++    expect(wrapper.prop('number')).toBe(10);
++  });
+ });
+ 
+-test('StyleProvider should pass custom props through', () => {
+-  const Foo = () => <div />;
+-  const wrapper = mount(<StyleProvider number={10}><Foo /></StyleProvider>);
+-  wrapper.setProps({ something: true });
+-  expect(wrapper.prop('something')).toBeTruthy();
+-  expect(wrapper.prop('number')).toBe(10);
++describe('felaSnapshot', () => {
++  it('should return a formatted snapshot object', () => {
++    const Div = createComponent(() => ({ color: 'black' }));
++    const snapshot = felaSnapshot(<Div />);
++    expect(snapshot).toMatchSnapshot();
++  });
+ });
+",0,,25,663,15,3,55,1291
+277,2b31bf34f6491a249b409646909769fc8528a3c7,e6cb06133b4850eb57812867286dbfeacc8ded49,"- remove selectorPrefix (again) since it's been fixed in Fela
+- replace `clean-css` dep by a regexp
+- export felaTestContext and felaSnapshot out of cf-style-provider (again) since it works
+- move js-beautify dep to root package.json since we don't need it in cf-style-provider deps
+
+I've tested it in cf-www-next and both dev and prod builds are ok.","fix(cf-style-provider): remove className prefixes and fix snapshot formatting
+",,0,,27,1195,22,3,50,1297
+281,464cb5992ac59bd58fc81b67547faea80bc46c25,464cb5992ac59bd58fc81b67547faea80bc46c25,"Now `cf-component-toggle` uses `fela` to apply styles defined in JS to
+the components rather than relying on outside CSS to provide styles.
+
+BREAKING CHANGE: `className` prop is no longer applied to the component.
+
+Closes: #228","feat(cf-component-toggle): rewrite in `fela`
+
+Now `cf-component-toggle` uses `fela` to apply styles defined in JS to
+the components rather than relying on outside CSS to provide styles.
+
+BREAKING CHANGE: `className` prop is no longer applied to the component.
+
+Closes: #228
+","diff --git a/packages/cf-component-toggle/test/Toggle.js b/packages/cf-component-toggle/test/Toggle.js
+index 23bc4bc..ea75f99 100644
+--- a/packages/cf-component-toggle/test/Toggle.js
++++ b/packages/cf-component-toggle/test/Toggle.js
+@@ -1,22 +1,25 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import Toggle from '../../cf-component-toggle/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Toggle label=""Test Toggle"" name=""test"" />);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Toggle label=""Test Toggle"" name=""test"" />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render checked', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Toggle label=""Test Toggle"" name=""test"" value={true} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render disabled', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Toggle disabled label=""Test Toggle"" name=""test"" value={true} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,5,547,1,1,5,547
+285,b7763b46ac31b0b729c6929ebfee182725955b7f,b7763b46ac31b0b729c6929ebfee182725955b7f,"BREAKING CHANGE: Underlying styling have been completely re-written in `fela` warranting extra caution when updating as well as a major version bump.
+
+Closes: #230","feat(cf-component-progress): implement in fela
+
+BREAKING CHANGE: Underlying styling have been completely re-written in
+`fela` warranting extra caution when updating as well as a major version
+bump.
+
+Closes: #230
+","diff --git a/packages/cf-component-progress/test/Progress.js b/packages/cf-component-progress/test/Progress.js
+index feb5e86..63bc542 100644
+--- a/packages/cf-component-progress/test/Progress.js
++++ b/packages/cf-component-progress/test/Progress.js
+@@ -1,10 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Progress from '../../cf-component-progress/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { Progress } from '../../cf-component-progress/src/index';
+ import Link from '../../cf-component-link/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Progress
+       active=""foo""
+       onChange={() => {}}
+@@ -15,5 +15,6 @@ test('should render', () => {
+       ]}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,6,333,1,1,6,333
+289,1566d3944b5ae5c40bda6fe3a487f83eaf448678,1566d3944b5ae5c40bda6fe3a487f83eaf448678,"BREAKING CHANGE: There is no default export in `cf-component-input`
+anymore, the previously exported default is now exported as `Input`.
+
+Additionally the `className` prop is now ignored.
+
+Closes: #226","feat(cf-component-input): rewrite styling in fela
+
+BREAKING CHANGE: There is no default export in `cf-component-input`
+anymore, the previously exported default is now exported as `Input`.
+
+Additionally the `className` prop is now ignored.
+
+Closes: #226
+","diff --git a/packages/cf-component-input/test/Input.js b/packages/cf-component-input/test/Input.js
+index 6c5e594..85a34b0 100644
+--- a/packages/cf-component-input/test/Input.js
++++ b/packages/cf-component-input/test/Input.js
+@@ -1,30 +1,33 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Input from '../../cf-component-input/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { Input } from '../../cf-component-input/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input name=""example"" value=""content"" onChange={() => {}} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with type', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input type=""search"" name=""example"" value=""content"" onChange={() => {}} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with error', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input name=""example"" value="""" invalid onChange={() => {}} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with placeholder', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input
+       name=""example""
+       value=""""
+@@ -32,18 +35,20 @@ test('should render with placeholder', () => {
+       onChange={() => {}}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with autocomplete', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input name=""example"" value="""" autoComplete=""off"" onChange={() => {}} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should pass all props down to the inner input and merge classnames', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Input
+       className=""klass""
+       name=""example""
+@@ -56,5 +61,6 @@ test('should pass all props down to the inner input and merge classnames', () =>
+       min={3}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,8,541,1,1,8,541
+291,dc4e0e5bee7f9470e7be09ae228d9adbafc24422,dc4e0e5bee7f9470e7be09ae228d9adbafc24422,"BREAKING CHANGE: Major migration of styles from plain old CSS class
+names to the CSS-in-JS framework `fela`.
+
+Closes: #210","feat(cf-component-dropdown): CSS to `fela`
+
+BREAKING CHANGE: Major migration of styles from plain old CSS class
+names to the CSS-in-JS framework `fela`.
+
+Closes: #210
+","diff --git a/packages/cf-component-dropdown/test/Dropdown.js b/packages/cf-component-dropdown/test/Dropdown.js
+index 5a21dd9..b26a8e4 100644
+--- a/packages/cf-component-dropdown/test/Dropdown.js
++++ b/packages/cf-component-dropdown/test/Dropdown.js
+@@ -1,25 +1,30 @@
+ import React from 'react';
+ import renderer from 'react-test-renderer';
+-import { trackFocus, getCurrentFocus } from '../../cf-test-focus/src/index';
+ import { render, unmountComponentAtNode } from 'react-dom';
+-import { Dropdown, DropdownLink } from '../../cf-component-dropdown/src/index';
++import { felaSnapshot, felaTestContext } from 'cf-style-provider';
+ import jsdom from 'jsdom';
++import { mount } from 'enzyme';
++
++import { Dropdown, DropdownLink } from '../../cf-component-dropdown/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Dropdown onClose={() => {}}>
+       Dropdown
+     </Dropdown>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with align', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Dropdown align=""right"" onClose={() => {}}>
+       Dropdown
+     </Dropdown>
+   );
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ describe('interactions', () => {
+@@ -43,51 +48,57 @@ describe('interactions', () => {
+       called = true;
+     };
+ 
+-    var dom = <Dropdown onClose={onClose} />;
+-    var instance = render(dom, global.root);
++    var dom = mount(felaTestContext(<Dropdown onClose={onClose} />));
++
++    // Fela renders a Stateless component so we can't just use `.getNode()` but
++    // we know that the Dropdown we want is the second element in the list.
++    const instance = dom.find('Dropdown').getNodes()[1];
+ 
+     instance.handleDocumentKeydown({ keyCode: 27 });
+     expect(called).toBeTruthy();
+   });
+ 
+   test('should be able to navigate with the up and down keys', () => {
+-    trackFocus();
+-
+     const down = { keyCode: 40, preventDefault() {} };
+     const up = { keyCode: 38, preventDefault() {} };
+ 
+-    const getFocusedHref = () => getCurrentFocus().getAttribute('href');
+-
+-    const dom = (
+-      <Dropdown onClose={() => {}}>
+-        <DropdownLink to=""one"" />
+-        <DropdownLink to=""two"" />
+-        <DropdownLink to=""three"" />
+-      </Dropdown>
++    const getFocusedHref = () =>
++      global.document.activeElement.getAttribute('href');
++
++    const dom = mount(
++      felaTestContext(
++        <Dropdown onClose={() => {}}>
++          <DropdownLink to=""one"" />
++          <DropdownLink to=""two"" />
++          <DropdownLink to=""three"" />
++        </Dropdown>
++      )
+     );
+-    const instance = render(dom, global.root);
++    const instance = dom.find('Dropdown').getNodes()[1];
++
++    expect(getFocusedHref()).toBe(null);
+ 
+     instance.handleDocumentKeydown(down);
+-    expect(getFocusedHref()).toBe('one');
++    setTimeout(() => expect(getFocusedHref()).toBe('one'), 0);
+ 
+     instance.handleDocumentKeydown(down);
+-    expect(getFocusedHref()).toBe('two');
++    setTimeout(() => expect(getFocusedHref()).toBe('two'), 0);
+ 
+     instance.handleDocumentKeydown(down);
+     instance.handleDocumentKeydown(down);
+-    expect(getFocusedHref()).toBe('three');
++    setTimeout(() => expect(getFocusedHref()).toBe('three'), 0);
+ 
+     instance.handleDocumentKeydown(up);
+-    expect(getFocusedHref()).toBe('two');
++    setTimeout(() => expect(getFocusedHref()).toBe('two'), 0);
+ 
+-    const two = getCurrentFocus();
++    const two = global.document.activeElement;
+ 
+     instance.handleDocumentKeydown(up);
+     instance.handleDocumentKeydown(up);
+-    expect(getFocusedHref()).toBe('one');
++    setTimeout(() => expect(getFocusedHref()).toBe('one'), 0);
+ 
+     two.focus();
+     instance.handleDocumentKeydown(down);
+-    expect(getFocusedHref()).toBe('three');
++    setTimeout(() => expect(getFocusedHref()).toBe('three'), 0);
+   });
+ });
+
+diff --git a/packages/cf-component-dropdown/test/DropdownLink.js b/packages/cf-component-dropdown/test/DropdownLink.js
+index 2afced3..fb8f75a 100644
+--- a/packages/cf-component-dropdown/test/DropdownLink.js
++++ b/packages/cf-component-dropdown/test/DropdownLink.js
+@@ -1,21 +1,23 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { Dropdown, DropdownLink } from '../../cf-component-dropdown/src/index';
+ 
+ test('should render with to', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Dropdown onClose={() => {}}>
+       <DropdownLink to=""/foo"">Route to /foo</DropdownLink>
+     </Dropdown>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with onClick', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Dropdown onClose={() => {}}>
+       <DropdownLink onClick={() => {}}>onClick handler</DropdownLink>
+     </Dropdown>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-dropdown/test/DropdownSeparator.js b/packages/cf-component-dropdown/test/DropdownSeparator.js
+index 58271b0..b618eb9 100644
+--- a/packages/cf-component-dropdown/test/DropdownSeparator.js
++++ b/packages/cf-component-dropdown/test/DropdownSeparator.js
+@@ -1,8 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { DropdownSeparator } from '../../cf-component-dropdown/src/index';
+ 
+ test('should render with to', () => {
+-  const component = renderer.create(<DropdownSeparator />);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<DropdownSeparator />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,13,1020,3,1,13,1020
+293,88db8b39826a4fdf85c131e386288698593c130e,6759cbe6753d56f0668f478429dc10a4d0e51635,"BREAKING CHANGE: Deprecated `CardLoadingText` since it wasn't used at
+all.
+
+Additionally a major overhaul of a package internal warrants a major
+version bump
+
+Related-to: #220","feat(cf-component-card): migrate to `fela`
+
+BREAKING CHANGE: Deprecated `CardLoadingText` since it wasn't used at
+all.
+
+Additionally a major overhaul of a package internal warrants a major
+version bump
+
+Related-to: #220
+","diff --git a/packages/cf-builder-card/test/cardBuilder.js b/packages/cf-builder-card/test/cardBuilder.js
+index 1060db1..3417198 100644
+--- a/packages/cf-builder-card/test/cardBuilder.js
++++ b/packages/cf-builder-card/test/cardBuilder.js
+@@ -1,8 +1,7 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot, felaTestContext } from 'cf-style-provider';
+ import { createStore, combineReducers } from 'redux';
+ import { Provider } from 'react-redux';
+-import { felaTestContext } from 'cf-style-provider';
+ import {
+   cardActions,
+   cardReducer,
+@@ -21,18 +20,17 @@ beforeEach(() => {
+ });
+ 
+ test('should render a card', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Provider store={store}>
+-        <CardBuilder
+-          cardName=""test-card""
+-          title=""This is a Card""
+-          description=""This is the description of a card.""
+-        />
+-      </Provider>
+-    )
++  const snapshot = felaSnapshot(
++    <Provider store={store}>
++      <CardBuilder
++        cardName=""test-card""
++        title=""This is a Card""
++        description=""This is the description of a card.""
++      />
++    </Provider>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render the description with markdown', () => {
+@@ -59,61 +57,58 @@ test('should render the description with markdown', () => {
+ 
+ test('should render button', () => {
+   const button = <button>Click Me</button>;
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Provider store={store}>
+-        <CardBuilder
+-          cardName=""test-card""
+-          title=""This is a Card""
+-          description=""This is the *description* of a card.""
+-          control={button}
+-        />
+-      </Provider>
+-    )
++  const snapshot = felaSnapshot(
++    <Provider store={store}>
++      <CardBuilder
++        cardName=""test-card""
++        title=""This is a Card""
++        description=""This is the *description* of a card.""
++        control={button}
++      />
++    </Provider>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render a table', () => {
+   const table = <table />;
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Provider store={store}>
+-        <CardBuilder
+-          cardName=""test-card""
+-          title=""This is a Card""
+-          description=""This is the *description* of a card.""
+-          table={table}
+-        />
+-      </Provider>
+-    )
++  const snapshot = felaSnapshot(
++    <Provider store={store}>
++      <CardBuilder
++        cardName=""test-card""
++        title=""This is a Card""
++        description=""This is the *description* of a card.""
++        table={table}
++      />
++    </Provider>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render drawers', () => {
+-  const component = renderer.create(
+-    felaTestContext(
+-      <Provider store={store}>
+-        <CardBuilder
+-          cardName=""test-card""
+-          title=""This is a Card""
+-          description=""This is the *description* of a card.""
+-          drawers={[
+-            {
+-              id: 'help',
+-              name: 'Help',
+-              content: 'Help Content'
+-            },
+-            {
+-              id: 'api',
+-              name: 'API',
+-              content: 'API Content'
+-            }
+-          ]}
+-        />
+-      </Provider>
+-    )
++  const snapshot = felaSnapshot(
++    <Provider store={store}>
++      <CardBuilder
++        cardName=""test-card""
++        title=""This is a Card""
++        description=""This is the *description* of a card.""
++        drawers={[
++          {
++            id: 'help',
++            name: 'Help',
++            content: 'Help Content'
++          },
++          {
++            id: 'api',
++            name: 'API',
++            content: 'API Content'
++          }
++        ]}
++      />
++    </Provider>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/Card.js b/packages/cf-component-card/test/Card.js
+index 9564808..9909a88 100644
+--- a/packages/cf-component-card/test/Card.js
++++ b/packages/cf-component-card/test/Card.js
+@@ -1,8 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { Card } from '../../cf-component-card/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Card>Card</Card>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Card>Card</Card>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardBlock.js b/packages/cf-component-card/test/CardBlock.js
+index 4b67ed3..19bdaba 100644
+--- a/packages/cf-component-card/test/CardBlock.js
++++ b/packages/cf-component-card/test/CardBlock.js
+@@ -1,8 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { CardBlock } from '../../cf-component-card/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<CardBlock>CardBlock</CardBlock>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<CardBlock>CardBlock</CardBlock>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardContent.js b/packages/cf-component-card/test/CardContent.js
+index bb0bc32..289c8da 100644
+--- a/packages/cf-component-card/test/CardContent.js
++++ b/packages/cf-component-card/test/CardContent.js
+@@ -1,19 +1,21 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { CardContent } from '../../cf-component-card/src/index';
+ 
+ test('should render without footer message', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardContent title=""Title"">CardContent</CardContent>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with footer message', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardContent title=""Title"" footerMessage=""Footer Message"">
+       CardContent
+     </CardContent>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardControl.js b/packages/cf-component-card/test/CardControl.js
+index 06991e8..98630b4 100644
+--- a/packages/cf-component-card/test/CardControl.js
++++ b/packages/cf-component-card/test/CardControl.js
+@@ -1,14 +1,14 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { CardControl } from '../../cf-component-card/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<CardControl>CardControl</CardControl>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<CardControl>CardControl</CardControl>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ test('should render wide', () => {
+-  const component = renderer.create(
+-    <CardControl wide>CardControl</CardControl>
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<CardControl wide>CardControl</CardControl>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardDrawers.js b/packages/cf-component-card/test/CardDrawers.js
+index ed5c656..a6e3c6b 100644
+--- a/packages/cf-component-card/test/CardDrawers.js
++++ b/packages/cf-component-card/test/CardDrawers.js
+@@ -1,5 +1,5 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import {
+   CardDrawers,
+   CardToolbar,
+@@ -7,7 +7,7 @@ import {
+ } from '../../cf-component-card/src/index';
+ 
+ test('should render when given all the props', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardDrawers
+       onClick={() => {}}
+       active=""one""
+@@ -17,11 +17,12 @@ test('should render when given all the props', () => {
+       ]}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render when not given props', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardDrawers
+       drawers={[
+         { id: 'one', name: 'One', content: 'One Content' },
+@@ -29,5 +30,6 @@ test('should render when not given props', () => {
+       ]}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardLoadingText.js b/packages/cf-component-card/test/CardLoadingText.js
+deleted file mode 100644
+index cb753f6..0000000
+--- a/packages/cf-component-card/test/CardLoadingText.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { CardLoadingText } from '../../cf-component-card/src/index';
+-
+-test('should render', () => {
+-  const component = renderer.create(<CardLoadingText />);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-card/test/CardMessages.js b/packages/cf-component-card/test/CardMessages.js
+index 5d39417..9491a5f 100644
+--- a/packages/cf-component-card/test/CardMessages.js
++++ b/packages/cf-component-card/test/CardMessages.js
+@@ -1,9 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { CardMessages } from '../../cf-component-card/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardMessages
+       messages={[
+         { type: 'info', content: 'Message One' },
+@@ -11,5 +11,6 @@ test('should render', () => {
+       ]}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardSection.js b/packages/cf-component-card/test/CardSection.js
+index 41c9f32..c3896ee 100644
+--- a/packages/cf-component-card/test/CardSection.js
++++ b/packages/cf-component-card/test/CardSection.js
+@@ -1,15 +1,17 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { CardSection } from '../../cf-component-card/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<CardSection>CardSection</CardSection>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<CardSection>CardSection</CardSection>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with status', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardSection status=""error"">CardSection</CardSection>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardToolbar.js b/packages/cf-component-card/test/CardToolbar.js
+index 05b3463..dc28a11 100644
+--- a/packages/cf-component-card/test/CardToolbar.js
++++ b/packages/cf-component-card/test/CardToolbar.js
+@@ -1,10 +1,11 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import CardToolbar from '../src/CardToolbar';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardToolbar controls={'Controls'} links={'Links'} />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-card/test/CardToolbarLink.js b/packages/cf-component-card/test/CardToolbarLink.js
+index 9eb37bf..9977124 100644
+--- a/packages/cf-component-card/test/CardToolbarLink.js
++++ b/packages/cf-component-card/test/CardToolbarLink.js
+@@ -1,21 +1,23 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import CardToolbarLink from '../src/CardToolbarLink';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardToolbarLink id=""link"" isActive={false} onClick={() => {}}>
+       CardToolbarLink
+     </CardToolbarLink>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render with isActive', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CardToolbarLink id=""link"" isActive={true} onClick={() => {}}>
+       CardToolbarLink
+     </CardToolbarLink>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,41,1162,11,2,50,1994
+294,887bfa0f92d0ae61c2b2e7c3b3b904e75eb7b34b,887bfa0f92d0ae61c2b2e7c3b3b904e75eb7b34b,"BREAKING CHANGE: Internals have been rewritten in a significant way.
+This warrants a breaking change version bump.
+
+Closes: #216","feat(cf-component-callout): rewrite styles in fela
+
+BREAKING CHANGE: Internals have been rewritten in a significant way.
+This warrants a breaking change version bump.
+
+Closes: #216
+","diff --git a/packages/cf-component-callout/test/Callout.js b/packages/cf-component-callout/test/Callout.js
+index c676692..fb9d1e9 100644
+--- a/packages/cf-component-callout/test/Callout.js
++++ b/packages/cf-component-callout/test/Callout.js
+@@ -1,27 +1,17 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Callout from '../../cf-component-callout/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { Callout } from '../../cf-component-callout/src/index';
+ 
+ test('should render ""default"" by default', () => {
+-  const component = renderer.create(
+-    <Callout title=""Hello"" content=""World"" />,
+-    // should equal
+-    <div className=""cf-callout cf-callout--default"">
+-      <h3 className=""cf-callout__heading"">Hello</h3>
+-      <p className=""cf-callout__content"">World</p>
+-    </div>
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Callout title=""Hello"" content=""World"" />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render ""type""', () => {
+-  const component = renderer.create(
+-    <Callout type=""info"" title=""Hello"" content=""World"" />,
+-    // should equal
+-    <div className=""cf-callout cf-callout--info"">
+-      <h3 className=""cf-callout__heading"">Hello</h3>
+-      <p className=""cf-callout__content"">World</p>
+-    </div>
++  const snapshot = felaSnapshot(
++    <Callout type=""info"" title=""Hello"" content=""World"" />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,7,176,1,1,7,176
+295,8dff18bc54fe43210fabc7df095eab9b324751c6,c61c0d8b559b3b060844666b18cef1407b0f72a5,Figured I'd do both at the same time.,"feat(cf-component-copyable-textarea): s/CSS/fela/
+
+BREAKING CHANGE: Internals have been rewritten in a significant way.
+This warrants a breaking change version bump.
+
+Closes: #218
+","diff --git a/packages/cf-component-copyable-textarea/test/CopyableTextarea.js b/packages/cf-component-copyable-textarea/test/CopyableTextarea.js
+index 3c88d0a..57ff7df 100644
+--- a/packages/cf-component-copyable-textarea/test/CopyableTextarea.js
++++ b/packages/cf-component-copyable-textarea/test/CopyableTextarea.js
+@@ -1,8 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+ import jsdom from 'jsdom';
+ import { mount } from 'enzyme';
+-import CopyableTextarea from '../../cf-component-copyable-textarea/src/index';
++import { felaSnapshot, felaTestContext } from 'cf-style-provider';
++import {
++  CopyableTextarea
++} from '../../cf-component-copyable-textarea/src/index';
+ 
+ beforeEach(() => {
+   const doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
+@@ -12,7 +14,7 @@ beforeEach(() => {
+ });
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <CopyableTextarea
+       name=""example""
+       value=""content""
+@@ -21,17 +23,20 @@ test('should render', () => {
+       pressCommandOrCtrlCToCopyText=""press here""
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should call onCopy on focus', () => {
+   let clicked = false;
+   const copyableTextarea = mount(
+-    <CopyableTextarea
+-      name=""example""
+-      value=""content""
+-      onCopy={() => clicked = true}
+-    />
++    felaTestContext(
++      <CopyableTextarea
++        name=""example""
++        value=""content""
++        onCopy={() => clicked = true}
++      />
++    )
+   );
+   copyableTextarea.find('textarea').simulate('focus');
+   expect(clicked).toBeTruthy();
+@@ -39,16 +44,16 @@ test('should call onCopy on focus', () => {
+ 
+ test('should render copied help text after copying', () => {
+   const copyableTextarea = mount(
+-    <CopyableTextarea
+-      name=""example""
+-      value=""content""
+-      copiedTextToClipboardText=""copied""
+-    />
++    felaTestContext(
++      <CopyableTextarea
++        name=""example""
++        value=""content""
++        copiedTextToClipboardText=""copied""
++      />
++    )
+   );
+   copyableTextarea.find('textarea').simulate('focus');
+-  expect(copyableTextarea.find('.cf-copyable-textarea__help-text').text()).toBe(
+-    'copied'
+-  );
++  expect(copyableTextarea.find('p').get(1).innerHTML).toBe('copied');
+ });
+ 
+ test('should render press help text if copying was not successful', () => {
+@@ -56,14 +61,14 @@ test('should render press help text if copying was not successful', () => {
+     throw new Error('error');
+   };
+   const copyableTextarea = mount(
+-    <CopyableTextarea
+-      name=""example""
+-      value=""content""
+-      pressCommandOrCtrlCToCopyText=""press here""
+-    />
++    felaTestContext(
++      <CopyableTextarea
++        name=""example""
++        value=""content""
++        pressCommandOrCtrlCToCopyText=""press here""
++      />
++    )
+   );
+   copyableTextarea.find('textarea').simulate('focus');
+-  expect(copyableTextarea.find('.cf-copyable-textarea__help-text').text()).toBe(
+-    'press here'
+-  );
++  expect(copyableTextarea.find('p').get(1).innerHTML).toBe('press here');
+ });
+",0,,7,132,1,2,17,415
+314,47f7e9f4480ab99b097e81b948aae5454737ca33,47f7e9f4480ab99b097e81b948aae5454737ca33,"I added a second commit that fixes this gap in the examples:
+
+Before:
+
+![image](https://user-images.githubusercontent.com/318208/28321268-c0b30fc6-6bca-11e7-8624-05e0be7da787.png)
+
+After:
+
+![image](https://user-images.githubusercontent.com/318208/28321284-cabb041a-6bca-11e7-8718-e7b432c76fba.png)
+","fix(cf-component-tabs): encapsulate content
+
+Previously if a tabs panel content has had some top margin it would push
+the tabs and the content apart resulting in a break in the border where
+the content and the tabs meet. This was due to the content and the tabs
+having separate borders made to look like the same border by being
+pushed up to each other.
+
+This patch sets the border on the whole component so it encapsulates all
+the content and makes changes to the tabs and content to accommodate
+this.
+","diff --git a/packages/cf-component-tabs/test/Tabs.js b/packages/cf-component-tabs/test/Tabs.js
+index 8192c48..c94188b 100644
+--- a/packages/cf-component-tabs/test/Tabs.js
++++ b/packages/cf-component-tabs/test/Tabs.js
+@@ -1,9 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { Tabs, TabsPanel } from '../../cf-component-tabs/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Tabs
+       active=""2""
+       tabs={[{ id: '1', label: 'One' }, { id: '2', label: 'Two' }]}
+@@ -13,5 +14,6 @@ test('should render', () => {
+       <TabsPanel id=""2"">Two</TabsPanel>
+     </Tabs>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-tabs/test/TabsPanel.js b/packages/cf-component-tabs/test/TabsPanel.js
+index 3ad1ea6..beb84ed 100644
+--- a/packages/cf-component-tabs/test/TabsPanel.js
++++ b/packages/cf-component-tabs/test/TabsPanel.js
+@@ -1,6 +1,7 @@
+ import React from 'react';
+ import PropTypes from 'prop-types';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { TabsPanel } from '../../cf-component-tabs/src/index';
+ 
+ class Context extends React.Component {
+@@ -22,19 +23,21 @@ Context.childContextTypes = {
+ };
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Context active=""something-else"">
+       <TabsPanel id=""tab"">TabsPanel</TabsPanel>
+     </Context>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render active', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Context active=""tab"">
+       <TabsPanel id=""tab"">TabsPanel</TabsPanel>
+     </Context>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,8,98,2,2,9,238
+315,e41acf19f3fdd9c252f1586a08f1e15c61343946,e41acf19f3fdd9c252f1586a08f1e15c61343946,"BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #211","feat(cf-component-code): rewrite styling in fela
+
+BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #211
+","diff --git a/packages/cf-component-code/test/Code.js b/packages/cf-component-code/test/Code.js
+index 34c9661..65a4b06 100644
+--- a/packages/cf-component-code/test/Code.js
++++ b/packages/cf-component-code/test/Code.js
+@@ -1,8 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { Code } from '../../cf-component-code/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Code>Hello</Code>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Code>Hello</Code>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-code/test/CodeBlock.js b/packages/cf-component-code/test/CodeBlock.js
+index 231cecc..806aaac 100644
+--- a/packages/cf-component-code/test/CodeBlock.js
++++ b/packages/cf-component-code/test/CodeBlock.js
+@@ -1,8 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { CodeBlock } from '../../cf-component-code/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<CodeBlock>Hello</CodeBlock>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<CodeBlock>Hello</CodeBlock>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,12,374,5,1,12,374
+316,8aa181955c4fc929f42fa58dec83277b3ef16097,082d140c455f709022f33009847c70ae9a5a8bb1,"BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #222","feat(cf-component-radio): rewrite styling in fela
+
+BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #222
+","diff --git a/packages/cf-component-radio/test/Radio.js b/packages/cf-component-radio/test/Radio.js
+index 44d716a..6da850a 100644
+--- a/packages/cf-component-radio/test/Radio.js
++++ b/packages/cf-component-radio/test/Radio.js
+@@ -1,9 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { Radio } from '../../cf-component-radio/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Radio
+       label=""Option 1""
+       name=""radio-option-1""
+@@ -12,11 +13,12 @@ test('should render', () => {
+       onChange={() => {}}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render checked', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Radio
+       label=""Option 1""
+       name=""radio-option-1""
+@@ -25,11 +27,12 @@ test('should render checked', () => {
+       onChange={() => {}}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render without a label', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <Radio
+       label={false}
+       name=""radio-option-1""
+@@ -38,5 +41,6 @@ test('should render without a label', () => {
+       onChange={() => {}}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-radio/test/RadioGroup.js b/packages/cf-component-radio/test/RadioGroup.js
+index 493a6a6..58642cf 100644
+--- a/packages/cf-component-radio/test/RadioGroup.js
++++ b/packages/cf-component-radio/test/RadioGroup.js
+@@ -1,9 +1,10 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
++
+ import { RadioGroup } from '../../cf-component-radio/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <RadioGroup
+       value=""option1""
+       onChange={() => {}}
+@@ -13,5 +14,6 @@ test('should render', () => {
+       ]}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,8,959,2,2,8,959
+319,f718485c9d03386f8ef81dfb532ecf014d47dae5,f718485c9d03386f8ef81dfb532ecf014d47dae5,"BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #231","feat(cf-component-list): rewrite styling in fela
+
+BREAKING CHANGE: This change is a significant change in the component
+internals warranting a major bump in version number.
+
+Closes: #231
+","diff --git a/packages/cf-component-list/test/List.js b/packages/cf-component-list/test/List.js
+deleted file mode 100644
+index 27e4ae7..0000000
+--- a/packages/cf-component-list/test/List.js
++++ /dev/null
+@@ -1,18 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { List } from '../../cf-component-list/src/index';
+-
+-test('should render', () => {
+-  const component = renderer.create(<List>List</List>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+-
+-test('should render ordered', () => {
+-  const component = renderer.create(<List ordered>List</List>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+-
+-test('should render unstyled', () => {
+-  const component = renderer.create(<List unstyled>List</List>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-list/test/ListItem.js b/packages/cf-component-list/test/ListItem.js
+index 714706c..24ce244 100644
+--- a/packages/cf-component-list/test/ListItem.js
++++ b/packages/cf-component-list/test/ListItem.js
+@@ -1,8 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { felaSnapshot } from 'cf-style-provider';
+ import { ListItem } from '../../cf-component-list/src/index';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<ListItem>ListItem</ListItem>);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<ListItem>ListItem</ListItem>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-list/test/OrderedList.js b/packages/cf-component-list/test/OrderedList.js
+new file mode 100644
+index 0000000..87f95f2
+--- /dev/null
++++ b/packages/cf-component-list/test/OrderedList.js
+@@ -0,0 +1,9 @@
++import React from 'react';
++import { felaSnapshot } from 'cf-style-provider';
++import { OrderedList } from '../../cf-component-list/src/index';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<OrderedList>List</OrderedList>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+
+diff --git a/packages/cf-component-list/test/UnorderedList.js b/packages/cf-component-list/test/UnorderedList.js
+new file mode 100644
+index 0000000..89a92f6
+--- /dev/null
++++ b/packages/cf-component-list/test/UnorderedList.js
+@@ -0,0 +1,9 @@
++import React from 'react';
++import { felaSnapshot } from 'cf-style-provider';
++import { UnorderedList } from '../../cf-component-list/src/index';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<UnorderedList>List</UnorderedList>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+",0,,17,270,4,1,17,270
+323,a75e87910dccfe3fd597e8be1e057b4aa3ef543b,a75e87910dccfe3fd597e8be1e057b4aa3ef543b,"Convert the `cf-component-dynamic-content` to fela.
+
+Related-to: #227","feat(cf-component-dynamic-content): css2fela
+
+Convert the `cf-component-dynamic-content` to fela.
+
+Related-to: #227
+","diff --git a/packages/cf-builder-card/test/cardBuilder.js b/packages/cf-builder-card/test/cardBuilder.js
+index d2a22d1..1060db1 100644
+--- a/packages/cf-builder-card/test/cardBuilder.js
++++ b/packages/cf-builder-card/test/cardBuilder.js
+@@ -2,6 +2,7 @@ import React from 'react';
+ import renderer from 'react-test-renderer';
+ import { createStore, combineReducers } from 'redux';
+ import { Provider } from 'react-redux';
++import { felaTestContext } from 'cf-style-provider';
+ import {
+   cardActions,
+   cardReducer,
+@@ -21,31 +22,34 @@ beforeEach(() => {
+ 
+ test('should render a card', () => {
+   const component = renderer.create(
+-    <Provider store={store}>
+-      <CardBuilder
+-        cardName=""test-card""
+-        title=""This is a Card""
+-        description=""This is the description of a card.""
+-      />
+-    </Provider>
++    felaTestContext(
++      <Provider store={store}>
++        <CardBuilder
++          cardName=""test-card""
++          title=""This is a Card""
++          description=""This is the description of a card.""
++        />
++      </Provider>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render the description with markdown', () => {
+   const wrapper = mount(
+-    <Provider store={store}>
+-      <CardBuilder
+-        cardName=""test-card""
+-        title=""This is a Card""
+-        description=""This is the *description* of a card.""
+-      />
+-    </Provider>
++    felaTestContext(
++      <Provider store={store}>
++        <CardBuilder
++          cardName=""test-card""
++          title=""This is a Card""
++          description=""This is the *description* of a card.""
++        />
++      </Provider>
++    )
+   );
+ 
+   const description = wrapper
+-    .find('.cf-card__content')
+-    .find('.cf-dynamic-content')
++    .find('DynamicContent')
+     .render() // entering dynamic content
+     .find('p')
+     .html();
+@@ -56,14 +60,16 @@ test('should render the description with markdown', () => {
+ test('should render button', () => {
+   const button = <button>Click Me</button>;
+   const component = renderer.create(
+-    <Provider store={store}>
+-      <CardBuilder
+-        cardName=""test-card""
+-        title=""This is a Card""
+-        description=""This is the *description* of a card.""
+-        control={button}
+-      />
+-    </Provider>
++    felaTestContext(
++      <Provider store={store}>
++        <CardBuilder
++          cardName=""test-card""
++          title=""This is a Card""
++          description=""This is the *description* of a card.""
++          control={button}
++        />
++      </Provider>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+@@ -71,39 +77,43 @@ test('should render button', () => {
+ test('should render a table', () => {
+   const table = <table />;
+   const component = renderer.create(
+-    <Provider store={store}>
+-      <CardBuilder
+-        cardName=""test-card""
+-        title=""This is a Card""
+-        description=""This is the *description* of a card.""
+-        table={table}
+-      />
+-    </Provider>
++    felaTestContext(
++      <Provider store={store}>
++        <CardBuilder
++          cardName=""test-card""
++          title=""This is a Card""
++          description=""This is the *description* of a card.""
++          table={table}
++        />
++      </Provider>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+ 
+ test('should render drawers', () => {
+   const component = renderer.create(
+-    <Provider store={store}>
+-      <CardBuilder
+-        cardName=""test-card""
+-        title=""This is a Card""
+-        description=""This is the *description* of a card.""
+-        drawers={[
+-          {
+-            id: 'help',
+-            name: 'Help',
+-            content: 'Help Content'
+-          },
+-          {
+-            id: 'api',
+-            name: 'API',
+-            content: 'API Content'
+-          }
+-        ]}
+-      />
+-    </Provider>
++    felaTestContext(
++      <Provider store={store}>
++        <CardBuilder
++          cardName=""test-card""
++          title=""This is a Card""
++          description=""This is the *description* of a card.""
++          drawers={[
++            {
++              id: 'help',
++              name: 'Help',
++              content: 'Help Content'
++            },
++            {
++              id: 'api',
++              name: 'API',
++              content: 'API Content'
++            }
++          ]}
++        />
++      </Provider>
++    )
+   );
+   expect(component.toJSON()).toMatchSnapshot();
+ });
+
+diff --git a/packages/cf-component-dynamic-content/test/DynamicContent.js b/packages/cf-component-dynamic-content/test/DynamicContent.js
+index dd4d0d1..e53cb7c 100644
+--- a/packages/cf-component-dynamic-content/test/DynamicContent.js
++++ b/packages/cf-component-dynamic-content/test/DynamicContent.js
+@@ -1,12 +1,13 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import DynamicContent from '../../cf-component-dynamic-content/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { DynamicContent } from '../../cf-component-dynamic-content/src/index';
+ 
+ test('should render', function() {
+-  const component = renderer.create(
++  const snapshot = felaSnapshot(
+     <DynamicContent
+       dangerouslySetInnerHTML={{ __html: '<p>Hello World</p>' }}
+     />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,10,169,2,1,10,169
+330,beba7f6d915073c41931174eabafcb8a8f99d382,9c87f65963399bebfa5750026332a95c72ea7352,If this PR gets merged I'll manually deprecate the packages on npm.,"chore: remove `cf-component-typography`
+
+Closes: #229
+","diff --git a/packages/cf-component-typography/test/Abbr.js b/packages/cf-component-typography/test/Abbr.js
+deleted file mode 100644
+index 1fd1acc..0000000
+--- a/packages/cf-component-typography/test/Abbr.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Abbr from '../src/Abbr';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Abbr title=""Abbreviation"">Abbr</Abbr>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Cite.js b/packages/cf-component-typography/test/Cite.js
+deleted file mode 100644
+index 5031956..0000000
+--- a/packages/cf-component-typography/test/Cite.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Cite from '../src/Cite';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Cite>Cite</Cite>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Del.js b/packages/cf-component-typography/test/Del.js
+deleted file mode 100644
+index 49ac93d..0000000
+--- a/packages/cf-component-typography/test/Del.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Del from '../src/Del';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Del>Del</Del>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Em.js b/packages/cf-component-typography/test/Em.js
+deleted file mode 100644
+index 68556dc..0000000
+--- a/packages/cf-component-typography/test/Em.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Em from '../src/Em';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Em>Em</Em>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Ins.js b/packages/cf-component-typography/test/Ins.js
+deleted file mode 100644
+index d7e0ea8..0000000
+--- a/packages/cf-component-typography/test/Ins.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Ins from '../src/Ins';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Ins>Ins</Ins>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Kbd.js b/packages/cf-component-typography/test/Kbd.js
+deleted file mode 100644
+index e2099d8..0000000
+--- a/packages/cf-component-typography/test/Kbd.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Kbd from '../src/Kbd';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Kbd>Kbd</Kbd>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Mark.js b/packages/cf-component-typography/test/Mark.js
+deleted file mode 100644
+index e1b0b65..0000000
+--- a/packages/cf-component-typography/test/Mark.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Mark from '../src/Mark';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Mark>Mark</Mark>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Samp.js b/packages/cf-component-typography/test/Samp.js
+deleted file mode 100644
+index e4cdc3f..0000000
+--- a/packages/cf-component-typography/test/Samp.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Samp from '../src/Samp';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Samp>Samp</Samp>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Small.js b/packages/cf-component-typography/test/Small.js
+deleted file mode 100644
+index 55c44b8..0000000
+--- a/packages/cf-component-typography/test/Small.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Small from '../src/Small';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Small>Small</Small>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Strike.js b/packages/cf-component-typography/test/Strike.js
+deleted file mode 100644
+index 51621f7..0000000
+--- a/packages/cf-component-typography/test/Strike.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Strike from '../src/Strike';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Strike>Strike</Strike>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Strong.js b/packages/cf-component-typography/test/Strong.js
+deleted file mode 100644
+index fccd7ba..0000000
+--- a/packages/cf-component-typography/test/Strong.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Strong from '../src/Strong';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Strong>Strong</Strong>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Sub.js b/packages/cf-component-typography/test/Sub.js
+deleted file mode 100644
+index 4c248b5..0000000
+--- a/packages/cf-component-typography/test/Sub.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Sub from '../src/Sub';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Sub>Sub</Sub>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Sup.js b/packages/cf-component-typography/test/Sup.js
+deleted file mode 100644
+index 11113ed..0000000
+--- a/packages/cf-component-typography/test/Sup.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Sup from '../src/Sup';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Sup>Sup</Sup>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Underline.js b/packages/cf-component-typography/test/Underline.js
+deleted file mode 100644
+index 095f516..0000000
+--- a/packages/cf-component-typography/test/Underline.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Underline from '../src/Underline';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Underline>Underline</Underline>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+
+diff --git a/packages/cf-component-typography/test/Var.js b/packages/cf-component-typography/test/Var.js
+deleted file mode 100644
+index 2a33b46..0000000
+--- a/packages/cf-component-typography/test/Var.js
++++ /dev/null
+@@ -1,8 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Var from '../src/Var';
+-
+-test('should render', () => {
+-  const component = renderer.create(<Var>Var</Var>);
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+",0,,50,695,15,4,83,1529
+335,ba501e90a1853bccd1ffb93c1daab463fd96c28a,ba501e90a1853bccd1ffb93c1daab463fd96c28a,"Migrate the `cf-component-select` component to use the CSS-in-JS
+framework fela.
+
+Closes: #213","feat(cf-component-select): migrate select to fela
+
+Migrate the `cf-component-select` component to use the CSS-in-JS
+framework fela.
+
+Closes: #213
+","diff --git a/packages/cf-component-select/test/Select.js b/packages/cf-component-select/test/Select.js
+index 5d7db88..8d64459 100644
+--- a/packages/cf-component-select/test/Select.js
++++ b/packages/cf-component-select/test/Select.js
+@@ -1,9 +1,9 @@
+ import React from 'react';
+-import { shallow } from 'enzyme';
+-import toJson from 'enzyme-to-json';
+-import Select from '../../cf-component-select/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { Select } from '../../cf-component-select/src/index';
+ 
+ test('should render', () => {
+-  const tree = shallow(<Select />);
+-  expect(toJson(tree)).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Select />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,9,203,1,1,9,203
+340,02c283a239331ae14856789b7dd093f2529288de,02c283a239331ae14856789b7dd093f2529288de,Checked www-next for any use of invalid on `<input/>`. It's all good. I'll publish once this is merged.,"chore(cf-component-input): Removed unused invalid propType  to fix propType error
+","diff --git a/packages/cf-component-input/test/Input.js b/packages/cf-component-input/test/Input.js
+index 65e48e5..9d0bb4f 100644
+--- a/packages/cf-component-input/test/Input.js
++++ b/packages/cf-component-input/test/Input.js
+@@ -20,7 +20,7 @@ test('should render with type', () => {
+ 
+ test('should render with error', () => {
+   const snapshot = felaSnapshot(
+-    <Input name=""example"" value="""" invalid onChange={() => {}} />
++    <Input name=""example"" value="""" onChange={() => {}} />
+   );
+   expect(snapshot.component).toMatchSnapshot();
+   expect(snapshot.styles).toMatchSnapshot();
+@@ -54,7 +54,6 @@ test('should pass all props down to the inner input and merge classnames', () =>
+       value=""""
+       onChange={() => {}}
+       disabled
+-      invalid
+       type=""number""
+       data-shadowed={true}
+       min={3}
+",0,,3,10,1,1,3,10
+344,6d85022558039ee1491661a2b65c7fe6d5722fe9,6d85022558039ee1491661a2b65c7fe6d5722fe9,"- new color used by navigation
+- new special media query used by navigation
+- removal of flex from the form component, it's not needed and it breaks cf-styleguide","feat(cf-style-provider): Add two new breakpoints to support new navigation
+","diff --git a/packages/cf-style-container/test/index.js b/packages/cf-style-container/test/index.js
+index aa94847..03662c0 100644
+--- a/packages/cf-style-container/test/index.js
++++ b/packages/cf-style-container/test/index.js
+@@ -25,7 +25,9 @@ test('mergeThemes should return an immutable and deeply cloned object', () => {
+       desktopLarge: '1em',
+       mobile: '1em',
+       mobileWide: '1em',
+-      tablet: '1em'
++      tablet: '1em',
++      tabletWide: '1em',
++      tabletLegacy: '1em'
+     }
+   };
+   const props = mergeThemes(variables, themeA, themeB);
+",0,,4,18,1,5,5,62
+359,fe37cee7d4b5f85740d3c2a3dc10a0abe64137f4,c07f682a962ceb0e1c4c63c7f4778f7905d2790d,"![screen shot 2017-08-28 at 5 09 53 pm](https://user-images.githubusercontent.com/1387913/29798740-c8945fce-8c13-11e7-8d61-e841a6b94902.png)
+
+**Demo of responsivity and stickiness:**
+![header](https://user-images.githubusercontent.com/1387913/29798748-e4b37b4a-8c13-11e7-9fd0-f12435f04c33.gif)
+","feat(cf-component-page): Add Header and related components
+","diff --git a/packages/cf-component-page/test/Header.js b/packages/cf-component-page/test/Header.js
+new file mode 100644
+index 0000000..3d80fb3
+--- /dev/null
++++ b/packages/cf-component-page/test/Header.js
+@@ -0,0 +1,16 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Header from '../src/Header';
++import { felaSnapshot } from 'cf-style-provider';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<Header>Hello World</Header>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
++
++test('should render sticky', () => {
++  const snapshot = felaSnapshot(<Header sticky>Hello World</Header>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+
+diff --git a/packages/cf-component-page/test/Logo.js b/packages/cf-component-page/test/Logo.js
+new file mode 100644
+index 0000000..1aba77b
+--- /dev/null
++++ b/packages/cf-component-page/test/Logo.js
+@@ -0,0 +1,10 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Logo from '../src/Logo';
++import { felaSnapshot } from 'cf-style-provider';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<Logo />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+
+diff --git a/packages/cf-component-page/test/NavItem.js b/packages/cf-component-page/test/NavItem.js
+new file mode 100644
+index 0000000..72446b0
+--- /dev/null
++++ b/packages/cf-component-page/test/NavItem.js
+@@ -0,0 +1,10 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import NavItem from '../src/NavItem';
++import { felaSnapshot } from 'cf-style-provider';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<NavItem />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+
+diff --git a/packages/cf-component-page/test/NavList.js b/packages/cf-component-page/test/NavList.js
+new file mode 100644
+index 0000000..5b9abc9
+--- /dev/null
++++ b/packages/cf-component-page/test/NavList.js
+@@ -0,0 +1,10 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import NavList from '../src/NavList';
++import { felaSnapshot } from 'cf-style-provider';
++
++test('should render', () => {
++  const snapshot = felaSnapshot(<NavList />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+",1,None=None,19,493,4,11,46,1755
+360,1447ef827b837d8b807236fe47bc0222b5ef1e8d,1447ef827b837d8b807236fe47bc0222b5ef1e8d,"Creates a basic toast component for displaying inline success and error messages.
+
+In the future, perhaps this can be enhanced to be dismissible, and anchor to different parts of the screen. For now, its a humble colored box.","feat(cf-component-toast): Initial commit of basic toast
+","diff --git a/packages/cf-component-toast/test/Toast.js b/packages/cf-component-toast/test/Toast.js
+new file mode 100644
+index 0000000..73f63d1
+--- /dev/null
++++ b/packages/cf-component-toast/test/Toast.js
+@@ -0,0 +1,21 @@
++import React from 'react';
++import { felaSnapshot } from 'cf-style-provider';
++import { Toast } from '../../cf-component-toast/src/index';
++
++test('should render success', () => {
++  const snapshot = felaSnapshot(<Toast type=""success"">Success</Toast>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
++
++test('should render error', () => {
++  const snapshot = felaSnapshot(<Toast type=""error"">Error</Toast>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
++
++test('should render info', () => {
++  const snapshot = felaSnapshot(<Toast type=""info"">Info</Toast>);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
++});
+",0,,11,1113,2,1,11,1113
+367,e268d9d0b98b05379af8e0f8dca13f7c53cfc2e2,86c5c6303915302ac4e139bae5ea94c54814dc89,"I still need to do some things here. But I would appreciate a look through the code.
+**BREAKING CHANGE**
+ - Removes unused features spin, border, muted and white
+ - Adds colors - primary,danger,warning,success,default,black,white
+ - Changes font icons to svg icons
+ - Removed unused type and size aliases
+
+**TODO:**
+1) Waiting for the new loading icon and close icon
+2) Waiting for minified svgs (without titles, and inline styles)
+
+This breaks some packages which I will fix. (Or feel free to update your package and fix too 🥇 )
+
+**BREAKS:**
+         _cf-ui_
+```
+packages/cf-builder-pagination/src/PaginationBuilder.js
+packages/cf-component-heading/src/index.js
+packages/cf-component-loading/src/Loading.js
+packages/cf-component-pagination/example/basic/component.js
+packages/cf-component-pagination/src/PaginationItem.js
+```
+
+
+_cf_ux_
+
+```
+packages/cf-component-navigation/src/Nav.js
+packages/cf-component-search/src/Search.js
+```
+
+<img width=""972"" alt=""screen shot 2017-09-10 at 8 28 06 pm"" src=""https://user-images.githubusercontent.com/4206893/30257376-9a6b5db6-9666-11e7-8cc4-3a01af4ff68d.png"">
+
+And here's new loading gif. Sorry about the choppy framerate and my over excited mouse movement.
+![screenflow](https://user-images.githubusercontent.com/4206893/30354071-3bdd22a0-97df-11e7-84d4-71556bf3f0a3.gif)
+
+
+","feat(cf-component-icon): Update svgs to be functions
+","diff --git a/packages/cf-component-icon/test/Icon.js b/packages/cf-component-icon/test/Icon.js
+index fa079f7..f58a220 100644
+--- a/packages/cf-component-icon/test/Icon.js
++++ b/packages/cf-component-icon/test/Icon.js
+@@ -1,34 +1,39 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Icon from '../../cf-component-icon/src/index';
++import { felaSnapshot } from 'cf-style-provider';
++import { Icon } from '../../cf-component-icon/src/index';
+ 
+ test('should render type', () => {
+-  const component = renderer.create(<Icon type=""info-sign"" label=""Info"" />);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Icon type=""info-sign"" label=""Info"" />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render type/size', () => {
+-  const component = renderer.create(
+-    <Icon type=""info-sign"" label=""Info"" size=""xlarge"" />
++  const snapshot = felaSnapshot(
++    <Icon type=""hamburger"" label=""Info"" size=""2x"" />
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
+-});
+-
+-test('should render type/border/spin/muted/white', () => {
+-  const component = renderer.create(
+-    <Icon type=""info-sign"" label=""Info"" border spin muted white />
+-  );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+ test('should render type with no label', () => {
+-  const component = renderer.create(<Icon type=""info-sign"" label={false} />);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const snapshot = felaSnapshot(<Icon type=""info-sign"" label={false} />);
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+ 
+-test('should render role', () => {
+-  const component = renderer.create(
+-    <Icon type=""loading"" label={false} role=""status"" />
++test('should render colors', () => {
++  const snapshot = felaSnapshot(
++    <div>
++      <Icon label=""default"" size=""2x"" type=""search"" color=""default"" />
++      <Icon label=""primary"" size=""2x"" type=""caret-right"" color=""primary"" />
++      <Icon label=""success"" size=""2x"" type=""ok"" color=""success"" />
++      <Icon label=""warning"" size=""2x"" type=""info-sign"" color=""warning"" />
++      <Icon label=""danger"" size=""2x"" type=""exclamation-sign"" color=""danger"" />
++      <Icon label=""black"" size=""2x"" type=""remove"" color=""black"" />
++      <Icon label=""white"" size=""2x"" type=""shield"" color=""white"" />
++    </div>
+   );
+-  expect(component.toJSON()).toMatchSnapshot();
++  expect(snapshot.component).toMatchSnapshot();
++  expect(snapshot.styles).toMatchSnapshot();
+ });
+",0,,99,1230,1,10,76,2655
+94,2c3e2af69718439b61e47b50b09e416972227100,2c3e2af69718439b61e47b50b09e416972227100,… created,"Use enzyme to generate the snapshot shallowly
+","diff --git a/packages/cf-component-select/test/Select.js b/packages/cf-component-select/test/Select.js
+index e4a6c66..f2f2fc3 100644
+--- a/packages/cf-component-select/test/Select.js
++++ b/packages/cf-component-select/test/Select.js
+@@ -1,8 +1,9 @@
+ import React from 'react';
+-import renderer from 'react-test-renderer';
++import { shallow } from 'enzyme';
++import toJson from 'enzyme-to-json';
+ import Select from 'cf-component-select';
+ 
+ test('should render', () => {
+-  const component = renderer.create(<Select />);
+-  expect(component.toJSON()).toMatchSnapshot();
++  const tree = shallow(<Select />);
++  expect(toJson(tree)).toMatchSnapshot();
+ });
+",0,,2,100,1,5,7,137

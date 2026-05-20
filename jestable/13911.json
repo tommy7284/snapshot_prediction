@@ -1,0 +1,75 @@
+{
+    "id": 4039219,
+    "name": "huiseoul/react-native-fit-image",
+    "isFork": false,
+    "commits": 153,
+    "branches": 8,
+    "releases": 22,
+    "forks": 57,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 555,
+    "contributors": 15,
+    "size": 7110,
+    "createdAt": "2016-04-22T07:43:12",
+    "pushedAt": "2021-08-10T10:29:37",
+    "updatedAt": "2021-08-11T08:26:49",
+    "totalIssues": 57,
+    "openIssues": 3,
+    "totalPullRequests": 51,
+    "openPullRequests": 7,
+    "blankLines": 76,
+    "codeLines": 470,
+    "commentLines": 30,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 61,
+            "blankLines": 13
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 27,
+            "codeLines": 246,
+            "blankLines": 52
+        },
+        {
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 18,
+            "blankLines": 6
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 145,
+            "blankLines": 5
+        }
+    ],
+    "lastCommit": "2020-06-12T06:54:19",
+    "lastCommitSHA": "5e61f47def830a51865012b96c6565d6380fcb8e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 8063
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "etc",
+        "feature",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

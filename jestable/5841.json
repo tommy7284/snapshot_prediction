@@ -1,0 +1,94 @@
+{
+    "id": 6188519,
+    "name": "react-native-community/releases",
+    "isFork": false,
+    "commits": 330,
+    "branches": 6,
+    "releases": 0,
+    "forks": 431,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://github.com/facebook/react-native/",
+    "watchers": 400,
+    "stargazers": 1504,
+    "contributors": 49,
+    "size": 1614,
+    "createdAt": "2018-01-20T02:49:59",
+    "pushedAt": "2022-06-17T11:11:24",
+    "updatedAt": "2022-06-19T06:07:57",
+    "totalIssues": 106,
+    "openIssues": 0,
+    "totalPullRequests": 150,
+    "openPullRequests": 3,
+    "blankLines": 1253,
+    "codeLines": 9236,
+    "commentLines": 53,
+    "metrics": [
+        {
+            "blankLines": 6,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 4846
+        },
+        {
+            "blankLines": 132,
+            "language": "TypeScript",
+            "commentLines": 53,
+            "codeLines": 876
+        },
+        {
+            "blankLines": 8,
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 49
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 46
+        },
+        {
+            "blankLines": 1107,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3418
+        }
+    ],
+    "lastCommit": "2022-06-17T11:09:50",
+    "lastCommitSHA": "8d0bae7bef788ab0029ad4d60227450821a6a395",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 22967,
+        "TypeScript": 6933
+    },
+    "labels": [
+        "backport request",
+        "changelog entry",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "pre-release",
+        "question",
+        "rc",
+        "release status",
+        "rfc",
+        "stable",
+        "triage",
+        "wontfix"
+    ],
+    "topics": []
+}

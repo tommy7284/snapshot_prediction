@@ -1,0 +1,1473 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+1009,740f75a83d5f441d6d149057200398f4ab5440d5,13b016706d5fccc4a846cc863475c881e7c39f0c,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"Closes #1008
+
+Beta version: `react-tooltip@5.10.6-beta.1009.1`","test: update snapshots
+",,0,
+1009,740f75a83d5f441d6d149057200398f4ab5440d5,13b016706d5fccc4a846cc863475c881e7c39f0c,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Closes #1008
+
+Beta version: `react-tooltip@5.10.6-beta.1009.1`","test: update snapshots
+",,0,
+1009,740f75a83d5f441d6d149057200398f4ab5440d5,13b016706d5fccc4a846cc863475c881e7c39f0c,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"Closes #1008
+
+Beta version: `react-tooltip@5.10.6-beta.1009.1`","test: update snapshots
+",,0,
+1009,740f75a83d5f441d6d149057200398f4ab5440d5,13b016706d5fccc4a846cc863475c881e7c39f0c,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Closes #1008
+
+Beta version: `react-tooltip@5.10.6-beta.1009.1`","test: update snapshots
+",,0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+",,0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+",,0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/utils.spec.js.snap,src/test/utils.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+","diff --git a/src/test/utils.spec.js b/src/test/utils.spec.js
+index 8c4cde1..b65da4a 100644
+--- a/src/test/utils.spec.js
++++ b/src/test/utils.spec.js
+@@ -55,19 +55,7 @@ describe('compute positions', () => {
+       tooltipArrowReference: elementTooltipArrow,
+     })
+ 
+-    expect(value).toEqual({
+-      tooltipArrowStyles: {
+-        bottom: '-4px',
+-        left: '5px',
+-        right: '',
+-        top: '',
+-      },
+-      tooltipStyles: {
+-        left: '5px',
+-        top: '-10px',
+-      },
+-      place: 'top',
+-    })
++    expect(value).toMatchSnapshot()
+   })
+ })
+ 
+",0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+",,0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+",,0,
+1075,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,0352afa3715f1e2ef443d0a7052ca1b396b35e5e,src/test/__snapshots__/utils.spec.js.snap,src/test/utils.spec.js,Relevant issue: https://github.com/ReactTooltip/react-tooltip/issues/1057,"test: update snapshots
+","diff --git a/src/test/utils.spec.js b/src/test/utils.spec.js
+index 8c4cde1..b65da4a 100644
+--- a/src/test/utils.spec.js
++++ b/src/test/utils.spec.js
+@@ -55,19 +55,7 @@ describe('compute positions', () => {
+       tooltipArrowReference: elementTooltipArrow,
+     })
+ 
+-    expect(value).toEqual({
+-      tooltipArrowStyles: {
+-        bottom: '-4px',
+-        left: '5px',
+-        right: '',
+-        top: '',
+-      },
+-      tooltipStyles: {
+-        left: '5px',
+-        top: '-10px',
+-      },
+-      place: 'top',
+-    })
++    expect(value).toMatchSnapshot()
+   })
+ })
+ 
+",0,
+1132,c359fb4a0ae11df8ce95ed453aa5043a8d89489e,c359fb4a0ae11df8ce95ed453aa5043a8d89489e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"As per the discussion here: https://github.com/ReactTooltip/react-tooltip/discussions/1129#discussioncomment-7717429
+
+Support `data-tooltip-class-name` on anchor elements for injection into the tooltip container.
+
+The tests doesn't look to be passing.
+","feat: support data-tooltip-class-name on anchor
+","diff --git a/src/test/tooltip-attributes.spec.js b/src/test/tooltip-attributes.spec.js
+index 6c50c19..eb59a7c 100644
+--- a/src/test/tooltip-attributes.spec.js
++++ b/src/test/tooltip-attributes.spec.js
+@@ -75,4 +75,28 @@ describe('tooltip attributes', () => {
+     expect(tooltip).toBeInTheDocument()
+     expect(container).toMatchSnapshot()
+   })
++
++  test('tooltip with class name', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-class-name-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-class-name=""tooltip-class-name""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++      expect(tooltip).toHaveClass('tooltip-class-name')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-class-name')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
+ })
+",0,
+1132,c359fb4a0ae11df8ce95ed453aa5043a8d89489e,c359fb4a0ae11df8ce95ed453aa5043a8d89489e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"As per the discussion here: https://github.com/ReactTooltip/react-tooltip/discussions/1129#discussioncomment-7717429
+
+Support `data-tooltip-class-name` on anchor elements for injection into the tooltip container.
+
+The tests doesn't look to be passing.
+","feat: support data-tooltip-class-name on anchor
+","diff --git a/src/test/tooltip-attributes.spec.js b/src/test/tooltip-attributes.spec.js
+index 6c50c19..eb59a7c 100644
+--- a/src/test/tooltip-attributes.spec.js
++++ b/src/test/tooltip-attributes.spec.js
+@@ -75,4 +75,28 @@ describe('tooltip attributes', () => {
+     expect(tooltip).toBeInTheDocument()
+     expect(container).toMatchSnapshot()
+   })
++
++  test('tooltip with class name', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-class-name-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-class-name=""tooltip-class-name""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++      expect(tooltip).toHaveClass('tooltip-class-name')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-class-name')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
+ })
+",0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,a64764d65185e88d29e48418bd8a0699050e7d10,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: update snapshot without undefined class
+",,0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,49b8899e995d37e33cf36c0054965ef29f2742f8,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: snapshots
+",,0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,75f5b174a1cc32bbc39cbe29ecae372d731df1cf,src/test/__snapshots__/utils.spec.js.snap,src/test/utils.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: compute position
+","diff --git a/src/test/utils.spec.js b/src/test/utils.spec.js
+index 9219a10..26fc9b5 100644
+--- a/src/test/utils.spec.js
++++ b/src/test/utils.spec.js
+@@ -58,6 +58,34 @@ describe('compute positions', () => {
+ 
+     expect(value).toMatchSnapshot()
+   })
++
++  test('all reference elements with border', async () => {
++    const element = document.createElement('div')
++    const elementTooltip = document.createElement('div')
++    const elementTooltipArrow = document.createElement('div')
++    const value = await computeTooltipPosition({
++      elementReference: element,
++      tooltipReference: elementTooltip,
++      tooltipArrowReference: elementTooltipArrow,
++      border: '1px solid red',
++    })
++
++    expect(value).toMatchSnapshot()
++  })
++
++  test('all reference elements with non-px border', async () => {
++    const element = document.createElement('div')
++    const elementTooltip = document.createElement('div')
++    const elementTooltipArrow = document.createElement('div')
++    const value = await computeTooltipPosition({
++      elementReference: element,
++      tooltipReference: elementTooltip,
++      tooltipArrowReference: elementTooltipArrow,
++      border: 'medium solid red',
++    })
++
++    expect(value).toMatchSnapshot()
++  })
+ })
+ 
+ describe('debounce', () => {
+",0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,a64764d65185e88d29e48418bd8a0699050e7d10,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: update snapshot without undefined class
+",,0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,49b8899e995d37e33cf36c0054965ef29f2742f8,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: snapshots
+",,0,
+1171,4696df62ae0af29155bb77600d072b1e8ce10190,75f5b174a1cc32bbc39cbe29ecae372d731df1cf,src/test/__snapshots__/utils.spec.js.snap,src/test/utils.spec.js,"Closes #1080.
+
+Might close other test related issues. Will have to check.","test: compute position
+","diff --git a/src/test/utils.spec.js b/src/test/utils.spec.js
+index 9219a10..26fc9b5 100644
+--- a/src/test/utils.spec.js
++++ b/src/test/utils.spec.js
+@@ -58,6 +58,34 @@ describe('compute positions', () => {
+ 
+     expect(value).toMatchSnapshot()
+   })
++
++  test('all reference elements with border', async () => {
++    const element = document.createElement('div')
++    const elementTooltip = document.createElement('div')
++    const elementTooltipArrow = document.createElement('div')
++    const value = await computeTooltipPosition({
++      elementReference: element,
++      tooltipReference: elementTooltip,
++      tooltipArrowReference: elementTooltipArrow,
++      border: '1px solid red',
++    })
++
++    expect(value).toMatchSnapshot()
++  })
++
++  test('all reference elements with non-px border', async () => {
++    const element = document.createElement('div')
++    const elementTooltip = document.createElement('div')
++    const elementTooltipArrow = document.createElement('div')
++    const value = await computeTooltipPosition({
++      elementReference: element,
++      tooltipReference: elementTooltip,
++      tooltipArrowReference: elementTooltipArrow,
++      border: 'medium solid red',
++    })
++
++    expect(value).toMatchSnapshot()
++  })
+ })
+ 
+ describe('debounce', () => {
+",0,
+1211,263138af8413cf7cd8f819a0705fffd472fa8b1f,263138af8413cf7cd8f819a0705fffd472fa8b1f,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Addresse #1210 
+
+Usage:
+```
+   <button
+      data-tooltip-id=""anchor-select""
+      data-tooltip-content=""this content is different""
+      data-tooltip-dynamic=""true""
+      style={{
+        maxWidth: '200px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      Anchor select with dynamic tooltip and a very long label to test overflow
+    </button>
+    <button data-tooltip-id=""anchor-select"" data-tooltip-dynamic=""true"">
+      Anchor select with dynamic tooltip
+    </button>
+    <button data-tooltip-id=""anchor-select"">Anchor select without dynamic tooltip</button>
+  </p>
+  <Tooltip
+    id=""anchor-select""
+    disableTooltip={(anchor) => {
+      const { scrollWidth, offsetWidth } = anchor as HTMLElement
+      if (anchor?.getAttribute('data-tooltip-dynamic') && scrollWidth <= offsetWidth) {
+        return true
+      }
+
+      return false
+    }}
+  >
+    Tooltip content
+  </Tooltip>
+```
+
+
+https://github.com/user-attachments/assets/932b76f2-8733-465a-bf02-8970da36435c
+
+
+
+<!-- This is an auto-generated comment: release notes by coderabbit.ai -->
+## Summary by CodeRabbit
+
+- **New Features**
+	- Introduced a new optional prop `disableTooltip` for the Tooltip component, allowing developers to conditionally disable tooltips for specific anchors.
+	- Enhanced the TooltipController component to support the new `disableTooltip` functionality, improving control over tooltip display behavior.
+  
+- **Documentation**
+	- Updated documentation to include the new `disableTooltip` function, providing guidance on controlling tooltip visibility based on anchor states.
+  
+- **Tests**
+	- Added test cases to validate the behavior of the `disableTooltip` prop, ensuring tooltips render correctly based on the prop's return value.
+<!-- end of auto-generated comment: release notes by coderabbit.ai -->","chore: adding tests for disableTooltip prop
+","diff --git a/src/test/tooltip-props.spec.js b/src/test/tooltip-props.spec.js
+index f43e354..a60a877 100644
+--- a/src/test/tooltip-props.spec.js
++++ b/src/test/tooltip-props.spec.js
+@@ -181,4 +181,35 @@ describe('tooltip props', () => {
+     expect(tooltip).toBeInTheDocument()
+     expect(container).toMatchSnapshot()
+   })
++
++  test('tooltip with disableTooltip return true', async () => {
++    render(
++      <TooltipProps
++        id=""example-disableTooltip-true""
++        content=""Hello World!""
++        disableTooltip={() => true}
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++    await userEvent.hover(anchorElement)
++
++    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++  })
++
++  test('tooltip with disableTooltip return false', async () => {
++    const { container } = render(
++      <TooltipProps
++        id=""example-disableTooltip-false""
++        content=""Hello World!""
++        disableTooltip={() => false}
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++    await userEvent.hover(anchorElement)
++
++    const tooltip = await screen.findByRole('tooltip')
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
+ })
+",0,
+1211,263138af8413cf7cd8f819a0705fffd472fa8b1f,263138af8413cf7cd8f819a0705fffd472fa8b1f,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"Addresse #1210 
+
+Usage:
+```
+   <button
+      data-tooltip-id=""anchor-select""
+      data-tooltip-content=""this content is different""
+      data-tooltip-dynamic=""true""
+      style={{
+        maxWidth: '200px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      Anchor select with dynamic tooltip and a very long label to test overflow
+    </button>
+    <button data-tooltip-id=""anchor-select"" data-tooltip-dynamic=""true"">
+      Anchor select with dynamic tooltip
+    </button>
+    <button data-tooltip-id=""anchor-select"">Anchor select without dynamic tooltip</button>
+  </p>
+  <Tooltip
+    id=""anchor-select""
+    disableTooltip={(anchor) => {
+      const { scrollWidth, offsetWidth } = anchor as HTMLElement
+      if (anchor?.getAttribute('data-tooltip-dynamic') && scrollWidth <= offsetWidth) {
+        return true
+      }
+
+      return false
+    }}
+  >
+    Tooltip content
+  </Tooltip>
+```
+
+
+https://github.com/user-attachments/assets/932b76f2-8733-465a-bf02-8970da36435c
+
+
+
+<!-- This is an auto-generated comment: release notes by coderabbit.ai -->
+## Summary by CodeRabbit
+
+- **New Features**
+	- Introduced a new optional prop `disableTooltip` for the Tooltip component, allowing developers to conditionally disable tooltips for specific anchors.
+	- Enhanced the TooltipController component to support the new `disableTooltip` functionality, improving control over tooltip display behavior.
+  
+- **Documentation**
+	- Updated documentation to include the new `disableTooltip` function, providing guidance on controlling tooltip visibility based on anchor states.
+  
+- **Tests**
+	- Added test cases to validate the behavior of the `disableTooltip` prop, ensuring tooltips render correctly based on the prop's return value.
+<!-- end of auto-generated comment: release notes by coderabbit.ai -->","chore: adding tests for disableTooltip prop
+","diff --git a/src/test/tooltip-props.spec.js b/src/test/tooltip-props.spec.js
+index f43e354..a60a877 100644
+--- a/src/test/tooltip-props.spec.js
++++ b/src/test/tooltip-props.spec.js
+@@ -181,4 +181,35 @@ describe('tooltip props', () => {
+     expect(tooltip).toBeInTheDocument()
+     expect(container).toMatchSnapshot()
+   })
++
++  test('tooltip with disableTooltip return true', async () => {
++    render(
++      <TooltipProps
++        id=""example-disableTooltip-true""
++        content=""Hello World!""
++        disableTooltip={() => true}
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++    await userEvent.hover(anchorElement)
++
++    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++  })
++
++  test('tooltip with disableTooltip return false', async () => {
++    const { container } = render(
++      <TooltipProps
++        id=""example-disableTooltip-false""
++        content=""Hello World!""
++        disableTooltip={() => false}
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++    await userEvent.hover(anchorElement)
++
++    const tooltip = await screen.findByRole('tooltip')
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
+ })
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,3563837c0532705b5ad42a78edc9b3272578ef4b,src/test/__snapshots__/index.spec.js.snap,src/test/index.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: placeholder
+",,0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,8be9ec543130d8c1a298dc35a98f851840e83975,src/test/__snapshots__/tooltip-wrapper.spec.js.snap,src/test/tooltip-wrapper.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: refactor tests with testing-library and jest
+","diff --git a/src/test/tooltip-wrapper.spec.js b/src/test/tooltip-wrapper.spec.js
+new file mode 100644
+index 0000000..439b0e1
+--- /dev/null
++++ b/src/test/tooltip-wrapper.spec.js
+@@ -0,0 +1,35 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++import { TooltipProvider, TooltipWrapper } from '../components/TooltipProvider'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++describe('tooltip props', () => {
++  test('basic tooltip component', async () => {
++    const { container } = render(
++      <TooltipProvider>
++        <TooltipWrapper place=""bottom"" content=""Shared Global Tooltip"">
++          <button>Minimal 1</button>
++        </TooltipWrapper>
++        <Tooltip>
++          <button>button</button>
++        </Tooltip>
++      </TooltipProvider>,
++    )
++    const anchorElement = screen.getByText('Minimal 1')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,8be9ec543130d8c1a298dc35a98f851840e83975,src/test/__snapshots__/tooltip.spec.js.snap,src/test/tooltip.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: refactor tests with testing-library and jest
+","diff --git a/src/test/tooltip.spec.js b/src/test/tooltip.spec.js
+new file mode 100644
+index 0000000..4a70ef3
+--- /dev/null
++++ b/src/test/tooltip.spec.js
+@@ -0,0 +1,149 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipProps = ({ id, ...tooltipParams }) => (
++  <>
++    <span id={id}>Lorem Ipsum</span>
++    <Tooltip anchorId={id} {...tooltipParams} />
++  </>
++)
++// eslint-disable-next-line react/prop-types
++const TooltipAttrs = ({ id, ...anchorParams }) => (
++  <>
++    <span id={id} {...anchorParams}>
++      Lorem Ipsum
++    </span>
++    <Tooltip anchorId={id} />
++  </>
++)
++
++describe('tooltip props', () => {
++  test('tooltip component - without element reference', async () => {
++    const { container } = render(<TooltipProps content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip component', async () => {
++    const { container } = render(<TooltipProps id=""basic-example"" content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with place', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" place=""right"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with html', async () => {
++    const { container } = render(<TooltipProps id=""example-html"" html=""<div>Hello World!<div>"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
++
++describe('tooltip attributes', () => {
++  test('tooltip component - without element reference', async () => {
++    const { container } = render(<TooltipAttrs data-tooltip-content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip component', async () => {
++    const { container } = render(
++      <TooltipAttrs id=""basic-example-attr"" data-tooltip-content=""Hello World!"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with place', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-place-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-place=""right""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-place')
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",1,None=None
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,9102f88ccae2391913acd46afa956c470de8c97e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: add a few tests to the Tooltip test suite
+","diff --git a/src/test/tooltip-attributes.spec.js b/src/test/tooltip-attributes.spec.js
+new file mode 100644
+index 0000000..298dda8
+--- /dev/null
++++ b/src/test/tooltip-attributes.spec.js
+@@ -0,0 +1,76 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipAttrs = ({ id, ...anchorParams }) => (
++  <>
++    <span id={id} {...anchorParams}>
++      Lorem Ipsum
++    </span>
++    <Tooltip anchorId={id} />
++  </>
++)
++
++describe('tooltip attributes', () => {
++  test('tooltip without element reference', async () => {
++    const { container } = render(<TooltipAttrs data-tooltip-content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip', async () => {
++    const { container } = render(
++      <TooltipAttrs id=""basic-example-attr"" data-tooltip-content=""Hello World!"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with place', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-place-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-place=""right""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-place')
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,9102f88ccae2391913acd46afa956c470de8c97e,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: add a few tests to the Tooltip test suite
+","diff --git a/src/test/tooltip-props.spec.js b/src/test/tooltip-props.spec.js
+new file mode 100644
+index 0000000..ef71d5a
+--- /dev/null
++++ b/src/test/tooltip-props.spec.js
+@@ -0,0 +1,211 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipProps = ({ id, ...tooltipParams }) => (
++  <>
++    <span id={id}>Lorem Ipsum</span>
++    <Tooltip anchorId={id} {...tooltipParams} />
++  </>
++)
++
++describe('tooltip props', () => {
++  test('tooltip without element reference', async () => {
++    const { container } = render(<TooltipProps content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip', async () => {
++    const { container } = render(<TooltipProps id=""basic-example"" content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with place', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" place=""right"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with html', async () => {
++    const { container } = render(<TooltipProps id=""example-html"" html=""<div>Hello World!<div>"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('clickable tooltip', async () => {
++    const id = 'example-clickable'
++
++    const mockCallBack = jest.fn()
++    const { container } = render(
++      <>
++        <span id={id}>Lorem Ipsum</span>
++        <Tooltip anchorId={id} clickable>
++          <button onClick={mockCallBack}>button</button>
++        </Tooltip>
++      </>,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++    let button = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++      button = screen.getByRole('button')
++    })
++
++    await userEvent.click(button)
++
++    expect(tooltip).toBeInTheDocument()
++    expect(button).toBeInTheDocument()
++    expect(mockCallBack).toHaveBeenCalled()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with delay show', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-delay-show"" content=""Hello World!"" delayShow={300} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++      },
++      {
++        timeout: 250,
++      },
++    )
++
++    await userEvent.unhover(anchorElement)
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with delay hide', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-delay-hide"" content=""Hello World!"" delayHide={300} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByRole('tooltip')).toBeInTheDocument()
++    })
++
++    await userEvent.unhover(anchorElement)
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).toBeInTheDocument()
++      },
++      {
++        timeout: 200,
++      },
++    )
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++      },
++      {
++        timeout: 500,
++      },
++    )
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with custom position', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" position={{ x: 0, y: 0 }} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with float', async () => {
++    const { container } = render(<TooltipProps id=""example-float"" content=""Hello World!"" float />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,3563837c0532705b5ad42a78edc9b3272578ef4b,src/test/__snapshots__/index.spec.js.snap,src/test/index.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: placeholder
+",,0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,8be9ec543130d8c1a298dc35a98f851840e83975,src/test/__snapshots__/tooltip-wrapper.spec.js.snap,src/test/tooltip-wrapper.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: refactor tests with testing-library and jest
+","diff --git a/src/test/tooltip-wrapper.spec.js b/src/test/tooltip-wrapper.spec.js
+new file mode 100644
+index 0000000..439b0e1
+--- /dev/null
++++ b/src/test/tooltip-wrapper.spec.js
+@@ -0,0 +1,35 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++import { TooltipProvider, TooltipWrapper } from '../components/TooltipProvider'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++describe('tooltip props', () => {
++  test('basic tooltip component', async () => {
++    const { container } = render(
++      <TooltipProvider>
++        <TooltipWrapper place=""bottom"" content=""Shared Global Tooltip"">
++          <button>Minimal 1</button>
++        </TooltipWrapper>
++        <Tooltip>
++          <button>button</button>
++        </Tooltip>
++      </TooltipProvider>,
++    )
++    const anchorElement = screen.getByText('Minimal 1')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,8be9ec543130d8c1a298dc35a98f851840e83975,src/test/__snapshots__/tooltip.spec.js.snap,src/test/tooltip.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: refactor tests with testing-library and jest
+","diff --git a/src/test/tooltip.spec.js b/src/test/tooltip.spec.js
+new file mode 100644
+index 0000000..4a70ef3
+--- /dev/null
++++ b/src/test/tooltip.spec.js
+@@ -0,0 +1,149 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipProps = ({ id, ...tooltipParams }) => (
++  <>
++    <span id={id}>Lorem Ipsum</span>
++    <Tooltip anchorId={id} {...tooltipParams} />
++  </>
++)
++// eslint-disable-next-line react/prop-types
++const TooltipAttrs = ({ id, ...anchorParams }) => (
++  <>
++    <span id={id} {...anchorParams}>
++      Lorem Ipsum
++    </span>
++    <Tooltip anchorId={id} />
++  </>
++)
++
++describe('tooltip props', () => {
++  test('tooltip component - without element reference', async () => {
++    const { container } = render(<TooltipProps content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip component', async () => {
++    const { container } = render(<TooltipProps id=""basic-example"" content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with place', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" place=""right"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with html', async () => {
++    const { container } = render(<TooltipProps id=""example-html"" html=""<div>Hello World!<div>"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
++
++describe('tooltip attributes', () => {
++  test('tooltip component - without element reference', async () => {
++    const { container } = render(<TooltipAttrs data-tooltip-content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip component', async () => {
++    const { container } = render(
++      <TooltipAttrs id=""basic-example-attr"" data-tooltip-content=""Hello World!"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip component with place', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-place-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-place=""right""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-place')
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",1,None=None
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,9102f88ccae2391913acd46afa956c470de8c97e,src/test/__snapshots__/tooltip-attributes.spec.js.snap,src/test/tooltip-attributes.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: add a few tests to the Tooltip test suite
+","diff --git a/src/test/tooltip-attributes.spec.js b/src/test/tooltip-attributes.spec.js
+new file mode 100644
+index 0000000..298dda8
+--- /dev/null
++++ b/src/test/tooltip-attributes.spec.js
+@@ -0,0 +1,76 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipAttrs = ({ id, ...anchorParams }) => (
++  <>
++    <span id={id} {...anchorParams}>
++      Lorem Ipsum
++    </span>
++    <Tooltip anchorId={id} />
++  </>
++)
++
++describe('tooltip attributes', () => {
++  test('tooltip without element reference', async () => {
++    const { container } = render(<TooltipAttrs data-tooltip-content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip', async () => {
++    const { container } = render(
++      <TooltipAttrs id=""basic-example-attr"" data-tooltip-content=""Hello World!"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with place', async () => {
++    const { container } = render(
++      <TooltipAttrs
++        id=""example-place-attr""
++        data-tooltip-content=""Hello World!""
++        data-tooltip-place=""right""
++      />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(anchorElement).toHaveAttribute('data-tooltip-place')
++    expect(anchorElement).toHaveAttribute('data-tooltip-content')
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,
+939,22535ebf26adbf6720318212e6eb1c84d7d7ddb5,9102f88ccae2391913acd46afa956c470de8c97e,src/test/__snapshots__/tooltip-props.spec.js.snap,src/test/tooltip-props.spec.js,"![image](https://user-images.githubusercontent.com/9615850/219134696-e618d091-b680-48fb-9532-c9968ea7404d.png)
+","test: add a few tests to the Tooltip test suite
+","diff --git a/src/test/tooltip-props.spec.js b/src/test/tooltip-props.spec.js
+new file mode 100644
+index 0000000..ef71d5a
+--- /dev/null
++++ b/src/test/tooltip-props.spec.js
+@@ -0,0 +1,211 @@
++import { render, screen, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import '@testing-library/jest-dom'
++import { TooltipController as Tooltip } from '../components/TooltipController'
++
++// Tell Jest to mock all timeout functions
++jest.useRealTimers()
++
++// eslint-disable-next-line react/prop-types
++const TooltipProps = ({ id, ...tooltipParams }) => (
++  <>
++    <span id={id}>Lorem Ipsum</span>
++    <Tooltip anchorId={id} {...tooltipParams} />
++  </>
++)
++
++describe('tooltip props', () => {
++  test('tooltip without element reference', async () => {
++    const { container } = render(<TooltipProps content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByText('Hello World!')).not.toBeInTheDocument()
++      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++    })
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('basic tooltip', async () => {
++    const { container } = render(<TooltipProps id=""basic-example"" content=""Hello World!"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with place', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" place=""right"" />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with html', async () => {
++    const { container } = render(<TooltipProps id=""example-html"" html=""<div>Hello World!<div>"" />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('clickable tooltip', async () => {
++    const id = 'example-clickable'
++
++    const mockCallBack = jest.fn()
++    const { container } = render(
++      <>
++        <span id={id}>Lorem Ipsum</span>
++        <Tooltip anchorId={id} clickable>
++          <button onClick={mockCallBack}>button</button>
++        </Tooltip>
++      </>,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++    let button = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++      button = screen.getByRole('button')
++    })
++
++    await userEvent.click(button)
++
++    expect(tooltip).toBeInTheDocument()
++    expect(button).toBeInTheDocument()
++    expect(mockCallBack).toHaveBeenCalled()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with delay show', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-delay-show"" content=""Hello World!"" delayShow={300} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++      },
++      {
++        timeout: 250,
++      },
++    )
++
++    await userEvent.unhover(anchorElement)
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with delay hide', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-delay-hide"" content=""Hello World!"" delayHide={300} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    await waitFor(() => {
++      expect(screen.queryByRole('tooltip')).toBeInTheDocument()
++    })
++
++    await userEvent.unhover(anchorElement)
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).toBeInTheDocument()
++      },
++      {
++        timeout: 200,
++      },
++    )
++
++    await waitFor(
++      () => {
++        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
++      },
++      {
++        timeout: 500,
++      },
++    )
++
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with custom position', async () => {
++    const { container } = render(
++      <TooltipProps id=""example-place"" content=""Hello World!"" position={{ x: 0, y: 0 }} />,
++    )
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++
++  test('tooltip with float', async () => {
++    const { container } = render(<TooltipProps id=""example-float"" content=""Hello World!"" float />)
++    const anchorElement = screen.getByText('Lorem Ipsum')
++
++    await userEvent.hover(anchorElement)
++
++    let tooltip = null
++
++    await waitFor(() => {
++      tooltip = screen.getByRole('tooltip')
++    })
++
++    expect(tooltip).toBeInTheDocument()
++    expect(container).toMatchSnapshot()
++  })
++})
+",0,

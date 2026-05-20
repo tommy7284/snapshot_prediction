@@ -1,0 +1,213 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+10,e47133079720b65d3aed23476c97333b3021a656,03bc31542a03b49f7c921fa69c0470514be1f79d,,"add product, update test, update readme
+","diff --git a/dist/meta/__tests__/buildTags.test.js b/dist/meta/__tests__/buildTags.test.js
+index e9d4104..01439c6 100644
+--- a/dist/meta/__tests__/buildTags.test.js
++++ b/dist/meta/__tests__/buildTags.test.js
+@@ -101,6 +101,10 @@ it('returns full array for default seo object', function () {
+   var ogLocaleTag = tags.filter(function (item) {
+     return item.key === 'og:locale';
+   });
++  var ogSiteName = container.querySelectorAll('meta[content=""' + SEO.openGraph.site_name + '""]');
++  var ogSiteNameTag = tags.filter(function (item) {
++    return item.key === 'og:site_name';
++  });
+   var canonicalTag = tags.filter(function (item) {
+     return item.key === 'canonical';
+   });
+@@ -137,6 +141,8 @@ it('returns full array for default seo object', function () {
+   expect(Array.from(ogSetImageAlt).length).toBe(1);
+   expect(Array.from(ogLocale).length).toBe(1);
+   expect(Array.from(ogLocaleTag).length).toBe(1);
++  expect(Array.from(ogSiteName).length).toBe(1);
++  expect(Array.from(ogSiteNameTag).length).toBe(1);
+   expect(canonicalTag[0].props.href).toBe('' + SEO.canonical);
+   expect(Array.from(canonicalTag).length).toBe(1);
+ });
+
+diff --git a/src/meta/__tests__/buildTags.test.jsx b/src/meta/__tests__/buildTags.test.jsx
+index 98207db..dc1d5dd 100644
+--- a/src/meta/__tests__/buildTags.test.jsx
++++ b/src/meta/__tests__/buildTags.test.jsx
+@@ -90,6 +90,8 @@ it('returns full array for default seo object', () => {
+   );
+   const ogLocale = container.querySelectorAll(`meta[content=""${SEO.openGraph.locale}""]`);
+   const ogLocaleTag = tags.filter(item => item.key === 'og:locale');
++  const ogSiteName = container.querySelectorAll(`meta[content=""${SEO.openGraph.site_name}""]`);
++  const ogSiteNameTag = tags.filter(item => item.key === 'og:site_name');
+   const canonicalTag = tags.filter(item => item.key === 'canonical');
+ 
+   expect(title).toBeDefined();
+@@ -124,6 +126,8 @@ it('returns full array for default seo object', () => {
+   expect(Array.from(ogSetImageAlt).length).toBe(1);
+   expect(Array.from(ogLocale).length).toBe(1);
+   expect(Array.from(ogLocaleTag).length).toBe(1);
++  expect(Array.from(ogSiteName).length).toBe(1);
++  expect(Array.from(ogSiteNameTag).length).toBe(1);
+   expect(canonicalTag[0].props.href).toBe(`${SEO.canonical}`);
+   expect(Array.from(canonicalTag).length).toBe(1);
+ });
+",0,,21,1009,3,11,23,1400
+115,d7ef377fcc734f0ec75c3abc04fe271900b9b71a,d7ef377fcc734f0ec75c3abc04fe271900b9b71a,Closes https://github.com/garmeeh/next-seo/issues/114,"Fix tests
+","diff --git a/src/meta/__tests__/buildTags.spec.tsx b/src/meta/__tests__/buildTags.spec.tsx
+index 5be9f92..485aff5 100644
+--- a/src/meta/__tests__/buildTags.spec.tsx
++++ b/src/meta/__tests__/buildTags.spec.tsx
+@@ -16,10 +16,16 @@ const SEO: BuildTagsParams = {
+     media: 'only screen and (max-width: 640px)',
+     href: 'https://m.canonical.ie',
+   },
+-  languageAlternate: {
+-    hrefLang: 'de-AT',
+-    href: 'https://www.canonical.ie/de',
+-  },
++  languageAlternates: [
++    {
++      hrefLang: 'de-AT',
++      href: 'https://www.canonical.ie/de',
++    },
++    {
++      hrefLang: 'sk-SK',
++      href: 'https://www.canonical.ie/sk',
++    },
++  ],
+   openGraph: {
+     type: 'website',
+     locale: 'en_IE',
+@@ -157,23 +163,28 @@ it('returns full array for default seo object', () => {
+     `link[media=""${SEO.mobileAlternate.media}""]`,
+   );
+ 
+-  const languageAlternateTag = container.querySelectorAll(
++  expect(Array.from(mobileAlternateTag).length).toBe(1);
++  expect(Array.from(mobileAlternateHref).length).toBe(1);
++  expect(Array.from(mobileAlternateMedia).length).toBe(1);
++
++  const languageAlternatesTags = container.querySelectorAll(
+     'link[rel=""alternate""][hrefLang]',
+   );
+-  const languageAlternateHref = container.querySelectorAll(
+-    `link[href=""${SEO.languageAlternate.href}""]`,
+-  );
+-  const languageAlternateHrefLang = container.querySelectorAll(
+-    `link[hrefLang=""${SEO.languageAlternate.hrefLang}""]`,
++  expect(Array.from(languageAlternatesTags).length).toBe(
++    SEO.languageAlternates.length,
+   );
+ 
+-  expect(Array.from(mobileAlternateTag).length).toBe(1);
+-  expect(Array.from(mobileAlternateHref).length).toBe(1);
+-  expect(Array.from(mobileAlternateMedia).length).toBe(1);
++  SEO.languageAlternates.forEach((languageAlternate, idx) => {
++    const languageAlternateHref = container.querySelectorAll(
++      `link[href=""${SEO.languageAlternates[idx].href}""]`,
++    );
++    const languageAlternateHrefLang = container.querySelectorAll(
++      `link[hrefLang=""${SEO.languageAlternates[idx].hrefLang}""]`,
++    );
+ 
+-  expect(Array.from(languageAlternateTag).length).toBe(1);
+-  expect(Array.from(languageAlternateHref).length).toBe(1);
+-  expect(Array.from(languageAlternateHrefLang).length).toBe(1);
++    expect(Array.from(languageAlternateHref).length).toBe(1);
++    expect(Array.from(languageAlternateHrefLang).length).toBe(1);
++  });
+ 
+   expect(title).toBeDefined();
+   expect(Array.from(index).length).toBe(2);
+",0,,2,48,1,3,6,78
+34,70a884251d0e7e9b26ba98bad5bfbeba007cd102,70a884251d0e7e9b26ba98bad5bfbeba007cd102,"This metadata is used to enable facebook insights to work on your site: https://developers.facebook.com/docs/sharing/webmasters/#markup
+
+You can see sites like amazon and twitch using this in markup as well (out of curiosity I checked a few sites), and if you google it you'll see requests for website building tools to support this.
+
+(sorry about duplicate PR that I just closed on this - the commit history was messed up)","fb:app_id support with updated tests and documentation
+","diff --git a/src/meta/__tests__/buildTags.spec.jsx b/src/meta/__tests__/buildTags.spec.jsx
+index c2cc14d..1f7dd2a 100644
+--- a/src/meta/__tests__/buildTags.spec.jsx
++++ b/src/meta/__tests__/buildTags.spec.jsx
+@@ -32,6 +32,9 @@ const SEO = {
+     site: '@site',
+     cardType: 'summary_large_image',
+   },
++  facebook: {
++    appId: 1234567890,
++  },
+ };
+ 
+ it('renders correctly', () => {
+@@ -59,6 +62,7 @@ it('returns full array for default seo object', () => {
+   const twitterCard = container.querySelectorAll(
+     'meta[content=""summary_large_image""]',
+   );
++  const facebookAppId = container.querySelectorAll('meta[name=""fb:app_id""]');
+   const twitterCardTag = container.querySelectorAll(
+     'meta[name=""twitter:card""]',
+   );
+@@ -134,6 +138,7 @@ it('returns full array for default seo object', () => {
+   expect(Array.from(index).length).toBe(2);
+   expect(Array.from(description).length).toBe(1);
+   expect(Array.from(descriptionTag).length).toBe(1);
++  expect(Array.from(facebookAppId).length).toBe(1);
+   expect(Array.from(twitterCard).length).toBe(1);
+   expect(Array.from(twitterCardTag).length).toBe(1);
+   expect(Array.from(twitterHandle).length).toBe(1);
+",0,,7,49,1,1,7,49
+45,a62fdaa83cc010634a0514a6ef68dc04d0e4684c,a62fdaa83cc010634a0514a6ef68dc04d0e4684c,"Close #43, According to facebook debug tool
+`property='fb:app_id'` should be used instead of `name='fb:app_id'`","Update test related facebook app id meta tag
+","diff --git a/src/meta/__tests__/buildTags.spec.jsx b/src/meta/__tests__/buildTags.spec.jsx
+index e2e31c8..4a29c9d 100644
+--- a/src/meta/__tests__/buildTags.spec.jsx
++++ b/src/meta/__tests__/buildTags.spec.jsx
+@@ -64,7 +64,7 @@ it('returns full array for default seo object', () => {
+   const twitterCard = container.querySelectorAll(
+     'meta[content=""summary_large_image""]',
+   );
+-  const facebookAppId = container.querySelectorAll('meta[name=""fb:app_id""]');
++  const facebookAppId = container.querySelectorAll('meta[property=""fb:app_id""]');
+   const twitterCardTag = container.querySelectorAll(
+     'meta[name=""twitter:card""]',
+   );
+",0,,3,8,1,2,4,10
+90,8888f65f6b18e61738c6ebf5e9d445d48cc122eb,ecbb963027a792adfd5f188f4adddda34e752bcd,"I've added support for the rel=""alternate"" mobile attribute
+
+Read more: https://www.contentkingapp.com/academy/mobile-attribute/#how-to-implement-the-mobile-attribute","Added support for alternate link
+","diff --git a/src/meta/__tests__/buildTags.spec.tsx b/src/meta/__tests__/buildTags.spec.tsx
+index a8e856a..8a9158c 100644
+--- a/src/meta/__tests__/buildTags.spec.tsx
++++ b/src/meta/__tests__/buildTags.spec.tsx
+@@ -12,6 +12,11 @@ const SEO: BuildTagsParams = {
+   canonical: 'https://www.canonical.ie',
+   defaultOpenGraphImageHeight: 1200,
+   defaultOpenGraphImageWidth: 1200,
++  alternate: {
++    media: 'only screen and (max-width: 640px)',
++    hrefLang: 'de-AT',
++    href: 'https://m.canonical.ie',
++  },
+   openGraph: {
+     type: 'website',
+     locale: 'en_IE',
+@@ -139,6 +144,22 @@ it('returns full array for default seo object', () => {
+   const ogSiteNameTag = tags.filter(item => item.key === 'og:site_name');
+   const canonicalTag = tags.filter(item => item.key === 'canonical');
+ 
++  const alternateTag = container.querySelectorAll('link[rel=""alternate""]');
++  const alternateHref = container.querySelectorAll(
++    `link[href=""${SEO.alternate.href}""]`,
++  );
++  const alternateHrefLang = container.querySelectorAll(
++    `link[hrefLang=""${SEO.alternate.hrefLang}""]`,
++  );
++  const alternateMedia = container.querySelectorAll(
++    `link[media=""${SEO.alternate.media}""]`,
++  );
++
++  expect(Array.from(alternateTag).length).toBe(1);
++  expect(Array.from(alternateHref).length).toBe(1);
++  expect(Array.from(alternateHrefLang).length).toBe(1);
++  expect(Array.from(alternateMedia).length).toBe(1);
++
+   expect(title).toBeDefined();
+   expect(Array.from(index).length).toBe(2);
+   expect(Array.from(description).length).toBe(1);
+",0,,2,27,1,6,7,129

@@ -1,0 +1,82 @@
+{
+    "id": 4053156,
+    "name": "prisma-labs/graphql-request",
+    "isFork": false,
+    "commits": 252,
+    "branches": 19,
+    "releases": 27,
+    "forks": 267,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 29,
+    "stargazers": 4907,
+    "contributors": 69,
+    "size": 1094,
+    "createdAt": "2017-05-10T08:05:07",
+    "pushedAt": "2022-10-13T10:01:27",
+    "updatedAt": "2022-10-21T05:08:48",
+    "totalIssues": 213,
+    "openIssues": 126,
+    "totalPullRequests": 185,
+    "openPullRequests": 27,
+    "blankLines": 1125,
+    "codeLines": 7019,
+    "commentLines": 291,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 289,
+            "codeLines": 2656,
+            "blankLines": 470
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 4022,
+            "blankLines": 595
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 176,
+            "blankLines": 3
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 165,
+            "blankLines": 57
+        }
+    ],
+    "lastCommit": "2022-10-13T02:18:40",
+    "lastCommitSHA": "33b82117d66a678952270e6bae34bd5ec79b80ab",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 94744,
+        "JavaScript": 897,
+        "Shell": 215
+    },
+    "labels": [
+        "bug",
+        "community/pr-welcome",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "feat",
+        "greenkeeper",
+        "help wanted",
+        "improve",
+        "invalid",
+        "question",
+        "released",
+        "semantic-release",
+        "type/docs",
+        "wontfix"
+    ],
+    "topics": []
+}

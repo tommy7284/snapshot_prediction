@@ -1,0 +1,105 @@
+{
+    "id": 4018820,
+    "name": "rodrigopivi/chatito",
+    "isFork": false,
+    "commits": 95,
+    "branches": 23,
+    "releases": 20,
+    "forks": 163,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://rodrigopivi.github.io/Chatito/",
+    "watchers": 27,
+    "stargazers": 844,
+    "contributors": 4,
+    "size": 6733,
+    "createdAt": "2017-11-22T03:17:01",
+    "pushedAt": "2023-08-30T12:42:21",
+    "updatedAt": "2023-09-01T08:40:50",
+    "totalIssues": 81,
+    "openIssues": 3,
+    "totalPullRequests": 40,
+    "openPullRequests": 21,
+    "blankLines": 470,
+    "codeLines": 23424,
+    "commentLines": 163,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 94,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 163,
+            "codeLines": 4802,
+            "blankLines": 315
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 42,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 21,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 305,
+            "blankLines": 155
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 18151,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2021-12-09T03:15:42",
+    "lastCommitSHA": "8ad5d9835e1a0c7b95af7693cb58c0320ffc806f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 180873,
+        "JavaScript": 9542,
+        "PEG.js": 6296
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "chatbot",
+        "chatbots",
+        "chatito",
+        "dataset",
+        "dataset-generation",
+        "named-entity-recognition",
+        "nlg",
+        "nlp",
+        "nlu",
+        "text-classification"
+    ]
+}

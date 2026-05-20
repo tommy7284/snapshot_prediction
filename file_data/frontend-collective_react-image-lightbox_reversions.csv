@@ -1,0 +1,29 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+148,743e8842032970afeecad8c725f3e0eeafc5c178,1dbf57bf697a69c402a188de1e42b57413b5d683,src/__tests__/__snapshots__/react-image-lightbox.spec.js.snap,src/__tests__/react-image-lightbox.spec.js,"#138 
+#144 
+
+edit:
+
+closes: #138 
+closes: #144 ","Update jest Snapshot
+",,0,
+148,743e8842032970afeecad8c725f3e0eeafc5c178,1dbf57bf697a69c402a188de1e42b57413b5d683,src/__tests__/__snapshots__/react-image-lightbox.spec.js.snap,src/__tests__/react-image-lightbox.spec.js,"#138 
+#144 
+
+edit:
+
+closes: #138 
+closes: #144 ","Update jest Snapshot
+",,0,
+98,1f21f1cc0e172447793b6a9e17a503467863004d,b7226d24645288738b9ae405e5af03105d0b53aa,src/__tests__/__snapshots__/react-image-lightbox.spec.js.snap,src/__tests__/react-image-lightbox.spec.js,"#82 
+
+@fritz-c Should I change the default error message to be a dom element instead of string? 
+
+Provides more customizability.","updating the test to have the imageLoadErrorMessage
+",,0,
+98,1f21f1cc0e172447793b6a9e17a503467863004d,b7226d24645288738b9ae405e5af03105d0b53aa,src/__tests__/__snapshots__/react-image-lightbox.spec.js.snap,src/__tests__/react-image-lightbox.spec.js,"#82 
+
+@fritz-c Should I change the default error message to be a dom element instead of string? 
+
+Provides more customizability.","updating the test to have the imageLoadErrorMessage
+",,0,

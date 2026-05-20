@@ -1,0 +1,94 @@
+{
+    "id": 5338894,
+    "name": "caiogondim/logdown.js",
+    "isFork": false,
+    "commits": 533,
+    "branches": 10,
+    "releases": 44,
+    "forks": 41,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://caiogondim.github.io/logdown.js/",
+    "watchers": 17,
+    "stargazers": 1013,
+    "contributors": 14,
+    "size": 4204,
+    "createdAt": "2015-02-04T05:54:42",
+    "pushedAt": "2020-03-06T03:57:14",
+    "updatedAt": "2021-01-05T12:19:59",
+    "totalIssues": 79,
+    "openIssues": 17,
+    "totalPullRequests": 151,
+    "openPullRequests": 3,
+    "blankLines": 520,
+    "codeLines": 11841,
+    "commentLines": 86,
+    "metrics": [
+        {
+            "blankLines": 119,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 295
+        },
+        {
+            "blankLines": 15,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 126
+        },
+        {
+            "blankLines": 8,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 30
+        },
+        {
+            "blankLines": 378,
+            "language": "JavaScript",
+            "commentLines": 79,
+            "codeLines": 1452
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 9878
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 26
+        }
+    ],
+    "lastCommit": "2020-03-06T03:56:08",
+    "lastCommitSHA": "aa08713ec09b0e486e1836db79a4b583e098204b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 48300,
+        "HTML": 3785
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "stale",
+        "wontfix"
+    ],
+    "topics": []
+}

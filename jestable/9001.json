@@ -1,0 +1,90 @@
+{
+    "id": 6797971,
+    "name": "tameemsafi/typewriterjs",
+    "isFork": false,
+    "commits": 144,
+    "branches": 4,
+    "releases": 0,
+    "forks": 213,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/typewriter-effect",
+    "watchers": 18,
+    "stargazers": 2277,
+    "contributors": 18,
+    "size": 1102,
+    "createdAt": "2017-02-15T06:37:40",
+    "pushedAt": "2024-02-09T07:37:00",
+    "updatedAt": "2024-02-09T06:40:59",
+    "totalIssues": 139,
+    "openIssues": 65,
+    "totalPullRequests": 74,
+    "openPullRequests": 14,
+    "blankLines": 372,
+    "codeLines": 11318,
+    "commentLines": 347,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 9377
+        },
+        {
+            "blankLines": 17,
+            "language": "TypeScript",
+            "commentLines": 124,
+            "codeLines": 48
+        },
+        {
+            "blankLines": 269,
+            "language": "JavaScript",
+            "commentLines": 223,
+            "codeLines": 1488
+        },
+        {
+            "blankLines": 30,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 212
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 46,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 152
+        }
+    ],
+    "lastCommit": "2023-09-19T09:00:36",
+    "lastCommitSHA": "29d0af0835cfc2d0265995614ffcdafe51c4d694",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 62017
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "javascript",
+        "native-javascript-plugin",
+        "typewriter",
+        "typewriterjs"
+    ]
+}

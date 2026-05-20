@@ -1,0 +1,108 @@
+{
+    "id": 70416255,
+    "name": "apihero-run/jsonhero-web",
+    "isFork": false,
+    "commits": 256,
+    "branches": 6,
+    "releases": 0,
+    "forks": 236,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://jsonhero.io",
+    "watchers": 28,
+    "stargazers": 5439,
+    "contributors": 23,
+    "size": 58560,
+    "createdAt": "2022-03-01T09:33:29",
+    "pushedAt": "2022-10-26T05:19:40",
+    "updatedAt": "2022-11-13T09:22:47",
+    "totalIssues": 76,
+    "openIssues": 41,
+    "totalPullRequests": 52,
+    "openPullRequests": 2,
+    "blankLines": 1769,
+    "codeLines": 39887,
+    "commentLines": 302,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 372,
+            "blankLines": 257
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 37,
+            "blankLines": 4
+        },
+        {
+            "language": "CSS",
+            "commentLines": 3,
+            "codeLines": 26,
+            "blankLines": 6
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 290,
+            "codeLines": 11725,
+            "blankLines": 1488
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 3,
+            "codeLines": 66,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 27616,
+            "blankLines": 1
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 2,
+            "codeLines": 8,
+            "blankLines": 2
+        },
+        {
+            "language": "TOML",
+            "commentLines": 4,
+            "codeLines": 26,
+            "blankLines": 9
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2022-10-24T06:30:05",
+    "lastCommitSHA": "5d03c1414670ffc37e6ee5675a69678c7a8054db",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 374962,
+        "JavaScript": 1907,
+        "CSS": 813,
+        "Dockerfile": 172
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

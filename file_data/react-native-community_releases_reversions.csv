@@ -1,0 +1,123 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+163,28a74a94d63147c99df965ed9ff5dbf04ad5dcf4,27bb75229d6299d026d2f19f11c4bc9cc21a58a6,scripts/__tests__/__snapshots__/changelog-generator.test.js.snap,scripts/__tests__/changelog-generator.test.js,Updated the gist with the new output https://gist.github.com/alloy/43896e2d82b6e2c99e5e85eb713b0306#file-stdout-md,"[changelog-generator] Truncate SHAs to 10 chars for display only
+
+RN already has enough commits to run into collisions with 7 chars, so
+instead never truncate hashes in links.
+","diff --git a/scripts/__tests__/changelog-generator.test.js b/scripts/__tests__/changelog-generator.test.js
+index 5b018a1..0afd2ee 100644
+--- a/scripts/__tests__/changelog-generator.test.js
++++ b/scripts/__tests__/changelog-generator.test.js
+@@ -68,23 +68,6 @@ describe(getOriginalCommit, () => {
+   });
+ });
+ 
+-describe(getChangeMessage, () => {
+-  it(""formats a changelog entry"", () => {
+-    expect(
+-      getChangeMessage({
+-        sha: ""abcd1234"",
+-        commit: {
+-          message:
+-            ""Some ignored commit message\n\n[iOS] [Fixed] - Some great fixes! (#42)""
+-        },
+-        author: { login: ""alloy"" }
+-      })
+-    ).toEqual(
+-      ""- Some great fixes! ([abcd123](https://github.com/facebook/react-native/commit/abcd123) by [@alloy](https://github.com/alloy))""
+-    );
+-  });
+-});
+-
+ describe(getFirstCommitAfterForkingFromMaster, () => {
+   it(""returns the SHA of the first commit where its first parent is on the master branch"", () => {
+     return getFirstCommitAfterForkingFromMaster(RN_REPO, ""v0.61.5"").then(
+@@ -109,6 +92,23 @@ describe(getOffsetBaseCommit, () => {
+   });
+ });
+ 
++describe(getChangeMessage, () => {
++  it(""formats a changelog entry"", () => {
++    expect(
++      getChangeMessage({
++        sha: ""abcde123456789"",
++        commit: {
++          message:
++            ""Some ignored commit message\n\n[iOS] [Fixed] - Some great fixes! (#42)""
++        },
++        author: { login: ""alloy"" }
++      })
++    ).toEqual(
++      ""- Some great fixes! ([abcde12345](https://github.com/facebook/react-native/commit/abcde123456789) by [@alloy](https://github.com/alloy))""
++    );
++  });
++});
++
+ describe(""functions that hit GitHub's commits API"", () => {
+   // The 2nd to last commit in commits-v0.60.5-page-2.json, which is the 59th commit.
+   const base = ""53e32a47e4062f428f8d714333236cedbe05b482"";
+",0,
+163,28a74a94d63147c99df965ed9ff5dbf04ad5dcf4,27bb75229d6299d026d2f19f11c4bc9cc21a58a6,scripts/__tests__/__snapshots__/changelog-generator.test.js.snap,scripts/__tests__/changelog-generator.test.js,Updated the gist with the new output https://gist.github.com/alloy/43896e2d82b6e2c99e5e85eb713b0306#file-stdout-md,"[changelog-generator] Truncate SHAs to 10 chars for display only
+
+RN already has enough commits to run into collisions with 7 chars, so
+instead never truncate hashes in links.
+","diff --git a/scripts/__tests__/changelog-generator.test.js b/scripts/__tests__/changelog-generator.test.js
+index 5b018a1..0afd2ee 100644
+--- a/scripts/__tests__/changelog-generator.test.js
++++ b/scripts/__tests__/changelog-generator.test.js
+@@ -68,23 +68,6 @@ describe(getOriginalCommit, () => {
+   });
+ });
+ 
+-describe(getChangeMessage, () => {
+-  it(""formats a changelog entry"", () => {
+-    expect(
+-      getChangeMessage({
+-        sha: ""abcd1234"",
+-        commit: {
+-          message:
+-            ""Some ignored commit message\n\n[iOS] [Fixed] - Some great fixes! (#42)""
+-        },
+-        author: { login: ""alloy"" }
+-      })
+-    ).toEqual(
+-      ""- Some great fixes! ([abcd123](https://github.com/facebook/react-native/commit/abcd123) by [@alloy](https://github.com/alloy))""
+-    );
+-  });
+-});
+-
+ describe(getFirstCommitAfterForkingFromMaster, () => {
+   it(""returns the SHA of the first commit where its first parent is on the master branch"", () => {
+     return getFirstCommitAfterForkingFromMaster(RN_REPO, ""v0.61.5"").then(
+@@ -109,6 +92,23 @@ describe(getOffsetBaseCommit, () => {
+   });
+ });
+ 
++describe(getChangeMessage, () => {
++  it(""formats a changelog entry"", () => {
++    expect(
++      getChangeMessage({
++        sha: ""abcde123456789"",
++        commit: {
++          message:
++            ""Some ignored commit message\n\n[iOS] [Fixed] - Some great fixes! (#42)""
++        },
++        author: { login: ""alloy"" }
++      })
++    ).toEqual(
++      ""- Some great fixes! ([abcde12345](https://github.com/facebook/react-native/commit/abcde123456789) by [@alloy](https://github.com/alloy))""
++    );
++  });
++});
++
+ describe(""functions that hit GitHub's commits API"", () => {
+   // The 2nd to last commit in commits-v0.60.5-page-2.json, which is the 59th commit.
+   const base = ""53e32a47e4062f428f8d714333236cedbe05b482"";
+",0,
+169,a5d655f742bf36509a03d38f4f340beea038d7d8,34cc3f18eb9ceb214a94f9542ab51bf780370970,scripts/__tests__/__snapshots__/changelog-generator.test.js.snap,scripts/__tests__/changelog-generator.test.js,Fixes https://github.com/react-native-community/releases/pull/166/files#r387227509 & https://github.com/react-native-community/releases/pull/166/files#r387227231,"[changelog-generator] Make tests green after TS conversion
+",,0,
+169,a5d655f742bf36509a03d38f4f340beea038d7d8,34cc3f18eb9ceb214a94f9542ab51bf780370970,scripts/__tests__/__snapshots__/changelog-generator.test.ts.snap,scripts/__tests__/changelog-generator.test.ts,Fixes https://github.com/react-native-community/releases/pull/166/files#r387227509 & https://github.com/react-native-community/releases/pull/166/files#r387227231,"[changelog-generator] Make tests green after TS conversion
+",,0,
+169,a5d655f742bf36509a03d38f4f340beea038d7d8,34cc3f18eb9ceb214a94f9542ab51bf780370970,scripts/__tests__/__snapshots__/changelog-generator.test.js.snap,scripts/__tests__/changelog-generator.test.js,Fixes https://github.com/react-native-community/releases/pull/166/files#r387227509 & https://github.com/react-native-community/releases/pull/166/files#r387227231,"[changelog-generator] Make tests green after TS conversion
+",,0,
+169,a5d655f742bf36509a03d38f4f340beea038d7d8,34cc3f18eb9ceb214a94f9542ab51bf780370970,scripts/__tests__/__snapshots__/changelog-generator.test.ts.snap,scripts/__tests__/changelog-generator.test.ts,Fixes https://github.com/react-native-community/releases/pull/166/files#r387227509 & https://github.com/react-native-community/releases/pull/166/files#r387227231,"[changelog-generator] Make tests green after TS conversion
+",,0,

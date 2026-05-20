@@ -1,0 +1,141 @@
+{
+    "id": 6831482,
+    "name": "webpack-contrib/copy-webpack-plugin",
+    "isFork": false,
+    "commits": 475,
+    "branches": 3,
+    "releases": 72,
+    "forks": 277,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 35,
+    "stargazers": 2824,
+    "contributors": 56,
+    "size": 3787,
+    "createdAt": "2015-10-27T01:53:16",
+    "pushedAt": "2024-04-08T01:13:43",
+    "updatedAt": "2024-04-07T11:51:28",
+    "totalIssues": 359,
+    "openIssues": 7,
+    "totalPullRequests": 415,
+    "openPullRequests": 2,
+    "blankLines": 1376,
+    "codeLines": 22578,
+    "commentLines": 1976,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 673,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 1531
+        },
+        {
+            "blankLines": 0,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 28,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 92
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 16457
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 176,
+            "codeLines": 154
+        },
+        {
+            "blankLines": 670,
+            "language": "JavaScript",
+            "commentLines": 1737,
+            "codeLines": 4325
+        }
+    ],
+    "lastCommit": "2024-04-08T01:13:43",
+    "lastCommitSHA": "fd8a0a320ea2ad0502528d2674e2e9a910b752d9",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 176287,
+        "Shell": 151
+    },
+    "labels": [
+        "dependencies",
+        "flag: community help wanted",
+        "flag: has pull request",
+        "flag: needs docs",
+        "flag: needs more info",
+        "flag: needs tests",
+        "flag: performance",
+        "pr_action: blocked",
+        "pr_action: discuss",
+        "pr_action: merge ready",
+        "pr_action: rebase",
+        "pr_action: review",
+        "pr_action: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (required)",
+        "priority: 4 (important)",
+        "priority: 5 (nice to have)",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (inconvenient)",
+        "severity: 5 (confusing)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: needs repro",
+        "status: needs triage",
+        "status: pending",
+        "type: bug",
+        "type: build",
+        "type: chore",
+        "type: ci",
+        "type: documentation",
+        "type: feature",
+        "type: perf",
+        "type: refactor",
+        "type: style",
+        "type: test",
+        "upstream"
+    ],
+    "topics": [
+        "copy",
+        "file",
+        "files",
+        "filesystem",
+        "glob",
+        "webpack",
+        "webpack-plugin"
+    ]
+}

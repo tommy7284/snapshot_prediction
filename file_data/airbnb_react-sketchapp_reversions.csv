@@ -1,0 +1,2397 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+296,b26658415f1984f85278607fbbab34c78259b636,b26658415f1984f85278607fbbab34c78259b636,__tests__/components/__snapshots__/Page.js.snap,__tests__/components/Page.js,"## Problem
+
+The default name prop on the `Page` component provides no value. It in-fact has negative consequences. If we create multiple pages with no specified name, they will all default to `Page 1`. If instead we let the name remain undefined, Sketch will create the page using an auto-incremented name (Page 1, Page 2, Page 3, etc...)
+
+## Solution
+
+Remove the `defaultProps.name` definition :)
+
+### Implementation Notes
+
+This is a larger concern than just this particular PR, but I don't see where or how I can create tests to confirm functionality that involves Sketch's behavior (in this case, the  behavior of `document.addBlankPage`). I was able to manually test this by opening sketch and rendering multiple `Page` components without specifying the name.","Remove `defaultProps` from `Page` component (enables auto-incrementing page name)
+","diff --git a/__tests__/components/Page.js b/__tests__/components/Page.js
+index e3cc0f8..7911733 100644
+--- a/__tests__/components/Page.js
++++ b/__tests__/components/Page.js
+@@ -30,12 +30,6 @@ describe('<Page />', () => {
+       expect(tree).toMatchSnapshot();
+     });
+ 
+-    it('defaults to Page', () => {
+-      const tree = renderer.create(<Page />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+     it('passes otherProps', () => {
+       const tree = renderer
+         .create(<Page propName=""something"" style={{}} />)
+",0,
+296,b26658415f1984f85278607fbbab34c78259b636,b26658415f1984f85278607fbbab34c78259b636,__tests__/components/__snapshots__/Page.js.snap,__tests__/components/Page.js,"## Problem
+
+The default name prop on the `Page` component provides no value. It in-fact has negative consequences. If we create multiple pages with no specified name, they will all default to `Page 1`. If instead we let the name remain undefined, Sketch will create the page using an auto-incremented name (Page 1, Page 2, Page 3, etc...)
+
+## Solution
+
+Remove the `defaultProps.name` definition :)
+
+### Implementation Notes
+
+This is a larger concern than just this particular PR, but I don't see where or how I can create tests to confirm functionality that involves Sketch's behavior (in this case, the  behavior of `document.addBlankPage`). I was able to manually test this by opening sketch and rendering multiple `Page` components without specifying the name.","Remove `defaultProps` from `Page` component (enables auto-incrementing page name)
+","diff --git a/__tests__/components/Page.js b/__tests__/components/Page.js
+index e3cc0f8..7911733 100644
+--- a/__tests__/components/Page.js
++++ b/__tests__/components/Page.js
+@@ -30,12 +30,6 @@ describe('<Page />', () => {
+       expect(tree).toMatchSnapshot();
+     });
+ 
+-    it('defaults to Page', () => {
+-      const tree = renderer.create(<Page />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+     it('passes otherProps', () => {
+       const tree = renderer
+         .create(<Page propName=""something"" style={{}} />)
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Artboard.js.snap,__tests__/components/Artboard.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Artboard.js b/__tests__/components/Artboard.js
+deleted file mode 100644
+index 2133f3b..0000000
+--- a/__tests__/components/Artboard.js
++++ /dev/null
+@@ -1,62 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Artboard from '../../src/components/Artboard';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Artboard />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Artboard>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Artboard>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('flattens its stylesheet');
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Artboard name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Artboard', () => {
+-      const tree = renderer.create(<Artboard />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Artboard style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Artboard style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Artboard style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Document.js.snap,__tests__/components/Document.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Document.js b/__tests__/components/Document.js
+deleted file mode 100644
+index a17d357..0000000
+--- a/__tests__/components/Document.js
++++ /dev/null
+@@ -1,19 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Document from '../../src/components/Document';
+-
+-describe('<Document />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Document>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Document>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Image.js.snap,__tests__/components/Image.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Image.js b/__tests__/components/Image.js
+deleted file mode 100644
+index bc2cc6e..0000000
+--- a/__tests__/components/Image.js
++++ /dev/null
+@@ -1,162 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Image from '../../src/components/Image';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Image />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Image source=""foo"">
+-          <foo />
+-        </Image>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('flattens its stylesheet');
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Image source=""foo"" name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Image', () => {
+-      const tree = renderer.create(<Image source=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('resizeMode', () => {
+-    it('translates contain', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""contain"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates cover', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""cover"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates stretch', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""stretch"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates center', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""center"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates repeat', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""repeat"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates none', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""none"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to cover', () => {
+-      const tree = renderer.create(<Image source=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('prefers prop to style', () => {
+-      const tree = renderer
+-        .create(<Image source=""foo"" resizeMode=""cover"" style={{ resizeMode: 'contain' }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to a resizeMode from style', () => {
+-      const tree = renderer
+-        .create(<Image source=""foo"" style={{ resizeMode: 'contain' }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('source', () => {
+-    it('prefers source over defaultSource', () => {
+-      const tree = renderer.create(<Image source=""foo"" defaultSource=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to defaultSource if available', () => {
+-      const tree = renderer.create(<Image defaultSource=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('sets height from source', () => {
+-      const tree = renderer.create(<Image source={{ uri: 'foo', height: 500 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('sets width from source', () => {
+-      const tree = renderer.create(<Image source={{ uri: 'foo', width: 500 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('favors style over source for height', () => {
+-      const tree = renderer
+-        .create(<Image source={{ uri: 'foo', height: 500 }} style={{ height: 400, width: 300 }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('favors style over source for width', () => {
+-      const tree = renderer
+-        .create(<Image source={{ uri: 'foo', width: 500 }} style={{ height: 400, width: 300 }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Image style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Image style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Image style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Page.js.snap,__tests__/components/Page.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Page.js b/__tests__/components/Page.js
+deleted file mode 100644
+index 701e320..0000000
+--- a/__tests__/components/Page.js
++++ /dev/null
+@@ -1,39 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Page from '../../src/components/Page';
+-
+-describe('<Page />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Page>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Page>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Page name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('passes its name and avoids Symbol page conflict', () => {
+-      const tree = renderer.create(<Page name=""Symbols"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('passes otherProps', () => {
+-      const tree = renderer.create(<Page propName=""something"" style={{}} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/RedBox.js.snap,__tests__/components/RedBox.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/RedBox.js b/__tests__/components/RedBox.js
+deleted file mode 100644
+index 070af29..0000000
+--- a/__tests__/components/RedBox.js
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import RedBox from '../../src/components/RedBox';
+-
+-describe('<RedBox />', () => {
+-  it('renders simple errors', () => {
+-    const mockedError = new Error('THIS IS AN ERROR');
+-    // override stack trace so that it's constant accross node versions
+-    mockedError.stack = `Error: awdawd
+-  at repl:1:13
+-  at Script.runInThisContext (vm.js:65:33)
+-  at REPLServer.defaultEval (repl.js:248:29)
+-  at bound (domain.js:375:14)
+-  at REPLServer.runBound [as eval] (domain.js:388:12)
+-  at REPLServer.onLine (repl.js:501:10)
+-  at REPLServer.emit (events.js:185:15)
+-  at REPLServer.emit (domain.js:421:20)
+-  at REPLServer.Interface._onLine (readline.js:285:10)
+-  at REPLServer.Interface._line (readline.js:638:8)`;
+-    const tree = renderer.create(<RedBox error={mockedError} />).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('renders string errors', () => {
+-    const tree = renderer.create(<RedBox error=""String only error"" />).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Svg.js.snap,__tests__/components/Svg.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Svg.js b/__tests__/components/Svg.js
+deleted file mode 100644
+index 037ccbb..0000000
+--- a/__tests__/components/Svg.js
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Svg from '../../src/components/Svg';
+-
+-describe('<Svg />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer
+-      .create(
+-        <Svg xmlns=""http://www.w3.org/2000/svg"" width=""494"" height=""447"" viewBox=""0 0 494 447"">
+-          <Svg.G fill=""none"" fillRule=""evenodd"">
+-            <Svg.Path fill=""#FFAE00"" d=""M247 447L0 160 107 15 247 0l140 15 107 145"" />
+-            <Svg.Path fill=""#EC6C00"" d=""M247 447L0 160h494"" />
+-            <Svg.Path fill=""#FFAE00"" d=""M247 447L100 160h294"" />
+-            <Svg.Path fill=""#FFEFB4"" d=""M247 0L100 160h294"" />
+-            <Svg.Path fill=""#FFAE00"" d=""M107 15L52 88 0 160h101M387 15l55 73 52 72H393"" />
+-            <Svg.Path fill=""#FED305"" d=""M107 15l-7 145L247 0m140 15l7 145L247 0"" />
+-          </Svg.G>
+-        </Svg>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Text.js.snap,__tests__/components/Text.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Text.js b/__tests__/components/Text.js
+deleted file mode 100644
+index 7ba6bfd..0000000
+--- a/__tests__/components/Text.js
++++ /dev/null
+@@ -1,52 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Text from '../../src/components/Text';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Text />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer.create(<Text>foo</Text>).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Text name=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Text', () => {
+-      const tree = renderer.create(<Text />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Text style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Text style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Text style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/View.js.snap,__tests__/components/View.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/View.js b/__tests__/components/View.js
+deleted file mode 100644
+index e3c8a79..0000000
+--- a/__tests__/components/View.js
++++ /dev/null
+@@ -1,52 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import View from '../../src/components/View';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<View />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer.create(<View>foo</View>).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<View name=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to View', () => {
+-      const tree = renderer.create(<View />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<View style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<View style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<View style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Artboard.js.snap,__tests__/jest/components/Artboard.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Artboard.js b/__tests__/jest/components/Artboard.js
+new file mode 100644
+index 0000000..b8ed72f
+--- /dev/null
++++ b/__tests__/jest/components/Artboard.js
+@@ -0,0 +1,62 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Artboard from '../../../src/components/Artboard';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Artboard />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Artboard>
++          <foo>
++            <bar />
++          </foo>
++        </Artboard>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('flattens its stylesheet');
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Artboard name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Artboard', () => {
++      const tree = renderer.create(<Artboard />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Artboard style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Artboard style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Artboard style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Document.js.snap,__tests__/jest/components/Document.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Document.js b/__tests__/jest/components/Document.js
+new file mode 100644
+index 0000000..25e2b6e
+--- /dev/null
++++ b/__tests__/jest/components/Document.js
+@@ -0,0 +1,19 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Document from '../../../src/components/Document';
++
++describe('<Document />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Document>
++          <foo>
++            <bar />
++          </foo>
++        </Document>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Image.js.snap,__tests__/jest/components/Image.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Image.js b/__tests__/jest/components/Image.js
+new file mode 100644
+index 0000000..99bbf03
+--- /dev/null
++++ b/__tests__/jest/components/Image.js
+@@ -0,0 +1,162 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Image from '../../../src/components/Image';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Image />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Image source=""foo"">
++          <foo />
++        </Image>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('flattens its stylesheet');
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Image source=""foo"" name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Image', () => {
++      const tree = renderer.create(<Image source=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('resizeMode', () => {
++    it('translates contain', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""contain"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates cover', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""cover"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates stretch', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""stretch"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates center', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""center"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates repeat', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""repeat"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates none', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""none"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to cover', () => {
++      const tree = renderer.create(<Image source=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('prefers prop to style', () => {
++      const tree = renderer
++        .create(<Image source=""foo"" resizeMode=""cover"" style={{ resizeMode: 'contain' }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to a resizeMode from style', () => {
++      const tree = renderer
++        .create(<Image source=""foo"" style={{ resizeMode: 'contain' }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('source', () => {
++    it('prefers source over defaultSource', () => {
++      const tree = renderer.create(<Image source=""foo"" defaultSource=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to defaultSource if available', () => {
++      const tree = renderer.create(<Image defaultSource=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('sets height from source', () => {
++      const tree = renderer.create(<Image source={{ uri: 'foo', height: 500 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('sets width from source', () => {
++      const tree = renderer.create(<Image source={{ uri: 'foo', width: 500 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('favors style over source for height', () => {
++      const tree = renderer
++        .create(<Image source={{ uri: 'foo', height: 500 }} style={{ height: 400, width: 300 }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('favors style over source for width', () => {
++      const tree = renderer
++        .create(<Image source={{ uri: 'foo', width: 500 }} style={{ height: 400, width: 300 }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Image style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Image style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Image style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Page.js.snap,__tests__/jest/components/Page.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Page.js b/__tests__/jest/components/Page.js
+new file mode 100644
+index 0000000..0a05d2b
+--- /dev/null
++++ b/__tests__/jest/components/Page.js
+@@ -0,0 +1,39 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Page from '../../../src/components/Page';
++
++describe('<Page />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Page>
++          <foo>
++            <bar />
++          </foo>
++        </Page>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Page name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('passes its name and avoids Symbol page conflict', () => {
++      const tree = renderer.create(<Page name=""Symbols"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('passes otherProps', () => {
++      const tree = renderer.create(<Page propName=""something"" style={{}} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/RedBox.js.snap,__tests__/jest/components/RedBox.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/RedBox.js b/__tests__/jest/components/RedBox.js
+new file mode 100644
+index 0000000..ac50c1d
+--- /dev/null
++++ b/__tests__/jest/components/RedBox.js
+@@ -0,0 +1,30 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import RedBox from '../../../src/components/RedBox';
++
++describe('<RedBox />', () => {
++  it('renders simple errors', () => {
++    const mockedError = new Error('THIS IS AN ERROR');
++    // override stack trace so that it's constant accross node versions
++    mockedError.stack = `Error: awdawd
++  at repl:1:13
++  at Script.runInThisContext (vm.js:65:33)
++  at REPLServer.defaultEval (repl.js:248:29)
++  at bound (domain.js:375:14)
++  at REPLServer.runBound [as eval] (domain.js:388:12)
++  at REPLServer.onLine (repl.js:501:10)
++  at REPLServer.emit (events.js:185:15)
++  at REPLServer.emit (domain.js:421:20)
++  at REPLServer.Interface._onLine (readline.js:285:10)
++  at REPLServer.Interface._line (readline.js:638:8)`;
++    const tree = renderer.create(<RedBox error={mockedError} />).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('renders string errors', () => {
++    const tree = renderer.create(<RedBox error=""String only error"" />).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Svg.js.snap,__tests__/jest/components/Svg.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Svg.js b/__tests__/jest/components/Svg.js
+new file mode 100644
+index 0000000..9ce2360
+--- /dev/null
++++ b/__tests__/jest/components/Svg.js
+@@ -0,0 +1,24 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Svg from '../../../src/components/Svg';
++
++describe('<Svg />', () => {
++  it('passes its children', () => {
++    const tree = renderer
++      .create(
++        <Svg xmlns=""http://www.w3.org/2000/svg"" width=""494"" height=""447"" viewBox=""0 0 494 447"">
++          <Svg.G fill=""none"" fillRule=""evenodd"">
++            <Svg.Path fill=""#FFAE00"" d=""M247 447L0 160 107 15 247 0l140 15 107 145"" />
++            <Svg.Path fill=""#EC6C00"" d=""M247 447L0 160h494"" />
++            <Svg.Path fill=""#FFAE00"" d=""M247 447L100 160h294"" />
++            <Svg.Path fill=""#FFEFB4"" d=""M247 0L100 160h294"" />
++            <Svg.Path fill=""#FFAE00"" d=""M107 15L52 88 0 160h101M387 15l55 73 52 72H393"" />
++            <Svg.Path fill=""#FED305"" d=""M107 15l-7 145L247 0m140 15l7 145L247 0"" />
++          </Svg.G>
++        </Svg>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Text.js.snap,__tests__/jest/components/Text.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Text.js b/__tests__/jest/components/Text.js
+new file mode 100644
+index 0000000..cb9f73c
+--- /dev/null
++++ b/__tests__/jest/components/Text.js
+@@ -0,0 +1,52 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Text from '../../../src/components/Text';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Text />', () => {
++  it('passes its children', () => {
++    const tree = renderer.create(<Text>foo</Text>).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Text name=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Text', () => {
++      const tree = renderer.create(<Text />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Text style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Text style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Text style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/View.js.snap,__tests__/jest/components/View.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/View.js b/__tests__/jest/components/View.js
+new file mode 100644
+index 0000000..3955189
+--- /dev/null
++++ b/__tests__/jest/components/View.js
+@@ -0,0 +1,52 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import View from '../../../src/components/View';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<View />', () => {
++  it('passes its children', () => {
++    const tree = renderer.create(<View>foo</View>).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<View name=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to View', () => {
++      const tree = renderer.create(<View />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<View style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<View style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<View style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Artboard.js.snap,__tests__/components/Artboard.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Artboard.js b/__tests__/components/Artboard.js
+deleted file mode 100644
+index 2133f3b..0000000
+--- a/__tests__/components/Artboard.js
++++ /dev/null
+@@ -1,62 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Artboard from '../../src/components/Artboard';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Artboard />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Artboard>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Artboard>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('flattens its stylesheet');
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Artboard name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Artboard', () => {
+-      const tree = renderer.create(<Artboard />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Artboard style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Artboard style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Artboard style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Document.js.snap,__tests__/components/Document.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Document.js b/__tests__/components/Document.js
+deleted file mode 100644
+index a17d357..0000000
+--- a/__tests__/components/Document.js
++++ /dev/null
+@@ -1,19 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Document from '../../src/components/Document';
+-
+-describe('<Document />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Document>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Document>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Image.js.snap,__tests__/components/Image.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Image.js b/__tests__/components/Image.js
+deleted file mode 100644
+index bc2cc6e..0000000
+--- a/__tests__/components/Image.js
++++ /dev/null
+@@ -1,162 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Image from '../../src/components/Image';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Image />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Image source=""foo"">
+-          <foo />
+-        </Image>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('flattens its stylesheet');
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Image source=""foo"" name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Image', () => {
+-      const tree = renderer.create(<Image source=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('resizeMode', () => {
+-    it('translates contain', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""contain"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates cover', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""cover"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates stretch', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""stretch"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates center', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""center"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates repeat', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""repeat"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('translates none', () => {
+-      const tree = renderer.create(<Image source=""foo"" resizeMode=""none"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to cover', () => {
+-      const tree = renderer.create(<Image source=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('prefers prop to style', () => {
+-      const tree = renderer
+-        .create(<Image source=""foo"" resizeMode=""cover"" style={{ resizeMode: 'contain' }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to a resizeMode from style', () => {
+-      const tree = renderer
+-        .create(<Image source=""foo"" style={{ resizeMode: 'contain' }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('source', () => {
+-    it('prefers source over defaultSource', () => {
+-      const tree = renderer.create(<Image source=""foo"" defaultSource=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('falls back to defaultSource if available', () => {
+-      const tree = renderer.create(<Image defaultSource=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('sets height from source', () => {
+-      const tree = renderer.create(<Image source={{ uri: 'foo', height: 500 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('sets width from source', () => {
+-      const tree = renderer.create(<Image source={{ uri: 'foo', width: 500 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('favors style over source for height', () => {
+-      const tree = renderer
+-        .create(<Image source={{ uri: 'foo', height: 500 }} style={{ height: 400, width: 300 }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('favors style over source for width', () => {
+-      const tree = renderer
+-        .create(<Image source={{ uri: 'foo', width: 500 }} style={{ height: 400, width: 300 }} />)
+-        .toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Image style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Image style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Image style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Page.js.snap,__tests__/components/Page.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Page.js b/__tests__/components/Page.js
+deleted file mode 100644
+index 701e320..0000000
+--- a/__tests__/components/Page.js
++++ /dev/null
+@@ -1,39 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Page from '../../src/components/Page';
+-
+-describe('<Page />', () => {
+-  it('renders children', () => {
+-    const tree = renderer
+-      .create(
+-        <Page>
+-          <foo>
+-            <bar />
+-          </foo>
+-        </Page>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Page name=""bar"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('passes its name and avoids Symbol page conflict', () => {
+-      const tree = renderer.create(<Page name=""Symbols"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('passes otherProps', () => {
+-      const tree = renderer.create(<Page propName=""something"" style={{}} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/RedBox.js.snap,__tests__/components/RedBox.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/RedBox.js b/__tests__/components/RedBox.js
+deleted file mode 100644
+index 070af29..0000000
+--- a/__tests__/components/RedBox.js
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import RedBox from '../../src/components/RedBox';
+-
+-describe('<RedBox />', () => {
+-  it('renders simple errors', () => {
+-    const mockedError = new Error('THIS IS AN ERROR');
+-    // override stack trace so that it's constant accross node versions
+-    mockedError.stack = `Error: awdawd
+-  at repl:1:13
+-  at Script.runInThisContext (vm.js:65:33)
+-  at REPLServer.defaultEval (repl.js:248:29)
+-  at bound (domain.js:375:14)
+-  at REPLServer.runBound [as eval] (domain.js:388:12)
+-  at REPLServer.onLine (repl.js:501:10)
+-  at REPLServer.emit (events.js:185:15)
+-  at REPLServer.emit (domain.js:421:20)
+-  at REPLServer.Interface._onLine (readline.js:285:10)
+-  at REPLServer.Interface._line (readline.js:638:8)`;
+-    const tree = renderer.create(<RedBox error={mockedError} />).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('renders string errors', () => {
+-    const tree = renderer.create(<RedBox error=""String only error"" />).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Svg.js.snap,__tests__/components/Svg.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Svg.js b/__tests__/components/Svg.js
+deleted file mode 100644
+index 037ccbb..0000000
+--- a/__tests__/components/Svg.js
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Svg from '../../src/components/Svg';
+-
+-describe('<Svg />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer
+-      .create(
+-        <Svg xmlns=""http://www.w3.org/2000/svg"" width=""494"" height=""447"" viewBox=""0 0 494 447"">
+-          <Svg.G fill=""none"" fillRule=""evenodd"">
+-            <Svg.Path fill=""#FFAE00"" d=""M247 447L0 160 107 15 247 0l140 15 107 145"" />
+-            <Svg.Path fill=""#EC6C00"" d=""M247 447L0 160h494"" />
+-            <Svg.Path fill=""#FFAE00"" d=""M247 447L100 160h294"" />
+-            <Svg.Path fill=""#FFEFB4"" d=""M247 0L100 160h294"" />
+-            <Svg.Path fill=""#FFAE00"" d=""M107 15L52 88 0 160h101M387 15l55 73 52 72H393"" />
+-            <Svg.Path fill=""#FED305"" d=""M107 15l-7 145L247 0m140 15l7 145L247 0"" />
+-          </Svg.G>
+-        </Svg>,
+-      )
+-      .toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/Text.js.snap,__tests__/components/Text.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/Text.js b/__tests__/components/Text.js
+deleted file mode 100644
+index 7ba6bfd..0000000
+--- a/__tests__/components/Text.js
++++ /dev/null
+@@ -1,52 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import Text from '../../src/components/Text';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<Text />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer.create(<Text>foo</Text>).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<Text name=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to Text', () => {
+-      const tree = renderer.create(<Text />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<Text style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<Text style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<Text style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/components/__snapshots__/View.js.snap,__tests__/components/View.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/components/View.js b/__tests__/components/View.js
+deleted file mode 100644
+index e3c8a79..0000000
+--- a/__tests__/components/View.js
++++ /dev/null
+@@ -1,52 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import View from '../../src/components/View';
+-import StyleSheet from '../../src/stylesheet';
+-
+-describe('<View />', () => {
+-  it('passes its children', () => {
+-    const tree = renderer.create(<View>foo</View>).toJSON();
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('name', () => {
+-    it('passes its name', () => {
+-      const tree = renderer.create(<View name=""foo"" />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('defaults to View', () => {
+-      const tree = renderer.create(<View />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('style', () => {
+-    const styles = StyleSheet.create({
+-      view: {
+-        flex: 1,
+-      },
+-    });
+-
+-    it('accepts a plain object', () => {
+-      const tree = renderer.create(<View style={{ flex: 1 }} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts a StyleSheet ordinal', () => {
+-      const tree = renderer.create(<View style={styles.view} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
+-      const tree = renderer.create(<View style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Artboard.js.snap,__tests__/jest/components/Artboard.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Artboard.js b/__tests__/jest/components/Artboard.js
+new file mode 100644
+index 0000000..b8ed72f
+--- /dev/null
++++ b/__tests__/jest/components/Artboard.js
+@@ -0,0 +1,62 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Artboard from '../../../src/components/Artboard';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Artboard />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Artboard>
++          <foo>
++            <bar />
++          </foo>
++        </Artboard>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('flattens its stylesheet');
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Artboard name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Artboard', () => {
++      const tree = renderer.create(<Artboard />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Artboard style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Artboard style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Artboard style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Document.js.snap,__tests__/jest/components/Document.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Document.js b/__tests__/jest/components/Document.js
+new file mode 100644
+index 0000000..25e2b6e
+--- /dev/null
++++ b/__tests__/jest/components/Document.js
+@@ -0,0 +1,19 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Document from '../../../src/components/Document';
++
++describe('<Document />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Document>
++          <foo>
++            <bar />
++          </foo>
++        </Document>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Image.js.snap,__tests__/jest/components/Image.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Image.js b/__tests__/jest/components/Image.js
+new file mode 100644
+index 0000000..99bbf03
+--- /dev/null
++++ b/__tests__/jest/components/Image.js
+@@ -0,0 +1,162 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Image from '../../../src/components/Image';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Image />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Image source=""foo"">
++          <foo />
++        </Image>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('flattens its stylesheet');
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Image source=""foo"" name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Image', () => {
++      const tree = renderer.create(<Image source=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('resizeMode', () => {
++    it('translates contain', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""contain"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates cover', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""cover"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates stretch', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""stretch"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates center', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""center"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates repeat', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""repeat"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('translates none', () => {
++      const tree = renderer.create(<Image source=""foo"" resizeMode=""none"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to cover', () => {
++      const tree = renderer.create(<Image source=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('prefers prop to style', () => {
++      const tree = renderer
++        .create(<Image source=""foo"" resizeMode=""cover"" style={{ resizeMode: 'contain' }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to a resizeMode from style', () => {
++      const tree = renderer
++        .create(<Image source=""foo"" style={{ resizeMode: 'contain' }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('source', () => {
++    it('prefers source over defaultSource', () => {
++      const tree = renderer.create(<Image source=""foo"" defaultSource=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('falls back to defaultSource if available', () => {
++      const tree = renderer.create(<Image defaultSource=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('sets height from source', () => {
++      const tree = renderer.create(<Image source={{ uri: 'foo', height: 500 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('sets width from source', () => {
++      const tree = renderer.create(<Image source={{ uri: 'foo', width: 500 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('favors style over source for height', () => {
++      const tree = renderer
++        .create(<Image source={{ uri: 'foo', height: 500 }} style={{ height: 400, width: 300 }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('favors style over source for width', () => {
++      const tree = renderer
++        .create(<Image source={{ uri: 'foo', width: 500 }} style={{ height: 400, width: 300 }} />)
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Image style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Image style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Image style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Page.js.snap,__tests__/jest/components/Page.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Page.js b/__tests__/jest/components/Page.js
+new file mode 100644
+index 0000000..0a05d2b
+--- /dev/null
++++ b/__tests__/jest/components/Page.js
+@@ -0,0 +1,39 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Page from '../../../src/components/Page';
++
++describe('<Page />', () => {
++  it('renders children', () => {
++    const tree = renderer
++      .create(
++        <Page>
++          <foo>
++            <bar />
++          </foo>
++        </Page>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Page name=""bar"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('passes its name and avoids Symbol page conflict', () => {
++      const tree = renderer.create(<Page name=""Symbols"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('passes otherProps', () => {
++      const tree = renderer.create(<Page propName=""something"" style={{}} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/RedBox.js.snap,__tests__/jest/components/RedBox.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/RedBox.js b/__tests__/jest/components/RedBox.js
+new file mode 100644
+index 0000000..ac50c1d
+--- /dev/null
++++ b/__tests__/jest/components/RedBox.js
+@@ -0,0 +1,30 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import RedBox from '../../../src/components/RedBox';
++
++describe('<RedBox />', () => {
++  it('renders simple errors', () => {
++    const mockedError = new Error('THIS IS AN ERROR');
++    // override stack trace so that it's constant accross node versions
++    mockedError.stack = `Error: awdawd
++  at repl:1:13
++  at Script.runInThisContext (vm.js:65:33)
++  at REPLServer.defaultEval (repl.js:248:29)
++  at bound (domain.js:375:14)
++  at REPLServer.runBound [as eval] (domain.js:388:12)
++  at REPLServer.onLine (repl.js:501:10)
++  at REPLServer.emit (events.js:185:15)
++  at REPLServer.emit (domain.js:421:20)
++  at REPLServer.Interface._onLine (readline.js:285:10)
++  at REPLServer.Interface._line (readline.js:638:8)`;
++    const tree = renderer.create(<RedBox error={mockedError} />).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  it('renders string errors', () => {
++    const tree = renderer.create(<RedBox error=""String only error"" />).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Svg.js.snap,__tests__/jest/components/Svg.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Svg.js b/__tests__/jest/components/Svg.js
+new file mode 100644
+index 0000000..9ce2360
+--- /dev/null
++++ b/__tests__/jest/components/Svg.js
+@@ -0,0 +1,24 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Svg from '../../../src/components/Svg';
++
++describe('<Svg />', () => {
++  it('passes its children', () => {
++    const tree = renderer
++      .create(
++        <Svg xmlns=""http://www.w3.org/2000/svg"" width=""494"" height=""447"" viewBox=""0 0 494 447"">
++          <Svg.G fill=""none"" fillRule=""evenodd"">
++            <Svg.Path fill=""#FFAE00"" d=""M247 447L0 160 107 15 247 0l140 15 107 145"" />
++            <Svg.Path fill=""#EC6C00"" d=""M247 447L0 160h494"" />
++            <Svg.Path fill=""#FFAE00"" d=""M247 447L100 160h294"" />
++            <Svg.Path fill=""#FFEFB4"" d=""M247 0L100 160h294"" />
++            <Svg.Path fill=""#FFAE00"" d=""M107 15L52 88 0 160h101M387 15l55 73 52 72H393"" />
++            <Svg.Path fill=""#FED305"" d=""M107 15l-7 145L247 0m140 15l7 145L247 0"" />
++          </Svg.G>
++        </Svg>,
++      )
++      .toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/Text.js.snap,__tests__/jest/components/Text.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/Text.js b/__tests__/jest/components/Text.js
+new file mode 100644
+index 0000000..cb9f73c
+--- /dev/null
++++ b/__tests__/jest/components/Text.js
+@@ -0,0 +1,52 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import Text from '../../../src/components/Text';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<Text />', () => {
++  it('passes its children', () => {
++    const tree = renderer.create(<Text>foo</Text>).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<Text name=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to Text', () => {
++      const tree = renderer.create(<Text />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<Text style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<Text style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<Text style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+346,fe028826e7b9b6690f4f1fb2532ef17e3eec9ea6,06c25cf82907bbf76aa0d273e24742211028ec49,__tests__/jest/components/__snapshots__/View.js.snap,__tests__/jest/components/View.js,"- [x] update to babel 7
+- [x] add a warning when trying to render something that is not a Document in a Document
+- [x] add a warning when trying to render a page in something that is not a page
+- [x] add a basic e2e test
+
+To run the E2E tests: `npm run test:e2e`. That will start sketch and run the tests which are under `__tests__/skpm/`
+
+There might be some changes in the generated files due to updating to babel 7, I haven't checked yet","add some basic e2e tests
+","diff --git a/__tests__/jest/components/View.js b/__tests__/jest/components/View.js
+new file mode 100644
+index 0000000..3955189
+--- /dev/null
++++ b/__tests__/jest/components/View.js
+@@ -0,0 +1,52 @@
++import React from 'react';
++import renderer from 'react-test-renderer';
++import View from '../../../src/components/View';
++import StyleSheet from '../../../src/stylesheet';
++
++describe('<View />', () => {
++  it('passes its children', () => {
++    const tree = renderer.create(<View>foo</View>).toJSON();
++
++    expect(tree).toMatchSnapshot();
++  });
++
++  describe('name', () => {
++    it('passes its name', () => {
++      const tree = renderer.create(<View name=""foo"" />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('defaults to View', () => {
++      const tree = renderer.create(<View />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++
++  describe('style', () => {
++    const styles = StyleSheet.create({
++      view: {
++        flex: 1,
++      },
++    });
++
++    it('accepts a plain object', () => {
++      const tree = renderer.create(<View style={{ flex: 1 }} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts a StyleSheet ordinal', () => {
++      const tree = renderer.create(<View style={styles.view} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++
++    it('accepts an array of plain objects and/or StyleSheet ordinals', () => {
++      const tree = renderer.create(<View style={[{ flexGrow: 1 }, styles.view]} />).toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
++  });
++});
+",0,
+435,8ef36c01b72aaf27295e7af8c5361f87fb31e684,4fe02233451316fe8aefce99f07fcb4812da06c0,__tests__/jest/components/__snapshots__/Artboard.js.snap,__tests__/jest/components/Artboard.js,"Adds a viewport preset prop to Artboard to allow for scrolling artboards in prototypes.
+
+Includes documentation. Example:
+
+```jsx
+<Artboard
+  style={{
+    width: 360,
+    height: 1280,
+  }}
+  viewport={{
+    name: 'Mobile',
+    width: 360,
+    height: 640,
+  }}
+/>
+```
+
+I'd add a viewport preset example, but don't want to pollute the repo with too many examples, should I create a new repo under my account: `react-sketchapp-examples`?
+
+fixes #434 ","implement viewport preset prop for <Artboard>
+","diff --git a/__tests__/jest/components/Artboard.js b/__tests__/jest/components/Artboard.js
+index 552c02b..cd1506c 100644
+--- a/__tests__/jest/components/Artboard.js
++++ b/__tests__/jest/components/Artboard.js
+@@ -58,5 +58,22 @@ describe('<Artboard />', () => {
+ 
+       expect(tree).toMatchSnapshot();
+     });
++
++    it('accepts artboard viewport preset', () => {
++      const tree = renderer
++        .create(
++          <Artboard
++            style={{ flex: 1, width: 360, height: 1280 }}
++            viewport={{
++              name: 'Mobile',
++              width: 360,
++              height: 640,
++            }}
++          />,
++        )
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
+   });
+ });
+",0,
+435,8ef36c01b72aaf27295e7af8c5361f87fb31e684,4fe02233451316fe8aefce99f07fcb4812da06c0,__tests__/jest/components/__snapshots__/Artboard.js.snap,__tests__/jest/components/Artboard.js,"Adds a viewport preset prop to Artboard to allow for scrolling artboards in prototypes.
+
+Includes documentation. Example:
+
+```jsx
+<Artboard
+  style={{
+    width: 360,
+    height: 1280,
+  }}
+  viewport={{
+    name: 'Mobile',
+    width: 360,
+    height: 640,
+  }}
+/>
+```
+
+I'd add a viewport preset example, but don't want to pollute the repo with too many examples, should I create a new repo under my account: `react-sketchapp-examples`?
+
+fixes #434 ","implement viewport preset prop for <Artboard>
+","diff --git a/__tests__/jest/components/Artboard.js b/__tests__/jest/components/Artboard.js
+index 552c02b..cd1506c 100644
+--- a/__tests__/jest/components/Artboard.js
++++ b/__tests__/jest/components/Artboard.js
+@@ -58,5 +58,22 @@ describe('<Artboard />', () => {
+ 
+       expect(tree).toMatchSnapshot();
+     });
++
++    it('accepts artboard viewport preset', () => {
++      const tree = renderer
++        .create(
++          <Artboard
++            style={{ flex: 1, width: 360, height: 1280 }}
++            viewport={{
++              name: 'Mobile',
++              width: 360,
++              height: 640,
++            }}
++          />,
++        )
++        .toJSON();
++
++      expect(tree).toMatchSnapshot();
++    });
+   });
+ });
+",0,

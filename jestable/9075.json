@@ -1,0 +1,101 @@
+{
+    "id": 6805540,
+    "name": "react-component/calendar",
+    "isFork": false,
+    "commits": 745,
+    "branches": 17,
+    "releases": 0,
+    "forks": 510,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "9.x",
+    "license": "MIT License",
+    "homepage": "http://react-component.github.io/calendar/",
+    "watchers": 53,
+    "stargazers": 1691,
+    "contributors": 106,
+    "size": 31238,
+    "createdAt": "2014-12-10T03:10:20",
+    "pushedAt": "2024-01-01T02:41:41",
+    "updatedAt": "2024-01-04T09:09:57",
+    "totalIssues": 297,
+    "openIssues": 94,
+    "totalPullRequests": 608,
+    "openPullRequests": 52,
+    "blankLines": 1155,
+    "codeLines": 10129,
+    "commentLines": 79,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 129
+        },
+        {
+            "blankLines": 6,
+            "language": "TypeScript",
+            "commentLines": 4,
+            "codeLines": 54
+        },
+        {
+            "blankLines": 361,
+            "language": "JavaScript",
+            "commentLines": 33,
+            "codeLines": 4426
+        },
+        {
+            "blankLines": 166,
+            "language": "Less",
+            "commentLines": 0,
+            "codeLines": 1102
+        },
+        {
+            "blankLines": 165,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 865
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 54
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 450,
+            "language": "JSX",
+            "commentLines": 42,
+            "codeLines": 3498
+        }
+    ],
+    "lastCommit": "2024-01-01T02:41:38",
+    "lastCommitSHA": "a8aeae70f72e9c17f5bc882cc046212f43eb4bf9",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 234067,
+        "Less": 23112,
+        "TypeScript": 424
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "need reproduce",
+        "new",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

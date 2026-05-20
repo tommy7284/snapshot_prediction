@@ -1,0 +1,110 @@
+{
+    "id": 5003017,
+    "name": "sqorn/sqorn",
+    "isFork": false,
+    "commits": 287,
+    "branches": 1,
+    "releases": 0,
+    "forks": 62,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://sqorn.org",
+    "watchers": 40,
+    "stargazers": 1877,
+    "contributors": 6,
+    "size": 1536,
+    "createdAt": "2018-07-21T09:50:30",
+    "pushedAt": "2023-02-07T04:49:27",
+    "updatedAt": "2023-02-17T09:40:51",
+    "totalIssues": 32,
+    "openIssues": 13,
+    "totalPullRequests": 35,
+    "openPullRequests": 0,
+    "blankLines": 2539,
+    "codeLines": 27304,
+    "commentLines": 2185,
+    "metrics": [
+        {
+            "blankLines": 424,
+            "language": "TypeScript",
+            "commentLines": 1647,
+            "codeLines": 1721
+        },
+        {
+            "blankLines": 424,
+            "language": "JavaScript",
+            "commentLines": 420,
+            "codeLines": 10771
+        },
+        {
+            "blankLines": 0,
+            "language": "CSV",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 10277
+        },
+        {
+            "blankLines": 0,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 117,
+            "codeLines": 682
+        },
+        {
+            "blankLines": 7,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 1678,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3746
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 39
+        }
+    ],
+    "lastCommit": "2022-12-17T01:14:37",
+    "lastCommitSHA": "8305cb51935eddbac897d9ddedee6b039385471f",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 249989,
+        "TypeScript": 3177
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

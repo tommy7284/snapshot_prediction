@@ -1,0 +1,99 @@
+{
+    "id": 6939101,
+    "name": "jsonresume/resume-cli",
+    "isFork": false,
+    "commits": 595,
+    "branches": 25,
+    "releases": 21,
+    "forks": 376,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://jsonresume.org",
+    "watchers": 59,
+    "stargazers": 4490,
+    "contributors": 63,
+    "size": 18675,
+    "createdAt": "2014-06-15T06:21:01",
+    "pushedAt": "2024-04-03T03:02:18",
+    "updatedAt": "2024-04-03T09:08:47",
+    "totalIssues": 358,
+    "openIssues": 36,
+    "totalPullRequests": 423,
+    "openPullRequests": 13,
+    "blankLines": 126,
+    "codeLines": 26416,
+    "commentLines": 4,
+    "metrics": [
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 70
+        },
+        {
+            "blankLines": 62,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 879
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25374
+        },
+        {
+            "blankLines": 60,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 93
+        }
+    ],
+    "lastCommit": "2024-04-03T03:02:13",
+    "lastCommitSHA": "f9425664fb886ce68359376a7eaee33ed0346126",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 27922,
+        "Shell": 48
+    },
+    "labels": [
+        "bug",
+        "can't replicate",
+        "confirmed",
+        "copy-pasta",
+        "decision needed",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "fix",
+        "github_actions",
+        "greenkeeper",
+        "help wanted",
+        "high priority",
+        "invalid",
+        "javascript",
+        "needs documentation",
+        "needs info",
+        "needs work",
+        "not-ready-for-review",
+        "organization",
+        "privacy",
+        "project idea",
+        "released",
+        "request for comment",
+        "security",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "javascript",
+        "json",
+        "resume"
+    ]
+}

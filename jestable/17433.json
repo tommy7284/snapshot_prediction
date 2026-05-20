@@ -1,0 +1,187 @@
+{
+    "id": 49682940,
+    "name": "benchmark-action/github-action-benchmark",
+    "isFork": false,
+    "commits": 398,
+    "branches": 3,
+    "releases": 44,
+    "forks": 138,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://benchmark-action.github.io/github-action-benchmark/dev/bench/",
+    "watchers": 9,
+    "stargazers": 934,
+    "contributors": 30,
+    "size": 6297,
+    "createdAt": "2019-11-05T05:37:42",
+    "pushedAt": "2024-04-05T08:03:37",
+    "updatedAt": "2024-04-04T06:30:01",
+    "totalIssues": 114,
+    "openIssues": 66,
+    "totalPullRequests": 112,
+    "openPullRequests": 14,
+    "blankLines": 1204,
+    "codeLines": 19673,
+    "commentLines": 232,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 51,
+            "blankLines": 17
+        },
+        {
+            "language": "MSBuild script",
+            "commentLines": 0,
+            "codeLines": 17,
+            "blankLines": 0
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 76,
+            "blankLines": 2
+        },
+        {
+            "language": "make",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 8
+        },
+        {
+            "language": "YAML",
+            "commentLines": 28,
+            "codeLines": 1448,
+            "blankLines": 89
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 2
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 1157,
+            "blankLines": 494
+        },
+        {
+            "language": "Rust",
+            "commentLines": 0,
+            "codeLines": 75,
+            "blankLines": 12
+        },
+        {
+            "language": "C#",
+            "commentLines": 0,
+            "codeLines": 28,
+            "blankLines": 4
+        },
+        {
+            "language": "Maven",
+            "commentLines": 42,
+            "codeLines": 114,
+            "blankLines": 16
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "Python",
+            "commentLines": 0,
+            "codeLines": 20,
+            "blankLines": 3
+        },
+        {
+            "language": "Julia",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 6
+        },
+        {
+            "language": "Go",
+            "commentLines": 0,
+            "codeLines": 27,
+            "blankLines": 5
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 86,
+            "codeLines": 4524,
+            "blankLines": 452
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11782,
+            "blankLines": 4
+        },
+        {
+            "language": "Java",
+            "commentLines": 67,
+            "codeLines": 18,
+            "blankLines": 7
+        },
+        {
+            "language": "TOML",
+            "commentLines": 3,
+            "codeLines": 109,
+            "blankLines": 32
+        },
+        {
+            "language": "CMake",
+            "commentLines": 0,
+            "codeLines": 21,
+            "blankLines": 5
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 139,
+            "blankLines": 39
+        },
+        {
+            "language": "C++",
+            "commentLines": 4,
+            "codeLines": 26,
+            "blankLines": 7
+        }
+    ],
+    "lastCommit": "2024-04-05T08:01:05",
+    "lastCommitSHA": "8e749722e912d8d81d0ef090f927695c58efcf5e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 179665,
+        "JavaScript": 3037,
+        "Shell": 1527,
+        "HTML": 42
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "new tool",
+        "python",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "benchmark",
+        "ci",
+        "github-action"
+    ]
+}

@@ -1,0 +1,139 @@
+{
+    "id": 7832710,
+    "name": "primer/components",
+    "isFork": false,
+    "commits": 6275,
+    "branches": 112,
+    "releases": 103,
+    "forks": 181,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://primer.style/components",
+    "watchers": 18,
+    "stargazers": 1270,
+    "contributors": 67,
+    "size": 53332,
+    "createdAt": "2018-02-17T12:09:05",
+    "pushedAt": "2021-07-30T08:02:56",
+    "updatedAt": "2021-07-31T10:19:01",
+    "totalIssues": 386,
+    "openIssues": 53,
+    "totalPullRequests": 967,
+    "openPullRequests": 12,
+    "blankLines": 13235,
+    "codeLines": 185348,
+    "commentLines": 5470,
+    "metrics": [
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 12,
+            "codeLines": 40,
+            "blankLines": 19
+        },
+        {
+            "language": "YAML",
+            "commentLines": 67,
+            "codeLines": 1545,
+            "blankLines": 158
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 14979,
+            "blankLines": 4463
+        },
+        {
+            "language": "Ruby",
+            "commentLines": 4,
+            "codeLines": 112,
+            "blankLines": 26
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 2
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1411,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 98319,
+            "blankLines": 5
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 5085,
+            "codeLines": 64370,
+            "blankLines": 8287
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 300,
+            "codeLines": 4541,
+            "blankLines": 274
+        },
+        {
+            "language": "CSS",
+            "commentLines": 2,
+            "codeLines": 27,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2021-07-30T12:44:39",
+    "lastCommitSHA": "69d0697f43c18c33c61016353a74a2f1b460a77e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 598015,
+        "JavaScript": 36292,
+        "Shell": 508
+    },
+    "labels": [
+        "a11y",
+        "accessibility",
+        "api",
+        "behaviors",
+        "bug",
+        "contributor experience",
+        "coverage",
+        "dependencies",
+        "deployment",
+        "developer experience",
+        "docs",
+        "ds-reviewed",
+        "duplicate",
+        "effort: high",
+        "effort: low",
+        "effort: medium",
+        "enhancement",
+        "epic",
+        "experimental",
+        "fr-skip",
+        "futher info needed",
+        "good first issue",
+        "major release",
+        "minor release",
+        "needs design",
+        "new component",
+        "patch release",
+        "status: review needed",
+        "status: wip",
+        "type: discussion",
+        "typescript",
+        "up for grabs",
+        "wontfix",
+        "\u2b50\ufe0frep",
+        "\ud83d\udc93collab",
+        "\ud83d\udeab blocked"
+    ],
+    "topics": []
+}

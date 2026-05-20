@@ -1,0 +1,90 @@
+{
+    "id": 4017278,
+    "name": "joshswan/react-native-autolink",
+    "isFork": false,
+    "commits": 170,
+    "branches": 1,
+    "releases": 25,
+    "forks": 84,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 610,
+    "contributors": 14,
+    "size": 975,
+    "createdAt": "2016-01-28T07:47:29",
+    "pushedAt": "2023-10-07T06:16:58",
+    "updatedAt": "2023-11-13T05:01:27",
+    "totalIssues": 52,
+    "openIssues": 4,
+    "totalPullRequests": 23,
+    "openPullRequests": 1,
+    "blankLines": 247,
+    "codeLines": 1367,
+    "commentLines": 126,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 327,
+            "blankLines": 108
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 128,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 33,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 112,
+            "codeLines": 870,
+            "blankLines": 135
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 14,
+            "codeLines": 6,
+            "blankLines": 2
+        }
+    ],
+    "lastCommit": "2023-10-07T06:16:55",
+    "lastCommitSHA": "cdc699a76086ff65bb26bed2d43bd064df963578",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 37058,
+        "JavaScript": 501,
+        "Shell": 79
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "autolinker",
+        "links",
+        "react-native"
+    ]
+}

@@ -1,0 +1,104 @@
+{
+    "id": 58080298,
+    "name": "changesets/changesets",
+    "isFork": false,
+    "commits": 531,
+    "branches": 36,
+    "releases": 373,
+    "forks": 482,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 32,
+    "stargazers": 8071,
+    "contributors": 118,
+    "size": 4637,
+    "createdAt": "2019-03-21T10:33:37",
+    "pushedAt": "2024-05-08T01:39:54",
+    "updatedAt": "2024-05-09T11:16:44",
+    "totalIssues": 610,
+    "openIssues": 339,
+    "totalPullRequests": 617,
+    "openPullRequests": 102,
+    "blankLines": 4578,
+    "codeLines": 16389,
+    "commentLines": 6939,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 4464,
+            "blankLines": 2762
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 244,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 6925,
+            "codeLines": 10551,
+            "blankLines": 1802
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 29,
+            "blankLines": 5
+        },
+        {
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 105,
+            "blankLines": 9
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 996,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-03-26T08:15:33",
+    "lastCommitSHA": "0bf89b3709e3e3df6ed5dbb8ece0fb000a55d5f4",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 552451,
+        "JavaScript": 898
+    },
+    "labels": [
+        "breaking",
+        "bug",
+        "changelog-generation",
+        "dependencies",
+        "design",
+        "discussion",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "npm",
+        "pkg:@changesets/changelog-github",
+        "pkg:@changesets/cli",
+        "pkg:@changesets/config",
+        "pkg:@changesets/read",
+        "pkg:get-github-info",
+        "pkg:get-workspaces",
+        "pnpm",
+        "question",
+        "repository maintenance",
+        "v2",
+        "wontfix",
+        "yarn berry",
+        "yarn classic"
+    ],
+    "topics": []
+}

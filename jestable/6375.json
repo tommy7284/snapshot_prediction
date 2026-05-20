@@ -1,0 +1,120 @@
+{
+    "id": 6259667,
+    "name": "mapsplugin/cordova-plugin-googlemaps",
+    "isFork": false,
+    "commits": 4669,
+    "branches": 11,
+    "releases": 7,
+    "forks": 838,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": null,
+    "watchers": 106,
+    "stargazers": 1643,
+    "contributors": 70,
+    "size": 132295,
+    "createdAt": "2013-10-29T03:11:07",
+    "pushedAt": "2021-08-04T11:30:40",
+    "updatedAt": "2021-08-05T04:57:12",
+    "totalIssues": 2645,
+    "openIssues": 40,
+    "totalPullRequests": 232,
+    "openPullRequests": 8,
+    "blankLines": 6041,
+    "codeLines": 32696,
+    "commentLines": 5680,
+    "metrics": [
+        {
+            "blankLines": 52,
+            "language": "XML",
+            "commentLines": 44,
+            "codeLines": 856
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 292
+        },
+        {
+            "blankLines": 1916,
+            "language": "JavaScript",
+            "commentLines": 1909,
+            "codeLines": 13425
+        },
+        {
+            "blankLines": 185,
+            "language": "C/C++ Header",
+            "commentLines": 291,
+            "codeLines": 574
+        },
+        {
+            "blankLines": 15,
+            "language": "Gradle",
+            "commentLines": 5,
+            "codeLines": 108
+        },
+        {
+            "blankLines": 13,
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 78
+        },
+        {
+            "blankLines": 145,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 522
+        },
+        {
+            "blankLines": 8,
+            "language": "Bourne Shell",
+            "commentLines": 6,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 2100,
+            "language": "Objective-C",
+            "commentLines": 1591,
+            "codeLines": 7709
+        },
+        {
+            "blankLines": 1607,
+            "language": "Java",
+            "commentLines": 1827,
+            "codeLines": 9095
+        }
+    ],
+    "lastCommit": "2020-08-17T10:35:52",
+    "lastCommitSHA": "bdb7af4730857a6b51662a8cfd180f6c5a3dce35",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 523022,
+        "Objective-C": 474645,
+        "Java": 435229,
+        "Shell": 1502
+    },
+    "labels": [
+        "@ionic-native/googlemaps",
+        "bug",
+        "confirmed",
+        "contribution",
+        "enhancement",
+        "feature request",
+        "fixed",
+        "fund raise",
+        "implemented",
+        "inspecting:need_more_time",
+        "need more information",
+        "not bug",
+        "pending / waiting",
+        "question",
+        "wontfix",
+        "working"
+    ],
+    "topics": []
+}

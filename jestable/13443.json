@@ -1,0 +1,105 @@
+{
+    "id": 4019806,
+    "name": "infinitered/solidarity",
+    "isFork": false,
+    "commits": 393,
+    "branches": 6,
+    "releases": 8,
+    "forks": 49,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://infinitered.github.io/solidarity/",
+    "watchers": 19,
+    "stargazers": 581,
+    "contributors": 31,
+    "size": 2923,
+    "createdAt": "2017-09-03T11:27:04",
+    "pushedAt": "2022-05-06T03:56:45",
+    "updatedAt": "2022-05-08T08:57:39",
+    "totalIssues": 107,
+    "openIssues": 29,
+    "totalPullRequests": 158,
+    "openPullRequests": 0,
+    "blankLines": 862,
+    "codeLines": 5342,
+    "commentLines": 423,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 707,
+            "blankLines": 202
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 29,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 379,
+            "codeLines": 3990,
+            "blankLines": 633
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 15,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 44,
+            "codeLines": 83,
+            "blankLines": 20
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 400,
+            "blankLines": 0
+        },
+        {
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 117,
+            "blankLines": 7
+        }
+    ],
+    "lastCommit": "2022-05-06T03:56:45",
+    "lastCommitSHA": "3f701f77de9bc1b82eb7c1fb387292bf0907a336",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 159305,
+        "EJS": 3015,
+        "JavaScript": 443
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "maintenance",
+        "new feature!",
+        "question",
+        "ready for review",
+        "windows",
+        "wontfix"
+    ],
+    "topics": []
+}

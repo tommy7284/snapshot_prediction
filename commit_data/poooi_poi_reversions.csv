@@ -1,0 +1,279 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+2627,9daef0fb87b8d06a31cea9a5801ee6cd1995eec8,59b52096943d37715abbf91c0154289ab0e4ff88,"## Overview
+This PR continues the `views/redux/info` TypeScript migration and updates reducer/test patterns to align with Redux Toolkit action creators.
+
+## Key Changes
+- Migrated reducers to RTK `createSlice` + `extraReducers(addCase(...))` where possible:
+  - `views/redux/info/fleets.ts`
+  - `views/redux/info/useitems.ts`
+  - `views/redux/info/resources.ts` (now uses middleware for cross-slice cases)
+  - `views/redux/info/equips.ts` (now uses middleware for cross-slice cases)
+- Updated info reducer tests to dispatch the real action creators from `views/redux/actions.ts` (required for `addCase` matching) and refreshed snapshots.
+- Added small internal actions in `views/redux/actions.ts` to support middleware-derived updates:
+  - `@@info.resources@ApplyDelta`
+  - `@@info.equips@RemoveByIds`
+
+## Cross-Slice Workarounds (Why Middleware)
+RTK slice reducers don鈥檛 get access to root state, but some updates must be derived from other slices.
+
+To keep reducers pure:
+- `views/redux/middlewares/resources-cross-slice.ts` reads `store.getState()`, computes resource deltas, then dispatches `@@info.resources@ApplyDelta`.
+- `views/redux/middlewares/equips-cross-slice.ts` reads `store.getState()`, derives equip IDs from ship slots, then dispatches `@@info.equips@RemoveByIds`.
+
+Resources cases handled by middleware:
+- `@@Response/kcsapi/api_req_kousyou/createship_speedchange`: infer LSC from `info.constructions[kdockId - 1].api_item1` to subtract 10 vs 1 instant-build materials.
+- `@@Response/kcsapi/api_req_nyukyo/start`: subtract repair fuel/steel (and optionally a bucket) from `info.ships[shipId].api_ndock_item`.
+
+Equips cases handled by middleware:
+- `@@Response/kcsapi/api_req_kaisou/powerup`: when `api_slot_dest_flag != 0`, remove equips from sacrificed ships.
+- `@@Response/kcsapi/api_req_kousyou/destroyship`: when `api_slot_dest_flag != 0`, remove equips from scrapped ships.
+
+## kcsapi Missing Types (Explicit Callouts)
+Some API endpoints used by this repo are not typed in the `kcsapi` package. We define local request/response interfaces in `views/redux/actions.ts` with `FIXME` callouts:
+- `@@Response/kcsapi/api_req_hensei/preset_order_change`
+- `@@Response/kcsapi/api_req_member/updatedeckname`
+- `@@Response/kcsapi/api_req_air_corps/change_name`
+- `@@Response/kcsapi/api_req_air_corps/change_deployment_base`
+
+## Remaining Cross-Slice Reads Not Handled In This PR
+This PR only addresses cross-slice reads that were blocking the RTK migrations above (resources + equips). Other legacy reducers still rely on the custom reducer signature (`reducer(state, action, store?)`) or globals:
+- `views/redux/info/ships.ts` reads `store` for `@@Response/kcsapi/api_req_nyukyo/speedchange`.
+- `views/redux/info/quests.ts` reads `store` in quest tracking logic, and uses `window.getStore(...)` in `saveQuestTracking()`.
+
+## Tests
+- `npm test -- --testPathPattern=\""views/redux/(info|middlewares)/__tests__\""`
+
+## Follow-ups
+- TODO(rtk-migration): `views/redux/info/quests.ts` still uses the legacy reducer signature `reducer(state, action, store)` and reads cross-slice/root state via the `store` argument (ships/fleets/equips/const/sortie/battle) to infer quest progress; RTK slice reducers only receive `(state, action)`, so this logic needs to move to middleware/listeners (or actions must carry the required context) before we can migrate quests to `createSlice` + `extraReducers(addCase(...))`.
+- TODO(persistence): `saveQuestTracking()` persists via a store observer + `window.getStore()`. In a follow-up, move this to an explicit persistence middleware/listener for clearer side-effect boundaries and better testability.
+","Use response-saver fixtures in info tests
+","diff --git a/views/redux/info/__tests__/airbase.spec.ts b/views/redux/info/__tests__/airbase.spec.ts
+index 047cc77..ccfede6 100644
+--- a/views/redux/info/__tests__/airbase.spec.ts
++++ b/views/redux/info/__tests__/airbase.spec.ts
+@@ -1,13 +1,12 @@
+ import { reducer } from '../airbase'
+ 
+-// FIXME: cannot find a good fixture for createAPIReqMapNextResponseAction
+-
+ import {
+   createAPIGetMemberMapinfoResponseAction,
+   createAPIReqAirCorpsSetPlaneResponseAction,
+   createAPIReqAirCorpsChangeNameResponseAction,
+   createAPIReqAirCorpsSetActionResponseAction,
+   createAPIReqAirCorpsSupplyResponseAction,
++  createAPIReqMapNextResponseAction,
+   createAPIPortPortResponseAction,
+ } from '../../actions'
+ 
+@@ -16,6 +15,10 @@ import setPlaneFixture from './__fixtures__/api_req_air_corps_set_plane.json'
+ import changeNameFixture from './__fixtures__/api_req_air_corps_change_name.json'
+ import setActionFixture from './__fixtures__/api_req_air_corps_set_action.json'
+ import supplyFixture from './__fixtures__/api_req_air_corps_supply.json'
++import nextFixture from './__fixtures__/api_req_map_next.json'
++
++import type { GameResponsePayload } from '../../actions'
++import type { APIReqMapNextRequest, APIReqMapNextResponse } from 'kcsapi'
+ 
+ describe('airbase reduer', () => {
+   const initialState = reducer([], createAPIGetMemberMapinfoResponseAction(mapInfoFixture))
+@@ -62,4 +65,18 @@ describe('airbase reduer', () => {
+       reducer(initialState, createAPIPortPortResponseAction({})),
+     )
+   })
++
++  it('createAPIReqMapNextResponseAction', () => {
++    expect(initialState).toMatchDiffSnapshot(
++      reducer(
++        initialState,
++        createAPIReqMapNextResponseAction(
++          nextFixture as unknown as GameResponsePayload<
++            APIReqMapNextResponse,
++            APIReqMapNextRequest
++          >,
++        ),
++      ),
++    )
++  })
+ })
+
+diff --git a/views/redux/info/__tests__/maps.spec.ts b/views/redux/info/__tests__/maps.spec.ts
+index be2dba1..bd57ac5 100644
+--- a/views/redux/info/__tests__/maps.spec.ts
++++ b/views/redux/info/__tests__/maps.spec.ts
+@@ -1,4 +1,19 @@
+ import { reducer, MapsState } from '../maps'
++import {
++  createAPIGetMemberMapinfoResponseAction,
++  createAPIReqMapSelectEventmapRankResponseAction,
++} from '../../actions'
++
++import mapInfoFixture from './__fixtures__/api_get_member_mapinfo.json'
++import selectEventmapRankFixture from './__fixtures__/api_req_map_select_eventmap_rank.json'
++
++import type { GameResponsePayload } from '../../actions'
++import type {
++  APIGetMemberMapinfoRequest,
++  APIGetMemberMapinfoResponse,
++  APIReqMapSelectEventmapRankRequest,
++  APIReqMapSelectEventmapRankResponse,
++} from 'kcsapi'
+ 
+ describe('maps reducer', () => {
+   it('should return initial state', () => {
+@@ -14,42 +29,37 @@ describe('maps reducer', () => {
+   })
+ 
+   it('should handle api_get_member/mapinfo', () => {
+-    const body = {
+-      api_map_info: [
+-        { api_id: 11, api_cleared: 1 },
+-        { api_id: 12, api_cleared: 0 },
+-      ],
+-    }
+-    const result = reducer({}, { type: '@@Response/kcsapi/api_get_member/mapinfo', body })
+-    expect(result).toEqual({
+-      '11': { api_id: 11, api_cleared: 1 },
+-      '12': { api_id: 12, api_cleared: 0 },
+-    })
++    const result = reducer(
++      {},
++      createAPIGetMemberMapinfoResponseAction(
++        mapInfoFixture as unknown as GameResponsePayload<
++          APIGetMemberMapinfoResponse,
++          APIGetMemberMapinfoRequest
++        >,
++      ),
++    )
++    expect(result).toMatchSnapshot()
+   })
+ 
+   it('should handle api_req_map/select_eventmap_rank', () => {
+-    const initialState: MapsState = {
+-      '351': { api_id: 351 },
+-    }
+-    const body = {
+-      api_maphp: { api_max_maphp: 5000, api_now_maphp: 5000 },
+-    }
+-    const postBody = {
+-      api_maparea_id: '35',
+-      api_map_no: '1',
+-      api_rank: '2',
+-    }
+-    const result = reducer(initialState, {
+-      type: '@@Response/kcsapi/api_req_map/select_eventmap_rank',
+-      body,
+-      postBody,
+-    })
+-    expect(result['351']).toMatchObject({
+-      api_eventmap: {
+-        api_selected_rank: 2,
+-        api_max_maphp: 5000,
+-        api_now_maphp: 5000,
+-      },
+-    })
++    const before: MapsState = reducer(
++      {},
++      createAPIGetMemberMapinfoResponseAction(
++        mapInfoFixture as unknown as GameResponsePayload<
++          APIGetMemberMapinfoResponse,
++          APIGetMemberMapinfoRequest
++        >,
++      ),
++    )
++    const after = reducer(
++      before,
++      createAPIReqMapSelectEventmapRankResponseAction(
++        selectEventmapRankFixture as unknown as GameResponsePayload<
++          APIReqMapSelectEventmapRankResponse,
++          APIReqMapSelectEventmapRankRequest
++        >,
++      ),
++    )
++    expect(after).toMatchDiffSnapshot(before)
+   })
+ })
+
+diff --git a/views/redux/info/__tests__/repairs.spec.ts b/views/redux/info/__tests__/repairs.spec.ts
+index 8e2362e..e82ab0a 100644
+--- a/views/redux/info/__tests__/repairs.spec.ts
++++ b/views/redux/info/__tests__/repairs.spec.ts
+@@ -1,4 +1,19 @@
+ import { reducer, RepairsState } from '../repairs'
++import {
++  createAPIGetMemberNdockResponseAction,
++  createAPIPortPortResponseAction,
++} from '../../actions'
++
++import ndockFixture from './__fixtures__/api_get_member_ndock.json'
++import portFixture from './__fixtures__/api_port_port.json'
++
++import type { GameResponsePayload } from '../../actions'
++import type {
++  APIGetMemberNdockRequest,
++  APIGetMemberNdockResponse,
++  APIPortPortRequest,
++  APIPortPortResponse,
++} from 'kcsapi'
+ 
+ describe('repairs reducer', () => {
+   it('should return initial state', () => {
+@@ -24,40 +39,25 @@ describe('repairs reducer', () => {
+   })
+ 
+   it('should handle api_get_member/ndock', () => {
+-    const body = [
+-      {
+-        api_id: 1,
+-        api_complete_time: 1234567890,
+-        api_complete_time_str: '2024-01-01 00:00:00',
+-        api_item1: 100,
+-        api_item2: 0,
+-        api_item3: 50,
+-        api_item4: 0,
+-        api_ship_id: 123,
+-        api_state: 1,
+-      },
+-    ]
+-    const result = reducer([], { type: '@@Response/kcsapi/api_get_member/ndock', body })
+-    expect(result).toEqual(body)
++    const result = reducer(
++      [],
++      createAPIGetMemberNdockResponseAction(
++        ndockFixture as unknown as GameResponsePayload<
++          APIGetMemberNdockResponse[],
++          APIGetMemberNdockRequest
++        >,
++      ),
++    )
++    expect(result).toMatchSnapshot()
+   })
+ 
+   it('should handle api_port/port', () => {
+-    const body = {
+-      api_ndock: [
+-        {
+-          api_id: 1,
+-          api_complete_time: 0,
+-          api_complete_time_str: '0',
+-          api_item1: 0,
+-          api_item2: 0,
+-          api_item3: 0,
+-          api_item4: 0,
+-          api_ship_id: 0,
+-          api_state: 0,
+-        },
+-      ],
+-    }
+-    const result = reducer([], { type: '@@Response/kcsapi/api_port/port', body })
+-    expect(result).toEqual(body.api_ndock)
++    const result = reducer(
++      [],
++      createAPIPortPortResponseAction(
++        portFixture as unknown as GameResponsePayload<APIPortPortResponse, APIPortPortRequest>,
++      ),
++    )
++    expect(result).toMatchSnapshot()
+   })
+ })
+",0,,21,1138,3,14,53,4873

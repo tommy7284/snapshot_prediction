@@ -1,0 +1,171 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+10,23ab89d2de087758097a5a127c619b82fbccbdb1,5d034bf5740ce99ad1355f800e0728473865a673,src/__snapshots__/index.spec.js.snap,src/index.spec.js,"This should resolve #7.
+
+I ended up also adding the prop for interval as well. I realized that internally we want to be able to control that in addition to the URL.
+
+For the console warning if no pollingInterval is defined, there is not currently an environment check on it. If it turns out someone wants to disable that completely, we could add an env check... but I think we agree it's probably better to leave it as is for now. ","Update tests for new props
+","diff --git a/src/index.spec.js b/src/index.spec.js
+index a896a24..a65d8cb 100644
+--- a/src/index.spec.js
++++ b/src/index.spec.js
+@@ -30,6 +30,17 @@ describe(""Online"", () => {
+ 
+     expect(toJSON(wrapper)).toMatchSnapshot();
+   });
++  
++  it(""should render children when online and using a custom polling URL"", () => {
++    const wrapper = mount(
++      <Online pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Online>
++    );
++
++    expect(toJSON(wrapper)).toMatchSnapshot();
++  });
++
+ 
+   it(""should not render children when offline"", () => {
+     Object.defineProperty(navigator, ""onLine"", { value: false });
+@@ -42,6 +53,19 @@ describe(""Online"", () => {
+ 
+     expect(wrapper.html()).toBeNull();
+   });
++  
++  it(""should not render children when offline and using a custom polling URL"", () => {
++    Object.defineProperty(navigator, ""onLine"", { value: false });
++
++    const wrapper = mount(
++      <Online pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Online>
++    );
++
++    expect(wrapper.html()).toBeNull();
++  });
++
+ 
+   it(""should not render children when going from online to offline"", () => {
+     const wrapper = mount(
+@@ -85,6 +109,17 @@ describe(""Offline"", () => {
+ 
+     expect(toJSON(wrapper)).toMatchSnapshot();
+   });
++  
++  it(""should render children when offline and using a custom polling URL"", () => {
++    const wrapper = mount(
++      <Offline pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Offline>
++    );
++
++    expect(toJSON(wrapper)).toMatchSnapshot();
++  });
++
+ 
+   it(""should not render children when online"", () => {
+     Object.defineProperty(navigator, ""onLine"", { value: true });
+@@ -97,6 +132,18 @@ describe(""Offline"", () => {
+ 
+     expect(wrapper.html()).toBeNull();
+   });
++  
++  it(""should not render children when online and using a custom polling URL"", () => {
++    Object.defineProperty(navigator, ""onLine"", { value: true });
++
++    const wrapper = mount(
++      <Offline pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Offline>
++    );
++
++    expect(wrapper.html()).toBeNull();
++  });
+ 
+   it(""should not render children when going from offline to online"", () => {
+     const wrapper = mount(
+",0,
+10,23ab89d2de087758097a5a127c619b82fbccbdb1,5d034bf5740ce99ad1355f800e0728473865a673,src/__snapshots__/index.spec.js.snap,src/index.spec.js,"This should resolve #7.
+
+I ended up also adding the prop for interval as well. I realized that internally we want to be able to control that in addition to the URL.
+
+For the console warning if no pollingInterval is defined, there is not currently an environment check on it. If it turns out someone wants to disable that completely, we could add an env check... but I think we agree it's probably better to leave it as is for now. ","Update tests for new props
+","diff --git a/src/index.spec.js b/src/index.spec.js
+index a896a24..a65d8cb 100644
+--- a/src/index.spec.js
++++ b/src/index.spec.js
+@@ -30,6 +30,17 @@ describe(""Online"", () => {
+ 
+     expect(toJSON(wrapper)).toMatchSnapshot();
+   });
++  
++  it(""should render children when online and using a custom polling URL"", () => {
++    const wrapper = mount(
++      <Online pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Online>
++    );
++
++    expect(toJSON(wrapper)).toMatchSnapshot();
++  });
++
+ 
+   it(""should not render children when offline"", () => {
+     Object.defineProperty(navigator, ""onLine"", { value: false });
+@@ -42,6 +53,19 @@ describe(""Online"", () => {
+ 
+     expect(wrapper.html()).toBeNull();
+   });
++  
++  it(""should not render children when offline and using a custom polling URL"", () => {
++    Object.defineProperty(navigator, ""onLine"", { value: false });
++
++    const wrapper = mount(
++      <Online pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Online>
++    );
++
++    expect(wrapper.html()).toBeNull();
++  });
++
+ 
+   it(""should not render children when going from online to offline"", () => {
+     const wrapper = mount(
+@@ -85,6 +109,17 @@ describe(""Offline"", () => {
+ 
+     expect(toJSON(wrapper)).toMatchSnapshot();
+   });
++  
++  it(""should render children when offline and using a custom polling URL"", () => {
++    const wrapper = mount(
++      <Offline pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Offline>
++    );
++
++    expect(toJSON(wrapper)).toMatchSnapshot();
++  });
++
+ 
+   it(""should not render children when online"", () => {
+     Object.defineProperty(navigator, ""onLine"", { value: true });
+@@ -97,6 +132,18 @@ describe(""Offline"", () => {
+ 
+     expect(wrapper.html()).toBeNull();
+   });
++  
++  it(""should not render children when online and using a custom polling URL"", () => {
++    Object.defineProperty(navigator, ""onLine"", { value: true });
++
++    const wrapper = mount(
++      <Offline pollingUrl=""https://www.google.com/"">
++        <h1>Hello World</h1>
++      </Offline>
++    );
++
++    expect(wrapper.html()).toBeNull();
++  });
+ 
+   it(""should not render children when going from offline to online"", () => {
+     const wrapper = mount(
+",0,

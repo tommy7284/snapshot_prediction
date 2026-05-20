@@ -1,0 +1,125 @@
+{
+    "id": 4072734,
+    "name": "urigo/graphql-scalars",
+    "isFork": false,
+    "commits": 2369,
+    "branches": 14,
+    "releases": 52,
+    "forks": 133,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.the-guild.dev/graphql/scalars",
+    "watchers": 13,
+    "stargazers": 1839,
+    "contributors": 71,
+    "size": 32479,
+    "createdAt": "2017-06-16T04:29:24",
+    "pushedAt": "2024-05-10T07:54:30",
+    "updatedAt": "2024-05-09T11:22:00",
+    "totalIssues": 185,
+    "openIssues": 39,
+    "totalPullRequests": 2153,
+    "openPullRequests": 8,
+    "blankLines": 2159,
+    "codeLines": 13934,
+    "commentLines": 889,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 161,
+            "blankLines": 12
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 879,
+            "codeLines": 12298,
+            "blankLines": 1809
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 66,
+            "blankLines": 6
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 336,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 9,
+            "codeLines": 1063,
+            "blankLines": 331
+        }
+    ],
+    "lastCommit": "2024-05-09T11:21:56",
+    "lastCommitSHA": "346ea0109d145f485ed61dee8156832f020301dc",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 454226,
+        "MDX": 37118,
+        "CSS": 3530,
+        "JavaScript": 1928,
+        "Shell": 40
+    },
+    "labels": [
+        "automerge",
+        "bug",
+        "chore",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "kind/bug",
+        "kind/docs",
+        "kind/enhancement",
+        "kind/question",
+        "process/candidate",
+        "question",
+        "stage/0-issue-prerequisites",
+        "stage/1-reproduction",
+        "stage/2-failing-test",
+        "stage/3-local-solution",
+        "stage/4-pull-request",
+        "stage/5-alpha-release-testing",
+        "stage/6-released",
+        "status/backlog",
+        "status/blocked",
+        "status/parked",
+        "status/pending-verification",
+        "status/resolved",
+        "status/triage",
+        "status/wip",
+        "waiting-for-answer",
+        "waiting-for-release",
+        "wontfix"
+    ],
+    "topics": [
+        "graphql",
+        "graphql-js",
+        "scalar-types",
+        "schema"
+    ]
+}

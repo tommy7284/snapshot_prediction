@@ -1,0 +1,115 @@
+{
+    "id": 7796147,
+    "name": "dyatko/arkit",
+    "isFork": false,
+    "commits": 1617,
+    "branches": 9,
+    "releases": 0,
+    "forks": 41,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://arkit.pro",
+    "watchers": 8,
+    "stargazers": 934,
+    "contributors": 6,
+    "size": 10029,
+    "createdAt": "2019-01-29T05:02:57",
+    "pushedAt": "2024-04-25T12:32:40",
+    "updatedAt": "2024-04-25T12:31:30",
+    "totalIssues": 32,
+    "openIssues": 15,
+    "totalPullRequests": 1419,
+    "openPullRequests": 10,
+    "blankLines": 7620,
+    "codeLines": 73809,
+    "commentLines": 8055,
+    "metrics": [
+        {
+            "blankLines": 86,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 247
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 61,
+            "language": "SVG",
+            "commentLines": 229,
+            "codeLines": 476
+        },
+        {
+            "blankLines": 12,
+            "language": "PlantUML",
+            "commentLines": 4,
+            "codeLines": 42
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 21540
+        },
+        {
+            "blankLines": 313,
+            "language": "TypeScript",
+            "commentLines": 113,
+            "codeLines": 1792
+        },
+        {
+            "blankLines": 7146,
+            "language": "JavaScript",
+            "commentLines": 7709,
+            "codeLines": 49643
+        }
+    ],
+    "lastCommit": "2024-04-25T12:31:11",
+    "lastCommitSHA": "223652af578260c90e68152facb4186daa6b5683",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 381590,
+        "TypeScript": 50535,
+        "HTML": 2450
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "architecture",
+        "cli",
+        "codebase",
+        "component",
+        "diagram",
+        "flow",
+        "generate",
+        "javascript",
+        "js",
+        "plantuml",
+        "ts",
+        "typescript",
+        "uml",
+        "visualisation"
+    ]
+}

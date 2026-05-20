@@ -1,0 +1,68 @@
+{
+    "id": 4300762,
+    "name": "tkh44/data-driven-motion",
+    "isFork": false,
+    "commits": 52,
+    "branches": 4,
+    "releases": 10,
+    "forks": 28,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://tkh44.github.io/data-driven-motion/",
+    "watchers": 6,
+    "stargazers": 526,
+    "contributors": null,
+    "size": 3166,
+    "createdAt": "2017-03-01T09:28:03",
+    "pushedAt": "2017-06-08T06:25:40",
+    "updatedAt": "2021-01-16T05:20:37",
+    "totalIssues": 3,
+    "openIssues": 0,
+    "totalPullRequests": 2,
+    "openPullRequests": 1,
+    "blankLines": 203,
+    "codeLines": 1580,
+    "commentLines": 44,
+    "metrics": [
+        {
+            "blankLines": 16,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 89
+        },
+        {
+            "blankLines": 118,
+            "language": "JavaScript",
+            "commentLines": 44,
+            "codeLines": 1275
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 109
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 63,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 91
+        }
+    ],
+    "lastCommit": "2017-06-01T03:44:09",
+    "lastCommitSHA": "207d19efa933826559e862f4bc9dbfb769b40a1e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {},
+    "labels": [],
+    "topics": []
+}

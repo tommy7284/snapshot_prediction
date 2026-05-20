@@ -1,0 +1,117 @@
+{
+    "id": 6860307,
+    "name": "mbraak/jqtree",
+    "isFork": false,
+    "commits": 1534,
+    "branches": 5,
+    "releases": 0,
+    "forks": 179,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "dev",
+    "license": "Apache License 2.0",
+    "homepage": "https://mbraak.github.io/jqTree/",
+    "watchers": 50,
+    "stargazers": 1022,
+    "contributors": 21,
+    "size": 18066,
+    "createdAt": "2011-05-09T05:28:22",
+    "pushedAt": "2024-05-07T06:40:18",
+    "updatedAt": "2024-05-07T06:39:29",
+    "totalIssues": 595,
+    "openIssues": 0,
+    "totalPullRequests": 214,
+    "openPullRequests": 2,
+    "blankLines": 6689,
+    "codeLines": 30631,
+    "commentLines": 2559,
+    "metrics": [
+        {
+            "language": "Python",
+            "commentLines": 0,
+            "codeLines": 49,
+            "blankLines": 35
+        },
+        {
+            "language": "CSS",
+            "commentLines": 5,
+            "codeLines": 234,
+            "blankLines": 36
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 12,
+            "blankLines": 4
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 763,
+            "blankLines": 148
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 173,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 207,
+            "codeLines": 9207,
+            "blankLines": 1905
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 2345,
+            "codeLines": 11349,
+            "blankLines": 2345
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 6950,
+            "blankLines": 1691
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1884,
+            "blankLines": 523
+        }
+    ],
+    "lastCommit": "2024-05-07T06:39:25",
+    "lastCommitSHA": "0b4db67d31fee6ca1b460a801040e1b14486e1e6",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 318838,
+        "CSS": 8050,
+        "JavaScript": 3992,
+        "HTML": 3280,
+        "Python": 1641
+    },
+    "labels": [
+        "dependencies",
+        "in progress",
+        "javascript",
+        "ready",
+        "ruby"
+    ],
+    "topics": [
+        "javascript",
+        "jqtree",
+        "jquery",
+        "tree",
+        "tree-widget",
+        "typescript"
+    ]
+}

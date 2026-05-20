@@ -1,0 +1,100 @@
+{
+    "id": 5118442,
+    "name": "typicode/react-fake-props",
+    "isFork": false,
+    "commits": 97,
+    "branches": 7,
+    "releases": 2,
+    "forks": 37,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 628,
+    "contributors": 8,
+    "size": 2557,
+    "createdAt": "2017-05-30T07:11:46",
+    "pushedAt": "2024-02-14T10:26:22",
+    "updatedAt": "2024-02-08T07:55:44",
+    "totalIssues": 13,
+    "openIssues": 3,
+    "totalPullRequests": 21,
+    "openPullRequests": 6,
+    "blankLines": 175,
+    "codeLines": 21585,
+    "commentLines": 88,
+    "metrics": [
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 20839
+        },
+        {
+            "blankLines": 17,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 70,
+            "language": "JavaScript",
+            "commentLines": 51,
+            "codeLines": 383
+        },
+        {
+            "blankLines": 46,
+            "language": "JSX",
+            "commentLines": 34,
+            "codeLines": 187
+        },
+        {
+            "blankLines": 35,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 84
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2024-02-13T09:46:19",
+    "lastCommitSHA": "0ecae4f431d819f3cce88b76d928a5bb5b1aaf16",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 19318,
+        "TypeScript": 1225,
+        "Shell": 51
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "enzyme",
+        "flow",
+        "props",
+        "proptypes",
+        "react",
+        "test"
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "id": 6265951,
+    "name": "babel/preset-modules",
+    "isFork": false,
+    "commits": 42,
+    "branches": 4,
+    "releases": 6,
+    "forks": 19,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 740,
+    "contributors": 9,
+    "size": 514,
+    "createdAt": "2019-11-08T04:07:22",
+    "pushedAt": "2023-07-21T05:36:41",
+    "updatedAt": "2023-06-13T02:32:21",
+    "totalIssues": 14,
+    "openIssues": 3,
+    "totalPullRequests": 22,
+    "openPullRequests": 2,
+    "blankLines": 328,
+    "codeLines": 2425,
+    "commentLines": 126,
+    "metrics": [
+        {
+            "blankLines": 45,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 126
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 201
+        },
+        {
+            "blankLines": 278,
+            "language": "JavaScript",
+            "commentLines": 123,
+            "codeLines": 2061
+        }
+    ],
+    "lastCommit": "2023-07-21T09:12:10",
+    "lastCommitSHA": "11b7ae9c396bbd354c06a847487a451bb09a371e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 36595
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "babel"
+    ]
+}

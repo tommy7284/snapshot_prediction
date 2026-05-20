@@ -1,0 +1,138 @@
+{
+    "id": 6757697,
+    "name": "gisto/gisto",
+    "isFork": false,
+    "commits": 1538,
+    "branches": 49,
+    "releases": 126,
+    "forks": 97,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://www.gistoapp.com/",
+    "watchers": 31,
+    "stargazers": 978,
+    "contributors": 9,
+    "size": 34779,
+    "createdAt": "2013-04-04T12:14:32",
+    "pushedAt": "2023-03-03T02:28:34",
+    "updatedAt": "2023-03-23T03:00:43",
+    "totalIssues": 280,
+    "openIssues": 33,
+    "totalPullRequests": 91,
+    "openPullRequests": 29,
+    "blankLines": 2620,
+    "codeLines": 50329,
+    "commentLines": 78,
+    "metrics": [
+        {
+            "blankLines": 220,
+            "language": "CSS",
+            "commentLines": 2,
+            "codeLines": 766
+        },
+        {
+            "blankLines": 276,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 730
+        },
+        {
+            "blankLines": 34,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 186
+        },
+        {
+            "blankLines": 16,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 113
+        },
+        {
+            "blankLines": 6,
+            "language": "XML",
+            "commentLines": 8,
+            "codeLines": 124
+        },
+        {
+            "blankLines": 200,
+            "language": "TypeScript",
+            "commentLines": 14,
+            "codeLines": 1407
+        },
+        {
+            "blankLines": 1769,
+            "language": "JavaScript",
+            "commentLines": 50,
+            "codeLines": 10672
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 34540
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 96,
+            "language": "Sass",
+            "commentLines": 1,
+            "codeLines": 818
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 970
+        }
+    ],
+    "lastCommit": "2022-12-31T05:47:12",
+    "lastCommitSHA": "fb37553fa9d4564dfd9ef2112a6ee2d7b15aeda0",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 288267,
+        "TypeScript": 37948,
+        "HTML": 2898,
+        "CSS": 2177,
+        "Shell": 314
+    },
+    "labels": [
+        "0 - backlog",
+        "1 - ready",
+        "2 - working",
+        "3 - done",
+        "announcement",
+        "bug",
+        "bug:blocker",
+        "bug:ui",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "invalid",
+        "need more details",
+        "next",
+        "os: linux",
+        "os: macos",
+        "os: windows",
+        "priority: critical",
+        "priority: high",
+        "priority: normal",
+        "question",
+        "requirement",
+        "solved",
+        "suggestion",
+        "wontfix"
+    ],
+    "topics": []
+}

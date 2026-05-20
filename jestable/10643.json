@@ -1,0 +1,101 @@
+{
+    "id": 7471129,
+    "name": "react-boilerplate/react-boilerplate",
+    "isFork": false,
+    "commits": 1457,
+    "branches": 33,
+    "releases": 16,
+    "forks": 6184,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.reactboilerplate.com",
+    "watchers": 536,
+    "stargazers": 29052,
+    "contributors": 185,
+    "size": 8943,
+    "createdAt": "2015-02-18T02:36:32",
+    "pushedAt": "2023-03-23T09:35:09",
+    "updatedAt": "2023-03-29T04:05:48",
+    "totalIssues": 1893,
+    "openIssues": 71,
+    "totalPullRequests": 1194,
+    "openPullRequests": 45,
+    "blankLines": 2336,
+    "codeLines": 26575,
+    "commentLines": 884,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 17411
+        },
+        {
+            "blankLines": 1069,
+            "language": "JavaScript",
+            "commentLines": 840,
+            "codeLines": 5772
+        },
+        {
+            "blankLines": 53,
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 378
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 31,
+            "codeLines": 56
+        },
+        {
+            "blankLines": 1172,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2925
+        },
+        {
+            "blankLines": 16,
+            "language": "HTML",
+            "commentLines": 13,
+            "codeLines": 33
+        }
+    ],
+    "lastCommit": "2019-04-18T05:48:40",
+    "lastCommitSHA": "d19099afeff64ecfb09133c06c1cb18c0d40887e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 234270,
+        "HTML": 12630
+    },
+    "labels": [
+        "beginner",
+        "bug",
+        "dependencies",
+        "discussion",
+        "docs",
+        "duplicate",
+        "editor",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "in progress",
+        "installation-failure",
+        "invalid",
+        "no template",
+        "pending-review",
+        "personal help request // not rbp issue",
+        "pr welcome",
+        "question",
+        "rfc",
+        "security",
+        "unconfirmed-bug",
+        "waiting-for-response",
+        "wip"
+    ],
+    "topics": []
+}

@@ -1,0 +1,105 @@
+{
+    "id": 6597777,
+    "name": "uxpin/adele",
+    "isFork": false,
+    "commits": 380,
+    "branches": 22,
+    "releases": 0,
+    "forks": 112,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 36,
+    "stargazers": 855,
+    "contributors": 46,
+    "size": 4094,
+    "createdAt": "2017-11-26T08:23:28",
+    "pushedAt": "2023-09-20T09:26:00",
+    "updatedAt": "2023-10-20T07:32:39",
+    "totalIssues": 33,
+    "openIssues": 13,
+    "totalPullRequests": 126,
+    "openPullRequests": 12,
+    "blankLines": 670,
+    "codeLines": 67706,
+    "commentLines": 383,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 91
+        },
+        {
+            "blankLines": 66,
+            "language": "JavaScript",
+            "commentLines": 36,
+            "codeLines": 590
+        },
+        {
+            "blankLines": 102,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 411
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 62974
+        },
+        {
+            "blankLines": 0,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 5,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 0,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 497,
+            "language": "JSX",
+            "commentLines": 345,
+            "codeLines": 3564
+        }
+    ],
+    "lastCommit": "2023-08-29T09:54:28",
+    "lastCommitSHA": "206a71760735ff98cdeb056b657a5b5bd411cecc",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 140829,
+        "HTML": 2261,
+        "Shell": 44,
+        "Procfile": 19
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "ds request",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "maintenance",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "hacktoberfest"
+    ]
+}

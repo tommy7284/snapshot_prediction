@@ -1,0 +1,4649 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+100,e3943fd0ba3e1da7f3546fdac1911d0278ffe4dd,01fa97c2fa0214a8940b0708ee4c63aded387a4d,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Refactor
+Fixes #18
+Fixes #19
+Fixes #39
+Fixes #56
+Fixes #59 
+Fixes #85
+Fixes #91 
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No
+","refactor: loader instead pitching
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 65c2d15..6213773 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -72,4 +72,20 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work from esModule export', async () => {
++    const compiler = getCompiler('simple-module-single-export.js', {
++      expose: 'myGlobal',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-module-default-export.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+100,e3943fd0ba3e1da7f3546fdac1911d0278ffe4dd,b2b0f323f8fb07d9e993967b7a175113e11a2689,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Refactor
+Fixes #18
+Fixes #19
+Fixes #39
+Fixes #56
+Fixes #59 
+Fixes #85
+Fixes #91 
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No
+","refactor: replace `expose` options by `exposes`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 4e4bf7e..b3cfb10 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -2,7 +2,7 @@ import { getCompiler, compile } from './helpers';
+ 
+ describe('validate options', () => {
+   const tests = {
+-    expose: {
++    exposes: {
+       success: [
+         'globalObject1',
+         'globalObject1.foo',
+",0,
+100,e3943fd0ba3e1da7f3546fdac1911d0278ffe4dd,01fa97c2fa0214a8940b0708ee4c63aded387a4d,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Refactor
+Fixes #18
+Fixes #19
+Fixes #39
+Fixes #56
+Fixes #59 
+Fixes #85
+Fixes #91 
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No
+","refactor: loader instead pitching
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 65c2d15..6213773 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -72,4 +72,20 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work from esModule export', async () => {
++    const compiler = getCompiler('simple-module-single-export.js', {
++      expose: 'myGlobal',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-module-default-export.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+100,e3943fd0ba3e1da7f3546fdac1911d0278ffe4dd,b2b0f323f8fb07d9e993967b7a175113e11a2689,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Refactor
+Fixes #18
+Fixes #19
+Fixes #39
+Fixes #56
+Fixes #59 
+Fixes #85
+Fixes #91 
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No
+","refactor: replace `expose` options by `exposes`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 4e4bf7e..b3cfb10 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -2,7 +2,7 @@ import { getCompiler, compile } from './helpers';
+ 
+ describe('validate options', () => {
+   const tests = {
+-    expose: {
++    exposes: {
+       success: [
+         'globalObject1',
+         'globalObject1.foo',
+",0,
+101,6fed3f9f5131b26c4666dcf1f903b1aa16f18b8c,9bffd5d22cfdb5296455eca7018b446e8c613a48,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+add interpolate names
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+
+","refactor: add interpolate
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 82e0672..7750f8b 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -351,4 +351,20 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work interpolate', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      exposes: ['[name]', 'myGlobal.[name]'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+101,6fed3f9f5131b26c4666dcf1f903b1aa16f18b8c,9bffd5d22cfdb5296455eca7018b446e8c613a48,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+add interpolate names
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+
+","refactor: add interpolate
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 82e0672..7750f8b 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -351,4 +351,20 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work interpolate', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      exposes: ['[name]', 'myGlobal.[name]'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+102,701b0ddbfae2f871c99754fdd2b7d4dafe030c2d,df19556571050ea06ad4fdbe64563d7644c3c313,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 7750f8b..b01510e 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -138,7 +138,7 @@ describe('loader', () => {
+         'myGlobal_alias.globalObject6|globalObject6',
+         'myGlobal_alias.globalObject7|globalObject7',
+         'myGlobal_alias.default default',
+-        'myGlobal',
++        '    myGlobal   ',
+         'myOtherGlobal',
+       ],
+     });
+",0,
+102,701b0ddbfae2f871c99754fdd2b7d4dafe030c2d,df19556571050ea06ad4fdbe64563d7644c3c313,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 7750f8b..b01510e 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -138,7 +138,7 @@ describe('loader', () => {
+         'myGlobal_alias.globalObject6|globalObject6',
+         'myGlobal_alias.globalObject7|globalObject7',
+         'myGlobal_alias.default default',
+-        'myGlobal',
++        '    myGlobal   ',
+         'myOtherGlobal',
+       ],
+     });
+",0,
+103,6cf937e3495bc576aec9051fd57948e793f40d87,910dc989962f32b29700ef41875f92da16fd5641,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+improve code and docs
+
+### Breaking Changes
+
+Yes, will be in changelog
+
+### Additional Info
+
+No","refactor: code and docs
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index b01510e..8528f69 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,6 +1,6 @@
+ import path from 'path';
+ 
+-import webpack from 'webpack';
++// import webpack from 'webpack';
+ 
+ import {
+   compile,
+@@ -30,6 +30,22 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work with ""moduleLocalName""', async () => {
++    const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      exposes: 'moduleMethod myGlobal',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work with multiple exposes', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
+       exposes: ['myGlobal', 'myOtherGlobal'],
+@@ -158,7 +174,7 @@ describe('loader', () => {
+     const compiler = getCompiler('simple-module-named-export.js', {
+       exposes: {
+         globalName: ['myGlobal.alias', 'globalObject6'],
+-        localName: 'globalObject6',
++        moduleLocalName: 'globalObject6',
+       },
+     });
+     const stats = await compile(compiler);
+@@ -178,11 +194,11 @@ describe('loader', () => {
+       exposes: [
+         {
+           globalName: ['myGlobal_alias', 'globalObject6'],
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         {
+           globalName: ['myGlobal_alias', 'globalObject7'],
+-          localName: 'globalObject7',
++          moduleLocalName: 'globalObject7',
+         },
+         'myGlobal_alias.default default',
+       ],
+@@ -284,50 +300,15 @@ describe('loader', () => {
+       }
+     );
+     const stats = await compile(compiler);
+-
+-    const webpack4Filename = 'main-9486a32a.bundle.js';
+-    const webpack5Filename = 'main-22966fe7.bundle.js';
+-    const bundleName =
+-      webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+-
+-    expect(
+-      getModuleSource('./simple-commonjs2-single-export.js-exposed', stats)
+-    ).toMatchSnapshot('module');
+-    expect(Object.keys(stats.compilation.assets)[0]).toBe(bundleName);
+-    expect(getErrors(stats)).toMatchSnapshot('errors');
+-    expect(getWarnings(stats)).toMatchSnapshot('warnings');
+-  });
+-
+-  it('should work multiple name from one package', async () => {
+-    const compiler = getCompiler(
+-      'simple-commonjs2-single-export.js',
+-      {
+-        exposes: ['myOtherGlobal', 'myGlobal'],
+-      },
+-      {
+-        output: {
+-          path: path.resolve(__dirname, './outputs'),
+-          filename: '[name]-[contenthash:8].bundle.js',
+-          chunkFilename: '[name]-[contenthash:8].chunk.js',
+-          library: 'ExposeLoader',
+-          libraryTarget: 'var',
+-        },
+-      }
++    const module = stats.compilation.modules.find((m) =>
++      m.id.endsWith('./simple-commonjs2-single-export.js-exposed')
+     );
+-    const stats = await compile(compiler);
+-
+-    const webpack4Filename = 'main-c6c3f480.bundle.js';
+-    const webpack5Filename = 'main-e4eb4813.bundle.js';
+-    const bundleName =
+-      webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+ 
++    // const bundleName = webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+     expect(
+-      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
++      getModuleSource('./simple-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+-    expect(Object.keys(stats.compilation.assets)[0]).toBe(bundleName);
+-    expect(execute(readAsset(bundleName, compiler, stats))).toMatchSnapshot(
+-      'result'
+-    );
++    expect(module.hash).toBe('56f391f6477c50803096579fc5da431e');
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+",0,
+103,6cf937e3495bc576aec9051fd57948e793f40d87,910dc989962f32b29700ef41875f92da16fd5641,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+improve code and docs
+
+### Breaking Changes
+
+Yes, will be in changelog
+
+### Additional Info
+
+No","refactor: code and docs
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 8090065..ba14a61 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -9,14 +9,16 @@ describe('validate options', () => {
+         },
+         {
+           globalName: 'myGlobal_alias',
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         {
+           globalName: ['myGlobal_alias', 'globalObject6'],
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         'globalObject1',
++        'globalObject1 myMethodName',
+         'globalObject1.foo',
++        'globalObject1.foo myMethodName',
+         ['globalObject1'],
+         ['globalObject1.foo'],
+         ['globalObject1.foo', 'globalObject1.bar'],
+",0,
+103,6cf937e3495bc576aec9051fd57948e793f40d87,910dc989962f32b29700ef41875f92da16fd5641,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+improve code and docs
+
+### Breaking Changes
+
+Yes, will be in changelog
+
+### Additional Info
+
+No","refactor: code and docs
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index b01510e..8528f69 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,6 +1,6 @@
+ import path from 'path';
+ 
+-import webpack from 'webpack';
++// import webpack from 'webpack';
+ 
+ import {
+   compile,
+@@ -30,6 +30,22 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work with ""moduleLocalName""', async () => {
++    const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      exposes: 'moduleMethod myGlobal',
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work with multiple exposes', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
+       exposes: ['myGlobal', 'myOtherGlobal'],
+@@ -158,7 +174,7 @@ describe('loader', () => {
+     const compiler = getCompiler('simple-module-named-export.js', {
+       exposes: {
+         globalName: ['myGlobal.alias', 'globalObject6'],
+-        localName: 'globalObject6',
++        moduleLocalName: 'globalObject6',
+       },
+     });
+     const stats = await compile(compiler);
+@@ -178,11 +194,11 @@ describe('loader', () => {
+       exposes: [
+         {
+           globalName: ['myGlobal_alias', 'globalObject6'],
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         {
+           globalName: ['myGlobal_alias', 'globalObject7'],
+-          localName: 'globalObject7',
++          moduleLocalName: 'globalObject7',
+         },
+         'myGlobal_alias.default default',
+       ],
+@@ -284,50 +300,15 @@ describe('loader', () => {
+       }
+     );
+     const stats = await compile(compiler);
+-
+-    const webpack4Filename = 'main-9486a32a.bundle.js';
+-    const webpack5Filename = 'main-22966fe7.bundle.js';
+-    const bundleName =
+-      webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+-
+-    expect(
+-      getModuleSource('./simple-commonjs2-single-export.js-exposed', stats)
+-    ).toMatchSnapshot('module');
+-    expect(Object.keys(stats.compilation.assets)[0]).toBe(bundleName);
+-    expect(getErrors(stats)).toMatchSnapshot('errors');
+-    expect(getWarnings(stats)).toMatchSnapshot('warnings');
+-  });
+-
+-  it('should work multiple name from one package', async () => {
+-    const compiler = getCompiler(
+-      'simple-commonjs2-single-export.js',
+-      {
+-        exposes: ['myOtherGlobal', 'myGlobal'],
+-      },
+-      {
+-        output: {
+-          path: path.resolve(__dirname, './outputs'),
+-          filename: '[name]-[contenthash:8].bundle.js',
+-          chunkFilename: '[name]-[contenthash:8].chunk.js',
+-          library: 'ExposeLoader',
+-          libraryTarget: 'var',
+-        },
+-      }
++    const module = stats.compilation.modules.find((m) =>
++      m.id.endsWith('./simple-commonjs2-single-export.js-exposed')
+     );
+-    const stats = await compile(compiler);
+-
+-    const webpack4Filename = 'main-c6c3f480.bundle.js';
+-    const webpack5Filename = 'main-e4eb4813.bundle.js';
+-    const bundleName =
+-      webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+ 
++    // const bundleName = webpack.version[0] === '5' ? webpack5Filename : webpack4Filename;
+     expect(
+-      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
++      getModuleSource('./simple-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+-    expect(Object.keys(stats.compilation.assets)[0]).toBe(bundleName);
+-    expect(execute(readAsset(bundleName, compiler, stats))).toMatchSnapshot(
+-      'result'
+-    );
++    expect(module.hash).toBe('56f391f6477c50803096579fc5da431e');
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+",0,
+103,6cf937e3495bc576aec9051fd57948e793f40d87,910dc989962f32b29700ef41875f92da16fd5641,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+improve code and docs
+
+### Breaking Changes
+
+Yes, will be in changelog
+
+### Additional Info
+
+No","refactor: code and docs
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 8090065..ba14a61 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -9,14 +9,16 @@ describe('validate options', () => {
+         },
+         {
+           globalName: 'myGlobal_alias',
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         {
+           globalName: ['myGlobal_alias', 'globalObject6'],
+-          localName: 'globalObject6',
++          moduleLocalName: 'globalObject6',
+         },
+         'globalObject1',
++        'globalObject1 myMethodName',
+         'globalObject1.foo',
++        'globalObject1.foo myMethodName',
+         ['globalObject1'],
+         ['globalObject1.foo'],
+         ['globalObject1.foo', 'globalObject1.bar'],
+",0,
+104,7eb8e96aa5a1eb367a0ebe0a351291297b6b9f60,026c3da5ae6fc8bdf40eccf4f72c759120fa767a,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor es modules export
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index ded0c8f..e85d28a 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -16,6 +16,7 @@ import {
+ describe('loader', () => {
+   it('should work', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: 'myGlobal',
+     });
+     const stats = await compile(compiler);
+@@ -32,6 +33,7 @@ describe('loader', () => {
+ 
+   it('should work with ""moduleLocalName""', async () => {
+     const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      type: 'commonjs',
+       exposes: 'moduleMethod myGlobal',
+     });
+     const stats = await compile(compiler);
+@@ -48,6 +50,7 @@ describe('loader', () => {
+ 
+   it('should work with multiple exposes', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['myGlobal', 'myOtherGlobal'],
+     });
+     const stats = await compile(compiler);
+@@ -64,6 +67,7 @@ describe('loader', () => {
+ 
+   it('should work multiple commonjs exports', async () => {
+     const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      type: 'commonjs',
+       exposes: ['myOtherGlobal', 'myGlobal.globalObject2 globalObject2'],
+     });
+     const stats = await compile(compiler);
+@@ -80,6 +84,7 @@ describe('loader', () => {
+ 
+   it('should work for a nested property for a global object', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: 'myGlobal.nested',
+     });
+     const stats = await compile(compiler);
+@@ -96,6 +101,7 @@ describe('loader', () => {
+ 
+   it('should work for nested properties for a global object', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['myGlobal.nested', 'myOtherGlobal.nested foo'],
+     });
+     const stats = await compile(compiler);
+@@ -310,7 +316,7 @@ describe('loader', () => {
+     ).toMatchSnapshot('module');
+     expect(module.hash).toBe(
+       isWebpack5
+-        ? '50d7da20999a39862d3808619816b5b3'
++        ? 'c440ca2d9d70459fecf24e8109d10515'
+         : '56f391f6477c50803096579fc5da431e'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+@@ -339,6 +345,7 @@ describe('loader', () => {
+ 
+   it('should work interpolate', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['[name]', 'myGlobal.[name]'],
+     });
+     const stats = await compile(compiler);
+",0,
+104,7eb8e96aa5a1eb367a0ebe0a351291297b6b9f60,026c3da5ae6fc8bdf40eccf4f72c759120fa767a,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor es modules export
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index ded0c8f..e85d28a 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -16,6 +16,7 @@ import {
+ describe('loader', () => {
+   it('should work', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: 'myGlobal',
+     });
+     const stats = await compile(compiler);
+@@ -32,6 +33,7 @@ describe('loader', () => {
+ 
+   it('should work with ""moduleLocalName""', async () => {
+     const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      type: 'commonjs',
+       exposes: 'moduleMethod myGlobal',
+     });
+     const stats = await compile(compiler);
+@@ -48,6 +50,7 @@ describe('loader', () => {
+ 
+   it('should work with multiple exposes', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['myGlobal', 'myOtherGlobal'],
+     });
+     const stats = await compile(compiler);
+@@ -64,6 +67,7 @@ describe('loader', () => {
+ 
+   it('should work multiple commonjs exports', async () => {
+     const compiler = getCompiler('simple-commonjs2-multiple-export.js', {
++      type: 'commonjs',
+       exposes: ['myOtherGlobal', 'myGlobal.globalObject2 globalObject2'],
+     });
+     const stats = await compile(compiler);
+@@ -80,6 +84,7 @@ describe('loader', () => {
+ 
+   it('should work for a nested property for a global object', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: 'myGlobal.nested',
+     });
+     const stats = await compile(compiler);
+@@ -96,6 +101,7 @@ describe('loader', () => {
+ 
+   it('should work for nested properties for a global object', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['myGlobal.nested', 'myOtherGlobal.nested foo'],
+     });
+     const stats = await compile(compiler);
+@@ -310,7 +316,7 @@ describe('loader', () => {
+     ).toMatchSnapshot('module');
+     expect(module.hash).toBe(
+       isWebpack5
+-        ? '50d7da20999a39862d3808619816b5b3'
++        ? 'c440ca2d9d70459fecf24e8109d10515'
+         : '56f391f6477c50803096579fc5da431e'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+@@ -339,6 +345,7 @@ describe('loader', () => {
+ 
+   it('should work interpolate', async () => {
+     const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      type: 'commonjs',
+       exposes: ['[name]', 'myGlobal.[name]'],
+     });
+     const stats = await compile(compiler);
+",0,
+105,a68bd2ba18fec041f8fa774209de648d5b7ca56c,f985880d593309547f08012218df3c1dbf2bb593,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor rename _module.userRequest
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 8952f0b..eec92e4 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -259,7 +259,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./custom.js?foo=bar-exposed', stats)
++      getModuleSource('./custom.js-exposed?foo=bar', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -269,6 +269,39 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work inline 1 without extension', async () => {
++    const compiler = getCompiler(
++      'inline-import-1.js',
++      {},
++      {
++        devtool: 'source-map',
++        module: {
++          rules: [
++            {
++              test: /.*custom/i,
++              use: [
++                {
++                  loader: 'babel-loader',
++                },
++              ],
++            },
++          ],
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(getModuleSource('./custom-exposed?foo=bar', stats)).toMatchSnapshot(
++      'module'
++    );
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(readAsset('main.bundle.js.map', compiler, stats)).toBeDefined();
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work inline 2', async () => {
+     const compiler = getCompiler(
+       'inline-import-2.js',
+",0,
+105,a68bd2ba18fec041f8fa774209de648d5b7ca56c,f985880d593309547f08012218df3c1dbf2bb593,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor rename _module.userRequest
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 8952f0b..eec92e4 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -259,7 +259,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./custom.js?foo=bar-exposed', stats)
++      getModuleSource('./custom.js-exposed?foo=bar', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -269,6 +269,39 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work inline 1 without extension', async () => {
++    const compiler = getCompiler(
++      'inline-import-1.js',
++      {},
++      {
++        devtool: 'source-map',
++        module: {
++          rules: [
++            {
++              test: /.*custom/i,
++              use: [
++                {
++                  loader: 'babel-loader',
++                },
++              ],
++            },
++          ],
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(getModuleSource('./custom-exposed?foo=bar', stats)).toMatchSnapshot(
++      'module'
++    );
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(readAsset('main.bundle.js.map', compiler, stats)).toBeDefined();
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work inline 2', async () => {
+     const compiler = getCompiler(
+       'inline-import-2.js',
+",0,
+108,511014f61296d90858b64a30f171eae755499181,1eba01689b3fa4006a6d28bd7ae18bb2ac167819,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index b55475a..49b4f6b 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -344,7 +344,7 @@ describe('loader', () => {
+     expect(module.hash).toBe(
+       isWebpack5
+         ? 'c440ca2d9d70459fecf24e8109d10515'
+-        : 'a580dd85c96d18d417b3be8979faeee5'
++        : '40beb9b0cb6f070cad500e1179e00e12'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+@@ -393,7 +393,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-commonjs.js-exposed', stats)
++      getModuleSource('./global-module-commonjs-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -409,7 +409,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es.js-exposed', stats)
++      getModuleSource('./global-module-es-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -425,7 +425,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-commonjs.js-exposed', stats)
++      getModuleSource('./global-module-commonjs-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -441,7 +441,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es.js-exposed', stats)
++      getModuleSource('./global-module-es-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -457,7 +457,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es-without-default.js-exposed', stats)
++      getModuleSource('./global-module-es-without-default-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+",0,
+108,511014f61296d90858b64a30f171eae755499181,1eba01689b3fa4006a6d28bd7ae18bb2ac167819,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","refactor: code
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index b55475a..49b4f6b 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -344,7 +344,7 @@ describe('loader', () => {
+     expect(module.hash).toBe(
+       isWebpack5
+         ? 'c440ca2d9d70459fecf24e8109d10515'
+-        : 'a580dd85c96d18d417b3be8979faeee5'
++        : '40beb9b0cb6f070cad500e1179e00e12'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+@@ -393,7 +393,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-commonjs.js-exposed', stats)
++      getModuleSource('./global-module-commonjs-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -409,7 +409,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es.js-exposed', stats)
++      getModuleSource('./global-module-es-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -425,7 +425,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-commonjs.js-exposed', stats)
++      getModuleSource('./global-module-commonjs-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -441,7 +441,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es.js-exposed', stats)
++      getModuleSource('./global-module-es-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -457,7 +457,7 @@ describe('loader', () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-module-es-without-default.js-exposed', stats)
++      getModuleSource('./global-module-es-without-default-exposed.js', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+",0,
+109,c949f542dc111c82750f68ed576628f73f2002c4,d9ece4d62de47350697e7630865bcd7836544981,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #89
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","test: side effects
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 9210812..a328108 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,3 +1,6 @@
++/**
++ * @jest-environment node
++ */
+ import path from 'path';
+ 
+ import webpack from 'webpack';
+@@ -465,4 +468,26 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it.only('should work with side-effects free modules', async () => {
++    const compiler = getCompiler(
++      'side-effects.js',
++      {
++        exposes: 'myGlobal',
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(getModuleSource('rx.all-exposed.js', stats)).toMatchSnapshot(
++      'module'
++    );
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+109,c949f542dc111c82750f68ed576628f73f2002c4,d9ece4d62de47350697e7630865bcd7836544981,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #89
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","test: side effects
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 9210812..a328108 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -1,3 +1,6 @@
++/**
++ * @jest-environment node
++ */
+ import path from 'path';
+ 
+ import webpack from 'webpack';
+@@ -465,4 +468,26 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it.only('should work with side-effects free modules', async () => {
++    const compiler = getCompiler(
++      'side-effects.js',
++      {
++        exposes: 'myGlobal',
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(getModuleSource('rx.all-exposed.js', stats)).toMatchSnapshot(
++      'module'
++    );
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+110,501333230c048a11fc76254ebd8f277278e62d15,6444bfd2ae70f2a9c8488c0a7123d516ef7464a3,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+do not override existing values in the global object
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No","refactor:
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index ba14a61..c6e9e76 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -17,6 +17,7 @@ describe('validate options', () => {
+         },
+         'globalObject1',
+         'globalObject1 myMethodName',
++        'globalObject1 myMethodName true',
+         'globalObject1.foo',
+         'globalObject1.foo myMethodName',
+         ['globalObject1'],
+",0,
+110,501333230c048a11fc76254ebd8f277278e62d15,ffe5d21db607a7070c9bcba69bd51ab2ac355583,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+do not override existing values in the global object
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No","refactor: `override`
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 2649017..4f4bc97 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -349,7 +349,7 @@ describe('loader', () => {
+     expect(module.hash).toBe(
+       isWebpack5
+         ? 'b993fe180cfddcb0d654fd862e6f1afe'
+-        : '40beb9b0cb6f070cad500e1179e00e12'
++        : '717ef0bd800e5bf108223b4bf8c1bd5f'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+@@ -391,12 +391,188 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work override', async () => {
++  it('should throw an error on existing value in the global object in the ""development"" mode', async () => {
+     const compiler = getCompiler(
+       'override-1.js',
+       {
+         exposes: {
+           globalName: ['myGlobal'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should not override existing value in the global object in the ""production"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++        },
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing value in the global object in the ""development"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing value in the global object in the ""production"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should throw an error on existing module local value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          moduleLocalName: 'foo',
++          globalName: ['myGlobal'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing module local value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          moduleLocalName: 'foo',
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should throw an error on existing nested value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myOtherGlobal', 'foo', 'bar', 'bar'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing nested value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myOtherGlobal', 'foo'],
+           override: true,
+         },
+       },
+@@ -517,4 +693,14 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should throw an error on invalid exposed value', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      exposes: 'myGlobal foo bar baz',
++    });
++    const stats = await compile(compiler);
++
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+110,501333230c048a11fc76254ebd8f277278e62d15,6444bfd2ae70f2a9c8488c0a7123d516ef7464a3,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+do not override existing values in the global object
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No","refactor:
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index ba14a61..c6e9e76 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -17,6 +17,7 @@ describe('validate options', () => {
+         },
+         'globalObject1',
+         'globalObject1 myMethodName',
++        'globalObject1 myMethodName true',
+         'globalObject1.foo',
+         'globalObject1.foo myMethodName',
+         ['globalObject1'],
+",0,
+110,501333230c048a11fc76254ebd8f277278e62d15,ffe5d21db607a7070c9bcba69bd51ab2ac355583,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+do not override existing values in the global object
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No","refactor: `override`
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 2649017..4f4bc97 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -349,7 +349,7 @@ describe('loader', () => {
+     expect(module.hash).toBe(
+       isWebpack5
+         ? 'b993fe180cfddcb0d654fd862e6f1afe'
+-        : '40beb9b0cb6f070cad500e1179e00e12'
++        : '717ef0bd800e5bf108223b4bf8c1bd5f'
+     );
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+@@ -391,12 +391,188 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work override', async () => {
++  it('should throw an error on existing value in the global object in the ""development"" mode', async () => {
+     const compiler = getCompiler(
+       'override-1.js',
+       {
+         exposes: {
+           globalName: ['myGlobal'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should not override existing value in the global object in the ""production"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++        },
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing value in the global object in the ""development"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing value in the global object in the ""production"" mode', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'production',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should throw an error on existing module local value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          moduleLocalName: 'foo',
++          globalName: ['myGlobal'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing module local value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          moduleLocalName: 'foo',
++          globalName: ['myGlobal'],
++          override: true,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should throw an error on existing nested value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myOtherGlobal', 'foo', 'bar', 'bar'],
++          override: false,
++        },
++      },
++      {
++        mode: 'development',
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-single-export-exposed.js', stats)
++    ).toMatchSnapshot('module');
++    expect(() =>
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toThrowErrorMatchingSnapshot('runtime error');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work and override existing nested value in the global object', async () => {
++    const compiler = getCompiler(
++      'override-1.js',
++      {
++        exposes: {
++          globalName: ['myOtherGlobal', 'foo'],
+           override: true,
+         },
+       },
+@@ -517,4 +693,14 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should throw an error on invalid exposed value', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      exposes: 'myGlobal foo bar baz',
++    });
++    const stats = await compile(compiler);
++
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+119,7049505ec0637fd35a1fa53be69b910164ef0017,ea4ccc55b83a46f59cfdd12bd9aa3b002d7d16ac,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+The remaining request could contain inline loaders with what looks like a reference to a loader defined in the webpack config: 
+`""{loader_name}?{options}?ref--{loader_ref}!{imported-file}""`
+
+`""C:\{project_path}\node_modules\babel-loader\lib\index.js??ref--5-oneOf-3!C:\{project_path}\node_modules\jquery\dist\jquery.js""`
+
+`contextify` would split the string on `""?""` with a limit of 2, and therefore the reference is stripped.
+
+Without the reference the result was that importing ""jquery"" both with expose-loader and without would result in two separate instances of jQuery. This made loading jQuery plugins on the exposed instance difficult, and also resulted in jQuery being included in the output bundle twice.
+
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+
+None that I can think of.
+
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+
+This likely also fixes #114.","fix: don't strip loader ""ref"" from import string
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index a3a44c9..d894a58 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -268,6 +268,48 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work inline 1 with config loader options', async () => {
++    const compiler = getCompiler(
++      'inline-import-equality.js',
++      {},
++      {
++        devtool: 'source-map',
++        module: {
++          rules: [
++            {
++              test: /.*global-commonjs2-single-export\.js/i,
++              use: [
++                {
++                  loader: 'babel-loader',
++                  options: {
++                    presets: ['@babel/preset-env'],
++                  },
++                },
++              ],
++            },
++          ],
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    const isWebpack5 = webpack.version[0] === '5';
++    const refRegexp = isWebpack5 ? /\?ruleSet\[\d+\].*!/ : /\?ref--[0-9-]+!/;
++
++    expect(
++      getModuleSource(
++        './global-commonjs2-single-export-exposed.js',
++        stats
++      ).replace(refRegexp, '?{{config-reference}}!')
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(readAsset('main.bundle.js.map', compiler, stats)).toBeDefined();
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work inline 1 without extension', async () => {
+     const compiler = getCompiler(
+       'inline-import-1.js',
+",0,
+119,7049505ec0637fd35a1fa53be69b910164ef0017,ea4ccc55b83a46f59cfdd12bd9aa3b002d7d16ac,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+The remaining request could contain inline loaders with what looks like a reference to a loader defined in the webpack config: 
+`""{loader_name}?{options}?ref--{loader_ref}!{imported-file}""`
+
+`""C:\{project_path}\node_modules\babel-loader\lib\index.js??ref--5-oneOf-3!C:\{project_path}\node_modules\jquery\dist\jquery.js""`
+
+`contextify` would split the string on `""?""` with a limit of 2, and therefore the reference is stripped.
+
+Without the reference the result was that importing ""jquery"" both with expose-loader and without would result in two separate instances of jQuery. This made loading jQuery plugins on the exposed instance difficult, and also resulted in jQuery being included in the output bundle twice.
+
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+
+None that I can think of.
+
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+
+This likely also fixes #114.","fix: don't strip loader ""ref"" from import string
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index a3a44c9..d894a58 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -268,6 +268,48 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
++  it('should work inline 1 with config loader options', async () => {
++    const compiler = getCompiler(
++      'inline-import-equality.js',
++      {},
++      {
++        devtool: 'source-map',
++        module: {
++          rules: [
++            {
++              test: /.*global-commonjs2-single-export\.js/i,
++              use: [
++                {
++                  loader: 'babel-loader',
++                  options: {
++                    presets: ['@babel/preset-env'],
++                  },
++                },
++              ],
++            },
++          ],
++        },
++      }
++    );
++    const stats = await compile(compiler);
++
++    const isWebpack5 = webpack.version[0] === '5';
++    const refRegexp = isWebpack5 ? /\?ruleSet\[\d+\].*!/ : /\?ref--[0-9-]+!/;
++
++    expect(
++      getModuleSource(
++        './global-commonjs2-single-export-exposed.js',
++        stats
++      ).replace(refRegexp, '?{{config-reference}}!')
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(readAsset('main.bundle.js.map', compiler, stats)).toBeDefined();
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
+   it('should work inline 1 without extension', async () => {
+     const compiler = getCompiler(
+       'inline-import-1.js',
+",0,
+122,797e1b6ba950652fff2e45c0d6c1a8829b81c894,c4470282206219e0719309c83f49a39443b2aaef,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #120
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: set side effects to false
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 86bc3fe..535aeab 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -736,6 +736,25 @@ describe(""loader"", () => {
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+   });
+ 
++  it(""should work with side-effects free modules #1"", async () => {
++    const compiler = getCompiler(
++      ""side-effects-1.js"",
++      {
++        exposes: ""styled"",
++      },
++      {
++        mode: ""production"",
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset(""main.bundle.js"", compiler, stats))
++    ).toMatchSnapshot(""result"");
++    expect(getErrors(stats)).toMatchSnapshot(""errors"");
++    expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
++  });
++
+   it(""should throw an error on invalid exposed value"", async () => {
+     const compiler = getCompiler(""simple-commonjs2-single-export.js"", {
+       exposes: ""myGlobal foo bar baz"",
+",0,
+122,797e1b6ba950652fff2e45c0d6c1a8829b81c894,c4470282206219e0719309c83f49a39443b2aaef,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #120
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: set side effects to false
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 86bc3fe..535aeab 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -736,6 +736,25 @@ describe(""loader"", () => {
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+   });
+ 
++  it(""should work with side-effects free modules #1"", async () => {
++    const compiler = getCompiler(
++      ""side-effects-1.js"",
++      {
++        exposes: ""styled"",
++      },
++      {
++        mode: ""production"",
++      }
++    );
++    const stats = await compile(compiler);
++
++    expect(
++      execute(readAsset(""main.bundle.js"", compiler, stats))
++    ).toMatchSnapshot(""result"");
++    expect(getErrors(stats)).toMatchSnapshot(""errors"");
++    expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
++  });
++
+   it(""should throw an error on invalid exposed value"", async () => {
+     const compiler = getCompiler(""simple-commonjs2-single-export.js"", {
+       exposes: ""myGlobal foo bar baz"",
+",0,
+134,31986fedab59f78e500cfe69b3d2128f5b7bc5fd,31986fedab59f78e500cfe69b3d2128f5b7bc5fd,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support `Node.js` v10 dropped
+
+### Breaking Changes
+
+Support `Node.js` v10 dropped
+
+### Additional Info
+
+No
+","refactor: nodejs v10 dropped
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index aad3e4b..2fc2c45 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -388,7 +388,7 @@ describe(""loader"", () => {
+       getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""34429e229c60b66e2bb98684f7f32605""
++      ""0f36538686929ab9693cc011812d2b0a""
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+",0,
+134,31986fedab59f78e500cfe69b3d2128f5b7bc5fd,31986fedab59f78e500cfe69b3d2128f5b7bc5fd,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support `Node.js` v10 dropped
+
+### Breaking Changes
+
+Support `Node.js` v10 dropped
+
+### Additional Info
+
+No
+","refactor: nodejs v10 dropped
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index aad3e4b..2fc2c45 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -388,7 +388,7 @@ describe(""loader"", () => {
+       getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""34429e229c60b66e2bb98684f7f32605""
++      ""0f36538686929ab9693cc011812d2b0a""
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+",0,
+138,d580ba62a0650ca1a7054b69a94ba753394e277c,e7b55f0f32e23a2340e067a52f91cb2f37324933,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+add `link` and `description` in schema.
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+None
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","feat: output links and descriptons on errors
+",,0,
+138,d580ba62a0650ca1a7054b69a94ba753394e277c,e7b55f0f32e23a2340e067a52f91cb2f37324933,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+add `link` and `description` in schema.
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+None
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","feat: output links and descriptons on errors
+",,0,
+145,763d85ff1090728061a3f5d4e9ce555ee7836a11,bf2478abff344c54a48262ee4044a96fde13d283,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+use cachable webpack API
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: small perf improvement
+",,0,
+145,763d85ff1090728061a3f5d4e9ce555ee7836a11,bf2478abff344c54a48262ee4044a96fde13d283,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+use cachable webpack API
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: small perf improvement
+",,0,
+145,763d85ff1090728061a3f5d4e9ce555ee7836a11,bf2478abff344c54a48262ee4044a96fde13d283,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+use cachable webpack API
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: small perf improvement
+",,0,
+145,763d85ff1090728061a3f5d4e9ce555ee7836a11,bf2478abff344c54a48262ee4044a96fde13d283,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+use cachable webpack API
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: small perf improvement
+",,0,
+205,868a421f50d9461b15e718c7e0bdc6cde28c38fe,868a421f50d9461b15e718c7e0bdc6cde28c38fe,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+There are custom JS engines out there that seal the `globalThis` object. By default, this will break the assignment of the object we want to make global into the global context.
+
+This PR gives the power to the user to override the default and choose the global object of their choosing.
+
+### Breaking Changes
+
+There should be no breaking changes.
+
+### Additional Info
+
+Addresses #203
+
+","feat: add globalObject option to modify global context
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 018cd8f..369ac19 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -761,4 +761,22 @@ describe(""loader"", () => {
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+   });
++
++  it(""should work with globalObject"", async () => {
++    const compiler = getCompiler(""global-module-es.js"", {
++      exposes: {
++        globalName: ""FOO"",
++        moduleLocalName: ""default"",
++      },
++      globalObject: ""this"",
++    });
++    const stats = await compile(compiler);
++
++    expect(readAsset(""main.bundle.js"", compiler, stats)).toContain(
++      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n""
++    );
++
++    expect(getErrors(stats)).toMatchSnapshot(""errors"");
++    expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
++  });
+ });
+",0,
+205,868a421f50d9461b15e718c7e0bdc6cde28c38fe,868a421f50d9461b15e718c7e0bdc6cde28c38fe,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+There are custom JS engines out there that seal the `globalThis` object. By default, this will break the assignment of the object we want to make global into the global context.
+
+This PR gives the power to the user to override the default and choose the global object of their choosing.
+
+### Breaking Changes
+
+There should be no breaking changes.
+
+### Additional Info
+
+Addresses #203
+
+","feat: add globalObject option to modify global context
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 018cd8f..369ac19 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -761,4 +761,22 @@ describe(""loader"", () => {
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+   });
++
++  it(""should work with globalObject"", async () => {
++    const compiler = getCompiler(""global-module-es.js"", {
++      exposes: {
++        globalName: ""FOO"",
++        moduleLocalName: ""default"",
++      },
++      globalObject: ""this"",
++    });
++    const stats = await compile(compiler);
++
++    expect(readAsset(""main.bundle.js"", compiler, stats)).toContain(
++      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n""
++    );
++
++    expect(getErrors(stats)).toMatchSnapshot(""errors"");
++    expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
++  });
+ });
+",0,
+225,5eb07f93a563953d9bb36f51e924401f54012410,f2c97cf8a6c447fef2f4c262662b8bdc78c30293,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Update Node & deps.
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+Minimum supported Node.js version is 18.12.0
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","chore: update deps
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 369ac19..e1d2425 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -24,10 +24,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -40,10 +40,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -56,10 +56,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -72,10 +72,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -88,10 +88,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -104,10 +104,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -120,10 +120,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-default-export-exposed.js"", stats)
++      getModuleSource(""./global-module-default-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -142,10 +142,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -164,10 +164,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -183,10 +183,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(stats.compilation.errors).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -209,10 +209,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -227,7 +227,7 @@ describe(""loader"", () => {
+ 
+     expect(modules[0] !== modules[1]).toBe(true);
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -251,15 +251,15 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./custom-exposed.js?foo=bar"", stats)
++      getModuleSource(""./custom-exposed.js?foo=bar"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -287,7 +287,7 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+     const refRegexp = /\?ruleSet\[\d+\].*!/;
+@@ -295,11 +295,11 @@ describe(""loader"", () => {
+     expect(
+       getModuleSource(
+         ""./global-commonjs2-single-export-exposed.js"",
+-        stats
+-      ).replace(refRegexp, ""?{{config-reference}}!"")
++        stats,
++      ).replace(refRegexp, ""?{{config-reference}}!""),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -324,15 +324,15 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(getModuleSource(""./custom-exposed?foo=bar"", stats)).toMatchSnapshot(
+-      ""module""
++      ""module"",
+     );
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -345,15 +345,15 @@ describe(""loader"", () => {
+       {},
+       {
+         module: {},
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -373,7 +373,7 @@ describe(""loader"", () => {
+           libraryTarget: ""var"",
+         },
+         module: {},
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+     const { chunkGraph } = stats.compilation;
+@@ -381,14 +381,14 @@ describe(""loader"", () => {
+     const module = Array.from(stats.compilation.modules).find((m) =>
+       chunkGraph
+         .getModuleId(m)
+-        .endsWith(""./simple-commonjs2-single-export-exposed.js"")
++        .endsWith(""./simple-commonjs2-single-export-exposed.js""),
+     );
+ 
+     expect(
+-      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""0f36538686929ab9693cc011812d2b0a""
++      ""0f36538686929ab9693cc011812d2b0a"",
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -421,10 +421,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -441,15 +441,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowErrorMatchingSnapshot(""runtime error"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -465,15 +465,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -490,15 +490,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -515,15 +515,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -541,15 +541,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowErrorMatchingSnapshot(""runtime error"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -567,15 +567,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -592,15 +592,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowError(/Cannot read/);
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -617,15 +617,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -638,10 +638,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-commonjs-exposed.js"", stats)
++      getModuleSource(""./global-module-commonjs-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -654,10 +654,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-exposed.js"", stats)
++      getModuleSource(""./global-module-es-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -670,10 +670,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-commonjs-exposed.js"", stats)
++      getModuleSource(""./global-module-commonjs-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -686,10 +686,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-exposed.js"", stats)
++      getModuleSource(""./global-module-es-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -702,10 +702,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-without-default-exposed.js"", stats)
++      getModuleSource(""./global-module-es-without-default-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -719,15 +719,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(getModuleSource(""rx.all-exposed.js"", stats)).toMatchSnapshot(
+-      ""module""
++      ""module"",
+     );
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -741,12 +741,12 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -773,7 +773,7 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(readAsset(""main.bundle.js"", compiler, stats)).toContain(
+-      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n""
++      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n"",
+     );
+ 
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+",0,
+225,5eb07f93a563953d9bb36f51e924401f54012410,f2c97cf8a6c447fef2f4c262662b8bdc78c30293,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Update Node & deps.
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+Minimum supported Node.js version is 18.12.0
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","chore: update deps
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 369ac19..e1d2425 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -24,10 +24,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -40,10 +40,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -56,10 +56,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -72,10 +72,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-multiple-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -88,10 +88,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -104,10 +104,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -120,10 +120,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-default-export-exposed.js"", stats)
++      getModuleSource(""./global-module-default-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -142,10 +142,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -164,10 +164,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -183,10 +183,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(stats.compilation.errors).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -209,10 +209,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-named-exports-exposed.js"", stats)
++      getModuleSource(""./global-module-named-exports-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -227,7 +227,7 @@ describe(""loader"", () => {
+ 
+     expect(modules[0] !== modules[1]).toBe(true);
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -251,15 +251,15 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./custom-exposed.js?foo=bar"", stats)
++      getModuleSource(""./custom-exposed.js?foo=bar"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -287,7 +287,7 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+     const refRegexp = /\?ruleSet\[\d+\].*!/;
+@@ -295,11 +295,11 @@ describe(""loader"", () => {
+     expect(
+       getModuleSource(
+         ""./global-commonjs2-single-export-exposed.js"",
+-        stats
+-      ).replace(refRegexp, ""?{{config-reference}}!"")
++        stats,
++      ).replace(refRegexp, ""?{{config-reference}}!""),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -324,15 +324,15 @@ describe(""loader"", () => {
+             },
+           ],
+         },
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(getModuleSource(""./custom-exposed?foo=bar"", stats)).toMatchSnapshot(
+-      ""module""
++      ""module"",
+     );
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -345,15 +345,15 @@ describe(""loader"", () => {
+       {},
+       {
+         module: {},
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(readAsset(""main.bundle.js.map"", compiler, stats)).toBeDefined();
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+@@ -373,7 +373,7 @@ describe(""loader"", () => {
+           libraryTarget: ""var"",
+         },
+         module: {},
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+     const { chunkGraph } = stats.compilation;
+@@ -381,14 +381,14 @@ describe(""loader"", () => {
+     const module = Array.from(stats.compilation.modules).find((m) =>
+       chunkGraph
+         .getModuleId(m)
+-        .endsWith(""./simple-commonjs2-single-export-exposed.js"")
++        .endsWith(""./simple-commonjs2-single-export-exposed.js""),
+     );
+ 
+     expect(
+-      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""0f36538686929ab9693cc011812d2b0a""
++      ""0f36538686929ab9693cc011812d2b0a"",
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -421,10 +421,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -441,15 +441,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowErrorMatchingSnapshot(""runtime error"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -465,15 +465,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -490,15 +490,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -515,15 +515,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -541,15 +541,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowErrorMatchingSnapshot(""runtime error"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -567,15 +567,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -592,15 +592,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(() =>
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toThrowError(/Cannot read/);
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -617,15 +617,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""development"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats)
++      getModuleSource(""./global-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -638,10 +638,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-commonjs-exposed.js"", stats)
++      getModuleSource(""./global-module-commonjs-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -654,10 +654,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-exposed.js"", stats)
++      getModuleSource(""./global-module-es-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -670,10 +670,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-commonjs-exposed.js"", stats)
++      getModuleSource(""./global-module-commonjs-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -686,10 +686,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-exposed.js"", stats)
++      getModuleSource(""./global-module-es-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -702,10 +702,10 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource(""./global-module-es-without-default-exposed.js"", stats)
++      getModuleSource(""./global-module-es-without-default-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -719,15 +719,15 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(getModuleSource(""rx.all-exposed.js"", stats)).toMatchSnapshot(
+-      ""module""
++      ""module"",
+     );
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -741,12 +741,12 @@ describe(""loader"", () => {
+       },
+       {
+         mode: ""production"",
+-      }
++      },
+     );
+     const stats = await compile(compiler);
+ 
+     expect(
+-      execute(readAsset(""main.bundle.js"", compiler, stats))
++      execute(readAsset(""main.bundle.js"", compiler, stats)),
+     ).toMatchSnapshot(""result"");
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+@@ -773,7 +773,7 @@ describe(""loader"", () => {
+     const stats = await compile(compiler);
+ 
+     expect(readAsset(""main.bundle.js"", compiler, stats)).toContain(
+-      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n""
++      ""var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = this;\n"",
+     );
+ 
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+",0,
+245,8dbbc97e0ff44cb14b705122d5e4638d155d061f,8dbbc97e0ff44cb14b705122d5e4638d155d061f,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+`[exposes-loader]` should be `[expose-loader]`.","fix: correct typo in error message
+
+Signed-off-by: Anders Kaseorg <andersk@mit.edu>
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index e1d2425..6ae507c 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -388,7 +388,7 @@ describe(""loader"", () => {
+       getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""0f36538686929ab9693cc011812d2b0a"",
++      ""7111ce88139ab205418819625caf632f"",
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+",0,
+245,8dbbc97e0ff44cb14b705122d5e4638d155d061f,8dbbc97e0ff44cb14b705122d5e4638d155d061f,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [x] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+`[exposes-loader]` should be `[expose-loader]`.","fix: correct typo in error message
+
+Signed-off-by: Anders Kaseorg <andersk@mit.edu>
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index e1d2425..6ae507c 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -388,7 +388,7 @@ describe(""loader"", () => {
+       getModuleSource(""./simple-commonjs2-single-export-exposed.js"", stats),
+     ).toMatchSnapshot(""module"");
+     expect(chunkGraph.getModuleHash(module)).toBe(
+-      ""0f36538686929ab9693cc011812d2b0a"",
++      ""7111ce88139ab205418819625caf632f"",
+     );
+     expect(getErrors(stats)).toMatchSnapshot(""errors"");
+     expect(getWarnings(stats)).toMatchSnapshot(""warnings"");
+",0,
+250,381add67be13bbd59a0c9e150817ef039cc6adbd,b9d1d90c7a5f88508ebd36ba622c17b78b96be64,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+update jest from v29 to v30
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+No
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","chore: update jest from v29 to v30
+",,0,
+250,381add67be13bbd59a0c9e150817ef039cc6adbd,b9d1d90c7a5f88508ebd36ba622c17b78b96be64,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+update jest from v29 to v30
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+No
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","chore: update jest from v29 to v30
+",,0,
+251,6080bb98e1b60b06efdd0f4b10ae46b6405d70e2,6080bb98e1b60b06efdd0f4b10ae46b6405d70e2,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+upgrade eslint from v8 to v9
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+No
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","test: update
+",,0,
+251,6080bb98e1b60b06efdd0f4b10ae46b6405d70e2,6080bb98e1b60b06efdd0f4b10ae46b6405d70e2,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+upgrade eslint from v8 to v9
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+No
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","test: update
+",,0,
+94,f9443df4f399b37cf4519f07f44c5c49297412dc,1d298ef99a958702ad5b5e0284b38b53f4916b67,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support multiple `expose`
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: support multiple exposes
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 23820e8..de45045 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -40,4 +40,36 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work with multiple exposes', async () => {
++    const compiler = getCompiler('simple-module-default.js', {
++      expose: ['globalObject2', 'globalObject3'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work with multiple exposes with nested properties', async () => {
++    const compiler = getCompiler('simple-module-default.js', {
++      expose: ['globalObject2.foo', 'globalObject3.bar'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+94,f9443df4f399b37cf4519f07f44c5c49297412dc,f9443df4f399b37cf4519f07f44c5c49297412dc,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support multiple `expose`
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: support multiple exposes
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 2d762ad..a7c8a27 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -3,8 +3,14 @@ import { getCompiler, compile } from './helpers';
+ describe('validate options', () => {
+   const tests = {
+     expose: {
+-      success: ['globalObject1', 'globalObject1.foo'],
+-      failure: [false, true, /test/, '', [], {}],
++      success: [
++        'globalObject1',
++        'globalObject1.foo',
++        ['globalObject1'],
++        ['globalObject1.foo'],
++        ['globalObject1.foo', 'globalObject1.bar'],
++      ],
++      failure: [false, true, /test/, '', [], [''], {}],
+     },
+     unknown: {
+       success: [],
+",0,
+94,f9443df4f399b37cf4519f07f44c5c49297412dc,1d298ef99a958702ad5b5e0284b38b53f4916b67,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support multiple `expose`
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: support multiple exposes
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index 23820e8..de45045 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -40,4 +40,36 @@ describe('loader', () => {
+     expect(getErrors(stats)).toMatchSnapshot('errors');
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
++
++  it('should work with multiple exposes', async () => {
++    const compiler = getCompiler('simple-module-default.js', {
++      expose: ['globalObject2', 'globalObject3'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
++
++  it('should work with multiple exposes with nested properties', async () => {
++    const compiler = getCompiler('simple-module-default.js', {
++      expose: ['globalObject2.foo', 'globalObject3.bar'],
++    });
++    const stats = await compile(compiler);
++
++    expect(
++      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++    ).toMatchSnapshot('module');
++    expect(
++      execute(readAsset('main.bundle.js', compiler, stats))
++    ).toMatchSnapshot('result');
++    expect(getErrors(stats)).toMatchSnapshot('errors');
++    expect(getWarnings(stats)).toMatchSnapshot('warnings');
++  });
+ });
+",0,
+94,f9443df4f399b37cf4519f07f44c5c49297412dc,f9443df4f399b37cf4519f07f44c5c49297412dc,test/__snapshots__/validate-options.test.js.snap,test/validate-options.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Support multiple `expose`
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: support multiple exposes
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 2d762ad..a7c8a27 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -3,8 +3,14 @@ import { getCompiler, compile } from './helpers';
+ describe('validate options', () => {
+   const tests = {
+     expose: {
+-      success: ['globalObject1', 'globalObject1.foo'],
+-      failure: [false, true, /test/, '', [], {}],
++      success: [
++        'globalObject1',
++        'globalObject1.foo',
++        ['globalObject1'],
++        ['globalObject1.foo'],
++        ['globalObject1.foo', 'globalObject1.bar'],
++      ],
++      failure: [false, true, /test/, '', [], [''], {}],
+     },
+     unknown: {
+       success: [],
+",0,
+97,3cfd917ed0e2be1a38b8c20d6c5ef6baddac7fe6,fbe7355e8df343081603730451253fdbb7179040,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Fix compatibility with webpack@5
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: do not depend on Node.js global polyfill
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index de45045..65c2d15 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -10,13 +10,13 @@ import {
+ 
+ describe('loader', () => {
+   it('should work', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: 'globalObject1',
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: 'myGlobal',
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -25,14 +25,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with nested property', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: 'globalObject1.foo',
++  it('should work with multiple exposes', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: ['myGlobal', 'myOtherGlobal'],
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -41,14 +41,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with multiple exposes', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: ['globalObject2', 'globalObject3'],
++  it('should work for a nested property for a global object', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: 'myGlobal.nested',
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -57,14 +57,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with multiple exposes with nested properties', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: ['globalObject2.foo', 'globalObject3.bar'],
++  it('should work for nested preporties for a global object', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: ['myGlobal.nested', 'myOtherGlobal.nested'],
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+",0,
+97,3cfd917ed0e2be1a38b8c20d6c5ef6baddac7fe6,fbe7355e8df343081603730451253fdbb7179040,test/__snapshots__/loader.test.js.snap,test/loader.test.js,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Fix compatibility with webpack@5
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","fix: do not depend on Node.js global polyfill
+","diff --git a/test/loader.test.js b/test/loader.test.js
+index de45045..65c2d15 100644
+--- a/test/loader.test.js
++++ b/test/loader.test.js
+@@ -10,13 +10,13 @@ import {
+ 
+ describe('loader', () => {
+   it('should work', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: 'globalObject1',
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: 'myGlobal',
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -25,14 +25,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with nested property', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: 'globalObject1.foo',
++  it('should work with multiple exposes', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: ['myGlobal', 'myOtherGlobal'],
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -41,14 +41,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with multiple exposes', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: ['globalObject2', 'globalObject3'],
++  it('should work for a nested property for a global object', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: 'myGlobal.nested',
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+@@ -57,14 +57,14 @@ describe('loader', () => {
+     expect(getWarnings(stats)).toMatchSnapshot('warnings');
+   });
+ 
+-  it('should work with multiple exposes with nested properties', async () => {
+-    const compiler = getCompiler('simple-module-default.js', {
+-      expose: ['globalObject2.foo', 'globalObject3.bar'],
++  it('should work for nested preporties for a global object', async () => {
++    const compiler = getCompiler('simple-commonjs2-single-export.js', {
++      expose: ['myGlobal.nested', 'myOtherGlobal.nested'],
+     });
+     const stats = await compile(compiler);
+ 
+     expect(
+-      getModuleSource('./global-commonjs2-multiple-exports.js-exposed', stats)
++      getModuleSource('./global-commonjs2-single-export.js-exposed', stats)
+     ).toMatchSnapshot('module');
+     expect(
+       execute(readAsset('main.bundle.js', compiler, stats))
+",0,

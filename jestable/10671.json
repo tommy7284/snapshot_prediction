@@ -1,0 +1,101 @@
+{
+    "id": 7471956,
+    "name": "wei/pull",
+    "isFork": false,
+    "commits": 399,
+    "branches": 14,
+    "releases": 0,
+    "forks": 615,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://github.com/apps/pull",
+    "watchers": 62,
+    "stargazers": 5686,
+    "contributors": 11,
+    "size": 5247,
+    "createdAt": "2018-05-26T08:19:21",
+    "pushedAt": "2024-04-04T07:43:37",
+    "updatedAt": "2024-04-05T03:17:55",
+    "totalIssues": 175,
+    "openIssues": 5,
+    "totalPullRequests": 351,
+    "openPullRequests": 13,
+    "blankLines": 216,
+    "codeLines": 9766,
+    "commentLines": 26,
+    "metrics": [
+        {
+            "blankLines": 61,
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 171
+        },
+        {
+            "blankLines": 147,
+            "language": "JavaScript",
+            "commentLines": 10,
+            "codeLines": 1269
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 8170
+        },
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 115
+        },
+        {
+            "blankLines": 6,
+            "language": "Dockerfile",
+            "commentLines": 13,
+            "codeLines": 41
+        }
+    ],
+    "lastCommit": "2024-04-04T03:40:40",
+    "lastCommitSHA": "ac1e363995f8240b98cd36ffb7287ac2d2dacada",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 54097,
+        "Dockerfile": 1394,
+        "Shell": 658
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "depfu",
+        "duplicate",
+        "enhancement",
+        "github_actions",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "question",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "fork",
+        "forks-insight",
+        "hacktoberfest",
+        "probot",
+        "probot-app",
+        "probot-apps",
+        "pull",
+        "repository-management",
+        "reviewer",
+        "reviewers",
+        "sync",
+        "trigger",
+        "upstream",
+        "upstreams"
+    ]
+}

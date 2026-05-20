@@ -1,0 +1,473 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+191,b2d6c2637a03313473c3addd8798f7a0351d67b6,b2d6c2637a03313473c3addd8798f7a0351d67b6,"- add missing config hit with screenview events
+- use events instead of config for pageviews and screenviews
+- add default send_page_view to false and add send_page_view to true for every pageview and screenview hit because the documentation suggests this on SPAs
+
+closes #178 ","fix(screenview): missing config hit
+",,0,,9,104,1,1,9,104
+294,863b7d34e9a301ff0b015aea786c2cf12cad9354,166b5de0847fb00629cbadbe6945fa2194b6f275,"I rewrote the whole thing, fixed some weird bugs and tested it properly","refactor: initial restore
+","diff --git a/__tests__/install.spec.js b/__tests__/install.spec.js
+deleted file mode 100644
+index 7e93a05..0000000
+--- a/__tests__/install.spec.js
++++ /dev/null
+@@ -1,50 +0,0 @@
+-import { getVue, getRouter, install, getOptions, setRouter } from ""@/install"";
+-import bootstrap from ""@/bootstrap"";
+-import extend from ""@/extend"";
+-
+-jest.mock(""@/extend"");
+-jest.mock(""@/bootstrap"");
+-
+-describe(""install"", () => {
+-  afterEach(() => {
+-    jest.clearAllMocks();
+-  });
+-
+-  it(""should have default options"", () => {
+-    expect(getOptions()).toMatchSnapshot();
+-  });
+-
+-  it(""should return VueRouter"", () => {
+-    install(null, null, { foo: ""bar"" });
+-    expect(getRouter()).toEqual({ foo: ""bar"" });
+-  });
+-
+-  it(""should set VueRouter"", () => {
+-    const router = { foo: ""bar"" };
+-
+-    install();
+-    setRouter(router);
+-
+-    expect(getRouter()).toEqual(router);
+-  });
+-
+-  it(""should return Vue"", () => {
+-    install({ foo: ""bar"" });
+-    expect(getVue()).toEqual({ foo: ""bar"" });
+-  });
+-
+-  it(""should call extend"", () => {
+-    install();
+-    expect(extend).toHaveBeenCalled();
+-  });
+-
+-  it(""should call bootstrap"", () => {
+-    install();
+-    expect(bootstrap).toHaveBeenCalled();
+-  });
+-
+-  it(""should not bootstrap"", () => {
+-    install(null, { bootstrap: false });
+-    expect(bootstrap).not.toHaveBeenCalled();
+-  });
+-});
+
+diff --git a/__tests__/util.spec.js b/__tests__/util.spec.js
+deleted file mode 100644
+index 7ed1504..0000000
+--- a/__tests__/util.spec.js
++++ /dev/null
+@@ -1,99 +0,0 @@
+-import * as util from ""@/util"";
+-import flushPromises from ""flush-promises"";
+-
+-describe(""loadScript"", () => {
+-  afterEach(() => {
+-    document.getElementsByTagName(""html"")[0].innerHTML = """";
+-  });
+-
+-  it(""should return a promise"", () => {
+-    expect(util.loadScript(""a"")).toBeInstanceOf(Promise);
+-  });
+-
+-  it(""should create a script tag"", (done) => {
+-    util.loadScript(""foo"");
+-
+-    flushPromises().then(() => {
+-      expect(document.head).toMatchSnapshot();
+-      done();
+-    });
+-  });
+-
+-  it(""should create a link for domain preconnect"", (done) => {
+-    util.loadScript(""foo"", {
+-      preconnectOrigin: ""bar"",
+-    });
+-
+-    flushPromises().then(() => {
+-      expect(document.head).toMatchSnapshot();
+-      done();
+-    });
+-  });
+-
+-  it(""should create a script tag with the defer attribute"", (done) => {
+-    util.loadScript(""foo"", {
+-      defer: true,
+-    });
+-
+-    flushPromises().then(() => {
+-      expect(document.head).toMatchSnapshot();
+-      done();
+-    });
+-  });
+-});
+-
+-describe(""mergeDeep"", () => {
+-  it(""should merge two objects"", () => {
+-    const a = { a: 1, c: { a: 1 } };
+-    const b = { b: 1, c: { b: 1 } };
+-    const c = util.mergeDeep(a, b);
+-
+-    expect(c).toMatchObject({
+-      a: 1,
+-      b: 1,
+-      c: {
+-        b: 1,
+-        a: 1,
+-      },
+-    });
+-  });
+-
+-  it(""should merge objects containing arrays"", () => {
+-    const a = { c: [1, 2, 3] };
+-    const b = { c: [4, 5], d: { b: 1 } };
+-    const c = util.mergeDeep(a, b);
+-
+-    expect(c).toEqual({
+-      c: [4, 5],
+-      d: { b: 1 },
+-    });
+-  });
+-});
+-
+-describe(""warn"", () => {
+-  it(""should warn with a customized message prefix"", () => {
+-    console.warn = jest.fn();
+-    util.warn(""foo"");
+-    expect(console.warn).toHaveBeenCalledWith(""[vue-gtag] foo"");
+-  });
+-});
+-
+-describe(""isFn"", () => {
+-  it(""should return true"", () => {
+-    expect(util.isFn(() => {})).toBe(true);
+-  });
+-
+-  it(""should return false"", () => {
+-    expect(util.isFn(""hello"")).toBe(false);
+-  });
+-});
+-
+-describe(""isObject"", () => {
+-  it(""should return true"", () => {
+-    expect(util.isObject({})).toBe(true);
+-  });
+-  it(""should return false"", () => {
+-    expect(util.isObject([])).toBe(false);
+-    expect(util.isObject(""aa"")).toBe(false);
+-  });
+-});
+
+diff --git a/test/bootstrap.spec.js b/test/bootstrap.spec.js
+new file mode 100644
+index 0000000..585e794
+--- /dev/null
++++ b/test/bootstrap.spec.js
+@@ -0,0 +1,60 @@
++import { install } from ""./utils"";
++import * as utils from ""@/utils"";
++import MockDate from ""mockdate"";
++import query from ""@/api/query"";
++
++jest.mock(""@/api/query"");
++
++MockDate.set(""06-03-1997 10:00:00"");
++
++describe(""boostrap"", () => {
++  beforeEach(() => {
++    jest.spyOn(utils, ""load"").mockResolvedValue();
++  });
++
++  test(""load gtag script"", () => {
++    install({
++      config: {
++        id: ""UA-123456-7"",
++      },
++    });
++
++    expect(utils.load).toHaveBeenCalledWith(
++      ""https://www.googletagmanager.com/gtag/js?id=UA-123456-7&l=dataLayer""
++    );
++  });
++
++  test(""define library and dataLayer"", () => {
++    install();
++
++    expect(typeof window.gtag).toBe(""function"");
++    expect(Array.isArray(window.dataLayer)).toBe(true);
++  });
++
++  test(""define custom library and dataLayer"", () => {
++    install({
++      globalDataLayerName: ""myCustomDatalayer"",
++      globalObjectName: ""myCustomGtag"",
++    });
++
++    expect(typeof window.myCustomGtag).toBe(""function"");
++    expect(Array.isArray(window.myCustomDatalayer)).toBe(true);
++  });
++
++  test(""first dataLayer item is a date"", () => {
++    install();
++    expect(window.dataLayer[0]).toMatchSnapshot();
++  });
++
++  test(""gtag configuration hit"", () => {
++    install({
++      config: {
++        id: ""UA-123456-7"",
++      },
++    });
++
++    expect(query).toHaveBeenCalledWith(""config"", ""UA-123456-7"", {
++      send_page_view: false,
++    });
++  });
++});
+",1,None=None,55,1838,3,20,84,3881
+600,aa0e6763411020e14191fd34af17ce18dac38ad4,991a4442cba62b694a0c700b01f157777d1149f9,"Migrated libraries
+- from bili to vite
+- from prettier/eslint to biomejs
+- from jest to vitest","feat: from jest to vitest migration
+","diff --git a/test/options.spec.js b/test/options.spec.js
+index 2445e31..c76f887 100644
+--- a/test/options.spec.js
++++ b/test/options.spec.js
+@@ -2,7 +2,7 @@ import { getDefaultParams, getOptions, setOptions } from ""@/options"";
+ 
+ describe(""options"", () => {
+ 	afterEach(() => {
+-		jest.clearAllMocks();
++		vi.clearAllMocks();
+ 	});
+ 
+ 	test(""getDefaultParams"", () => {
+
+diff --git a/test/register-globals.spec.js b/test/register-globals.spec.js
+index 05115e3..aeb342d 100644
+--- a/test/register-globals.spec.js
++++ b/test/register-globals.spec.js
+@@ -6,7 +6,7 @@ import { createApp } from ""vue"";
+ 
+ mockDate.set(""2021-04-20 10:00:00"");
+ 
+-jest.mock(""@/api"");
++vi.mock(""@/api"");
+ 
+ describe(""registerGlobals"", () => {
+ 	beforeEach(() => {
+@@ -15,7 +15,7 @@ describe(""registerGlobals"", () => {
+ 	});
+ 
+ 	afterEach(() => {
+-		jest.clearAllMocks();
++		vi.clearAllMocks();
+ 	});
+ 
+ 	test(""register global dataLayer and globalObject"", () => {
+
+diff --git a/test/utils.spec.js b/test/utils.spec.js
+index e58b12f..0f5892b 100644
+--- a/test/utils.spec.js
++++ b/test/utils.spec.js
+@@ -69,7 +69,7 @@ describe(""mergeDeep"", () => {
+ 
+ describe(""warn"", () => {
+ 	it(""should warn with a customized message prefix"", () => {
+-		console.warn = jest.fn();
++		console.warn = vi.fn();
+ 		util.warn(""foo"");
+ 		expect(console.warn).toHaveBeenCalledWith(""[vue-gtag] foo"");
+ 	});
+",0,,29,602,3,5,70,17662
+601,01376b57bd99a34c3b167656ccda5b45b345af1a,01376b57bd99a34c3b167656ccda5b45b345af1a,,"fix: test date
+","diff --git a/test/register-globals.spec.js b/test/register-globals.spec.js
+index abe488d..61ff11c 100644
+--- a/test/register-globals.spec.js
++++ b/test/register-globals.spec.js
+@@ -68,14 +68,7 @@ describe(""registerGlobals"", () => {
+       },
+     });
+ 
+-    expect(window.dataLayer).toMatchInlineSnapshot(`
+-      [
+-        [
+-          ""js"",
+-          2021-04-20T08:00:00.000Z,
+-        ],
+-      ]
+-    `);
++    expect(window.dataLayer).toEqual([[""js"", new Date()]]);
+   });
+ 
+   test(""optOut when disabled"", async () => {
+",0,,2,17,1,9,7,4007
+608,3110560246f92305a1f3ca9a4edf18b919611502,750ebc206d30a01fc7002427ca15b777ed8302b7,"- [x] Rewrite in Typescript
+- [x] Refactor options
+- [x] Add global install for options API
+- [x] Export all API methods
+- [x] Write tests
+
+
+<!-- This is an auto-generated comment: release notes by coderabbit.ai -->
+## Summary by CodeRabbit
+
+- **New Features**
+  - Enhanced analytics event tracking with additional actions (e.g., purchase, refund, screen views, and custom mapping).
+  - Improved routing analytics for more accurate page navigation tracking.
+  - Introduced a new configuration management system for better handling of settings.
+
+- **Refactor**
+  - Consolidated and streamlined the analytics API for a more consistent integration experience.
+  - Upgraded build configurations with modern TypeScript support and optimized bundling.
+
+- **Tests**
+  - Expanded test coverage for core analytics and routing functionalities to ensure reliable behavior.
+  - Added tests for new configuration management features.
+
+- **Chores**
+  - Updated development scripts and CI workflow to include robust type checking and linting.
+  - Introduced a new TypeScript configuration file for better project management.
+<!-- end of auto-generated comment: release notes by coderabbit.ai -->","chore: clean slate
+","diff --git a/test/options.spec.js b/test/options.spec.js
+deleted file mode 100644
+index e834a44..0000000
+--- a/test/options.spec.js
++++ /dev/null
+@@ -1,21 +0,0 @@
+-import { getDefaultParams, getOptions, setOptions } from ""@/options"";
+-
+-describe(""options"", () => {
+-  afterEach(() => {
+-    vi.clearAllMocks();
+-  });
+-
+-  test(""getDefaultParams"", () => {
+-    expect(getDefaultParams()).toMatchSnapshot();
+-  });
+-
+-  test(""set and get options"", () => {
+-    setOptions({ config: { id: 1 } });
+-    expect(getOptions()).toMatchSnapshot();
+-  });
+-
+-  test(""should get default options"", () => {
+-    setOptions();
+-    expect(getOptions()).toEqual(getDefaultParams());
+-  });
+-});
+
+diff --git a/test/utils.spec.js b/test/utils.spec.js
+deleted file mode 100644
+index 57b1392..0000000
+--- a/test/utils.spec.js
++++ /dev/null
+@@ -1,96 +0,0 @@
+-import * as util from ""@/utils"";
+-import flushPromises from ""flush-promises"";
+-
+-describe(""load"", () => {
+-  afterEach(() => {
+-    document.getElementsByTagName(""html"")[0].innerHTML = """";
+-  });
+-
+-  it(""should return a promise"", () => {
+-    expect(util.load(""a"")).toBeInstanceOf(Promise);
+-  });
+-
+-  it(""should create a script tag"", async () => {
+-    util.load(""foo"");
+-
+-    await flushPromises();
+-
+-    expect(document.head).toMatchSnapshot();
+-  });
+-
+-  it(""should create a link for domain preconnect"", async () => {
+-    util.load(""foo"", {
+-      preconnectOrigin: ""bar"",
+-    });
+-
+-    await flushPromises();
+-
+-    expect(document.head).toMatchSnapshot();
+-  });
+-
+-  it(""should create a script tag with the defer attribute"", async () => {
+-    util.load(""foo"", {
+-      defer: true,
+-    });
+-
+-    await flushPromises();
+-
+-    expect(document.head).toMatchSnapshot();
+-  });
+-});
+-
+-describe(""mergeDeep"", () => {
+-  it(""should merge two objects"", () => {
+-    const a = { a: 1, c: { a: 1 } };
+-    const b = { b: 1, c: { b: 1 } };
+-    const c = util.mergeDeep(a, b);
+-
+-    expect(c).toMatchObject({
+-      a: 1,
+-      b: 1,
+-      c: {
+-        b: 1,
+-        a: 1,
+-      },
+-    });
+-  });
+-
+-  it(""should merge objects containing arrays"", () => {
+-    const a = { c: [1, 2, 3] };
+-    const b = { c: [4, 5], d: { b: 1 } };
+-    const c = util.mergeDeep(a, b);
+-
+-    expect(c).toEqual({
+-      c: [4, 5],
+-      d: { b: 1 },
+-    });
+-  });
+-});
+-
+-describe(""warn"", () => {
+-  it(""should warn with a customized message prefix"", () => {
+-    console.warn = vi.fn();
+-    util.warn(""foo"");
+-    expect(console.warn).toHaveBeenCalledWith(""[vue-gtag] foo"");
+-  });
+-});
+-
+-describe(""isFn"", () => {
+-  it(""should return true"", () => {
+-    expect(util.isFn(() => {})).toBe(true);
+-  });
+-
+-  it(""should return false"", () => {
+-    expect(util.isFn(""hello"")).toBe(false);
+-  });
+-});
+-
+-describe(""isObject"", () => {
+-  it(""should return true"", () => {
+-    expect(util.isObject({})).toBe(true);
+-  });
+-  it(""should return false"", () => {
+-    expect(util.isObject([])).toBe(false);
+-    expect(util.isObject(""aa"")).toBe(false);
+-  });
+-});
+",0,,67,4020,2,50,100,6881

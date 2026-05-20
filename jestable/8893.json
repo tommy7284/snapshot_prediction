@@ -1,0 +1,89 @@
+{
+    "id": 6783669,
+    "name": "jest-community/snapshot-diff",
+    "isFork": false,
+    "commits": 225,
+    "branches": 7,
+    "releases": 12,
+    "forks": 38,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 5,
+    "stargazers": 593,
+    "contributors": 17,
+    "size": 2535,
+    "createdAt": "2017-07-27T07:54:39",
+    "pushedAt": "2024-02-26T03:19:58",
+    "updatedAt": "2024-02-15T09:00:59",
+    "totalIssues": 44,
+    "openIssues": 5,
+    "totalPullRequests": 426,
+    "openPullRequests": 8,
+    "blankLines": 219,
+    "codeLines": 1276,
+    "commentLines": 660,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 48,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 140
+        },
+        {
+            "blankLines": 4,
+            "language": "TypeScript",
+            "commentLines": 23,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 162,
+            "language": "JavaScript",
+            "commentLines": 637,
+            "codeLines": 1018
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 62
+        }
+    ],
+    "lastCommit": "2024-02-26T03:18:52",
+    "lastCommitSHA": "d8be89d57c5937991e577070baa83c9cf347ba38",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 13192
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "jest",
+        "react",
+        "snapshot",
+        "snapshot-testing"
+    ]
+}

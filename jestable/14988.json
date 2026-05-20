@@ -1,0 +1,152 @@
+{
+    "id": 4056470,
+    "name": "ant-design/ant-design-pro",
+    "isFork": false,
+    "commits": 2498,
+    "branches": 17,
+    "releases": 26,
+    "forks": 8097,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://pro.ant.design",
+    "watchers": 749,
+    "stargazers": 35820,
+    "contributors": 302,
+    "size": 14633,
+    "createdAt": "2017-08-25T10:40:44",
+    "pushedAt": "2024-05-02T04:56:25",
+    "updatedAt": "2024-05-03T02:57:04",
+    "totalIssues": 9548,
+    "openIssues": 67,
+    "totalPullRequests": 1447,
+    "openPullRequests": 1,
+    "blankLines": 3098,
+    "codeLines": 27606,
+    "commentLines": 440,
+    "metrics": [
+        {
+            "language": "JSX",
+            "commentLines": 2,
+            "codeLines": 57,
+            "blankLines": 5
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 364,
+            "codeLines": 5025,
+            "blankLines": 213
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 25,
+            "codeLines": 569,
+            "blankLines": 25
+        },
+        {
+            "language": "Less",
+            "commentLines": 0,
+            "codeLines": 47,
+            "blankLines": 6
+        },
+        {
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 19818,
+            "blankLines": 2537
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 13,
+            "blankLines": 3
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 7,
+            "blankLines": 3
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 43,
+            "codeLines": 902,
+            "blankLines": 306
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1162,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-02-18T12:21:32",
+    "lastCommitSHA": "6c2b3ba8f55cd33f48d8bbb38084c997685753c3",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 204994,
+        "JavaScript": 19123,
+        "EJS": 6840,
+        "Less": 850,
+        "Shell": 198,
+        "Dockerfile": 187
+    },
+    "labels": [
+        "ai reply",
+        "blocks",
+        "compatibility",
+        "dependencies",
+        "inactive",
+        "responsive",
+        "todo :spiral_notepad:",
+        "umi4",
+        "wip",
+        "\u263a\ufe0fin progress",
+        "\u26a1\ufe0f performance",
+        "\u26f1 wait",
+        "\ud83c\udd98help wanted",
+        "\ud83c\udf10site",
+        "\ud83c\udf1f\ud83c\udf1f\ud83c\udf1f\ud83c\udf1f\ud83c\udf1fnews",
+        "\ud83c\udf5a umi",
+        "\ud83c\udfad duplicate",
+        "\ud83c\udfb0 how to use",
+        "\ud83c\udfc6  feature request",
+        "\ud83c\udfd4 scaffold",
+        "\ud83c\udfd7\ufe0f build",
+        "\ud83d\udc55 theme",
+        "\ud83d\udc65discussion",
+        "\ud83d\udc68\ud83c\udffc\u200d\ud83c\udf3e faq",
+        "\ud83d\udc8e deploy",
+        "\ud83d\udcbccomponents",
+        "\ud83d\udcd0design",
+        "\ud83d\udcd6documentation",
+        "\ud83d\udcde network",
+        "\ud83d\udd2d need reproduce",
+        "\ud83d\ude13irrelevant topic",
+        "\ud83d\ude4b\ud83c\udffd\u200d\u2640\ufe0f question",
+        "\ud83d\udec2 antd",
+        "\ud83e\udd1dwelcome pr",
+        "\ud83e\udd9f bug",
+        "\ud83e\uddd7\ud83c\udffb todo"
+    ],
+    "topics": [
+        "admin",
+        "ant-design",
+        "antd",
+        "antv",
+        "boilerplate",
+        "dashboard",
+        "enterprise",
+        "react",
+        "umi"
+    ]
+}

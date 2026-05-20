@@ -1,0 +1,113 @@
+{
+    "id": 7471559,
+    "name": "styled-system/styled-system",
+    "isFork": false,
+    "commits": 3257,
+    "branches": 139,
+    "releases": 6,
+    "forks": 542,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://styled-system.com",
+    "watchers": 49,
+    "stargazers": 7747,
+    "contributors": 101,
+    "size": 21518,
+    "createdAt": "2017-06-14T11:21:17",
+    "pushedAt": "2024-01-12T07:55:49",
+    "updatedAt": "2024-01-13T04:21:47",
+    "totalIssues": 494,
+    "openIssues": 88,
+    "totalPullRequests": 1670,
+    "openPullRequests": 149,
+    "blankLines": 1481,
+    "codeLines": 50177,
+    "commentLines": 85,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 38
+        },
+        {
+            "blankLines": 3,
+            "language": "Svelte",
+            "commentLines": 0,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 1051,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3342
+        },
+        {
+            "blankLines": 427,
+            "language": "JavaScript",
+            "commentLines": 85,
+            "codeLines": 5252
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 41500
+        }
+    ],
+    "lastCommit": "2021-07-05T02:21:29",
+    "lastCommitSHA": "6d822f27a486e5e2bc1cae1f44dd151ce874a863",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 81635
+    },
+    "labels": [
+        "bug",
+        "cascade",
+        "dependencies",
+        "discussion",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "major-change",
+        "question",
+        "react-native",
+        "security",
+        "v2",
+        "wontfix"
+    ],
+    "topics": [
+        "colors",
+        "css",
+        "css-in-js",
+        "design-systems",
+        "emotion",
+        "layout",
+        "react",
+        "responsive",
+        "style-props",
+        "styled-components",
+        "styling",
+        "theming",
+        "tokens",
+        "typography"
+    ]
+}

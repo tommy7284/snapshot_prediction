@@ -1,0 +1,86 @@
+{
+    "id": 6661884,
+    "name": "foliojs/pdfkit",
+    "isFork": false,
+    "commits": 756,
+    "branches": 10,
+    "releases": 16,
+    "forks": 1112,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://pdfkit.org/",
+    "watchers": 169,
+    "stargazers": 9456,
+    "contributors": 85,
+    "size": 37352,
+    "createdAt": "2011-07-11T03:12:29",
+    "pushedAt": "2024-04-01T04:04:57",
+    "updatedAt": "2024-04-02T01:58:10",
+    "totalIssues": 1163,
+    "openIssues": 382,
+    "totalPullRequests": 346,
+    "openPullRequests": 38,
+    "blankLines": 2508,
+    "codeLines": 140015,
+    "commentLines": 765,
+    "metrics": [
+        {
+            "blankLines": 617,
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 1794
+        },
+        {
+            "blankLines": 18,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 97
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 5,
+            "language": "Pug",
+            "commentLines": 0,
+            "codeLines": 50
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 116
+        },
+        {
+            "blankLines": 1863,
+            "language": "JavaScript",
+            "commentLines": 746,
+            "codeLines": 137937
+        }
+    ],
+    "lastCommit": "2024-04-01T04:04:57",
+    "lastCommitSHA": "b35c6f91799b969e570222f19ca4ef357c480aff",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 3562087,
+        "HTML": 937
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "docs",
+        "feature",
+        "fonts",
+        "images",
+        "needs info",
+        "word wrapping"
+    ],
+    "topics": []
+}

@@ -1,0 +1,79 @@
+{
+    "id": 6122794,
+    "name": "faceyspacey/react-universal-component",
+    "isFork": false,
+    "commits": 184,
+    "branches": 6,
+    "releases": 64,
+    "forks": 94,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 28,
+    "stargazers": 1698,
+    "contributors": 26,
+    "size": 1408,
+    "createdAt": "2017-06-04T09:08:10",
+    "pushedAt": "2022-08-27T05:26:42",
+    "updatedAt": "2022-08-27T05:26:46",
+    "totalIssues": 155,
+    "openIssues": 27,
+    "totalPullRequests": 70,
+    "openPullRequests": 0,
+    "blankLines": 641,
+    "codeLines": 2597,
+    "commentLines": 152,
+    "metrics": [
+        {
+            "blankLines": 152,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 370
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 99
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 59
+        },
+        {
+            "blankLines": 31,
+            "language": "TypeScript",
+            "commentLines": 92,
+            "codeLines": 99
+        },
+        {
+            "blankLines": 455,
+            "language": "JavaScript",
+            "commentLines": 60,
+            "codeLines": 1970
+        }
+    ],
+    "lastCommit": "2022-08-27T05:26:42",
+    "lastCommitSHA": "b0c3db04a9394790c80f07c9ec8eef24344a70e2",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 68429
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

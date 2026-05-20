@@ -1,0 +1,100 @@
+{
+    "id": 76423376,
+    "name": "beekai-oss/react-simple-img",
+    "isFork": false,
+    "commits": 365,
+    "branches": 28,
+    "releases": 46,
+    "forks": 47,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 986,
+    "contributors": 15,
+    "size": 30431,
+    "createdAt": "2017-12-25T02:18:45",
+    "pushedAt": "2023-01-25T11:01:28",
+    "updatedAt": "2023-02-09T03:25:37",
+    "totalIssues": 44,
+    "openIssues": 0,
+    "totalPullRequests": 101,
+    "openPullRequests": 27,
+    "blankLines": 245,
+    "codeLines": 1606,
+    "commentLines": 84,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 126
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 8,
+            "language": "YAML",
+            "commentLines": 13,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 8,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 5,
+            "language": "HTML",
+            "commentLines": 21,
+            "codeLines": 24
+        },
+        {
+            "blankLines": 76,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 186
+        },
+        {
+            "blankLines": 5,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 143,
+            "language": "JavaScript",
+            "commentLines": 50,
+            "codeLines": 1173
+        }
+    ],
+    "lastCommit": "2022-12-31T03:46:05",
+    "lastCommitSHA": "695e0b346efa3366fe8e886cf9b6a1560fbe6aef",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 40027,
+        "HTML": 1946,
+        "CSS": 481
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

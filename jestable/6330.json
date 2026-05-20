@@ -1,0 +1,95 @@
+{
+    "id": 6251358,
+    "name": "semantic-ui-vue/semantic-ui-vue",
+    "isFork": false,
+    "commits": 562,
+    "branches": 26,
+    "releases": 29,
+    "forks": 157,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://semantic-ui-vue.github.io",
+    "watchers": 33,
+    "stargazers": 932,
+    "contributors": 65,
+    "size": 8114,
+    "createdAt": "2017-08-25T10:11:54",
+    "pushedAt": "2022-02-26T11:08:19",
+    "updatedAt": "2022-02-27T09:16:52",
+    "totalIssues": 250,
+    "openIssues": 106,
+    "totalPullRequests": 264,
+    "openPullRequests": 30,
+    "blankLines": 1575,
+    "codeLines": 34064,
+    "commentLines": 175,
+    "metrics": [
+        {
+            "blankLines": 103,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 246
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 3522
+        },
+        {
+            "blankLines": 363,
+            "language": "JavaScript",
+            "commentLines": 69,
+            "codeLines": 6127
+        },
+        {
+            "blankLines": 8,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 147
+        },
+        {
+            "blankLines": 865,
+            "language": "Vuejs Component",
+            "commentLines": 84,
+            "codeLines": 17408
+        },
+        {
+            "blankLines": 236,
+            "language": "JSX",
+            "commentLines": 21,
+            "codeLines": 6541
+        }
+    ],
+    "lastCommit": "2020-06-03T11:01:02",
+    "lastCommitSHA": "afc18c60987257a41df5bdca202488215a19228c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 263413
+    },
+    "labels": [
+        "bug",
+        "build & release",
+        "dependencies",
+        "discussion",
+        "docs",
+        "feature: component",
+        "feature: definition",
+        "feature: other",
+        "needs author feedback",
+        "new component",
+        "question",
+        "released"
+    ],
+    "topics": []
+}

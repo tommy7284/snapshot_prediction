@@ -1,0 +1,76 @@
+{
+    "id": 6940990,
+    "name": "nickcolley/jest-axe",
+    "isFork": false,
+    "commits": 294,
+    "branches": 5,
+    "releases": 6,
+    "forks": 52,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 3,
+    "stargazers": 1019,
+    "contributors": 25,
+    "size": 905,
+    "createdAt": "2018-02-12T11:06:17",
+    "pushedAt": "2023-10-07T07:42:05",
+    "updatedAt": "2023-12-13T08:07:46",
+    "totalIssues": 76,
+    "openIssues": 3,
+    "totalPullRequests": 203,
+    "openPullRequests": 2,
+    "blankLines": 241,
+    "codeLines": 11141,
+    "commentLines": 65,
+    "metrics": [
+        {
+            "blankLines": 139,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 290
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 10286
+        },
+        {
+            "blankLines": 96,
+            "language": "JavaScript",
+            "commentLines": 63,
+            "codeLines": 545
+        }
+    ],
+    "lastCommit": "2023-07-10T10:30:59",
+    "lastCommitSHA": "57add7089629a0381c423853b7f06a735e44f872",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 22258
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "first-timers-only",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,91 @@
+{
+    "id": 4038355,
+    "name": "perliedman/leaflet-control-geocoder",
+    "isFork": false,
+    "commits": 419,
+    "branches": 7,
+    "releases": 6,
+    "forks": 214,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "BSD 2-Clause Simplified License",
+    "homepage": "http://www.liedman.net/leaflet-control-geocoder/",
+    "watchers": 26,
+    "stargazers": 507,
+    "contributors": 46,
+    "size": 1623,
+    "createdAt": "2013-09-27T10:44:00",
+    "pushedAt": "2023-08-20T06:11:26",
+    "updatedAt": "2023-08-17T11:57:49",
+    "totalIssues": 219,
+    "openIssues": 31,
+    "totalPullRequests": 123,
+    "openPullRequests": 4,
+    "blankLines": 419,
+    "codeLines": 18437,
+    "commentLines": 716,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 429,
+            "blankLines": 100
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 365,
+            "codeLines": 2498,
+            "blankLines": 239
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 349,
+            "codeLines": 412,
+            "blankLines": 49
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 14806,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 41,
+            "blankLines": 7
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 112,
+            "blankLines": 14
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 139,
+            "blankLines": 10
+        }
+    ],
+    "lastCommit": "2023-08-20T06:09:39",
+    "lastCommitSHA": "be056ab13910c94639338268f0c5b6cdade01083",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 98203,
+        "JavaScript": 1991,
+        "HTML": 1974
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

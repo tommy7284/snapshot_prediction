@@ -1,0 +1,76 @@
+{
+    "id": 6941449,
+    "name": "brodybits/create-react-native-module",
+    "isFork": false,
+    "commits": 561,
+    "branches": 88,
+    "releases": 31,
+    "forks": 53,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 648,
+    "contributors": 24,
+    "size": 3892,
+    "createdAt": "2019-02-25T05:02:27",
+    "pushedAt": "2023-12-16T01:15:19",
+    "updatedAt": "2023-12-28T11:30:48",
+    "totalIssues": 145,
+    "openIssues": 82,
+    "totalPullRequests": 347,
+    "openPullRequests": 38,
+    "blankLines": 608,
+    "codeLines": 3604,
+    "commentLines": 374,
+    "metrics": [
+        {
+            "blankLines": 14,
+            "language": "YAML",
+            "commentLines": 20,
+            "codeLines": 59
+        },
+        {
+            "blankLines": 158,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 531
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 92
+        },
+        {
+            "blankLines": 436,
+            "language": "JavaScript",
+            "commentLines": 354,
+            "codeLines": 2922
+        }
+    ],
+    "lastCommit": "2021-08-02T09:09:07",
+    "lastCommitSHA": "5bcb9ef4edd01c4291ef55df3a86f1766dea1eaf",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 116836
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "info-needed",
+        "invalid",
+        "question",
+        "security",
+        "wontfix"
+    ],
+    "topics": []
+}

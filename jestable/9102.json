@@ -1,0 +1,84 @@
+{
+    "id": 6806017,
+    "name": "awesomejerry/react-native-qrcode-svg",
+    "isFork": false,
+    "commits": 249,
+    "branches": 4,
+    "releases": 20,
+    "forks": 208,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 984,
+    "contributors": 19,
+    "size": 1498,
+    "createdAt": "2016-05-05T05:04:15",
+    "pushedAt": "2024-01-31T04:49:44",
+    "updatedAt": "2024-01-24T08:53:00",
+    "totalIssues": 128,
+    "openIssues": 24,
+    "totalPullRequests": 61,
+    "openPullRequests": 12,
+    "blankLines": 73,
+    "codeLines": 17501,
+    "commentLines": 22,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 17000
+        },
+        {
+            "blankLines": 3,
+            "language": "TypeScript",
+            "commentLines": 17,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 27,
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 319
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 40,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 132
+        }
+    ],
+    "lastCommit": "2024-01-31T04:49:44",
+    "lastCommitSHA": "4418564a4f77e086c9cd80f6a6673906cab15ac9",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 6951
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "node-qrcode",
+        "qrcode",
+        "react-native",
+        "svg"
+    ]
+}

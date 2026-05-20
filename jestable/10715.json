@@ -1,0 +1,103 @@
+{
+    "id": 7473253,
+    "name": "nuxt-community/sitemap-module",
+    "isFork": false,
+    "commits": 182,
+    "branches": 12,
+    "releases": 0,
+    "forks": 125,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "dev",
+    "license": "MIT License",
+    "homepage": "https://sitemap.nuxtjs.org",
+    "watchers": 14,
+    "stargazers": 680,
+    "contributors": 21,
+    "size": 2408,
+    "createdAt": "2017-08-28T11:12:02",
+    "pushedAt": "2024-03-17T12:57:33",
+    "updatedAt": "2024-03-17T06:27:10",
+    "totalIssues": 168,
+    "openIssues": 51,
+    "totalPullRequests": 115,
+    "openPullRequests": 22,
+    "blankLines": 714,
+    "codeLines": 2591,
+    "commentLines": 281,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "Vuejs Component",
+            "commentLines": 0,
+            "codeLines": 77
+        },
+        {
+            "blankLines": 226,
+            "language": "JavaScript",
+            "commentLines": 273,
+            "codeLines": 1241
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 479,
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 1096
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 118
+        }
+    ],
+    "lastCommit": "2024-03-14T12:36:14",
+    "lastCommitSHA": "7be8e4d7b52bc95dbde834d8688508f71d6b1d55",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 49643,
+        "Vue": 946
+    },
+    "labels": [
+        "bug",
+        "cmty:bug-report",
+        "cmty:feature-request",
+        "cmty:question",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "nuxt",
+        "nuxt-module",
+        "nuxtjs",
+        "seo",
+        "sitemap",
+        "ssr"
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "id": 7812230,
+    "name": "garmeeh/next-seo",
+    "isFork": false,
+    "commits": 1167,
+    "branches": 29,
+    "releases": 82,
+    "forks": 380,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 31,
+    "stargazers": 7301,
+    "contributors": 108,
+    "size": 8946,
+    "createdAt": "2018-06-12T09:19:56",
+    "pushedAt": "2024-04-26T03:38:55",
+    "updatedAt": "2024-04-26T06:05:50",
+    "totalIssues": 343,
+    "openIssues": 58,
+    "totalPullRequests": 1100,
+    "openPullRequests": 13,
+    "blankLines": 1543,
+    "codeLines": 19850,
+    "commentLines": 118,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 206
+        },
+        {
+            "blankLines": 706,
+            "language": "TypeScript",
+            "commentLines": 52,
+            "codeLines": 7835
+        },
+        {
+            "blankLines": 233,
+            "language": "JavaScript",
+            "commentLines": 55,
+            "codeLines": 8648
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 598,
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 3089
+        }
+    ],
+    "lastCommit": "2024-03-29T04:27:39",
+    "lastCommitSHA": "0030c7c116b7a3d7e627a24d919bfe07b6458ae4",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 253575,
+        "TypeScript": 229323
+    },
+    "labels": [
+        "awaiting reply",
+        "bug",
+        "dependencies",
+        "enhancement",
+        "feature request",
+        "fix in progress",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help welcomed",
+        "needs more info",
+        "not reviewed",
+        "security",
+        "will investigate"
+    ],
+    "topics": [
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "json-ld",
+        "nextjs",
+        "react",
+        "seo",
+        "typescript"
+    ]
+}

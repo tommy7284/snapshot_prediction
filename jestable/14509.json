@@ -1,0 +1,79 @@
+{
+    "id": 4051168,
+    "name": "johnagan/clean-webpack-plugin",
+    "isFork": false,
+    "commits": 187,
+    "branches": 2,
+    "releases": 7,
+    "forks": 146,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1863,
+    "contributors": 23,
+    "size": 198,
+    "createdAt": "2015-04-06T12:03:55",
+    "pushedAt": "2021-09-01T01:46:08",
+    "updatedAt": "2021-09-02T08:16:35",
+    "totalIssues": 140,
+    "openIssues": 28,
+    "totalPullRequests": 63,
+    "openPullRequests": 5,
+    "blankLines": 484,
+    "codeLines": 1761,
+    "commentLines": 298,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 9,
+            "codeLines": 80,
+            "blankLines": 2
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 145,
+            "blankLines": 31
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 200,
+            "codeLines": 1118,
+            "blankLines": 366
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 89,
+            "codeLines": 297,
+            "blankLines": 85
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 121,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2021-09-01T01:40:21",
+    "lastCommitSHA": "0207fe42de3da90c30ad492fd1dbe042dec2623b",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 47931,
+        "JavaScript": 12445
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

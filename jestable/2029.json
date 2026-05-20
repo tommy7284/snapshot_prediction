@@ -1,0 +1,85 @@
+{
+    "id": 4979018,
+    "name": "paypal/glamorous",
+    "isFork": false,
+    "commits": 252,
+    "branches": 3,
+    "releases": 90,
+    "forks": 272,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://glamorous.rocks",
+    "watchers": 62,
+    "stargazers": 3694,
+    "contributors": 89,
+    "size": 1308,
+    "createdAt": "2017-04-03T09:35:49",
+    "pushedAt": "2018-12-06T07:58:04",
+    "updatedAt": "2021-02-07T03:51:38",
+    "totalIssues": 184,
+    "openIssues": 0,
+    "totalPullRequests": 243,
+    "openPullRequests": 0,
+    "blankLines": 1116,
+    "codeLines": 9776,
+    "commentLines": 638,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 470,
+            "language": "TypeScript",
+            "commentLines": 262,
+            "codeLines": 5977
+        },
+        {
+            "blankLines": 385,
+            "language": "JavaScript",
+            "commentLines": 376,
+            "codeLines": 2765
+        },
+        {
+            "blankLines": 261,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 794
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 228
+        }
+    ],
+    "lastCommit": "2018-12-06T07:55:15",
+    "lastCommitSHA": "031484cd5eff92ff135038200ba49a300859a335",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 92774,
+        "TypeScript": 37253
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "first-timers-only",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs investigation",
+        "question",
+        "typescript",
+        "wontfix"
+    ],
+    "topics": []
+}

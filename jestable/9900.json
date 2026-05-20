@@ -1,0 +1,103 @@
+{
+    "id": 6880694,
+    "name": "glennreyes/react-countup",
+    "isFork": false,
+    "commits": 1083,
+    "branches": 5,
+    "releases": 38,
+    "forks": 131,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://tr8tk.csb.app/",
+    "watchers": 8,
+    "stargazers": 1890,
+    "contributors": 27,
+    "size": 5241,
+    "createdAt": "2016-05-07T10:33:55",
+    "pushedAt": "2024-03-22T01:47:57",
+    "updatedAt": "2024-03-21T09:41:23",
+    "totalIssues": 121,
+    "openIssues": 11,
+    "totalPullRequests": 733,
+    "openPullRequests": 0,
+    "blankLines": 1149,
+    "codeLines": 3500,
+    "commentLines": 71,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 52
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 17,
+            "codeLines": 22
+        },
+        {
+            "blankLines": 0,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 53,
+            "language": "TypeScript",
+            "commentLines": 23,
+            "codeLines": 381
+        },
+        {
+            "blankLines": 164,
+            "language": "JavaScript",
+            "commentLines": 28,
+            "codeLines": 791
+        },
+        {
+            "blankLines": 3,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 210
+        },
+        {
+            "blankLines": 921,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2042
+        }
+    ],
+    "lastCommit": "2024-03-22T01:47:33",
+    "lastCommitSHA": "771f6a39f4deca07ef5eefdc1091c59cb94f8573",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 14947,
+        "TypeScript": 10991
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "security",
+        "types",
+        "wontfix"
+    ],
+    "topics": [
+        "animation",
+        "count",
+        "counter",
+        "countup",
+        "incremental",
+        "react"
+    ]
+}

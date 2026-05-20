@@ -1,0 +1,109 @@
+{
+    "id": 72176753,
+    "name": "macaron-css/macaron",
+    "isFork": false,
+    "commits": 232,
+    "branches": 1,
+    "releases": 17,
+    "forks": 17,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://macaron.js.org/",
+    "watchers": 7,
+    "stargazers": 710,
+    "contributors": 5,
+    "size": 1304,
+    "createdAt": "2022-05-31T05:24:51",
+    "pushedAt": "2024-04-14T05:30:55",
+    "updatedAt": "2024-04-14T04:39:53",
+    "totalIssues": 38,
+    "openIssues": 6,
+    "totalPullRequests": 8,
+    "openPullRequests": 1,
+    "blankLines": 858,
+    "codeLines": 31033,
+    "commentLines": 232,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 10,
+            "codeLines": 62,
+            "blankLines": 6
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 960,
+            "blankLines": 260
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 38,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25944,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 221,
+            "codeLines": 3922,
+            "blankLines": 587
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 28,
+            "blankLines": 3
+        },
+        {
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 29,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 50,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-04-14T05:30:54",
+    "lastCommitSHA": "e80fee4d2f2a86ffb2f66377ad43082fe5d90967",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 118751,
+        "MDX": 18896,
+        "JavaScript": 597,
+        "HTML": 508,
+        "Shell": 28
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "css",
+        "css-in-js",
+        "react",
+        "solid",
+        "stitches",
+        "vanilla-extract"
+    ]
+}

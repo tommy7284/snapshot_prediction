@@ -1,0 +1,1804 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+186,3d5a9ff9dfae94c3a8d092aac9e027582a5953a4,eee8405a83d3627d2de71abb645f6ba741537d38,#141 for v6,"overhaul tests and use react testing library
+","diff --git a/src/__tests__/index.spec.js b/src/__tests__/index.spec.js
+deleted file mode 100644
+index 41f0ebb..0000000
+--- a/src/__tests__/index.spec.js
++++ /dev/null
+@@ -1,471 +0,0 @@
+-/* global document, jest, expect, beforeAll, afterAll */
+-import React from 'react'
+-import Enzyme from 'enzyme'
+-import PropTypes from 'prop-types'
+-import Adapter from 'enzyme-adapter-react-16'
+-import { useSwipeable, LEFT, RIGHT, UP, DOWN } from '../index'
+-import { createTouchEventObject as cte, createMouseEventObject as cme } from './helpers/events'
+-
+-const { mount } = Enzyme
+-
+-Enzyme.configure({ adapter: new Adapter() })
+-
+-const DIRECTIONS = [LEFT, RIGHT, UP, DOWN]
+-const USESWIPEABLE = 'useSwipeable'
+-
+-function getMockedSwipeFunctions() {
+-  return DIRECTIONS.reduce((acc, dir) => ({ ...acc, [`onSwiped${dir}`]: jest.fn() }), {
+-    onSwiping: jest.fn(),
+-    onSwiped: jest.fn()
+-  })
+-}
+-
+-function expectSwipingDir(fns, dir) {
+-  fns.mock.calls.forEach(call => {
+-    expect(call[0].dir).toBe(dir)
+-  })
+-}
+-
+-const expectSwipeFuncsDir = (sf, dir) =>
+-  Object.keys(sf).forEach(s => {
+-    if (s.endsWith(dir) || s === 'onSwiped') {
+-      expect(sf[s]).toHaveBeenCalled()
+-    } else if (s === 'onSwiping') {
+-      expectSwipingDir(sf[s], dir)
+-    } else {
+-      expect(sf[s]).not.toHaveBeenCalled()
+-    }
+-  })
+-
+-function mockListenersSetup(el) {
+-  // track eventListener adds to trigger later
+-  // idea from - https://github.com/airbnb/enzyme/issues/426#issuecomment-228601631
+-  const eventListenerMap = {}
+-  el.addEventListener = jest.fn((event, cb) => {
+-    eventListenerMap[event] = cb
+-  })
+-  el.removeEventListener = jest.fn((event, cb) => {
+-    if (eventListenerMap[event] === cb) delete eventListenerMap[event]
+-  })
+-  return eventListenerMap
+-}
+-
+-/*
+- * Wrapping component for the hook.
+- */
+-function SwipeableUsingHook(props) {
+-  const eventHandlers = useSwipeable(props)
+-  const Elem = props.nodeName
+-  // Use innerRef prop to access the mounted div for testing.
+-  const ref = el => (props.innerRef && props.innerRef(el), eventHandlers.ref(el)) // eslint-disable-line
+-  return (
+-    <Elem {...eventHandlers} ref={ref}>
+-      {props.children}
+-    </Elem>
+-  )
+-}
+-SwipeableUsingHook.propTypes = {
+-  nodeName: PropTypes.string
+-}
+-
+-SwipeableUsingHook.defaultProps = {
+-  nodeName: 'div'
+-}
+-
+-function setupGetMountedComponent(mockListeners = mockListenersSetup) {
+-  return props => {
+-    let eventListenerMap
+-    const innerRef = el => {
+-      // don't re-assign eventlistener map
+-      if (!eventListenerMap) eventListenerMap = mockListeners(el)
+-    }
+-    let wrapper = (wrapper = mount(
+-      <SwipeableUsingHook {...props} innerRef={innerRef}>
+-        <span>Touch Here</span>
+-      </SwipeableUsingHook>
+-    ))
+-    return { eventListenerMap, wrapper }
+-  }
+-}
+-
+-describe(`useSwipeable`, () => {
+-  let origAddEventListener
+-  let origRemoveEventListener
+-  let eventListenerMapDocument
+-  const getMountedComponent = setupGetMountedComponent()
+-  beforeAll(() => {
+-    origAddEventListener = document.addEventListener
+-    origRemoveEventListener = document.removeEventListener
+-  })
+-  beforeEach(() => {
+-    // track eventListener adds to trigger later
+-    // idea from - https://github.com/airbnb/enzyme/issues/426#issuecomment-228601631
+-    eventListenerMapDocument = mockListenersSetup(document)
+-  })
+-  afterAll(() => {
+-    document.eventListener = origAddEventListener
+-    document.removeEventListener = origRemoveEventListener
+-  })
+-
+-  it('handles touch events and fires correct props', () => {
+-    const swipeFuncs = getMockedSwipeFunctions()
+-    const { eventListenerMap } = getMountedComponent({ ...swipeFuncs })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100, timeStamp: 8077.299999946263 }))
+-
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125, timeStamp: 8100.999999966007 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150, timeStamp: 8116.899999964517 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 175, timeStamp: 8122.799999953713 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 200, timeStamp: 8130.199999955433 }))
+-    eventListenerMap.touchend(cte({}))
+-
+-    expect(swipeFuncs.onSwipedDown).toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedRight).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwiped.mock.calls).toMatchSnapshot(`${USESWIPEABLE} onSwiped trackTouch`)
+-    expect(swipeFuncs.onSwiping.mock.calls).toMatchSnapshot(`${USESWIPEABLE} onSwiping trackTouch`)
+-  })
+-
+-  it('handles mouse events with trackMouse prop and fires correct props', () => {
+-    const swipeFuncs = getMockedSwipeFunctions()
+-    const preventDefault = jest.fn()
+-    const e = { preventDefault }
+-    const { wrapper } = getMountedComponent({
+-      ...swipeFuncs,
+-      trackMouse: true,
+-      trackTouch: false,
+-      preventDefaultTouchmoveEvent: true
+-    })
+-
+-    const touchHere = wrapper.find('span')
+-    touchHere.simulate('mouseDown', cme({ x: 100, y: 100, timeStamp: 1374809.499999974 }))
+-
+-    eventListenerMapDocument.mousemove(cme({ x: 125, y: 100, timeStamp: 1374825.199999963, ...e }))
+-    eventListenerMapDocument.mousemove(cme({ x: 150, y: 100, timeStamp: 1374841.3999999757, ...e }))
+-    eventListenerMapDocument.mousemove(cme({ x: 175, y: 100, timeStamp: 1374857.399999979, ...e }))
+-    eventListenerMapDocument.mousemove(cme({ x: 200, y: 100, timeStamp: 1374873.499999987, ...e }))
+-    eventListenerMapDocument.mouseup({})
+-
+-    expect(preventDefault).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedDown).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled()
+-    expect(swipeFuncs.onSwiped.mock.calls).toMatchSnapshot(`${USESWIPEABLE} onSwiped trackMouse`)
+-    expect(swipeFuncs.onSwiping.mock.calls).toMatchSnapshot(`${USESWIPEABLE} onSwiping trackMouse`)
+-  })
+-
+-  it('calls preventDefault when swiping in direction that has a callback', () => {
+-    const onSwipedDown = jest.fn()
+-    const preventDefault = jest.fn()
+-    const cancelable = true
+-    const e = { preventDefault, cancelable }
+-    const { eventListenerMap } = getMountedComponent({
+-      onSwipedDown,
+-      preventDefaultTouchmoveEvent: true
+-    })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100, ...e }))
+-
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 175, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 200, ...e }))
+-    eventListenerMap.touchend({ ...e })
+-
+-    expect(onSwipedDown).toHaveBeenCalled()
+-
+-    expect(preventDefault).toHaveBeenCalledTimes(4)
+-  })
+-
+-  it('does not call preventDefault when false', () => {
+-    const onSwipedUp = jest.fn()
+-    const preventDefault = jest.fn()
+-    const e = { preventDefault }
+-    const { eventListenerMap } = getMountedComponent({ onSwipedUp })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100, ...e }))
+-
+-    eventListenerMap.touchmove(cte({ x: 100, y: 75, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 50, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 25, ...e }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 5, ...e }))
+-    eventListenerMap.touchend({ ...e })
+-
+-    expect(onSwipedUp).toHaveBeenCalled()
+-
+-    expect(preventDefault).not.toHaveBeenCalled()
+-  })
+-
+-  it('calls preventDefault when onSwiping is present', () => {
+-    const onSwiping = jest.fn()
+-    const preventDefault = jest.fn()
+-    const cancelable = true
+-    const { eventListenerMap } = getMountedComponent({
+-      onSwiping,
+-      preventDefaultTouchmoveEvent: true
+-    })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100, preventDefault, cancelable }))
+-
+-    eventListenerMap.touchmove(cte({ x: 100, y: 50, preventDefault, cancelable }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 5, preventDefault, cancelable }))
+-    eventListenerMap.touchend({ preventDefault, cancelable })
+-
+-    expect(onSwiping).toHaveBeenCalled()
+-
+-    expect(preventDefault).toHaveBeenCalled()
+-  })
+-
+-  it('calls preventDefault when onSwiped is present', () => {
+-    const onSwiped = jest.fn()
+-    const preventDefault = jest.fn()
+-    const cancelable = true
+-    const { eventListenerMap } = getMountedComponent({
+-      onSwiped,
+-      preventDefaultTouchmoveEvent: true
+-    })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100, preventDefault, cancelable }))
+-
+-    eventListenerMap.touchmove(cte({ x: 100, y: 50, preventDefault, cancelable }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 5, preventDefault, cancelable }))
+-    eventListenerMap.touchend({ preventDefault, cancelable })
+-
+-    expect(onSwiped).toHaveBeenCalled()
+-
+-    expect(preventDefault).toHaveBeenCalled()
+-  })
+-
+-  it('does not re-check delta when swiping already in progress', () => {
+-    const onSwiping = jest.fn()
+-    const onSwipedRight = jest.fn()
+-    const onSwipedLeft = jest.fn()
+-    const { eventListenerMap } = getMountedComponent({
+-      onSwiping,
+-      onSwipedRight,
+-      onSwipedLeft,
+-      trackMouse: true,
+-      delta: 40
+-    })
+-
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-
+-    eventListenerMap.touchmove(cte({ x: 145, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 80, y: 100 }))
+-    eventListenerMap.touchend({})
+-
+-    expect(onSwiping).toHaveBeenCalledTimes(2)
+-    expect(onSwiping.mock.calls[0][0].dir).toBe(RIGHT)
+-    expect(onSwiping.mock.calls[1][0].dir).toBe(LEFT)
+-    expect(onSwipedLeft).toHaveBeenCalledTimes(1)
+-    expect(onSwipedRight).not.toHaveBeenCalled()
+-  })
+-
+-  it('Handle Rotation by 90 degree', () => {
+-    const swipeFuncsRight = getMockedSwipeFunctions()
+-
+-    const { eventListenerMap, wrapper } = getMountedComponent({
+-      ...swipeFuncsRight,
+-      rotationAngle: 90
+-    })
+-
+-    // check right
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsRight, RIGHT)
+-
+-    // check left
+-    const swipeFuncsLeft = getMockedSwipeFunctions()
+-    wrapper.setProps({ ...swipeFuncsLeft, rotationAngle: 90 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 75 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 50 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsLeft, LEFT)
+-
+-    // check up
+-    const swipeFuncsUp = getMockedSwipeFunctions()
+-    wrapper.setProps({ ...swipeFuncsUp, rotationAngle: 90 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 125, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 150, y: 100 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsUp, UP)
+-
+-    // check down
+-    const swipeFuncsDown = getMockedSwipeFunctions()
+-    wrapper.setProps({ ...swipeFuncsDown, rotationAngle: 90 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 75, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 50, y: 100 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsDown, DOWN)
+-  })
+-
+-  it('Handle ""odd"" rotations', () => {
+-    const swipeFuncsNegativeRotation = getMockedSwipeFunctions()
+-
+-    const { eventListenerMap, wrapper } = getMountedComponent({
+-      ...swipeFuncsNegativeRotation,
+-      rotationAngle: -90
+-    })
+-
+-    // check -90
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsNegativeRotation, 'Left')
+-
+-    // check 360 + 270
+-    const swipeFuncsLargeRotation = getMockedSwipeFunctions()
+-    wrapper.setProps({ ...swipeFuncsLargeRotation, rotationAngle: 360 + 270 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150 }))
+-    eventListenerMap.touchend({})
+-    expectSwipeFuncsDir(swipeFuncsLargeRotation, 'Left')
+-  })
+-
+-  it('Handle Rotation that changes so keep the direction the same', () => {
+-    const swipeFuncs = getMockedSwipeFunctions()
+-
+-    const { eventListenerMap, wrapper } = getMountedComponent({ ...swipeFuncs })
+-
+-    // check 0
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 125, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 150, y: 100 }))
+-    eventListenerMap.touchend({})
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(1)
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(1)
+-
+-    // check 90
+-    wrapper.setProps({ rotationAngle: 90 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 125 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 150 }))
+-    eventListenerMap.touchend({})
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(2)
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(2)
+-
+-    // check 180
+-    wrapper.setProps({ rotationAngle: 180 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 75, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 50, y: 100 }))
+-    eventListenerMap.touchend({})
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(3)
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(3)
+-
+-    // check 270
+-    wrapper.setProps({ rotationAngle: 270 })
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 75 }))
+-    eventListenerMap.touchmove(cte({ x: 100, y: 50 }))
+-    eventListenerMap.touchend({})
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(4)
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(4)
+-
+-    expect(swipeFuncs.onSwiping).toHaveBeenCalledTimes(8)
+-    ;[LEFT, UP, DOWN].forEach(dir => {
+-      expect(swipeFuncs[`onSwiped${dir}`]).not.toHaveBeenCalled()
+-    })
+-  })
+-
+-  it('Cleans up and re-attaches touch event listeners if trackTouch changes', () => {
+-    let spies
+-    const mockListeners = el => {
+-      // already spying
+-      if (spies) return
+-      spies = {}
+-      spies.addEventListener = jest.spyOn(el, 'addEventListener')
+-      spies.removeEventListener = jest.spyOn(el, 'removeEventListener')
+-    }
+-    const { wrapper } = setupGetMountedComponent(mockListeners)({})
+-    expect(spies.addEventListener).toHaveBeenCalledTimes(3)
+-    expect(spies.removeEventListener).not.toHaveBeenCalled()
+-    wrapper.setProps({ trackTouch: false })
+-    expect(spies.addEventListener).toHaveBeenCalledTimes(3)
+-    expect(spies.removeEventListener).toHaveBeenCalledTimes(3)
+-    // VERIFY REMOVED HANDLERS ARE THE SAME ONES THAT WERE ADDED!
+-    expect(spies.addEventListener.mock.calls.length).toBe(3)
+-    spies.addEventListener.mock.calls.forEach((call, idx) => {
+-      expect(spies.removeEventListener.mock.calls[idx][0]).toBe(call[0])
+-      expect(spies.removeEventListener.mock.calls[idx][1]).toBe(call[1])
+-    })
+-
+-    wrapper.setProps({ trackTouch: true })
+-    expect(spies.addEventListener).toHaveBeenCalledTimes(6)
+-    expect(spies.removeEventListener).toHaveBeenCalledTimes(3)
+-  })
+-
+-  it('Cleans up and re-attaches touch event listeners if the DOM element changes', () => {
+-    let spies
+-    const mockListeners = el => {
+-      // already spying
+-      if (spies) return
+-      spies = {}
+-      spies.addEventListener = jest.spyOn(el, 'addEventListener')
+-      spies.removeEventListener = jest.spyOn(el, 'removeEventListener')
+-    }
+-    const { wrapper } = setupGetMountedComponent(mockListeners)({})
+-
+-    expect(spies.addEventListener).toHaveBeenCalledTimes(3)
+-    expect(spies.removeEventListener).not.toHaveBeenCalled()
+-
+-    wrapper.setProps({ nodeName: 'p' })
+-
+-    expect(spies.addEventListener).toHaveBeenCalledTimes(3)
+-    expect(spies.removeEventListener).toHaveBeenCalledTimes(3)
+-    // VERIFY REMOVED HANDLERS ARE THE SAME ONES THAT WERE ADDED!
+-    expect(spies.addEventListener.mock.calls.length).toBe(3)
+-    spies.addEventListener.mock.calls.forEach((call, idx) => {
+-      expect(spies.removeEventListener.mock.calls[idx][0]).toBe(call[0])
+-      expect(spies.removeEventListener.mock.calls[idx][1]).toBe(call[1])
+-    })
+-  })
+-})
+-
+-it(`${USESWIPEABLE} handles updated prop swipe callbacks`, () => {
+-  let eventListenerMap
+-  const innerRef = el => {
+-    // don't re-assign eventlistener map
+-    if (!eventListenerMap) eventListenerMap = mockListenersSetup(el)
+-  }
+-  const onSwipedLeft = jest.fn()
+-
+-  function TestHookComponent({ next }) {
+-    const handlers = useSwipeable({ onSwipedLeft: next })
+-    // Use innerRef to access the mounted div for testing.
+-    const ref = el => (innerRef(el), handlers.ref(el))
+-    return <div {...handlers} ref={ref} />
+-  }
+-  TestHookComponent.propTypes = {
+-    next: PropTypes.func.isRequired
+-  }
+-
+-  function TestComponent() {
+-    const [page, setPage] = React.useState(0)
+-    const next = () => (setPage(page + 1), onSwipedLeft(page + 1))
+-
+-    return <TestHookComponent next={next} />
+-  }
+-
+-  mount(<TestComponent />)
+-
+-  const pages = [1, 2, 3]
+-  // swipe left 3 times
+-  pages.forEach(() => {
+-    eventListenerMap.touchstart(cte({ x: 100, y: 100 }))
+-    eventListenerMap.touchmove(cte({ x: 75, y: 100 }))
+-    eventListenerMap.touchend({})
+-  })
+-  pages.forEach((page, idx) => {
+-    expect(onSwipedLeft.mock.calls[idx][0]).toBe(page)
+-  })
+-})
+
+diff --git a/src/__tests__/useSwipeable.spec.js b/src/__tests__/useSwipeable.spec.js
+new file mode 100644
+index 0000000..92ec28a
+--- /dev/null
++++ b/src/__tests__/useSwipeable.spec.js
+@@ -0,0 +1,405 @@
++/* global document, jest, expect, beforeAll, afterAll */
++import React from 'react'
++import { render, fireEvent, act } from '@testing-library/react'
++import { useSwipeable, LEFT, RIGHT, UP, DOWN } from '../index'
++import { expectSwipeFuncsDir } from './helpers'
++
++const DIRECTIONS = [LEFT, RIGHT, UP, DOWN]
++
++function getMockedSwipeFunctions() {
++  return DIRECTIONS.reduce((acc, dir) => ({ ...acc, [`onSwiped${dir}`]: jest.fn() }), {
++    onSwiping: jest.fn(),
++    onSwiped: jest.fn()
++  })
++}
++
++const TESTING_TEXT = 'touch here'
++/*
++ * Wrapping component for the hook testing
++ */
++function SwipeableUsingHook({ nodeName = 'div', ...rest }) {
++  const eventHandlers = useSwipeable(rest)
++  const Elem = nodeName
++  return (
++    <Elem {...eventHandlers}>
++      <span>{TESTING_TEXT}</span>
++    </Elem>
++  )
++}
++
++const MD = 'mouseDown'
++const MM = 'mouseMove'
++const MU = 'mouseUp'
++const TS = 'touchStart'
++const TM = 'touchMove'
++const TE = 'touchEnd'
++
++const createClientXYObject = (x, y) => ({ clientX: x, clientY: y })
++// Create touch event
++const cte = ({ x, y }) => ({ touches: [createClientXYObject(x, y)] })
++// Create Mouse Event
++const cme = ({ x, y }) => ({ ...createClientXYObject(x, y) })
++
++describe('useSwipeable', () => {
++  let defaultPrevented = 0
++
++  beforeAll(() => {
++    // listen on document for touchmove events, track if their default was prevented
++    document.addEventListener('touchmove', e => {
++      if (e.defaultPrevented) {
++        defaultPrevented += 1
++      }
++    })
++  })
++
++  beforeEach(() => {
++    defaultPrevented = 0
++  })
++
++  it('handles touch events and fires correct props', () => {
++    const swipeFuncs = getMockedSwipeFunctions()
++    const { getByText } = render(<SwipeableUsingHook {...swipeFuncs} />)
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(swipeFuncs.onSwipedDown).toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedRight).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiped trackTouch`
++    )
++    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiping trackTouch`
++    )
++  })
++
++  it('handles mouse events with trackMouse prop and fires correct props', () => {
++    const swipeFuncs = getMockedSwipeFunctions()
++    const { getByText } = render(
++      <SwipeableUsingHook {...swipeFuncs} trackMouse={true} trackTouch={false} />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[MD](touchArea, cme({ x: 100, y: 100 }))
++    fireEvent[MM](touchArea, cme({ x: 125, y: 100 }))
++    fireEvent[MM](touchArea, cme({ x: 150, y: 100 }))
++    fireEvent[MM](touchArea, cme({ x: 175, y: 100 }))
++    fireEvent[MM](touchArea, cme({ x: 200, y: 100 }))
++    fireEvent[MU](document, cme({}))
++
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedDown).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled()
++    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiped trackMouse`
++    )
++    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiping trackMouse`
++    )
++  })
++
++  it('calls preventDefault when swiping in direction that has a callback', () => {
++    const onSwipedDown = jest.fn()
++
++    const { getByText } = render(
++      <SwipeableUsingHook onSwipedDown={onSwipedDown} preventDefaultTouchmoveEvent />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwipedDown).toHaveBeenCalled()
++    expect(defaultPrevented).toBe(4)
++  })
++
++  it('does not call preventDefault when false', () => {
++    const onSwipedUp = jest.fn()
++
++    const { getByText } = render(<SwipeableUsingHook onSwipedUp={onSwipedUp} />)
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 25 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 5 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwipedUp).toHaveBeenCalled()
++    expect(defaultPrevented).toBe(0)
++  })
++
++  it('calls preventDefault when onSwiping or onSwiped is present', () => {
++    const onSwiping = jest.fn()
++    const onSwiped = jest.fn()
++
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook onSwiping={onSwiping} preventDefaultTouchmoveEvent />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwiping).toHaveBeenCalled()
++    expect(defaultPrevented).toBe(1)
++
++    rerender(<SwipeableUsingHook onSwiped={onSwiped} preventDefaultTouchmoveEvent />)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwiped).toHaveBeenCalled()
++    expect(defaultPrevented).toBe(2)
++  })
++
++  it('does not re-check delta when swiping already in progress', () => {
++    const onSwiping = jest.fn()
++    const onSwipedRight = jest.fn()
++    const onSwipedLeft = jest.fn()
++    const { getByText } = render(
++      <SwipeableUsingHook
++        onSwiping={onSwiping}
++        onSwipedRight={onSwipedRight}
++        onSwipedLeft={onSwipedLeft}
++        delta={40}
++      />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 145, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 80, y: 100 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwiping).toHaveBeenCalledTimes(2)
++    expect(onSwiping.mock.calls[0][0].dir).toBe(RIGHT)
++    expect(onSwiping.mock.calls[1][0].dir).toBe(LEFT)
++    expect(onSwipedLeft).toHaveBeenCalledTimes(1)
++    expect(onSwipedRight).not.toHaveBeenCalled()
++  })
++
++  it('Handle Rotation by 90 degree', () => {
++    const swipeFuncsRight = getMockedSwipeFunctions()
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook {...swipeFuncsRight} rotationAngle={90} />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    // check right
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFuncsRight, RIGHT)
++
++    // check left
++    const swipeFuncsLeft = getMockedSwipeFunctions()
++    rerender(<SwipeableUsingHook {...swipeFuncsLeft} rotationAngle={90} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFuncsLeft, LEFT)
++
++    // check up
++    const swipeFunsUp = getMockedSwipeFunctions()
++    rerender(<SwipeableUsingHook {...swipeFunsUp} rotationAngle={90} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFunsUp, UP)
++
++    // check down
++    const swipeFunsDown = getMockedSwipeFunctions()
++    rerender(<SwipeableUsingHook {...swipeFunsDown} rotationAngle={90} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFunsDown, DOWN)
++  })
++
++  it('Handle ""odd"" rotations', () => {
++    const swipeFuncsNegativeRotation = getMockedSwipeFunctions()
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook {...swipeFuncsNegativeRotation} rotationAngle={-90} />
++    )
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    // check -90
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFuncsNegativeRotation, LEFT)
++
++    // check 360 + 270
++    const swipeFuncsLargeRotation = getMockedSwipeFunctions()
++    rerender(<SwipeableUsingHook {...swipeFuncsLargeRotation} rotationAngle={360 + 270} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TE](touchArea, cte({}))
++    expectSwipeFuncsDir(swipeFuncsLargeRotation, LEFT)
++  })
++
++  it('Handle Rotation that changes so keep the direction the same', () => {
++    const swipeFuncs = getMockedSwipeFunctions()
++    const { getByText, rerender } = render(<SwipeableUsingHook {...swipeFuncs} />)
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    // check 0
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }))
++    fireEvent[TE](touchArea, cte({}))
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(1)
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(1)
++
++    // check 90
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={90} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }))
++    fireEvent[TE](touchArea, cte({}))
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(2)
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(2)
++
++    // check 180
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={180} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }))
++    fireEvent[TE](touchArea, cte({}))
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(3)
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(3)
++
++    // check 270
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={270} />)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }))
++    fireEvent[TE](touchArea, cte({}))
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(4)
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(4)
++
++    expect(swipeFuncs.onSwiping).toHaveBeenCalledTimes(8)
++    ;[LEFT, UP, DOWN].forEach(dir => {
++      expect(swipeFuncs[`onSwiped${dir}`]).not.toHaveBeenCalled()
++    })
++  })
++
++  it('Does not track touches when trackTouch is false', () => {
++    const onSwipedDown = jest.fn()
++
++    const { getByText, rerender } = render(<SwipeableUsingHook onSwipedDown={onSwipedDown} />)
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    const doSwipe = () => {
++      fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++      fireEvent[TM](touchArea, cte({ x: 100, y: 200 }))
++      fireEvent[TE](touchArea, cte({}))
++    }
++
++    doSwipe()
++    expect(onSwipedDown).toHaveBeenCalledTimes(1)
++
++    rerender(<SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={false} />)
++    doSwipe()
++    // verify we did not trigger another swipe
++    expect(onSwipedDown).toHaveBeenCalledTimes(1)
++
++    rerender(<SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={true} />)
++    doSwipe()
++    expect(onSwipedDown).toHaveBeenCalledTimes(2)
++  })
++
++  it('Cleans up and re-attaches touch event listeners if the DOM element changes', () => {
++    const onSwipedDown = jest.fn()
++
++    const { getByText, rerender } = render(<SwipeableUsingHook onSwipedDown={onSwipedDown} />)
++
++    let touchArea = getByText(TESTING_TEXT)
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }))
++    fireEvent[TE](touchArea, cte({}))
++
++    expect(onSwipedDown).toHaveBeenCalledTimes(1)
++
++    rerender(<SwipeableUsingHook onSwipedDown={onSwipedDown} nodeName=""p"" />)
++    // re-get element since wrapping dom node changed
++    touchArea = getByText(TESTING_TEXT)
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }))
++    fireEvent[TE](touchArea, cte({}))
++    // verify we triggered callbacks on new dom element
++    expect(onSwipedDown).toHaveBeenCalledTimes(2)
++  })
++
++  it(`handles new prop swipe callbacks from rerenders`, () => {
++    const onSwipedSpy = jest.fn()
++
++    function TestHookComponent({ next }) {
++      const handlers = useSwipeable({ onSwiped: next })
++      return <div {...handlers}>{TESTING_TEXT}</div>
++    }
++
++    function TestComponent() {
++      const [page, setPage] = React.useState(0)
++      // Changing the callback on each re-render ON PURPOSE
++      // In order to validate useSwipeable updates prop references
++      const next = () => (setPage(page + 1), onSwipedSpy(page + 1))
++
++      return <TestHookComponent next={next} />
++    }
++
++    const { getByText } = render(<TestComponent />)
++
++    const touchArea = getByText(TESTING_TEXT)
++
++    const pages = [1, 2, 3]
++    // swipe left 3 times
++    pages.forEach(() => {
++      act(() => {
++        fireEvent[TS](touchArea, cte({ x: 100, y: 100 }))
++        fireEvent[TM](touchArea, cte({ x: 75, y: 100 }))
++        fireEvent[TE](touchArea, cte({}))
++      })
++    })
++    pages.forEach((page, idx) => {
++      expect(onSwipedSpy.mock.calls[idx][0]).toBe(page)
++    })
++  })
++})
+",0,,10,3642,2,3,11,3652
+188,fc4e0afc5933cd5c61694e0388822a2bed19ff1c,83ef4d2ea8e7b88154707b806df02d1d0c8ecdb9,"v6 typescript overhaul
+
+Basing work off combination of:
+- https://github.com/FormidableLabs/urql
+- https://github.com/FormidableLabs/renature
+- https://github.com/JoviDeCroock/Hooked-Form","overhaul tests to typescript, update ts configs
+","diff --git a/__tests__/useSwipeable.spec.tsx b/__tests__/useSwipeable.spec.tsx
+new file mode 100644
+index 0000000..9f79b56
+--- /dev/null
++++ b/__tests__/useSwipeable.spec.tsx
+@@ -0,0 +1,456 @@
++import * as React from ""react"";
++import { render, fireEvent, act } from ""@testing-library/react"";
++import { useSwipeable, LEFT, RIGHT, UP, DOWN } from ""../src/index"";
++import { expectSwipeFuncsDir } from ""./helpers"";
++
++const DIRECTIONS: [typeof LEFT, typeof RIGHT, typeof UP, typeof DOWN] = [
++  LEFT,
++  RIGHT,
++  UP,
++  DOWN,
++];
++
++export type MockedSwipeFunctions = {
++  onSwiping: jest.Mock;
++  onSwiped: jest.Mock;
++  onSwipedLeft: jest.Mock;
++  onSwipedRight: jest.Mock;
++  onSwipedUp: jest.Mock;
++  onSwipedDown: jest.Mock;
++};
++function getMockedSwipeFunctions(): MockedSwipeFunctions {
++  const onSwiped = ""onSwiped"";
++  return DIRECTIONS.reduce(
++    (acc, dir) => ({ ...acc, [onSwiped + dir]: jest.fn() }),
++    {
++      onSwiping: jest.fn(),
++      onSwiped: jest.fn(),
++    } as MockedSwipeFunctions
++  );
++}
++
++const TESTING_TEXT = ""touch here"";
++/*
++ * Wrapping component for the hook testing
++ */
++function SwipeableUsingHook({ nodeName = ""div"", ...rest }) {
++  const eventHandlers = useSwipeable(rest);
++  const Elem = nodeName as React.ElementType;
++  return (
++    <Elem {...eventHandlers}>
++      <span>{TESTING_TEXT}</span>
++    </Elem>
++  );
++}
++
++const MD = ""mouseDown"";
++const MM = ""mouseMove"";
++const MU = ""mouseUp"";
++const TS = ""touchStart"";
++const TM = ""touchMove"";
++const TE = ""touchEnd"";
++
++const createClientXYObject = (x?: number, y?: number) => ({
++  clientX: x,
++  clientY: y,
++});
++// Create touch event
++const cte = ({ x, y }: { x?: number; y?: number }) => ({
++  touches: [createClientXYObject(x, y)],
++});
++// Create Mouse Event
++const cme = ({ x, y }: { x?: number; y?: number }) => ({
++  ...createClientXYObject(x, y),
++});
++
++describe(""useSwipeable"", () => {
++  let defaultPrevented = 0;
++
++  beforeAll(() => {
++    // listen on document for touchmove events, track if their default was prevented
++    document.addEventListener(""touchmove"", (e) => {
++      if (e.defaultPrevented) {
++        defaultPrevented += 1;
++      }
++    });
++  });
++
++  beforeEach(() => {
++    defaultPrevented = 0;
++  });
++
++  it(""handles touch events and fires correct props"", () => {
++    const swipeFuncs = getMockedSwipeFunctions();
++    const { getByText } = render(<SwipeableUsingHook {...swipeFuncs} />);
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(swipeFuncs.onSwipedDown).toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedRight).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiped trackTouch`
++    );
++    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiping trackTouch`
++    );
++  });
++
++  it(""handles mouse events with trackMouse prop and fires correct props"", () => {
++    const swipeFuncs = getMockedSwipeFunctions();
++    const { getByText } = render(
++      <SwipeableUsingHook
++        {...swipeFuncs}
++        trackMouse={true}
++        trackTouch={false}
++      />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[MD](touchArea, cme({ x: 100, y: 100 }));
++    fireEvent[MM](touchArea, cme({ x: 125, y: 100 }));
++    fireEvent[MM](touchArea, cme({ x: 150, y: 100 }));
++    fireEvent[MM](touchArea, cme({ x: 175, y: 100 }));
++    fireEvent[MM](touchArea, cme({ x: 200, y: 100 }));
++    fireEvent[MU](document, cme({}));
++
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedDown).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled();
++    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiped trackMouse`
++    );
++    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
++      { velocity: expect.any(Number) },
++      `useSwipeable onSwiping trackMouse`
++    );
++  });
++
++  it(""calls preventDefault when swiping in direction that has a callback"", () => {
++    const onSwipedDown = jest.fn();
++
++    const { getByText } = render(
++      <SwipeableUsingHook
++        onSwipedDown={onSwipedDown}
++        preventDefaultTouchmoveEvent
++      />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwipedDown).toHaveBeenCalled();
++    expect(defaultPrevented).toBe(4);
++  });
++
++  it(""does not call preventDefault when false"", () => {
++    const onSwipedUp = jest.fn();
++
++    const { getByText } = render(
++      <SwipeableUsingHook onSwipedUp={onSwipedUp} />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 25 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 5 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwipedUp).toHaveBeenCalled();
++    expect(defaultPrevented).toBe(0);
++  });
++
++  it(""calls preventDefault when onSwiping or onSwiped is present"", () => {
++    const onSwiping = jest.fn();
++    const onSwiped = jest.fn();
++
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook onSwiping={onSwiping} preventDefaultTouchmoveEvent />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwiping).toHaveBeenCalled();
++    expect(defaultPrevented).toBe(1);
++
++    rerender(
++      <SwipeableUsingHook onSwiped={onSwiped} preventDefaultTouchmoveEvent />
++    );
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwiped).toHaveBeenCalled();
++    expect(defaultPrevented).toBe(2);
++  });
++
++  it(""does not re-check delta when swiping already in progress"", () => {
++    const onSwiping = jest.fn();
++    const onSwipedRight = jest.fn();
++    const onSwipedLeft = jest.fn();
++    const { getByText } = render(
++      <SwipeableUsingHook
++        onSwiping={onSwiping}
++        onSwipedRight={onSwipedRight}
++        onSwipedLeft={onSwipedLeft}
++        delta={40}
++      />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 145, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 80, y: 100 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwiping).toHaveBeenCalledTimes(2);
++    expect(onSwiping.mock.calls[0][0].dir).toBe(RIGHT);
++    expect(onSwiping.mock.calls[1][0].dir).toBe(LEFT);
++    expect(onSwipedLeft).toHaveBeenCalledTimes(1);
++    expect(onSwipedRight).not.toHaveBeenCalled();
++  });
++
++  it(""Handle Rotation by 90 degree"", () => {
++    const swipeFuncsRight = getMockedSwipeFunctions();
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook {...swipeFuncsRight} rotationAngle={90} />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    // check right
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFuncsRight, RIGHT);
++
++    // check left
++    const swipeFuncsLeft = getMockedSwipeFunctions();
++    rerender(<SwipeableUsingHook {...swipeFuncsLeft} rotationAngle={90} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFuncsLeft, LEFT);
++
++    // check up
++    const swipeFunsUp = getMockedSwipeFunctions();
++    rerender(<SwipeableUsingHook {...swipeFunsUp} rotationAngle={90} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFunsUp, UP);
++
++    // check down
++    const swipeFunsDown = getMockedSwipeFunctions();
++    rerender(<SwipeableUsingHook {...swipeFunsDown} rotationAngle={90} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFunsDown, DOWN);
++  });
++
++  it('Handle ""odd"" rotations', () => {
++    const swipeFuncsNegativeRotation = getMockedSwipeFunctions();
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook {...swipeFuncsNegativeRotation} rotationAngle={-90} />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    // check -90
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFuncsNegativeRotation, LEFT);
++
++    // check 360 + 270
++    const swipeFuncsLargeRotation = getMockedSwipeFunctions();
++    rerender(
++      <SwipeableUsingHook
++        {...swipeFuncsLargeRotation}
++        rotationAngle={360 + 270}
++      />
++    );
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TE](touchArea, cte({}));
++    expectSwipeFuncsDir(swipeFuncsLargeRotation, LEFT);
++  });
++
++  it(""Handle Rotation that changes so keep the direction the same"", () => {
++    const swipeFuncs = getMockedSwipeFunctions();
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook {...swipeFuncs} />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    // check 0
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }));
++    fireEvent[TE](touchArea, cte({}));
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(1);
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(1);
++
++    // check 90
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={90} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
++    fireEvent[TE](touchArea, cte({}));
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(2);
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(2);
++
++    // check 180
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={180} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }));
++    fireEvent[TE](touchArea, cte({}));
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(3);
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(3);
++
++    // check 270
++    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={270} />);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
++    fireEvent[TE](touchArea, cte({}));
++    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(4);
++    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(4);
++
++    expect(swipeFuncs.onSwiping).toHaveBeenCalledTimes(8);
++    [LEFT, UP, DOWN].forEach((dir) => {
++      expect(
++        swipeFuncs[`onSwiped${dir}` as keyof MockedSwipeFunctions]
++      ).not.toHaveBeenCalled();
++    });
++  });
++
++  it(""Does not track touches when trackTouch is false"", () => {
++    const onSwipedDown = jest.fn();
++
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook onSwipedDown={onSwipedDown} />
++    );
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    const doSwipe = () => {
++      fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++      fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
++      fireEvent[TE](touchArea, cte({}));
++    };
++
++    doSwipe();
++    expect(onSwipedDown).toHaveBeenCalledTimes(1);
++
++    rerender(
++      <SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={false} />
++    );
++    doSwipe();
++    // verify we did not trigger another swipe
++    expect(onSwipedDown).toHaveBeenCalledTimes(1);
++
++    rerender(
++      <SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={true} />
++    );
++    doSwipe();
++    expect(onSwipedDown).toHaveBeenCalledTimes(2);
++  });
++
++  it(""Cleans up and re-attaches touch event listeners if the DOM element changes"", () => {
++    const onSwipedDown = jest.fn();
++
++    const { getByText, rerender } = render(
++      <SwipeableUsingHook onSwipedDown={onSwipedDown} />
++    );
++
++    let touchArea = getByText(TESTING_TEXT);
++
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
++    fireEvent[TE](touchArea, cte({}));
++
++    expect(onSwipedDown).toHaveBeenCalledTimes(1);
++
++    rerender(<SwipeableUsingHook onSwipedDown={onSwipedDown} nodeName=""p"" />);
++    // re-get element since wrapping dom node changed
++    touchArea = getByText(TESTING_TEXT);
++    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
++    fireEvent[TE](touchArea, cte({}));
++    // verify we triggered callbacks on new dom element
++    expect(onSwipedDown).toHaveBeenCalledTimes(2);
++  });
++
++  it(`handles new prop swipe callbacks from re-renders`, () => {
++    const onSwipedSpy = jest.fn();
++
++    function TestHookComponent({ next }: { next: () => void }) {
++      const handlers = useSwipeable({ onSwiped: next });
++      return <div {...handlers}>{TESTING_TEXT}</div>;
++    }
++
++    function TestComponent() {
++      const [page, setPage] = React.useState(0);
++      // Changing the callback on each re-render ON PURPOSE
++      // In order to validate useSwipeable updates prop references
++      const next = () => (setPage(page + 1), onSwipedSpy(page + 1));
++
++      return <TestHookComponent next={next} />;
++    }
++
++    const { getByText } = render(<TestComponent />);
++
++    const touchArea = getByText(TESTING_TEXT);
++
++    const pages = [1, 2, 3];
++    // swipe left 3 times
++    pages.forEach(() => {
++      act(() => {
++        fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
++        fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
++        fireEvent[TE](touchArea, cte({}));
++      });
++    });
++    pages.forEach((page, idx) => {
++      expect(onSwipedSpy.mock.calls[idx][0]).toBe(page);
++    });
++  });
++});
+
+diff --git a/src/__tests__/useSwipeable.spec.js b/src/__tests__/useSwipeable.spec.js
+deleted file mode 100644
+index 2d24344..0000000
+--- a/src/__tests__/useSwipeable.spec.js
++++ /dev/null
+@@ -1,434 +0,0 @@
+-/* global document, jest, expect, beforeAll */
+-import React from ""react"";
+-import { render, fireEvent, act } from ""@testing-library/react"";
+-import { useSwipeable, LEFT, RIGHT, UP, DOWN } from ""../index"";
+-import { expectSwipeFuncsDir } from ""./helpers"";
+-
+-const DIRECTIONS = [LEFT, RIGHT, UP, DOWN];
+-
+-function getMockedSwipeFunctions() {
+-  return DIRECTIONS.reduce(
+-    (acc, dir) => ({ ...acc, [`onSwiped${dir}`]: jest.fn() }),
+-    {
+-      onSwiping: jest.fn(),
+-      onSwiped: jest.fn(),
+-    }
+-  );
+-}
+-
+-const TESTING_TEXT = ""touch here"";
+-/*
+- * Wrapping component for the hook testing
+- */
+-function SwipeableUsingHook({ nodeName = ""div"", ...rest }) {
+-  const eventHandlers = useSwipeable(rest);
+-  const Elem = nodeName;
+-  return (
+-    <Elem {...eventHandlers}>
+-      <span>{TESTING_TEXT}</span>
+-    </Elem>
+-  );
+-}
+-
+-const MD = ""mouseDown"";
+-const MM = ""mouseMove"";
+-const MU = ""mouseUp"";
+-const TS = ""touchStart"";
+-const TM = ""touchMove"";
+-const TE = ""touchEnd"";
+-
+-const createClientXYObject = (x, y) => ({ clientX: x, clientY: y });
+-// Create touch event
+-const cte = ({ x, y }) => ({ touches: [createClientXYObject(x, y)] });
+-// Create Mouse Event
+-const cme = ({ x, y }) => ({ ...createClientXYObject(x, y) });
+-
+-describe(""useSwipeable"", () => {
+-  let defaultPrevented = 0;
+-
+-  beforeAll(() => {
+-    // listen on document for touchmove events, track if their default was prevented
+-    document.addEventListener(""touchmove"", (e) => {
+-      if (e.defaultPrevented) {
+-        defaultPrevented += 1;
+-      }
+-    });
+-  });
+-
+-  beforeEach(() => {
+-    defaultPrevented = 0;
+-  });
+-
+-  it(""handles touch events and fires correct props"", () => {
+-    const swipeFuncs = getMockedSwipeFunctions();
+-    const { getByText } = render(<SwipeableUsingHook {...swipeFuncs} />);
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(swipeFuncs.onSwipedDown).toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedRight).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
+-      { velocity: expect.any(Number) },
+-      `useSwipeable onSwiped trackTouch`
+-    );
+-    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
+-      { velocity: expect.any(Number) },
+-      `useSwipeable onSwiping trackTouch`
+-    );
+-  });
+-
+-  it(""handles mouse events with trackMouse prop and fires correct props"", () => {
+-    const swipeFuncs = getMockedSwipeFunctions();
+-    const { getByText } = render(
+-      <SwipeableUsingHook
+-        {...swipeFuncs}
+-        trackMouse={true}
+-        trackTouch={false}
+-      />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[MD](touchArea, cme({ x: 100, y: 100 }));
+-    fireEvent[MM](touchArea, cme({ x: 125, y: 100 }));
+-    fireEvent[MM](touchArea, cme({ x: 150, y: 100 }));
+-    fireEvent[MM](touchArea, cme({ x: 175, y: 100 }));
+-    fireEvent[MM](touchArea, cme({ x: 200, y: 100 }));
+-    fireEvent[MU](document, cme({}));
+-
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedUp).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedDown).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwipedLeft).not.toHaveBeenCalled();
+-    expect(swipeFuncs.onSwiped.mock.calls[0][0]).toMatchSnapshot(
+-      { velocity: expect.any(Number) },
+-      `useSwipeable onSwiped trackMouse`
+-    );
+-    expect(swipeFuncs.onSwiping.mock.calls[0][0]).toMatchSnapshot(
+-      { velocity: expect.any(Number) },
+-      `useSwipeable onSwiping trackMouse`
+-    );
+-  });
+-
+-  it(""calls preventDefault when swiping in direction that has a callback"", () => {
+-    const onSwipedDown = jest.fn();
+-
+-    const { getByText } = render(
+-      <SwipeableUsingHook
+-        onSwipedDown={onSwipedDown}
+-        preventDefaultTouchmoveEvent
+-      />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 175 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwipedDown).toHaveBeenCalled();
+-    expect(defaultPrevented).toBe(4);
+-  });
+-
+-  it(""does not call preventDefault when false"", () => {
+-    const onSwipedUp = jest.fn();
+-
+-    const { getByText } = render(
+-      <SwipeableUsingHook onSwipedUp={onSwipedUp} />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 25 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 5 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwipedUp).toHaveBeenCalled();
+-    expect(defaultPrevented).toBe(0);
+-  });
+-
+-  it(""calls preventDefault when onSwiping or onSwiped is present"", () => {
+-    const onSwiping = jest.fn();
+-    const onSwiped = jest.fn();
+-
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook onSwiping={onSwiping} preventDefaultTouchmoveEvent />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwiping).toHaveBeenCalled();
+-    expect(defaultPrevented).toBe(1);
+-
+-    rerender(
+-      <SwipeableUsingHook onSwiped={onSwiped} preventDefaultTouchmoveEvent />
+-    );
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwiped).toHaveBeenCalled();
+-    expect(defaultPrevented).toBe(2);
+-  });
+-
+-  it(""does not re-check delta when swiping already in progress"", () => {
+-    const onSwiping = jest.fn();
+-    const onSwipedRight = jest.fn();
+-    const onSwipedLeft = jest.fn();
+-    const { getByText } = render(
+-      <SwipeableUsingHook
+-        onSwiping={onSwiping}
+-        onSwipedRight={onSwipedRight}
+-        onSwipedLeft={onSwipedLeft}
+-        delta={40}
+-      />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 145, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 80, y: 100 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwiping).toHaveBeenCalledTimes(2);
+-    expect(onSwiping.mock.calls[0][0].dir).toBe(RIGHT);
+-    expect(onSwiping.mock.calls[1][0].dir).toBe(LEFT);
+-    expect(onSwipedLeft).toHaveBeenCalledTimes(1);
+-    expect(onSwipedRight).not.toHaveBeenCalled();
+-  });
+-
+-  it(""Handle Rotation by 90 degree"", () => {
+-    const swipeFuncsRight = getMockedSwipeFunctions();
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook {...swipeFuncsRight} rotationAngle={90} />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    // check right
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFuncsRight, RIGHT);
+-
+-    // check left
+-    const swipeFuncsLeft = getMockedSwipeFunctions();
+-    rerender(<SwipeableUsingHook {...swipeFuncsLeft} rotationAngle={90} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFuncsLeft, LEFT);
+-
+-    // check up
+-    const swipeFunsUp = getMockedSwipeFunctions();
+-    rerender(<SwipeableUsingHook {...swipeFunsUp} rotationAngle={90} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFunsUp, UP);
+-
+-    // check down
+-    const swipeFunsDown = getMockedSwipeFunctions();
+-    rerender(<SwipeableUsingHook {...swipeFunsDown} rotationAngle={90} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFunsDown, DOWN);
+-  });
+-
+-  it('Handle ""odd"" rotations', () => {
+-    const swipeFuncsNegativeRotation = getMockedSwipeFunctions();
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook {...swipeFuncsNegativeRotation} rotationAngle={-90} />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    // check -90
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFuncsNegativeRotation, LEFT);
+-
+-    // check 360 + 270
+-    const swipeFuncsLargeRotation = getMockedSwipeFunctions();
+-    rerender(
+-      <SwipeableUsingHook
+-        {...swipeFuncsLargeRotation}
+-        rotationAngle={360 + 270}
+-      />
+-    );
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expectSwipeFuncsDir(swipeFuncsLargeRotation, LEFT);
+-  });
+-
+-  it(""Handle Rotation that changes so keep the direction the same"", () => {
+-    const swipeFuncs = getMockedSwipeFunctions();
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook {...swipeFuncs} />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    // check 0
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 125, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 150, y: 100 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(1);
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(1);
+-
+-    // check 90
+-    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={90} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 125 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 150 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(2);
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(2);
+-
+-    // check 180
+-    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={180} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 50, y: 100 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(3);
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(3);
+-
+-    // check 270
+-    rerender(<SwipeableUsingHook {...swipeFuncs} rotationAngle={270} />);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 75 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 50 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    expect(swipeFuncs.onSwiped).toHaveBeenCalledTimes(4);
+-    expect(swipeFuncs.onSwipedRight).toHaveBeenCalledTimes(4);
+-
+-    expect(swipeFuncs.onSwiping).toHaveBeenCalledTimes(8);
+-    [LEFT, UP, DOWN].forEach((dir) => {
+-      expect(swipeFuncs[`onSwiped${dir}`]).not.toHaveBeenCalled();
+-    });
+-  });
+-
+-  it(""Does not track touches when trackTouch is false"", () => {
+-    const onSwipedDown = jest.fn();
+-
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook onSwipedDown={onSwipedDown} />
+-    );
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    const doSwipe = () => {
+-      fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-      fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
+-      fireEvent[TE](touchArea, cte({}));
+-    };
+-
+-    doSwipe();
+-    expect(onSwipedDown).toHaveBeenCalledTimes(1);
+-
+-    rerender(
+-      <SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={false} />
+-    );
+-    doSwipe();
+-    // verify we did not trigger another swipe
+-    expect(onSwipedDown).toHaveBeenCalledTimes(1);
+-
+-    rerender(
+-      <SwipeableUsingHook onSwipedDown={onSwipedDown} trackTouch={true} />
+-    );
+-    doSwipe();
+-    expect(onSwipedDown).toHaveBeenCalledTimes(2);
+-  });
+-
+-  it(""Cleans up and re-attaches touch event listeners if the DOM element changes"", () => {
+-    const onSwipedDown = jest.fn();
+-
+-    const { getByText, rerender } = render(
+-      <SwipeableUsingHook onSwipedDown={onSwipedDown} />
+-    );
+-
+-    let touchArea = getByText(TESTING_TEXT);
+-
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
+-    fireEvent[TE](touchArea, cte({}));
+-
+-    expect(onSwipedDown).toHaveBeenCalledTimes(1);
+-
+-    rerender(<SwipeableUsingHook onSwipedDown={onSwipedDown} nodeName=""p"" />);
+-    // re-get element since wrapping dom node changed
+-    touchArea = getByText(TESTING_TEXT);
+-    fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-    fireEvent[TM](touchArea, cte({ x: 100, y: 200 }));
+-    fireEvent[TE](touchArea, cte({}));
+-    // verify we triggered callbacks on new dom element
+-    expect(onSwipedDown).toHaveBeenCalledTimes(2);
+-  });
+-
+-  it(`handles new prop swipe callbacks from rerenders`, () => {
+-    const onSwipedSpy = jest.fn();
+-
+-    function TestHookComponent({ next }) {
+-      const handlers = useSwipeable({ onSwiped: next });
+-      return <div {...handlers}>{TESTING_TEXT}</div>;
+-    }
+-
+-    function TestComponent() {
+-      const [page, setPage] = React.useState(0);
+-      // Changing the callback on each re-render ON PURPOSE
+-      // In order to validate useSwipeable updates prop references
+-      const next = () => (setPage(page + 1), onSwipedSpy(page + 1));
+-
+-      return <TestHookComponent next={next} />;
+-    }
+-
+-    const { getByText } = render(<TestComponent />);
+-
+-    const touchArea = getByText(TESTING_TEXT);
+-
+-    const pages = [1, 2, 3];
+-    // swipe left 3 times
+-    pages.forEach(() => {
+-      act(() => {
+-        fireEvent[TS](touchArea, cte({ x: 100, y: 100 }));
+-        fireEvent[TM](touchArea, cte({ x: 75, y: 100 }));
+-        fireEvent[TE](touchArea, cte({}));
+-      });
+-    });
+-    pages.forEach((page, idx) => {
+-      expect(onSwipedSpy.mock.calls[idx][0]).toBe(page);
+-    });
+-  });
+-});
+",1,None=None,14,1379,2,4,23,2507
+200,837b6e7e0ce979029b8fea5e15ebb1894d0f210b,b24b485230a7a7766ab974451df1ac2756733249,Made `delta = current - initial` for both `x` and `y`. Adjusted direction labels and test snapshots to reflect the new definition of `delta`s.,"adjusted the snapshot to reflect the new coordinate system
+",,0,,1,8,1,6,4,61

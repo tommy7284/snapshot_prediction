@@ -1,0 +1,242 @@
+{
+    "id": 7799158,
+    "name": "getstream/stream-chat-react",
+    "isFork": false,
+    "commits": 5606,
+    "branches": 39,
+    "releases": 206,
+    "forks": 254,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://getstream.io/chat/sdk/react/",
+    "watchers": 35,
+    "stargazers": 638,
+    "contributors": 61,
+    "size": 183067,
+    "createdAt": "2019-02-12T01:09:58",
+    "pushedAt": "2024-02-28T04:25:49",
+    "updatedAt": "2024-02-28T04:50:26",
+    "totalIssues": 634,
+    "openIssues": 48,
+    "totalPullRequests": 1583,
+    "openPullRequests": 17,
+    "blankLines": 15670,
+    "codeLines": 84448,
+    "commentLines": 2612,
+    "metrics": [
+        {
+            "language": "Swift",
+            "commentLines": 13,
+            "codeLines": 33,
+            "blankLines": 14
+        },
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 15,
+            "codeLines": 18,
+            "blankLines": 5
+        },
+        {
+            "language": "Sass",
+            "commentLines": 64,
+            "codeLines": 4833,
+            "blankLines": 844
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 26,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 3276,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1888,
+            "codeLines": 31796,
+            "blankLines": 4434
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 75,
+            "codeLines": 4822,
+            "blankLines": 844
+        },
+        {
+            "language": "XML",
+            "commentLines": 5,
+            "codeLines": 417,
+            "blankLines": 14
+        },
+        {
+            "language": "HTML",
+            "commentLines": 52,
+            "codeLines": 75,
+            "blankLines": 9
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 7,
+            "codeLines": 96,
+            "blankLines": 18
+        },
+        {
+            "language": "Python",
+            "commentLines": 27,
+            "codeLines": 33,
+            "blankLines": 8
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 55,
+            "blankLines": 9
+        },
+        {
+            "language": "make",
+            "commentLines": 0,
+            "codeLines": 29,
+            "blankLines": 10
+        },
+        {
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 218,
+            "blankLines": 22
+        },
+        {
+            "language": "Properties",
+            "commentLines": 16,
+            "codeLines": 8,
+            "blankLines": 5
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 14565,
+            "blankLines": 6170
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 37,
+            "codeLines": 159,
+            "blankLines": 32
+        },
+        {
+            "language": "Java",
+            "commentLines": 11,
+            "codeLines": 27,
+            "blankLines": 11
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 329,
+            "codeLines": 23071,
+            "blankLines": 3020
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 66,
+            "blankLines": 21
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 18,
+            "codeLines": 0,
+            "blankLines": 3
+        },
+        {
+            "language": "JSX",
+            "commentLines": 48,
+            "codeLines": 822,
+            "blankLines": 177
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-02-23T03:30:50",
+    "lastCommitSHA": "b05169877fc5b28e4cfb6e527cd62ce5de06bd1d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 969783,
+        "JavaScript": 914255,
+        "MDX": 633834,
+        "Python": 2365,
+        "HTML": 1672,
+        "Makefile": 1531,
+        "Shell": 1009,
+        "CSS": 226
+    },
+    "labels": [
+        "breaking",
+        "bug",
+        "cluser:app-notifications",
+        "cluster:a11y",
+        "cluster:api-client",
+        "cluster:api-events",
+        "cluster:channel-list",
+        "cluster:emoji",
+        "cluster:loading-state",
+        "cluster:markdown",
+        "cluster:message-input",
+        "cluster:message-list",
+        "cluster:permissions",
+        "cluster:remove-after-deprecation",
+        "cluster:state-management",
+        "cluster:styling",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "epic",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "infrastructure",
+        "invalid",
+        "needs api support",
+        "question",
+        "refactor",
+        "released",
+        "released on @beta",
+        "released on @rc",
+        "released on @theming-v2",
+        "released on @v10",
+        "released on @v9",
+        "resolved",
+        "security",
+        "semantic-release",
+        "status: unconfirmed",
+        "status:confirmed",
+        "stream-dependencies",
+        "theming-v2",
+        "v11.0.0",
+        "wip",
+        "wontfix"
+    ],
+    "topics": [
+        "chat",
+        "chat-sdk",
+        "chat-sdk-js",
+        "getstream",
+        "getstream-io",
+        "react",
+        "react-chat",
+        "react-chat-app",
+        "react-chatting",
+        "react-components"
+    ]
+}

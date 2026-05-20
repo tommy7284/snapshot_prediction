@@ -1,0 +1,79 @@
+{
+    "id": 5284812,
+    "name": "styled-components/styled-theming",
+    "isFork": false,
+    "commits": 17,
+    "branches": 1,
+    "releases": 5,
+    "forks": 39,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 1057,
+    "contributors": 3,
+    "size": 63,
+    "createdAt": "2017-07-26T10:14:41",
+    "pushedAt": "2019-12-27T07:31:06",
+    "updatedAt": "2021-02-04T09:48:56",
+    "totalIssues": null,
+    "openIssues": null,
+    "totalPullRequests": 6,
+    "openPullRequests": 3,
+    "blankLines": 143,
+    "codeLines": 889,
+    "commentLines": 340,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 94,
+            "language": "JavaScript",
+            "commentLines": 340,
+            "codeLines": 684
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 49,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 151
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 38
+        }
+    ],
+    "lastCommit": "2018-01-11T11:27:12",
+    "lastCommitSHA": "e03ff45b6822018c85bba8749045aff1e169d15d",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 8284,
+        "HTML": 202
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

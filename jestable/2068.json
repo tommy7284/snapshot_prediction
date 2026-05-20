@@ -1,0 +1,86 @@
+{
+    "id": 4988317,
+    "name": "btholt/complete-intro-to-react",
+    "isFork": false,
+    "commits": 27,
+    "branches": 124,
+    "releases": 0,
+    "forks": 972,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://frontendmasters.com/learn/react/",
+    "watchers": 35,
+    "stargazers": 1069,
+    "contributors": 4,
+    "size": 12227,
+    "createdAt": "2016-02-16T06:20:41",
+    "pushedAt": "2022-02-10T04:20:32",
+    "updatedAt": "2022-02-10T04:17:29",
+    "totalIssues": 57,
+    "openIssues": 25,
+    "totalPullRequests": 58,
+    "openPullRequests": 11,
+    "blankLines": 1962,
+    "codeLines": 11690,
+    "commentLines": 1299,
+    "metrics": [
+        {
+            "blankLines": 41,
+            "language": "JSX",
+            "commentLines": 11,
+            "codeLines": 334
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 235
+        },
+        {
+            "blankLines": 1788,
+            "language": "JavaScript",
+            "commentLines": 1123,
+            "codeLines": 10682
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 124,
+            "language": "CSS",
+            "commentLines": 165,
+            "codeLines": 404
+        },
+        {
+            "blankLines": 9,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 23
+        }
+    ],
+    "lastCommit": "2022-02-10T04:19:20",
+    "lastCommitSHA": "613dfcd8749c80eb30a22a768773ce8415aeec5d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 17545,
+        "CSS": 12384,
+        "HTML": 261
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

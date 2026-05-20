@@ -1,0 +1,73 @@
+{
+    "id": 5545501,
+    "name": "scottcheng/cropit",
+    "isFork": false,
+    "commits": 208,
+    "branches": 3,
+    "releases": 26,
+    "forks": 332,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://scottcheng.github.io/cropit/",
+    "watchers": 45,
+    "stargazers": 886,
+    "contributors": 8,
+    "size": 21788,
+    "createdAt": "2014-07-07T09:27:17",
+    "pushedAt": "2020-07-26T10:40:30",
+    "updatedAt": "2021-02-04T02:06:09",
+    "totalIssues": 280,
+    "openIssues": 138,
+    "totalPullRequests": 29,
+    "openPullRequests": 7,
+    "blankLines": 627,
+    "codeLines": 2231,
+    "commentLines": 1187,
+    "metrics": [
+        {
+            "blankLines": 91,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 149
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 128
+        },
+        {
+            "blankLines": 492,
+            "language": "JavaScript",
+            "commentLines": 1187,
+            "codeLines": 1648
+        },
+        {
+            "blankLines": 44,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 306
+        }
+    ],
+    "lastCommit": "2017-12-12T02:51:44",
+    "lastCommitSHA": "dd4c8a19e2d0b3595cbf9f311355fe56d4bd43fc",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 60209
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

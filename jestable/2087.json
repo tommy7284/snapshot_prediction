@@ -1,0 +1,93 @@
+{
+    "id": 4996534,
+    "name": "ctrlplusb/react-universally",
+    "isFork": false,
+    "commits": 624,
+    "branches": 2,
+    "releases": 41,
+    "forks": 271,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 72,
+    "stargazers": 1705,
+    "contributors": 24,
+    "size": 2561,
+    "createdAt": "2016-06-14T09:05:38",
+    "pushedAt": "2018-12-26T02:16:47",
+    "updatedAt": "2021-02-03T09:16:56",
+    "totalIssues": 403,
+    "openIssues": 50,
+    "totalPullRequests": 194,
+    "openPullRequests": 10,
+    "blankLines": 812,
+    "codeLines": 14757,
+    "commentLines": 986,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 112
+        },
+        {
+            "blankLines": 416,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 661
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11941
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 393,
+            "language": "JavaScript",
+            "commentLines": 985,
+            "codeLines": 2017
+        }
+    ],
+    "lastCommit": "2017-10-04T08:44:30",
+    "lastCommitSHA": "83d533a9c780716d18f034f7fb52dbd3a1c4051b",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 115459,
+        "CSS": 286
+    },
+    "labels": [
+        "3rdparty",
+        "accepted",
+        "blocked",
+        "bug",
+        "chore",
+        "discussion",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "help-wanted",
+        "in-progress",
+        "question",
+        "staged",
+        "unconfirmed",
+        "wontfix"
+    ],
+    "topics": []
+}

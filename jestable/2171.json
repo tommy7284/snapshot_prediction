@@ -1,0 +1,76 @@
+{
+    "id": 5020559,
+    "name": "michelebertoli/react-automata",
+    "isFork": false,
+    "commits": 123,
+    "branches": 1,
+    "releases": 10,
+    "forks": 58,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 1310,
+    "contributors": 15,
+    "size": 465,
+    "createdAt": "2017-11-01T09:38:39",
+    "pushedAt": "2019-01-23T03:44:06",
+    "updatedAt": "2021-02-01T01:00:05",
+    "totalIssues": 55,
+    "openIssues": 11,
+    "totalPullRequests": 37,
+    "openPullRequests": 3,
+    "blankLines": 303,
+    "codeLines": 1405,
+    "commentLines": 0,
+    "metrics": [
+        {
+            "blankLines": 175,
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 943
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 127,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 380
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 79
+        }
+    ],
+    "lastCommit": "2018-10-21T08:05:24",
+    "lastCommitSHA": "098a078ab87bdc8873ee9bee348fcfddba385f6f",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 26710
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "no repro",
+        "question",
+        "react native",
+        "wontfix",
+        "xstate"
+    ],
+    "topics": []
+}

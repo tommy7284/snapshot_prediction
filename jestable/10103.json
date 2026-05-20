@@ -1,0 +1,114 @@
+{
+    "id": 6903072,
+    "name": "segmentio/evergreen",
+    "isFork": false,
+    "commits": 986,
+    "branches": 26,
+    "releases": 204,
+    "forks": 867,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://evergreen.segment.com",
+    "watchers": 117,
+    "stargazers": 12264,
+    "contributors": 145,
+    "size": 232014,
+    "createdAt": "2017-07-30T10:03:14",
+    "pushedAt": "2024-02-13T07:17:40",
+    "updatedAt": "2024-02-14T03:31:14",
+    "totalIssues": 497,
+    "openIssues": 40,
+    "totalPullRequests": 1104,
+    "openPullRequests": 38,
+    "blankLines": 6474,
+    "codeLines": 47640,
+    "commentLines": 4600,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 346
+        },
+        {
+            "blankLines": 11,
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 70
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1578
+        },
+        {
+            "blankLines": 1090,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 4786
+        },
+        {
+            "blankLines": 944,
+            "language": "TypeScript",
+            "commentLines": 1570,
+            "codeLines": 9206
+        },
+        {
+            "blankLines": 4204,
+            "language": "JavaScript",
+            "commentLines": 2893,
+            "codeLines": 30134
+        },
+        {
+            "blankLines": 225,
+            "language": "CSS",
+            "commentLines": 129,
+            "codeLines": 1520
+        }
+    ],
+    "lastCommit": "2023-06-21T07:58:33",
+    "lastCommitSHA": "cce2742921d0ff0a4372503883eee89d00b508c4",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 837456,
+        "TypeScript": 114394
+    },
+    "labels": [
+        "abandoned",
+        "accessibility",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "good-first-issue",
+        "hacktoberfest-accepted",
+        "help-wanted",
+        "high-priority",
+        "improvement",
+        "in-progress",
+        "internationalization",
+        "low-priority",
+        "maintenance",
+        "medium-priority",
+        "on-hold",
+        "proposal",
+        "question",
+        "review-needed",
+        "theming",
+        "wont-fix"
+    ],
+    "topics": [
+        "component-library",
+        "design-systems",
+        "evergreen",
+        "react",
+        "segment",
+        "ui",
+        "ui-components"
+    ]
+}

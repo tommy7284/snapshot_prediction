@@ -1,0 +1,80 @@
+{
+    "id": 4049407,
+    "name": "mfbx9da4/deep-email-validator",
+    "isFork": false,
+    "commits": 68,
+    "branches": 21,
+    "releases": 0,
+    "forks": 81,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 14,
+    "stargazers": 804,
+    "contributors": 12,
+    "size": 909,
+    "createdAt": "2020-03-07T05:24:17",
+    "pushedAt": "2024-01-05T04:23:12",
+    "updatedAt": "2024-01-04T04:43:03",
+    "totalIssues": 40,
+    "openIssues": 21,
+    "totalPullRequests": 42,
+    "openPullRequests": 20,
+    "blankLines": 60,
+    "codeLines": 573,
+    "commentLines": 0,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 74,
+            "blankLines": 15
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 96,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 389,
+            "blankLines": 45
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 14,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-02-14T10:06:55",
+    "lastCommitSHA": "1745017ecd3c5e41acbc2aafd9a571e2ccb4c615",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 13688,
+        "JavaScript": 281
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "email-validation",
+        "email-validator",
+        "smtp"
+    ]
+}

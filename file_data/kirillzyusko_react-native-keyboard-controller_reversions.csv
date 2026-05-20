@@ -1,0 +1,3609 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+188,cf0cc4cd87385e574ba1310d5d92252c3545156e,f3b88a6ec196aab821bf758404130fc599ea3561,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Updated `react-native` and related packages to its latest published versions.
+
+## 💡 Motivation and Context
+
+To be ready for new upcoming changes we need to regularly update packages and be aligned with `react-native`. Sometimes new packages may require changes to make it working as it worked before 🙂 
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/196
+
+## 🔮 Known issues
+
+- Android, Fabric, KeyboardAwareScrollView -> `scrollTo` from REA doesn't work as expected.
+- Chat works slowly on Android (especially < 11) - will be handled in separate PR.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+- react-native 0.72;
+- lottie example in Fabric app;
+- reanimated 3.4.2 everywhere;
+- unit tests in fabric app;
+- react-native-gesture-handler is not complaining about packages duplicate in example/FabricExample;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- Xiaomi Redmi Note 5 Pro (Android 9);
+- Pixel 7 Pro (Android 13);
+- iPhone 14 Pro (iOS 16.4, simulator);
+- iPhone 14 Pro (iOS 16.5.1, real device);
+- iPhone 6s (iOS 15.6, real device).
+
+## 📸 Screenshots (if appropriate):
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed","refactor: add unit-tests for Fabric app
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+new file mode 100644
+index 0000000..684e922
+--- /dev/null
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -0,0 +1,29 @@
++import React from 'react';
++import { View } from 'react-native';
++import {
++  KeyboardControllerView,
++  KeyboardProvider,
++} from 'react-native-keyboard-controller';
++import { render } from '@testing-library/react-native';
++
++function KeyboardControllerViewTest() {
++  return <KeyboardControllerView statusBarTranslucent />;
++}
++
++function KeyboardProviderTest() {
++  return (
++    <KeyboardProvider statusBarTranslucent>
++      <View style={{ width: 20, height: 20, backgroundColor: 'black' }} />
++    </KeyboardProvider>
++  );
++}
++
++describe('components rendering', () => {
++  it('should render `KeyboardControllerView`', () => {
++    expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
++  });
++
++  it('should render `KeyboardProvider`', () => {
++    expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
++  });
++});
+",0,
+188,cf0cc4cd87385e574ba1310d5d92252c3545156e,f3b88a6ec196aab821bf758404130fc599ea3561,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Updated `react-native` and related packages to its latest published versions.
+
+## 💡 Motivation and Context
+
+To be ready for new upcoming changes we need to regularly update packages and be aligned with `react-native`. Sometimes new packages may require changes to make it working as it worked before 🙂 
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/196
+
+## 🔮 Known issues
+
+- Android, Fabric, KeyboardAwareScrollView -> `scrollTo` from REA doesn't work as expected.
+- Chat works slowly on Android (especially < 11) - will be handled in separate PR.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+- react-native 0.72;
+- lottie example in Fabric app;
+- reanimated 3.4.2 everywhere;
+- unit tests in fabric app;
+- react-native-gesture-handler is not complaining about packages duplicate in example/FabricExample;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- Xiaomi Redmi Note 5 Pro (Android 9);
+- Pixel 7 Pro (Android 13);
+- iPhone 14 Pro (iOS 16.4, simulator);
+- iPhone 14 Pro (iOS 16.5.1, real device);
+- iPhone 6s (iOS 15.6, real device).
+
+## 📸 Screenshots (if appropriate):
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed","refactor: add unit-tests for Fabric app
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+new file mode 100644
+index 0000000..684e922
+--- /dev/null
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -0,0 +1,29 @@
++import React from 'react';
++import { View } from 'react-native';
++import {
++  KeyboardControllerView,
++  KeyboardProvider,
++} from 'react-native-keyboard-controller';
++import { render } from '@testing-library/react-native';
++
++function KeyboardControllerViewTest() {
++  return <KeyboardControllerView statusBarTranslucent />;
++}
++
++function KeyboardProviderTest() {
++  return (
++    <KeyboardProvider statusBarTranslucent>
++      <View style={{ width: 20, height: 20, backgroundColor: 'black' }} />
++    </KeyboardProvider>
++  );
++}
++
++describe('components rendering', () => {
++  it('should render `KeyboardControllerView`', () => {
++    expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
++  });
++
++  it('should render `KeyboardProvider`', () => {
++    expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
++  });
++});
+",0,
+320,3b7b65e05cd32942fb1966e7c03dc571dac5d192,455ff485e59e596889c7aafd628327b48a31ec5d,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added mocks for exported components, such as `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`.
+
+## 💡 Motivation and Context
+
+The library should support mocks for exported components out of the box.
+
+In an ideal world I'd like to mock dependencies that depends on native implementation and use a real implementation for components. However since we mock entire module (`react-native-keyboard-controller`) it becomes impossible to mock it partially. 
+
+Even with `jest.requireActual()` for components import from `react-native-keyboard-controller` produced `{}` and as a result `useKeyboardHandler` and other native dependencies were undefined and it causes errors during component rendering.
+
+Also a controversial topic was how to mock these components - as `View`/`ScrollView` from RN or as strings. I had at implementation of other popular repositories and came to conclusion, that it should be mocked as RN components (as a reference I used `react-native-gesture-handler`).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/319
+
+## 📢 Changelog
+
+### Docs
+- added new checkbox for PR template (to verify mocks);
+
+### CI
+- use latest version of sponsor labeling, because old one uses deprecated Node 12;
+
+### JS
+
+- added mocks for `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`;
+- use imports from `react-native-keyboard-controller` in `components`;
+
+## 🤔 How Has This Been Tested?
+
+Added new snapshot tests to Fabric and paper examples.
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+","fix: missing components mocks
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index bfc5889..1e06d2d 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -2,10 +2,17 @@ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+ import { View } from ""react-native"";
+ import {
++  KeyboardAvoidingView,
++  KeyboardAwareScrollView,
+   KeyboardControllerView,
+   KeyboardProvider,
++  KeyboardStickyView,
+ } from ""react-native-keyboard-controller"";
+ 
++function EmptyView() {
++  return <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />;
++}
++
+ function KeyboardControllerViewTest() {
+   return <KeyboardControllerView statusBarTranslucent />;
+ }
+@@ -13,11 +20,39 @@ function KeyboardControllerViewTest() {
+ function KeyboardProviderTest() {
+   return (
+     <KeyboardProvider statusBarTranslucent>
+-      <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />
++      <EmptyView />
+     </KeyboardProvider>
+   );
+ }
+ 
++const style = { marginBottom: 20 };
++
++function KeyboardAvoidingViewTest() {
++  return (
++    <KeyboardAvoidingView behavior=""height"" style={style}>
++      <EmptyView />
++    </KeyboardAvoidingView>
++  );
++}
++
++function KeyboardAwareScrollViewTest() {
++  return (
++    <KeyboardAwareScrollView bottomOffset={20} style={style}>
++      <EmptyView />
++    </KeyboardAwareScrollView>
++  );
++}
++
++const offset = { closed: -20, opened: -40 };
++
++function KeyboardStickyViewTest() {
++  return (
++    <KeyboardStickyView offset={offset} style={style}>
++      <EmptyView />
++    </KeyboardStickyView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -26,4 +61,16 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardProvider`"", () => {
+     expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardAvoidingView`"", () => {
++    expect(render(<KeyboardAvoidingViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardAwareScrollView`"", () => {
++    expect(render(<KeyboardAwareScrollViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardStickyView`"", () => {
++    expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+320,3b7b65e05cd32942fb1966e7c03dc571dac5d192,455ff485e59e596889c7aafd628327b48a31ec5d,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added mocks for exported components, such as `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`.
+
+## 💡 Motivation and Context
+
+The library should support mocks for exported components out of the box.
+
+In an ideal world I'd like to mock dependencies that depends on native implementation and use a real implementation for components. However since we mock entire module (`react-native-keyboard-controller`) it becomes impossible to mock it partially. 
+
+Even with `jest.requireActual()` for components import from `react-native-keyboard-controller` produced `{}` and as a result `useKeyboardHandler` and other native dependencies were undefined and it causes errors during component rendering.
+
+Also a controversial topic was how to mock these components - as `View`/`ScrollView` from RN or as strings. I had at implementation of other popular repositories and came to conclusion, that it should be mocked as RN components (as a reference I used `react-native-gesture-handler`).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/319
+
+## 📢 Changelog
+
+### Docs
+- added new checkbox for PR template (to verify mocks);
+
+### CI
+- use latest version of sponsor labeling, because old one uses deprecated Node 12;
+
+### JS
+
+- added mocks for `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`;
+- use imports from `react-native-keyboard-controller` in `components`;
+
+## 🤔 How Has This Been Tested?
+
+Added new snapshot tests to Fabric and paper examples.
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+","fix: missing components mocks
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index bfc5889..1e06d2d 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -2,10 +2,17 @@ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+ import { View } from ""react-native"";
+ import {
++  KeyboardAvoidingView,
++  KeyboardAwareScrollView,
+   KeyboardControllerView,
+   KeyboardProvider,
++  KeyboardStickyView,
+ } from ""react-native-keyboard-controller"";
+ 
++function EmptyView() {
++  return <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />;
++}
++
+ function KeyboardControllerViewTest() {
+   return <KeyboardControllerView statusBarTranslucent />;
+ }
+@@ -13,11 +20,39 @@ function KeyboardControllerViewTest() {
+ function KeyboardProviderTest() {
+   return (
+     <KeyboardProvider statusBarTranslucent>
+-      <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />
++      <EmptyView />
+     </KeyboardProvider>
+   );
+ }
+ 
++const style = { marginBottom: 20 };
++
++function KeyboardAvoidingViewTest() {
++  return (
++    <KeyboardAvoidingView behavior=""height"" style={style}>
++      <EmptyView />
++    </KeyboardAvoidingView>
++  );
++}
++
++function KeyboardAwareScrollViewTest() {
++  return (
++    <KeyboardAwareScrollView bottomOffset={20} style={style}>
++      <EmptyView />
++    </KeyboardAwareScrollView>
++  );
++}
++
++const offset = { closed: -20, opened: -40 };
++
++function KeyboardStickyViewTest() {
++  return (
++    <KeyboardStickyView offset={offset} style={style}>
++      <EmptyView />
++    </KeyboardStickyView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -26,4 +61,16 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardProvider`"", () => {
+     expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardAvoidingView`"", () => {
++    expect(render(<KeyboardAvoidingViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardAwareScrollView`"", () => {
++    expect(render(<KeyboardAwareScrollViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardStickyView`"", () => {
++    expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+320,3b7b65e05cd32942fb1966e7c03dc571dac5d192,455ff485e59e596889c7aafd628327b48a31ec5d,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added mocks for exported components, such as `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`.
+
+## 💡 Motivation and Context
+
+The library should support mocks for exported components out of the box.
+
+In an ideal world I'd like to mock dependencies that depends on native implementation and use a real implementation for components. However since we mock entire module (`react-native-keyboard-controller`) it becomes impossible to mock it partially. 
+
+Even with `jest.requireActual()` for components import from `react-native-keyboard-controller` produced `{}` and as a result `useKeyboardHandler` and other native dependencies were undefined and it causes errors during component rendering.
+
+Also a controversial topic was how to mock these components - as `View`/`ScrollView` from RN or as strings. I had at implementation of other popular repositories and came to conclusion, that it should be mocked as RN components (as a reference I used `react-native-gesture-handler`).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/319
+
+## 📢 Changelog
+
+### Docs
+- added new checkbox for PR template (to verify mocks);
+
+### CI
+- use latest version of sponsor labeling, because old one uses deprecated Node 12;
+
+### JS
+
+- added mocks for `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`;
+- use imports from `react-native-keyboard-controller` in `components`;
+
+## 🤔 How Has This Been Tested?
+
+Added new snapshot tests to Fabric and paper examples.
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+","fix: missing components mocks
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index bfc5889..1e06d2d 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -2,10 +2,17 @@ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+ import { View } from ""react-native"";
+ import {
++  KeyboardAvoidingView,
++  KeyboardAwareScrollView,
+   KeyboardControllerView,
+   KeyboardProvider,
++  KeyboardStickyView,
+ } from ""react-native-keyboard-controller"";
+ 
++function EmptyView() {
++  return <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />;
++}
++
+ function KeyboardControllerViewTest() {
+   return <KeyboardControllerView statusBarTranslucent />;
+ }
+@@ -13,11 +20,39 @@ function KeyboardControllerViewTest() {
+ function KeyboardProviderTest() {
+   return (
+     <KeyboardProvider statusBarTranslucent>
+-      <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />
++      <EmptyView />
+     </KeyboardProvider>
+   );
+ }
+ 
++const style = { marginBottom: 20 };
++
++function KeyboardAvoidingViewTest() {
++  return (
++    <KeyboardAvoidingView behavior=""height"" style={style}>
++      <EmptyView />
++    </KeyboardAvoidingView>
++  );
++}
++
++function KeyboardAwareScrollViewTest() {
++  return (
++    <KeyboardAwareScrollView bottomOffset={20} style={style}>
++      <EmptyView />
++    </KeyboardAwareScrollView>
++  );
++}
++
++const offset = { closed: -20, opened: -40 };
++
++function KeyboardStickyViewTest() {
++  return (
++    <KeyboardStickyView offset={offset} style={style}>
++      <EmptyView />
++    </KeyboardStickyView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -26,4 +61,16 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardProvider`"", () => {
+     expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardAvoidingView`"", () => {
++    expect(render(<KeyboardAvoidingViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardAwareScrollView`"", () => {
++    expect(render(<KeyboardAwareScrollViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardStickyView`"", () => {
++    expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+320,3b7b65e05cd32942fb1966e7c03dc571dac5d192,455ff485e59e596889c7aafd628327b48a31ec5d,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added mocks for exported components, such as `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`.
+
+## 💡 Motivation and Context
+
+The library should support mocks for exported components out of the box.
+
+In an ideal world I'd like to mock dependencies that depends on native implementation and use a real implementation for components. However since we mock entire module (`react-native-keyboard-controller`) it becomes impossible to mock it partially. 
+
+Even with `jest.requireActual()` for components import from `react-native-keyboard-controller` produced `{}` and as a result `useKeyboardHandler` and other native dependencies were undefined and it causes errors during component rendering.
+
+Also a controversial topic was how to mock these components - as `View`/`ScrollView` from RN or as strings. I had at implementation of other popular repositories and came to conclusion, that it should be mocked as RN components (as a reference I used `react-native-gesture-handler`).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/319
+
+## 📢 Changelog
+
+### Docs
+- added new checkbox for PR template (to verify mocks);
+
+### CI
+- use latest version of sponsor labeling, because old one uses deprecated Node 12;
+
+### JS
+
+- added mocks for `KeyboardAvoidingView`, `KeyboardAwareScrollView`, `KeyboardStickyView`;
+- use imports from `react-native-keyboard-controller` in `components`;
+
+## 🤔 How Has This Been Tested?
+
+Added new snapshot tests to Fabric and paper examples.
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+","fix: missing components mocks
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index bfc5889..1e06d2d 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -2,10 +2,17 @@ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+ import { View } from ""react-native"";
+ import {
++  KeyboardAvoidingView,
++  KeyboardAwareScrollView,
+   KeyboardControllerView,
+   KeyboardProvider,
++  KeyboardStickyView,
+ } from ""react-native-keyboard-controller"";
+ 
++function EmptyView() {
++  return <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />;
++}
++
+ function KeyboardControllerViewTest() {
+   return <KeyboardControllerView statusBarTranslucent />;
+ }
+@@ -13,11 +20,39 @@ function KeyboardControllerViewTest() {
+ function KeyboardProviderTest() {
+   return (
+     <KeyboardProvider statusBarTranslucent>
+-      <View style={{ width: 20, height: 20, backgroundColor: ""black"" }} />
++      <EmptyView />
+     </KeyboardProvider>
+   );
+ }
+ 
++const style = { marginBottom: 20 };
++
++function KeyboardAvoidingViewTest() {
++  return (
++    <KeyboardAvoidingView behavior=""height"" style={style}>
++      <EmptyView />
++    </KeyboardAvoidingView>
++  );
++}
++
++function KeyboardAwareScrollViewTest() {
++  return (
++    <KeyboardAwareScrollView bottomOffset={20} style={style}>
++      <EmptyView />
++    </KeyboardAwareScrollView>
++  );
++}
++
++const offset = { closed: -20, opened: -40 };
++
++function KeyboardStickyViewTest() {
++  return (
++    <KeyboardStickyView offset={offset} style={style}>
++      <EmptyView />
++    </KeyboardStickyView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -26,4 +61,16 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardProvider`"", () => {
+     expect(render(<KeyboardProviderTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardAvoidingView`"", () => {
++    expect(render(<KeyboardAvoidingViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardAwareScrollView`"", () => {
++    expect(render(<KeyboardAwareScrollViewTest />)).toMatchSnapshot();
++  });
++
++  it(""should render `KeyboardStickyView`"", () => {
++    expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+346,c2be0def0a4baa14470e5188f3a58a3418daa8e5,8b5ea44be0e18c0a1f77f3a9ee6a9a19e5a65af0,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added keyboard toolbar component.
+
+## 💡 Motivation and Context
+
+The feature was requested in https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303
+
+Before the implementation I decided to make a research to see how similar tasks are implemented on other platforms/framework. I went through:
+- https://pub.dev/packages/keyboard_actions
+- https://github.com/hackiftekhar/IQKeyboardManager
+- default toolbar on iOS (on web)
+
+The downside of `keyboard_actions` from Flutter is the fact that it requires a lot of hand engineering (setting `refs` to each input and the passing this array to the keyboard). And we need to do that for each screen.
+
+However `IQKeyboardManager` handles it automatically via view traversal. I thought that a similar algorithm can be implemented in a react-native, because all JS views are shown in a native view hierarchy as corresponding native views.
+
+The `IQKeyboardManager` offers a lot of customization which is not needed in `react-native` ecosystem (like specifying array of `UIVIewController`s where `KeyboardToolbar` should be hidden - it should be done via conditional rendering in RN world). On the other side - solution from `IQKeyboardManager` is not very customizable in `react-native` ecosystem (we can not specify rendering for custom elements).
+
+So I took inspiration from all frameworks and decided to create a new approach that will ideally fit `react-native` projects - it'll not require a lot of hand engineering and will offer a great flexibility and customization. The ideal goal is to have the API as on web (from simplicity perspective) and to be a very cusomizable.
+
+`IQKeyboardManager` handles a lot of cases, but I decided to start from something basic and then enhance the API. So the core API is a new method for `KeyboardController` - `setFocusTo(""next"" | ""prev"")`. It'll go to the next/prev field from currently focused input. For that I implemented code that goes through view hierarchy on both platforms.
+
+Later I started to analyze further specifications and decided to add `setFocusTo(""current"")` API that will bring a keyboard back (set focus to last focused input).
+
+Based on this API I created a precise replica of `KeyboardToolbar` (took a reference from `web` on iOS) and tried to create something that looks similar on Android (overall matches iOS design but uses colors that matches system UI on Android).
+
+Remaining thing was how to tell JS when next/prev buttons available/active. I had few options on which way to use for dispatching:
+- as plain events via `eventEmitter` (which I selected in the end);
+- via `KeyboardControllerView` (we would need to add data in context, and it's kind of strange to have a lot of unrelated data/methods in context, we start to break SOLID principles here);
+- via new `ToolbarView` (it could help to propagate events synchronously via reanimated-event-bus, but we also have to use conditional rendering/specify other props, so I thought it would be more convenient to use plain state - this component should be highly customizable and setting props via `useAnimatedProps` may be not a trivial thing for devs who just came to RN world);
+
+I decided to use first approach because it's very simple and it looks like it's good enough (in future it can be changed, I didn't make the API for events propagation public yet).
+
+I also had a choice of which data structures to use:
+
+```ts
+type FocusDidSetEvent = {
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+```
+
+vs
+
+```ts
+type FocusDidSetEvent = {
+  current: number;
+  count: number;
+}
+```
+
+I selected a second one, because in my understanding it may give a better flexibility (though for this approach we have to gather all inputs on a screen which is more resource consuming operation than finding prev and next `TextInput` - again now it works fine so let's keep it, but in future internal events shape can be changed (for example if we encounter performance problems) - these events not part of public API. In public API we just propagate `disabled` property - the way how it's calculated it's totally up to library).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303 https://github.com/facebook/react-native/issues/641
+
+## 📢 Changelog
+
+### Docs
+
+- added a page for `KeyboardToolbar` API;
+- added lottie animation for `KeyboardToolbar` usage;
+
+### JS
+
+- added `KeyboardToolbar` component;
+- implemented `setFocusTo` method (specs, TS declarations);
+- return an initialized variable from `interpolate` rather than an assigned shared value because it seems like setting happens asynchronously and initial render may be incorrect (if you add `console.log({ a: interpolation, b: lastInterpolation.value });` you will see next output `{""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 42}`);
+
+### iOS
+
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### Android
+
+- use Java 17 and Gradle Plugin v7.2;
+- added unit tests (using `robolectric`) for `ViewHierarchyNavigator` class;
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### E2E
+
+- added new test for covering `KeyboardToolbar` functionality;
+- added 2 new functions `expectElementBitmapsToBeEqual` and `doActionNTimes`;
+
+### CI
+
+- added a job for running Android unit tests
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (Android 14, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device);
+- Pixel 3A (Android 13, emulator);
+- iPhone 15 (iOS 17.2, simulator)
+- iPhone 15 Pro (iOS 17.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+### Screenshots
+
+|Android (light theme)|Android (dark theme)|iOS (light theme)|iOS (dark theme)|
+|---------------------|----------------------|-----------------|-----------------|
+|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/97ea2e12-ef67-488f-92b4-a63c88eb2543"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/892c1f70-2188-4272-86c6-4a33e2aea9fc"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/1302b4b5-6f41-49ca-9a52-0713dbd95399"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/e75dec94-d8ec-49fb-abf8-3cce974fd07f"">|
+
+### Videos
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/dc05191f-1cf1-41e3-8068-f4316de40a95
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: added jest tests
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 11bcf92..b424757 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -7,6 +7,7 @@ import {
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
++  KeyboardToolbar,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -37,7 +38,12 @@ function KeyboardAvoidingViewTest() {
+ 
+ function KeyboardAwareScrollViewTest() {
+   return (
+-    <KeyboardAwareScrollView enabled={true} bottomOffset={20} style={style}>
++    <KeyboardAwareScrollView
++      bottomOffset={20}
++      enabled={true}
++      disableScrollOnKeyboardHide={false}
++      style={style}
++    >
+       <EmptyView />
+     </KeyboardAwareScrollView>
+   );
+@@ -53,6 +59,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++function KeyboardToolbarTest() {
++  return <KeyboardToolbar content={<EmptyView />} />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -73,4 +83,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardStickyView`"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+346,c2be0def0a4baa14470e5188f3a58a3418daa8e5,8b5ea44be0e18c0a1f77f3a9ee6a9a19e5a65af0,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added keyboard toolbar component.
+
+## 💡 Motivation and Context
+
+The feature was requested in https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303
+
+Before the implementation I decided to make a research to see how similar tasks are implemented on other platforms/framework. I went through:
+- https://pub.dev/packages/keyboard_actions
+- https://github.com/hackiftekhar/IQKeyboardManager
+- default toolbar on iOS (on web)
+
+The downside of `keyboard_actions` from Flutter is the fact that it requires a lot of hand engineering (setting `refs` to each input and the passing this array to the keyboard). And we need to do that for each screen.
+
+However `IQKeyboardManager` handles it automatically via view traversal. I thought that a similar algorithm can be implemented in a react-native, because all JS views are shown in a native view hierarchy as corresponding native views.
+
+The `IQKeyboardManager` offers a lot of customization which is not needed in `react-native` ecosystem (like specifying array of `UIVIewController`s where `KeyboardToolbar` should be hidden - it should be done via conditional rendering in RN world). On the other side - solution from `IQKeyboardManager` is not very customizable in `react-native` ecosystem (we can not specify rendering for custom elements).
+
+So I took inspiration from all frameworks and decided to create a new approach that will ideally fit `react-native` projects - it'll not require a lot of hand engineering and will offer a great flexibility and customization. The ideal goal is to have the API as on web (from simplicity perspective) and to be a very cusomizable.
+
+`IQKeyboardManager` handles a lot of cases, but I decided to start from something basic and then enhance the API. So the core API is a new method for `KeyboardController` - `setFocusTo(""next"" | ""prev"")`. It'll go to the next/prev field from currently focused input. For that I implemented code that goes through view hierarchy on both platforms.
+
+Later I started to analyze further specifications and decided to add `setFocusTo(""current"")` API that will bring a keyboard back (set focus to last focused input).
+
+Based on this API I created a precise replica of `KeyboardToolbar` (took a reference from `web` on iOS) and tried to create something that looks similar on Android (overall matches iOS design but uses colors that matches system UI on Android).
+
+Remaining thing was how to tell JS when next/prev buttons available/active. I had few options on which way to use for dispatching:
+- as plain events via `eventEmitter` (which I selected in the end);
+- via `KeyboardControllerView` (we would need to add data in context, and it's kind of strange to have a lot of unrelated data/methods in context, we start to break SOLID principles here);
+- via new `ToolbarView` (it could help to propagate events synchronously via reanimated-event-bus, but we also have to use conditional rendering/specify other props, so I thought it would be more convenient to use plain state - this component should be highly customizable and setting props via `useAnimatedProps` may be not a trivial thing for devs who just came to RN world);
+
+I decided to use first approach because it's very simple and it looks like it's good enough (in future it can be changed, I didn't make the API for events propagation public yet).
+
+I also had a choice of which data structures to use:
+
+```ts
+type FocusDidSetEvent = {
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+```
+
+vs
+
+```ts
+type FocusDidSetEvent = {
+  current: number;
+  count: number;
+}
+```
+
+I selected a second one, because in my understanding it may give a better flexibility (though for this approach we have to gather all inputs on a screen which is more resource consuming operation than finding prev and next `TextInput` - again now it works fine so let's keep it, but in future internal events shape can be changed (for example if we encounter performance problems) - these events not part of public API. In public API we just propagate `disabled` property - the way how it's calculated it's totally up to library).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303 https://github.com/facebook/react-native/issues/641
+
+## 📢 Changelog
+
+### Docs
+
+- added a page for `KeyboardToolbar` API;
+- added lottie animation for `KeyboardToolbar` usage;
+
+### JS
+
+- added `KeyboardToolbar` component;
+- implemented `setFocusTo` method (specs, TS declarations);
+- return an initialized variable from `interpolate` rather than an assigned shared value because it seems like setting happens asynchronously and initial render may be incorrect (if you add `console.log({ a: interpolation, b: lastInterpolation.value });` you will see next output `{""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 42}`);
+
+### iOS
+
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### Android
+
+- use Java 17 and Gradle Plugin v7.2;
+- added unit tests (using `robolectric`) for `ViewHierarchyNavigator` class;
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### E2E
+
+- added new test for covering `KeyboardToolbar` functionality;
+- added 2 new functions `expectElementBitmapsToBeEqual` and `doActionNTimes`;
+
+### CI
+
+- added a job for running Android unit tests
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (Android 14, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device);
+- Pixel 3A (Android 13, emulator);
+- iPhone 15 (iOS 17.2, simulator)
+- iPhone 15 Pro (iOS 17.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+### Screenshots
+
+|Android (light theme)|Android (dark theme)|iOS (light theme)|iOS (dark theme)|
+|---------------------|----------------------|-----------------|-----------------|
+|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/97ea2e12-ef67-488f-92b4-a63c88eb2543"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/892c1f70-2188-4272-86c6-4a33e2aea9fc"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/1302b4b5-6f41-49ca-9a52-0713dbd95399"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/e75dec94-d8ec-49fb-abf8-3cce974fd07f"">|
+
+### Videos
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/dc05191f-1cf1-41e3-8068-f4316de40a95
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: added jest tests
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 3d99c4f..b424757 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -7,6 +7,7 @@ import {
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
++  KeyboardToolbar,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -58,6 +59,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++function KeyboardToolbarTest() {
++  return <KeyboardToolbar content={<EmptyView />} />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -78,4 +83,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardStickyView`"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+346,c2be0def0a4baa14470e5188f3a58a3418daa8e5,8b5ea44be0e18c0a1f77f3a9ee6a9a19e5a65af0,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added keyboard toolbar component.
+
+## 💡 Motivation and Context
+
+The feature was requested in https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303
+
+Before the implementation I decided to make a research to see how similar tasks are implemented on other platforms/framework. I went through:
+- https://pub.dev/packages/keyboard_actions
+- https://github.com/hackiftekhar/IQKeyboardManager
+- default toolbar on iOS (on web)
+
+The downside of `keyboard_actions` from Flutter is the fact that it requires a lot of hand engineering (setting `refs` to each input and the passing this array to the keyboard). And we need to do that for each screen.
+
+However `IQKeyboardManager` handles it automatically via view traversal. I thought that a similar algorithm can be implemented in a react-native, because all JS views are shown in a native view hierarchy as corresponding native views.
+
+The `IQKeyboardManager` offers a lot of customization which is not needed in `react-native` ecosystem (like specifying array of `UIVIewController`s where `KeyboardToolbar` should be hidden - it should be done via conditional rendering in RN world). On the other side - solution from `IQKeyboardManager` is not very customizable in `react-native` ecosystem (we can not specify rendering for custom elements).
+
+So I took inspiration from all frameworks and decided to create a new approach that will ideally fit `react-native` projects - it'll not require a lot of hand engineering and will offer a great flexibility and customization. The ideal goal is to have the API as on web (from simplicity perspective) and to be a very cusomizable.
+
+`IQKeyboardManager` handles a lot of cases, but I decided to start from something basic and then enhance the API. So the core API is a new method for `KeyboardController` - `setFocusTo(""next"" | ""prev"")`. It'll go to the next/prev field from currently focused input. For that I implemented code that goes through view hierarchy on both platforms.
+
+Later I started to analyze further specifications and decided to add `setFocusTo(""current"")` API that will bring a keyboard back (set focus to last focused input).
+
+Based on this API I created a precise replica of `KeyboardToolbar` (took a reference from `web` on iOS) and tried to create something that looks similar on Android (overall matches iOS design but uses colors that matches system UI on Android).
+
+Remaining thing was how to tell JS when next/prev buttons available/active. I had few options on which way to use for dispatching:
+- as plain events via `eventEmitter` (which I selected in the end);
+- via `KeyboardControllerView` (we would need to add data in context, and it's kind of strange to have a lot of unrelated data/methods in context, we start to break SOLID principles here);
+- via new `ToolbarView` (it could help to propagate events synchronously via reanimated-event-bus, but we also have to use conditional rendering/specify other props, so I thought it would be more convenient to use plain state - this component should be highly customizable and setting props via `useAnimatedProps` may be not a trivial thing for devs who just came to RN world);
+
+I decided to use first approach because it's very simple and it looks like it's good enough (in future it can be changed, I didn't make the API for events propagation public yet).
+
+I also had a choice of which data structures to use:
+
+```ts
+type FocusDidSetEvent = {
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+```
+
+vs
+
+```ts
+type FocusDidSetEvent = {
+  current: number;
+  count: number;
+}
+```
+
+I selected a second one, because in my understanding it may give a better flexibility (though for this approach we have to gather all inputs on a screen which is more resource consuming operation than finding prev and next `TextInput` - again now it works fine so let's keep it, but in future internal events shape can be changed (for example if we encounter performance problems) - these events not part of public API. In public API we just propagate `disabled` property - the way how it's calculated it's totally up to library).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303 https://github.com/facebook/react-native/issues/641
+
+## 📢 Changelog
+
+### Docs
+
+- added a page for `KeyboardToolbar` API;
+- added lottie animation for `KeyboardToolbar` usage;
+
+### JS
+
+- added `KeyboardToolbar` component;
+- implemented `setFocusTo` method (specs, TS declarations);
+- return an initialized variable from `interpolate` rather than an assigned shared value because it seems like setting happens asynchronously and initial render may be incorrect (if you add `console.log({ a: interpolation, b: lastInterpolation.value });` you will see next output `{""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 42}`);
+
+### iOS
+
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### Android
+
+- use Java 17 and Gradle Plugin v7.2;
+- added unit tests (using `robolectric`) for `ViewHierarchyNavigator` class;
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### E2E
+
+- added new test for covering `KeyboardToolbar` functionality;
+- added 2 new functions `expectElementBitmapsToBeEqual` and `doActionNTimes`;
+
+### CI
+
+- added a job for running Android unit tests
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (Android 14, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device);
+- Pixel 3A (Android 13, emulator);
+- iPhone 15 (iOS 17.2, simulator)
+- iPhone 15 Pro (iOS 17.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+### Screenshots
+
+|Android (light theme)|Android (dark theme)|iOS (light theme)|iOS (dark theme)|
+|---------------------|----------------------|-----------------|-----------------|
+|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/97ea2e12-ef67-488f-92b4-a63c88eb2543"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/892c1f70-2188-4272-86c6-4a33e2aea9fc"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/1302b4b5-6f41-49ca-9a52-0713dbd95399"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/e75dec94-d8ec-49fb-abf8-3cce974fd07f"">|
+
+### Videos
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/dc05191f-1cf1-41e3-8068-f4316de40a95
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: added jest tests
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 11bcf92..b424757 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -7,6 +7,7 @@ import {
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
++  KeyboardToolbar,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -37,7 +38,12 @@ function KeyboardAvoidingViewTest() {
+ 
+ function KeyboardAwareScrollViewTest() {
+   return (
+-    <KeyboardAwareScrollView enabled={true} bottomOffset={20} style={style}>
++    <KeyboardAwareScrollView
++      bottomOffset={20}
++      enabled={true}
++      disableScrollOnKeyboardHide={false}
++      style={style}
++    >
+       <EmptyView />
+     </KeyboardAwareScrollView>
+   );
+@@ -53,6 +59,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++function KeyboardToolbarTest() {
++  return <KeyboardToolbar content={<EmptyView />} />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -73,4 +83,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardStickyView`"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+346,c2be0def0a4baa14470e5188f3a58a3418daa8e5,8b5ea44be0e18c0a1f77f3a9ee6a9a19e5a65af0,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added keyboard toolbar component.
+
+## 💡 Motivation and Context
+
+The feature was requested in https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303
+
+Before the implementation I decided to make a research to see how similar tasks are implemented on other platforms/framework. I went through:
+- https://pub.dev/packages/keyboard_actions
+- https://github.com/hackiftekhar/IQKeyboardManager
+- default toolbar on iOS (on web)
+
+The downside of `keyboard_actions` from Flutter is the fact that it requires a lot of hand engineering (setting `refs` to each input and the passing this array to the keyboard). And we need to do that for each screen.
+
+However `IQKeyboardManager` handles it automatically via view traversal. I thought that a similar algorithm can be implemented in a react-native, because all JS views are shown in a native view hierarchy as corresponding native views.
+
+The `IQKeyboardManager` offers a lot of customization which is not needed in `react-native` ecosystem (like specifying array of `UIVIewController`s where `KeyboardToolbar` should be hidden - it should be done via conditional rendering in RN world). On the other side - solution from `IQKeyboardManager` is not very customizable in `react-native` ecosystem (we can not specify rendering for custom elements).
+
+So I took inspiration from all frameworks and decided to create a new approach that will ideally fit `react-native` projects - it'll not require a lot of hand engineering and will offer a great flexibility and customization. The ideal goal is to have the API as on web (from simplicity perspective) and to be a very cusomizable.
+
+`IQKeyboardManager` handles a lot of cases, but I decided to start from something basic and then enhance the API. So the core API is a new method for `KeyboardController` - `setFocusTo(""next"" | ""prev"")`. It'll go to the next/prev field from currently focused input. For that I implemented code that goes through view hierarchy on both platforms.
+
+Later I started to analyze further specifications and decided to add `setFocusTo(""current"")` API that will bring a keyboard back (set focus to last focused input).
+
+Based on this API I created a precise replica of `KeyboardToolbar` (took a reference from `web` on iOS) and tried to create something that looks similar on Android (overall matches iOS design but uses colors that matches system UI on Android).
+
+Remaining thing was how to tell JS when next/prev buttons available/active. I had few options on which way to use for dispatching:
+- as plain events via `eventEmitter` (which I selected in the end);
+- via `KeyboardControllerView` (we would need to add data in context, and it's kind of strange to have a lot of unrelated data/methods in context, we start to break SOLID principles here);
+- via new `ToolbarView` (it could help to propagate events synchronously via reanimated-event-bus, but we also have to use conditional rendering/specify other props, so I thought it would be more convenient to use plain state - this component should be highly customizable and setting props via `useAnimatedProps` may be not a trivial thing for devs who just came to RN world);
+
+I decided to use first approach because it's very simple and it looks like it's good enough (in future it can be changed, I didn't make the API for events propagation public yet).
+
+I also had a choice of which data structures to use:
+
+```ts
+type FocusDidSetEvent = {
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+```
+
+vs
+
+```ts
+type FocusDidSetEvent = {
+  current: number;
+  count: number;
+}
+```
+
+I selected a second one, because in my understanding it may give a better flexibility (though for this approach we have to gather all inputs on a screen which is more resource consuming operation than finding prev and next `TextInput` - again now it works fine so let's keep it, but in future internal events shape can be changed (for example if we encounter performance problems) - these events not part of public API. In public API we just propagate `disabled` property - the way how it's calculated it's totally up to library).
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/303 https://github.com/facebook/react-native/issues/641
+
+## 📢 Changelog
+
+### Docs
+
+- added a page for `KeyboardToolbar` API;
+- added lottie animation for `KeyboardToolbar` usage;
+
+### JS
+
+- added `KeyboardToolbar` component;
+- implemented `setFocusTo` method (specs, TS declarations);
+- return an initialized variable from `interpolate` rather than an assigned shared value because it seems like setting happens asynchronously and initial render may be incorrect (if you add `console.log({ a: interpolation, b: lastInterpolation.value });` you will see next output `{""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 0}, {""a"": 42, ""b"": 42}`);
+
+### iOS
+
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### Android
+
+- use Java 17 and Gradle Plugin v7.2;
+- added unit tests (using `robolectric`) for `ViewHierarchyNavigator` class;
+- added `FocusedInputHolder` class (holds a reference to last focused input);
+- added `ViewHierarchyNavigator` which travers view hierarchy back and forth;
+- added new `setFocusTo` method to `KeyboardController`;
+
+### E2E
+
+- added new test for covering `KeyboardToolbar` functionality;
+- added 2 new functions `expectElementBitmapsToBeEqual` and `doActionNTimes`;
+
+### CI
+
+- added a job for running Android unit tests
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (Android 14, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device);
+- Pixel 3A (Android 13, emulator);
+- iPhone 15 (iOS 17.2, simulator)
+- iPhone 15 Pro (iOS 17.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+### Screenshots
+
+|Android (light theme)|Android (dark theme)|iOS (light theme)|iOS (dark theme)|
+|---------------------|----------------------|-----------------|-----------------|
+|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/97ea2e12-ef67-488f-92b4-a63c88eb2543"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/892c1f70-2188-4272-86c6-4a33e2aea9fc"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/1302b4b5-6f41-49ca-9a52-0713dbd95399"">|<img height=""400"" src=""https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/e75dec94-d8ec-49fb-abf8-3cce974fd07f"">|
+
+### Videos
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/22820318/dc05191f-1cf1-41e3-8068-f4316de40a95
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: added jest tests
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 3d99c4f..b424757 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -7,6 +7,7 @@ import {
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
++  KeyboardToolbar,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -58,6 +59,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++function KeyboardToolbarTest() {
++  return <KeyboardToolbar content={<EmptyView />} />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -78,4 +83,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardStickyView`"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+350,fddbe72bea7768e544e0911326eddc45cd5cab57,5e83a355dacf699693eef9490d14b0c7fe05886c,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+I added the enableKeyboardHandling property to be able to turn off this component on screens that are no longer in focus and save resources. Also, it can be useful if someone uses bottomSheet navigation or has text input in a transparent modal or alerts.
+
+## 💡 Motivation and Context
+
+To give an ability for users to turn off auto scrolling (sometimes it may be needed to cover specific requirements).
+
+## 📢 Changelog
+
+- added new `enabled` prop for `KeyboardAwareScrollView` component;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- iPhone 15 pro
+- Pixel 3 a
+
+## 📸 Screenshots (if appropriate):
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/86000012/584a63f0-cafc-4cf2-b207-6e4c33cbf86c
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: add examples
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index fe0a576..3d99c4f 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -39,6 +39,7 @@ function KeyboardAwareScrollViewTest() {
+   return (
+     <KeyboardAwareScrollView
+       bottomOffset={20}
++      enabled={true}
+       disableScrollOnKeyboardHide={false}
+       style={style}
+     >
+",0,
+350,fddbe72bea7768e544e0911326eddc45cd5cab57,54c30c96bf119f5a32a85f2c93510121e55a9d2b,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+I added the enableKeyboardHandling property to be able to turn off this component on screens that are no longer in focus and save resources. Also, it can be useful if someone uses bottomSheet navigation or has text input in a transparent modal or alerts.
+
+## 💡 Motivation and Context
+
+To give an ability for users to turn off auto scrolling (sometimes it may be needed to cover specific requirements).
+
+## 📢 Changelog
+
+- added new `enabled` prop for `KeyboardAwareScrollView` component;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- iPhone 15 pro
+- Pixel 3 a
+
+## 📸 Screenshots (if appropriate):
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/86000012/584a63f0-cafc-4cf2-b207-6e4c33cbf86c
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update fabric snapshots
+",,0,
+350,fddbe72bea7768e544e0911326eddc45cd5cab57,5e83a355dacf699693eef9490d14b0c7fe05886c,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+I added the enableKeyboardHandling property to be able to turn off this component on screens that are no longer in focus and save resources. Also, it can be useful if someone uses bottomSheet navigation or has text input in a transparent modal or alerts.
+
+## 💡 Motivation and Context
+
+To give an ability for users to turn off auto scrolling (sometimes it may be needed to cover specific requirements).
+
+## 📢 Changelog
+
+- added new `enabled` prop for `KeyboardAwareScrollView` component;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- iPhone 15 pro
+- Pixel 3 a
+
+## 📸 Screenshots (if appropriate):
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/86000012/584a63f0-cafc-4cf2-b207-6e4c33cbf86c
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: add examples
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index fe0a576..3d99c4f 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -39,6 +39,7 @@ function KeyboardAwareScrollViewTest() {
+   return (
+     <KeyboardAwareScrollView
+       bottomOffset={20}
++      enabled={true}
+       disableScrollOnKeyboardHide={false}
+       style={style}
+     >
+",0,
+350,fddbe72bea7768e544e0911326eddc45cd5cab57,54c30c96bf119f5a32a85f2c93510121e55a9d2b,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+I added the enableKeyboardHandling property to be able to turn off this component on screens that are no longer in focus and save resources. Also, it can be useful if someone uses bottomSheet navigation or has text input in a transparent modal or alerts.
+
+## 💡 Motivation and Context
+
+To give an ability for users to turn off auto scrolling (sometimes it may be needed to cover specific requirements).
+
+## 📢 Changelog
+
+- added new `enabled` prop for `KeyboardAwareScrollView` component;
+
+## 🤔 How Has This Been Tested?
+
+Tested on:
+- iPhone 15 pro
+- Pixel 3 a
+
+## 📸 Screenshots (if appropriate):
+
+https://github.com/kirillzyusko/react-native-keyboard-controller/assets/86000012/584a63f0-cafc-4cf2-b207-6e4c33cbf86c
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update fabric snapshots
+",,0,
+589,0e0af4080537e7da15bf3b79196355e276dcac6c,a0007b461950edaab1bcaef13851904c008bbb71,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `OverKeyboardView` component.
+
+## 💡 Motivation and Context
+
+From an implementation perspective I think it's worth to note that there are only one way to implement that:
+- on Android we need to attach a view directly to `WindowManager` with `TYPE_APPLICATION_PANEL`;
+- on iOS we need to attach view directly to `UIRemoteKeyboardWindow` (prior to iOS 16 it was possible to attach just as a last window, but starting from iOS 16 the `UIRemoteKeyboardWindow` gets hidden in window list);
+
+So in this PR I used approaches from above to achieve this.
+
+From an unusual things:
+- on Android we need to stretch first children to screen size manually - it's done via custom ShadowNode and overwriting lifecycle method;
+- on iOS we have to do the same, but I couldn't achieve this from a native code, so I specified styles in JS code;
+- on iOS touch handlers from Detox are not working (I don't know why - plaing touchable system and RNGH works fine);
+- on Android if touch gets unhandled then application will instantly crash - that's why I wrapped the `OverKeyboardView` in `TouchableWithoutFeedback`.
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/373
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+- added a page in API section;
+- added to feature comparison;
+- added a new line in README;
+- added a new keyword in package.json;
+
+### E2E
+- added new test for `OverKeybaordView`;
+
+### JS
+
+- added `OverKeyboardView` view;
+- added unit-tests for new component;
+- added new mocks;
+- added example screen with usage of new component;
+
+### iOS
+
+- export new `OverKeyboardView` component;
+- added new `UIWindow.topWindow` extension;
+
+### Android
+
+- export new `OverKeyboardView` component;
+- added new `getDisplaySize` extension;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 6s (iOS 15, real device);
+- iPhone 15 Pro (iOS 17.5, simulator);
+- iPhone 11 (iOS 18, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device)
+- Pixel 7 Pro (Android 14, real device);
+- Pixel 3a (Android 13, emulator);
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|---|
+|<img width=""421"" alt=""image"" src=""https://github.com/user-attachments/assets/ae2cca9b-4feb-4f5f-954b-f50f97cd896e"">|<img width=""421"" src=""https://github.com/user-attachments/assets/40b59767-c556-4717-8db4-2cf4c3af4f0a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","chore: update unit tests
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 993c1e1..2424955 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -8,6 +8,7 @@ import {
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
++  OverKeyboardView,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -63,6 +64,14 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={<EmptyView />} />;
+ }
+ 
++function OverKeyboardViewTest() {
++  return (
++    <OverKeyboardView visible={true}>
++      <EmptyView />
++    </OverKeyboardView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -87,4 +96,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `OverKeyboardView`"", () => {
++    expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+589,0e0af4080537e7da15bf3b79196355e276dcac6c,a0007b461950edaab1bcaef13851904c008bbb71,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `OverKeyboardView` component.
+
+## 💡 Motivation and Context
+
+From an implementation perspective I think it's worth to note that there are only one way to implement that:
+- on Android we need to attach a view directly to `WindowManager` with `TYPE_APPLICATION_PANEL`;
+- on iOS we need to attach view directly to `UIRemoteKeyboardWindow` (prior to iOS 16 it was possible to attach just as a last window, but starting from iOS 16 the `UIRemoteKeyboardWindow` gets hidden in window list);
+
+So in this PR I used approaches from above to achieve this.
+
+From an unusual things:
+- on Android we need to stretch first children to screen size manually - it's done via custom ShadowNode and overwriting lifecycle method;
+- on iOS we have to do the same, but I couldn't achieve this from a native code, so I specified styles in JS code;
+- on iOS touch handlers from Detox are not working (I don't know why - plaing touchable system and RNGH works fine);
+- on Android if touch gets unhandled then application will instantly crash - that's why I wrapped the `OverKeyboardView` in `TouchableWithoutFeedback`.
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/373
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+- added a page in API section;
+- added to feature comparison;
+- added a new line in README;
+- added a new keyword in package.json;
+
+### E2E
+- added new test for `OverKeybaordView`;
+
+### JS
+
+- added `OverKeyboardView` view;
+- added unit-tests for new component;
+- added new mocks;
+- added example screen with usage of new component;
+
+### iOS
+
+- export new `OverKeyboardView` component;
+- added new `UIWindow.topWindow` extension;
+
+### Android
+
+- export new `OverKeyboardView` component;
+- added new `getDisplaySize` extension;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 6s (iOS 15, real device);
+- iPhone 15 Pro (iOS 17.5, simulator);
+- iPhone 11 (iOS 18, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device)
+- Pixel 7 Pro (Android 14, real device);
+- Pixel 3a (Android 13, emulator);
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|---|
+|<img width=""421"" alt=""image"" src=""https://github.com/user-attachments/assets/ae2cca9b-4feb-4f5f-954b-f50f97cd896e"">|<img width=""421"" src=""https://github.com/user-attachments/assets/40b59767-c556-4717-8db4-2cf4c3af4f0a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","chore: update unit tests
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 993c1e1..2424955 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -8,6 +8,7 @@ import {
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
++  OverKeyboardView,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -63,6 +64,14 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={<EmptyView />} />;
+ }
+ 
++function OverKeyboardViewTest() {
++  return (
++    <OverKeyboardView visible={true}>
++      <EmptyView />
++    </OverKeyboardView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -87,4 +96,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `OverKeyboardView`"", () => {
++    expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+589,0e0af4080537e7da15bf3b79196355e276dcac6c,a0007b461950edaab1bcaef13851904c008bbb71,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `OverKeyboardView` component.
+
+## 💡 Motivation and Context
+
+From an implementation perspective I think it's worth to note that there are only one way to implement that:
+- on Android we need to attach a view directly to `WindowManager` with `TYPE_APPLICATION_PANEL`;
+- on iOS we need to attach view directly to `UIRemoteKeyboardWindow` (prior to iOS 16 it was possible to attach just as a last window, but starting from iOS 16 the `UIRemoteKeyboardWindow` gets hidden in window list);
+
+So in this PR I used approaches from above to achieve this.
+
+From an unusual things:
+- on Android we need to stretch first children to screen size manually - it's done via custom ShadowNode and overwriting lifecycle method;
+- on iOS we have to do the same, but I couldn't achieve this from a native code, so I specified styles in JS code;
+- on iOS touch handlers from Detox are not working (I don't know why - plaing touchable system and RNGH works fine);
+- on Android if touch gets unhandled then application will instantly crash - that's why I wrapped the `OverKeyboardView` in `TouchableWithoutFeedback`.
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/373
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+- added a page in API section;
+- added to feature comparison;
+- added a new line in README;
+- added a new keyword in package.json;
+
+### E2E
+- added new test for `OverKeybaordView`;
+
+### JS
+
+- added `OverKeyboardView` view;
+- added unit-tests for new component;
+- added new mocks;
+- added example screen with usage of new component;
+
+### iOS
+
+- export new `OverKeyboardView` component;
+- added new `UIWindow.topWindow` extension;
+
+### Android
+
+- export new `OverKeyboardView` component;
+- added new `getDisplaySize` extension;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 6s (iOS 15, real device);
+- iPhone 15 Pro (iOS 17.5, simulator);
+- iPhone 11 (iOS 18, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device)
+- Pixel 7 Pro (Android 14, real device);
+- Pixel 3a (Android 13, emulator);
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|---|
+|<img width=""421"" alt=""image"" src=""https://github.com/user-attachments/assets/ae2cca9b-4feb-4f5f-954b-f50f97cd896e"">|<img width=""421"" src=""https://github.com/user-attachments/assets/40b59767-c556-4717-8db4-2cf4c3af4f0a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","chore: update unit tests
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 993c1e1..2424955 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -8,6 +8,7 @@ import {
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
++  OverKeyboardView,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -63,6 +64,14 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={<EmptyView />} />;
+ }
+ 
++function OverKeyboardViewTest() {
++  return (
++    <OverKeyboardView visible={true}>
++      <EmptyView />
++    </OverKeyboardView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -87,4 +96,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `OverKeyboardView`"", () => {
++    expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+589,0e0af4080537e7da15bf3b79196355e276dcac6c,a0007b461950edaab1bcaef13851904c008bbb71,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `OverKeyboardView` component.
+
+## 💡 Motivation and Context
+
+From an implementation perspective I think it's worth to note that there are only one way to implement that:
+- on Android we need to attach a view directly to `WindowManager` with `TYPE_APPLICATION_PANEL`;
+- on iOS we need to attach view directly to `UIRemoteKeyboardWindow` (prior to iOS 16 it was possible to attach just as a last window, but starting from iOS 16 the `UIRemoteKeyboardWindow` gets hidden in window list);
+
+So in this PR I used approaches from above to achieve this.
+
+From an unusual things:
+- on Android we need to stretch first children to screen size manually - it's done via custom ShadowNode and overwriting lifecycle method;
+- on iOS we have to do the same, but I couldn't achieve this from a native code, so I specified styles in JS code;
+- on iOS touch handlers from Detox are not working (I don't know why - plaing touchable system and RNGH works fine);
+- on Android if touch gets unhandled then application will instantly crash - that's why I wrapped the `OverKeyboardView` in `TouchableWithoutFeedback`.
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/373
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+- added a page in API section;
+- added to feature comparison;
+- added a new line in README;
+- added a new keyword in package.json;
+
+### E2E
+- added new test for `OverKeybaordView`;
+
+### JS
+
+- added `OverKeyboardView` view;
+- added unit-tests for new component;
+- added new mocks;
+- added example screen with usage of new component;
+
+### iOS
+
+- export new `OverKeyboardView` component;
+- added new `UIWindow.topWindow` extension;
+
+### Android
+
+- export new `OverKeyboardView` component;
+- added new `getDisplaySize` extension;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 6s (iOS 15, real device);
+- iPhone 15 Pro (iOS 17.5, simulator);
+- iPhone 11 (iOS 18, real device);
+- Xiaomi Redmi Note 5 Pro (Android 9, real device)
+- Pixel 7 Pro (Android 14, real device);
+- Pixel 3a (Android 13, emulator);
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|---|
+|<img width=""421"" alt=""image"" src=""https://github.com/user-attachments/assets/ae2cca9b-4feb-4f5f-954b-f50f97cd896e"">|<img width=""421"" src=""https://github.com/user-attachments/assets/40b59767-c556-4717-8db4-2cf4c3af4f0a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","chore: update unit tests
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 993c1e1..2424955 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -8,6 +8,7 @@ import {
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
++  OverKeyboardView,
+ } from ""react-native-keyboard-controller"";
+ 
+ function EmptyView() {
+@@ -63,6 +64,14 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={<EmptyView />} />;
+ }
+ 
++function OverKeyboardViewTest() {
++  return (
++    <OverKeyboardView visible={true}>
++      <EmptyView />
++    </OverKeyboardView>
++  );
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -87,4 +96,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `OverKeyboardView`"", () => {
++    expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+812,f92ba98eb43994e119572c31d36f6f4d4bb138f2,85f9e627169d912a63eb1091a5f1c7fed2db7659,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Update RN to 0.78.
+
+## 💡 Motivation and Context
+
+One thing that I couldn't solve is `KeyboardToolbar` snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- added `React.` prefix for `JSX` elements;
+
+## 🤔 How Has This Been Tested?
+
+Tested both architectures on iPhone 15 Pro (iOS 17.5, Fabric), iPhone 16 Pro (iOS 18.1, paper) and Medium Phone API 35 (paper/fabric).
+
+## 📸 Screenshots (if appropriate):
+
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update all deps, fix unit tests
+",,0,
+812,f92ba98eb43994e119572c31d36f6f4d4bb138f2,85f9e627169d912a63eb1091a5f1c7fed2db7659,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Update RN to 0.78.
+
+## 💡 Motivation and Context
+
+One thing that I couldn't solve is `KeyboardToolbar` snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- added `React.` prefix for `JSX` elements;
+
+## 🤔 How Has This Been Tested?
+
+Tested both architectures on iPhone 15 Pro (iOS 17.5, Fabric), iPhone 16 Pro (iOS 18.1, paper) and Medium Phone API 35 (paper/fabric).
+
+## 📸 Screenshots (if appropriate):
+
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update all deps, fix unit tests
+",,0,
+812,f92ba98eb43994e119572c31d36f6f4d4bb138f2,85f9e627169d912a63eb1091a5f1c7fed2db7659,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Update RN to 0.78.
+
+## 💡 Motivation and Context
+
+One thing that I couldn't solve is `KeyboardToolbar` snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- added `React.` prefix for `JSX` elements;
+
+## 🤔 How Has This Been Tested?
+
+Tested both architectures on iPhone 15 Pro (iOS 17.5, Fabric), iPhone 16 Pro (iOS 18.1, paper) and Medium Phone API 35 (paper/fabric).
+
+## 📸 Screenshots (if appropriate):
+
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update all deps, fix unit tests
+",,0,
+812,f92ba98eb43994e119572c31d36f6f4d4bb138f2,85f9e627169d912a63eb1091a5f1c7fed2db7659,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Update RN to 0.78.
+
+## 💡 Motivation and Context
+
+One thing that I couldn't solve is `KeyboardToolbar` snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- added `React.` prefix for `JSX` elements;
+
+## 🤔 How Has This Been Tested?
+
+Tested both architectures on iPhone 15 Pro (iOS 17.5, Fabric), iPhone 16 Pro (iOS 18.1, paper) and Medium Phone API 35 (paper/fabric).
+
+## 📸 Screenshots (if appropriate):
+
+<!-- Add screenshots/video if needed -->
+<!-- That would be highly appreciated if you can add how it looked before and after your changes -->
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: update all deps, fix unit tests
+",,0,
+881,6a24a17903c590fae915a6239e34acdd3a9d3858,89355fbfabf25973dcc5e89f377f4af2bc03cd2a,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardToolbar.Group` component.
+
+## 💡 Motivation and Context
+
+This PR adds new `KeyboardToolbar.Group` component and corresponding native view. The idea is that with new component we can define a **group** of **related inputs** so that other inputs will not be scanned.
+
+The idea is similar to https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management#show-previousnext-arrow-buttons-for-textfield-which-are-not-direct-disblings
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/470
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- add API reference how to use new API;
+
+### JS
+
+- declare `KeyboardToolbarGroupView` component (codegen);
+- updated mocks file;
+- added snapshot testing for rendering compound `KeyboardToolbar`;
+
+### iOS
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+### Android
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 36, real device)
+- iPhone 17 Pro (iOS 26.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|----|
+|<video src=""https://github.com/user-attachments/assets/05cd4c1f-06bc-4ac2-8ccb-540103f1199c"">|<video src=""https://github.com/user-attachments/assets/1a399979-bc64-4ecd-b5e9-a83760248075"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mocks
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index f154e64..429542e 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -1,6 +1,6 @@
+ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+-import { View } from ""react-native"";
++import { TextInput, View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
+@@ -68,6 +68,27 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={content} />;
+ }
+ 
++function KeyboardToolbarCompoundTest() {
++  return (
++    <>
++      <KeyboardToolbar>
++        <KeyboardToolbar.Background>
++          <EmptyView />
++        </KeyboardToolbar.Background>
++        <KeyboardToolbar.Content>
++          <EmptyView />
++        </KeyboardToolbar.Content>
++        <KeyboardToolbar.Prev />
++        <KeyboardToolbar.Next />
++        <KeyboardToolbar.Done />
++      </KeyboardToolbar>
++      <KeyboardToolbar.Group>
++        <TextInput />
++      </KeyboardToolbar.Group>
++    </>
++  );
++}
++
+ function OverKeyboardViewTest() {
+   return (
+     <OverKeyboardView visible={true}>
+@@ -109,6 +130,10 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
++  it(""should render compound `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarCompoundTest />)).toMatchSnapshot();
++  });
++
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
+",0,
+881,6a24a17903c590fae915a6239e34acdd3a9d3858,89355fbfabf25973dcc5e89f377f4af2bc03cd2a,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardToolbar.Group` component.
+
+## 💡 Motivation and Context
+
+This PR adds new `KeyboardToolbar.Group` component and corresponding native view. The idea is that with new component we can define a **group** of **related inputs** so that other inputs will not be scanned.
+
+The idea is similar to https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management#show-previousnext-arrow-buttons-for-textfield-which-are-not-direct-disblings
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/470
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- add API reference how to use new API;
+
+### JS
+
+- declare `KeyboardToolbarGroupView` component (codegen);
+- updated mocks file;
+- added snapshot testing for rendering compound `KeyboardToolbar`;
+
+### iOS
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+### Android
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 36, real device)
+- iPhone 17 Pro (iOS 26.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|----|
+|<video src=""https://github.com/user-attachments/assets/05cd4c1f-06bc-4ac2-8ccb-540103f1199c"">|<video src=""https://github.com/user-attachments/assets/1a399979-bc64-4ecd-b5e9-a83760248075"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mocks
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index f154e64..429542e 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -1,6 +1,6 @@
+ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+-import { View } from ""react-native"";
++import { TextInput, View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
+@@ -68,6 +68,27 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={content} />;
+ }
+ 
++function KeyboardToolbarCompoundTest() {
++  return (
++    <>
++      <KeyboardToolbar>
++        <KeyboardToolbar.Background>
++          <EmptyView />
++        </KeyboardToolbar.Background>
++        <KeyboardToolbar.Content>
++          <EmptyView />
++        </KeyboardToolbar.Content>
++        <KeyboardToolbar.Prev />
++        <KeyboardToolbar.Next />
++        <KeyboardToolbar.Done />
++      </KeyboardToolbar>
++      <KeyboardToolbar.Group>
++        <TextInput />
++      </KeyboardToolbar.Group>
++    </>
++  );
++}
++
+ function OverKeyboardViewTest() {
+   return (
+     <OverKeyboardView visible={true}>
+@@ -109,6 +130,10 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
++  it(""should render compound `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarCompoundTest />)).toMatchSnapshot();
++  });
++
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
+",0,
+881,6a24a17903c590fae915a6239e34acdd3a9d3858,89355fbfabf25973dcc5e89f377f4af2bc03cd2a,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardToolbar.Group` component.
+
+## 💡 Motivation and Context
+
+This PR adds new `KeyboardToolbar.Group` component and corresponding native view. The idea is that with new component we can define a **group** of **related inputs** so that other inputs will not be scanned.
+
+The idea is similar to https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management#show-previousnext-arrow-buttons-for-textfield-which-are-not-direct-disblings
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/470
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- add API reference how to use new API;
+
+### JS
+
+- declare `KeyboardToolbarGroupView` component (codegen);
+- updated mocks file;
+- added snapshot testing for rendering compound `KeyboardToolbar`;
+
+### iOS
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+### Android
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 36, real device)
+- iPhone 17 Pro (iOS 26.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|----|
+|<video src=""https://github.com/user-attachments/assets/05cd4c1f-06bc-4ac2-8ccb-540103f1199c"">|<video src=""https://github.com/user-attachments/assets/1a399979-bc64-4ecd-b5e9-a83760248075"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mocks
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index f154e64..429542e 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -1,6 +1,6 @@
+ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+-import { View } from ""react-native"";
++import { TextInput, View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
+@@ -68,6 +68,27 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={content} />;
+ }
+ 
++function KeyboardToolbarCompoundTest() {
++  return (
++    <>
++      <KeyboardToolbar>
++        <KeyboardToolbar.Background>
++          <EmptyView />
++        </KeyboardToolbar.Background>
++        <KeyboardToolbar.Content>
++          <EmptyView />
++        </KeyboardToolbar.Content>
++        <KeyboardToolbar.Prev />
++        <KeyboardToolbar.Next />
++        <KeyboardToolbar.Done />
++      </KeyboardToolbar>
++      <KeyboardToolbar.Group>
++        <TextInput />
++      </KeyboardToolbar.Group>
++    </>
++  );
++}
++
+ function OverKeyboardViewTest() {
+   return (
+     <OverKeyboardView visible={true}>
+@@ -109,6 +130,10 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
++  it(""should render compound `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarCompoundTest />)).toMatchSnapshot();
++  });
++
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
+",0,
+881,6a24a17903c590fae915a6239e34acdd3a9d3858,89355fbfabf25973dcc5e89f377f4af2bc03cd2a,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardToolbar.Group` component.
+
+## 💡 Motivation and Context
+
+This PR adds new `KeyboardToolbar.Group` component and corresponding native view. The idea is that with new component we can define a **group** of **related inputs** so that other inputs will not be scanned.
+
+The idea is similar to https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management#show-previousnext-arrow-buttons-for-textfield-which-are-not-direct-disblings
+
+Closes https://github.com/kirillzyusko/react-native-keyboard-controller/issues/470
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- add API reference how to use new API;
+
+### JS
+
+- declare `KeyboardToolbarGroupView` component (codegen);
+- updated mocks file;
+- added snapshot testing for rendering compound `KeyboardToolbar`;
+
+### iOS
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+### Android
+
+- update traversal algorithm to take `KeyboardToolbarGroupView` into consideration;
+- added unit tests to cover new functionality;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 36, real device)
+- iPhone 17 Pro (iOS 26.2, simulator)
+
+## 📸 Screenshots (if appropriate):
+
+|Android|iOS|
+|--------|----|
+|<video src=""https://github.com/user-attachments/assets/05cd4c1f-06bc-4ac2-8ccb-540103f1199c"">|<video src=""https://github.com/user-attachments/assets/1a399979-bc64-4ecd-b5e9-a83760248075"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mocks
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index f154e64..429542e 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -1,6 +1,6 @@
+ import { render } from ""@testing-library/react-native"";
+ import React from ""react"";
+-import { View } from ""react-native"";
++import { TextInput, View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
+@@ -68,6 +68,27 @@ function KeyboardToolbarTest() {
+   return <KeyboardToolbar content={content} />;
+ }
+ 
++function KeyboardToolbarCompoundTest() {
++  return (
++    <>
++      <KeyboardToolbar>
++        <KeyboardToolbar.Background>
++          <EmptyView />
++        </KeyboardToolbar.Background>
++        <KeyboardToolbar.Content>
++          <EmptyView />
++        </KeyboardToolbar.Content>
++        <KeyboardToolbar.Prev />
++        <KeyboardToolbar.Next />
++        <KeyboardToolbar.Done />
++      </KeyboardToolbar>
++      <KeyboardToolbar.Group>
++        <TextInput />
++      </KeyboardToolbar.Group>
++    </>
++  );
++}
++
+ function OverKeyboardViewTest() {
+   return (
+     <OverKeyboardView visible={true}>
+@@ -109,6 +130,10 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
++  it(""should render compound `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarCompoundTest />)).toMatchSnapshot();
++  });
++
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
+",0,
+919,6f5f91f0434cedcff6f72c73e70c9447c4f33633,592d2621dba4ae61305b63797ea20050888b1947,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Fixed skipped test flakiness.
+
+## 💡 Motivation and Context
+
+> One thing that I couldn't solve is KeyboardToolbar snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+It has been fixed in this PR by passing content as pre-rendered property 👀 
+
+Follow up for https://github.com/kirillzyusko/react-native-keyboard-controller/pull/812
+
+<!-- Why is this change required? What problem does it solve? -->
+<!-- If it fixes an open issue, please link to the issue here. -->
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- remove `.skip` from tests;
+
+## 🤔 How Has This Been Tested?
+
+Tested on CI and locally.
+
+## 📸 Screenshots (if appropriate):
+
+<img width=""852"" alt=""image"" src=""https://github.com/user-attachments/assets/d3b0b721-f757-4035-bed2-4cbc173a592a"" />
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: skipped snapshot test
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index ef251ab..e8402da 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -60,8 +60,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++const content = <EmptyView />;
++
+ function KeyboardToolbarTest() {
+-  return <KeyboardToolbar content={<EmptyView />} />;
++  return <KeyboardToolbar content={content} />;
+ }
+ 
+ function OverKeyboardViewTest() {
+@@ -93,7 +95,7 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
+ 
+-  it.skip(""should render `KeyboardToolbar`"", () => {
++  it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
+",0,
+919,6f5f91f0434cedcff6f72c73e70c9447c4f33633,592d2621dba4ae61305b63797ea20050888b1947,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Fixed skipped test flakiness.
+
+## 💡 Motivation and Context
+
+> One thing that I couldn't solve is KeyboardToolbar snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+It has been fixed in this PR by passing content as pre-rendered property 👀 
+
+Follow up for https://github.com/kirillzyusko/react-native-keyboard-controller/pull/812
+
+<!-- Why is this change required? What problem does it solve? -->
+<!-- If it fixes an open issue, please link to the issue here. -->
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- remove `.skip` from tests;
+
+## 🤔 How Has This Been Tested?
+
+Tested on CI and locally.
+
+## 📸 Screenshots (if appropriate):
+
+<img width=""852"" alt=""image"" src=""https://github.com/user-attachments/assets/d3b0b721-f757-4035-bed2-4cbc173a592a"" />
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: skipped snapshot test
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index ef251ab..0023085 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -60,8 +60,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++const content = <EmptyView />;
++
+ function KeyboardToolbarTest() {
+-  return <KeyboardToolbar content={<EmptyView />} />;
++  return <KeyboardToolbar content={content} />;
+ }
+ 
+ function OverKeyboardViewTest() {
+@@ -93,8 +95,8 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
+ 
+-  it.skip(""should render `KeyboardToolbar`"", () => {
+-    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />).toJSON()).toMatchSnapshot();
+   });
+ 
+   it(""should render `OverKeyboardView`"", () => {
+",0,
+919,6f5f91f0434cedcff6f72c73e70c9447c4f33633,592d2621dba4ae61305b63797ea20050888b1947,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Fixed skipped test flakiness.
+
+## 💡 Motivation and Context
+
+> One thing that I couldn't solve is KeyboardToolbar snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+It has been fixed in this PR by passing content as pre-rendered property 👀 
+
+Follow up for https://github.com/kirillzyusko/react-native-keyboard-controller/pull/812
+
+<!-- Why is this change required? What problem does it solve? -->
+<!-- If it fixes an open issue, please link to the issue here. -->
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- remove `.skip` from tests;
+
+## 🤔 How Has This Been Tested?
+
+Tested on CI and locally.
+
+## 📸 Screenshots (if appropriate):
+
+<img width=""852"" alt=""image"" src=""https://github.com/user-attachments/assets/d3b0b721-f757-4035-bed2-4cbc173a592a"" />
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: skipped snapshot test
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index ef251ab..e8402da 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -60,8 +60,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++const content = <EmptyView />;
++
+ function KeyboardToolbarTest() {
+-  return <KeyboardToolbar content={<EmptyView />} />;
++  return <KeyboardToolbar content={content} />;
+ }
+ 
+ function OverKeyboardViewTest() {
+@@ -93,7 +95,7 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
+ 
+-  it.skip(""should render `KeyboardToolbar`"", () => {
++  it(""should render `KeyboardToolbar`"", () => {
+     expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
+   });
+ 
+",0,
+919,6f5f91f0434cedcff6f72c73e70c9447c4f33633,592d2621dba4ae61305b63797ea20050888b1947,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Fixed skipped test flakiness.
+
+## 💡 Motivation and Context
+
+> One thing that I couldn't solve is KeyboardToolbar snapshot testing component. For some reasons it serializes entire react tree. I think it happens because the ecosystem is not ready for React 19 yet and serializers somehow doesn't work. In order not to block this PR I temporarily disabled this test. I'll enable it back when serializer stuff will be sorted out.
+
+It has been fixed in this PR by passing content as pre-rendered property 👀 
+
+Follow up for https://github.com/kirillzyusko/react-native-keyboard-controller/pull/812
+
+<!-- Why is this change required? What problem does it solve? -->
+<!-- If it fixes an open issue, please link to the issue here. -->
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### JS
+
+- remove `.skip` from tests;
+
+## 🤔 How Has This Been Tested?
+
+Tested on CI and locally.
+
+## 📸 Screenshots (if appropriate):
+
+<img width=""852"" alt=""image"" src=""https://github.com/user-attachments/assets/d3b0b721-f757-4035-bed2-4cbc173a592a"" />
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: skipped snapshot test
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index ef251ab..0023085 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -60,8 +60,10 @@ function KeyboardStickyViewTest() {
+   );
+ }
+ 
++const content = <EmptyView />;
++
+ function KeyboardToolbarTest() {
+-  return <KeyboardToolbar content={<EmptyView />} />;
++  return <KeyboardToolbar content={content} />;
+ }
+ 
+ function OverKeyboardViewTest() {
+@@ -93,8 +95,8 @@ describe(""components rendering"", () => {
+     expect(render(<KeyboardStickyViewTest />)).toMatchSnapshot();
+   });
+ 
+-  it.skip(""should render `KeyboardToolbar`"", () => {
+-    expect(render(<KeyboardToolbarTest />)).toMatchSnapshot();
++  it(""should render `KeyboardToolbar`"", () => {
++    expect(render(<KeyboardToolbarTest />).toJSON()).toMatchSnapshot();
+   });
+ 
+   it(""should render `OverKeyboardView`"", () => {
+",0,
+981,aed22b7397fbc3947fd397b7e7f3081bbfc5201e,0069c73ff4b5462a84ba35961c25d4f1badaf655,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardBackgroundView` - component designed to match keyboard backdrop UI.
+
+## 💡 Motivation and Context
+
+This component can be useful when you want to continue keyboard surface and embed advanced elements (such as `TextInput` inside it). Using this component you can achieve a similar UI to Photos app or Safari app search on iOS. Additioanlly this component will be used as a polyfill implementation for `KeyboardExtender` on Android (just because `KeyboardExtender` can not be implemented natively on Android).
+
+> [!WARNING]
+> This component only matches default keyboard UI background. If user customizes it -> it will look differently and will not match keyboard design. There is no way to check displayed keyboard color on a native side, but some apps still use this approach, so I thought to export that possibility from `keyboard-controller` too.
+
+On iOS we can use system class `UIKBBackdropView` to match the keyboard background. On Android keyboard is a 3rd party process so there is no API at all, so I kind of reverse-engineered it: we have an access to keyboard package name and then based on pacakge name and phone preferences we can ""guess"" keyboard color. In reality it may vary from OS version o OS version and may be even dynamic and depend on wallpaper generic color. To solve it I Added a class that has a basic color (can be dynamic too) and then we have additional property called `tone`, which can slightly adjust the color. The idea is that color like `#3c3c3c` with tone `+2` will become `#3e3e3e`. For now it works and we can successfully match default keyboard color.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### E2E
+
+- cover `KeyboardBackgroundView` by e2e tests;
+
+### Docs
+
+- mention new feature in README;
+- new docs page `KeyboardBackgroundView`;
+- new chapter in Components Overview guide.
+
+### JS
+
+- added `KeyboardBackgroundView`;
+- added unit-tests for `KeyboardBackgroundView`.
+
+### iOS
+
+- added `KeyboardBackgroundView`;
+
+### Android
+
+- added `KeyboardBackgroundView`;
+- move `isSystemDarkMode` extensions to `Context`;
+- create new `currentImePackage` extension;
+- create resource files;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for KeyboardExtender;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 35, API 36 - real device);
+- Pixel 9 Pro (API 31, API 33, API 34, API 35, API 36 - emulator);
+- Xiaomi Redmi Note 5 Pro (API 28 - real device);
+- iPhone 11 (iOS 18.5 - real device);
+- iPhone 6s (iOS 15.8 - real device);
+- iPhone 14 Pro (iOS 18.4 - real device).
+- iPhone 16 Pro (iOS 18.5, 26.0 - simulator)
+- iPhone 15 Pro (iOS 17.5 - simulator)
+
+plus tested on all e2e devices (via e2e tests).
+
+## 📸 Screenshots (if appropriate):
+
+### Shared surface
+
+|Android|iOS|
+|--------|---|
+|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/1bbbbdf3-17af-4277-a33a-390a413c50e5"" />|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/489ace49-8a68-4fdf-a98a-bd4bdc0a0418"">|
+
+### ""Meatball""/Ask AI/Liquid keyboard
+
+|Android|iOS|
+|--------|---|
+|<video src=""https://github.com/user-attachments/assets/ac3efba6-2a6a-43a1-b0ee-501e2b5be361"">|<video src=""https://github.com/user-attachments/assets/2f7d5c3e-4e32-43d9-b2d4-9658accc757a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mock
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index e8402da..836e932 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -4,6 +4,7 @@ import { View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
++  KeyboardBackgroundView,
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
+@@ -74,6 +75,10 @@ function OverKeyboardViewTest() {
+   );
+ }
+ 
++function KeyboardBackgroundViewTest() {
++  return <KeyboardBackgroundView />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -102,4 +107,8 @@ describe(""components rendering"", () => {
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardBackgroundView`"", () => {
++    expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+981,aed22b7397fbc3947fd397b7e7f3081bbfc5201e,0069c73ff4b5462a84ba35961c25d4f1badaf655,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardBackgroundView` - component designed to match keyboard backdrop UI.
+
+## 💡 Motivation and Context
+
+This component can be useful when you want to continue keyboard surface and embed advanced elements (such as `TextInput` inside it). Using this component you can achieve a similar UI to Photos app or Safari app search on iOS. Additioanlly this component will be used as a polyfill implementation for `KeyboardExtender` on Android (just because `KeyboardExtender` can not be implemented natively on Android).
+
+> [!WARNING]
+> This component only matches default keyboard UI background. If user customizes it -> it will look differently and will not match keyboard design. There is no way to check displayed keyboard color on a native side, but some apps still use this approach, so I thought to export that possibility from `keyboard-controller` too.
+
+On iOS we can use system class `UIKBBackdropView` to match the keyboard background. On Android keyboard is a 3rd party process so there is no API at all, so I kind of reverse-engineered it: we have an access to keyboard package name and then based on pacakge name and phone preferences we can ""guess"" keyboard color. In reality it may vary from OS version o OS version and may be even dynamic and depend on wallpaper generic color. To solve it I Added a class that has a basic color (can be dynamic too) and then we have additional property called `tone`, which can slightly adjust the color. The idea is that color like `#3c3c3c` with tone `+2` will become `#3e3e3e`. For now it works and we can successfully match default keyboard color.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### E2E
+
+- cover `KeyboardBackgroundView` by e2e tests;
+
+### Docs
+
+- mention new feature in README;
+- new docs page `KeyboardBackgroundView`;
+- new chapter in Components Overview guide.
+
+### JS
+
+- added `KeyboardBackgroundView`;
+- added unit-tests for `KeyboardBackgroundView`.
+
+### iOS
+
+- added `KeyboardBackgroundView`;
+
+### Android
+
+- added `KeyboardBackgroundView`;
+- move `isSystemDarkMode` extensions to `Context`;
+- create new `currentImePackage` extension;
+- create resource files;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for KeyboardExtender;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 35, API 36 - real device);
+- Pixel 9 Pro (API 31, API 33, API 34, API 35, API 36 - emulator);
+- Xiaomi Redmi Note 5 Pro (API 28 - real device);
+- iPhone 11 (iOS 18.5 - real device);
+- iPhone 6s (iOS 15.8 - real device);
+- iPhone 14 Pro (iOS 18.4 - real device).
+- iPhone 16 Pro (iOS 18.5, 26.0 - simulator)
+- iPhone 15 Pro (iOS 17.5 - simulator)
+
+plus tested on all e2e devices (via e2e tests).
+
+## 📸 Screenshots (if appropriate):
+
+### Shared surface
+
+|Android|iOS|
+|--------|---|
+|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/1bbbbdf3-17af-4277-a33a-390a413c50e5"" />|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/489ace49-8a68-4fdf-a98a-bd4bdc0a0418"">|
+
+### ""Meatball""/Ask AI/Liquid keyboard
+
+|Android|iOS|
+|--------|---|
+|<video src=""https://github.com/user-attachments/assets/ac3efba6-2a6a-43a1-b0ee-501e2b5be361"">|<video src=""https://github.com/user-attachments/assets/2f7d5c3e-4e32-43d9-b2d4-9658accc757a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mock
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index e8402da..836e932 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -4,6 +4,7 @@ import { View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
++  KeyboardBackgroundView,
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
+@@ -74,6 +75,10 @@ function OverKeyboardViewTest() {
+   );
+ }
+ 
++function KeyboardBackgroundViewTest() {
++  return <KeyboardBackgroundView />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -102,4 +107,8 @@ describe(""components rendering"", () => {
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardBackgroundView`"", () => {
++    expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+981,aed22b7397fbc3947fd397b7e7f3081bbfc5201e,0069c73ff4b5462a84ba35961c25d4f1badaf655,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardBackgroundView` - component designed to match keyboard backdrop UI.
+
+## 💡 Motivation and Context
+
+This component can be useful when you want to continue keyboard surface and embed advanced elements (such as `TextInput` inside it). Using this component you can achieve a similar UI to Photos app or Safari app search on iOS. Additioanlly this component will be used as a polyfill implementation for `KeyboardExtender` on Android (just because `KeyboardExtender` can not be implemented natively on Android).
+
+> [!WARNING]
+> This component only matches default keyboard UI background. If user customizes it -> it will look differently and will not match keyboard design. There is no way to check displayed keyboard color on a native side, but some apps still use this approach, so I thought to export that possibility from `keyboard-controller` too.
+
+On iOS we can use system class `UIKBBackdropView` to match the keyboard background. On Android keyboard is a 3rd party process so there is no API at all, so I kind of reverse-engineered it: we have an access to keyboard package name and then based on pacakge name and phone preferences we can ""guess"" keyboard color. In reality it may vary from OS version o OS version and may be even dynamic and depend on wallpaper generic color. To solve it I Added a class that has a basic color (can be dynamic too) and then we have additional property called `tone`, which can slightly adjust the color. The idea is that color like `#3c3c3c` with tone `+2` will become `#3e3e3e`. For now it works and we can successfully match default keyboard color.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### E2E
+
+- cover `KeyboardBackgroundView` by e2e tests;
+
+### Docs
+
+- mention new feature in README;
+- new docs page `KeyboardBackgroundView`;
+- new chapter in Components Overview guide.
+
+### JS
+
+- added `KeyboardBackgroundView`;
+- added unit-tests for `KeyboardBackgroundView`.
+
+### iOS
+
+- added `KeyboardBackgroundView`;
+
+### Android
+
+- added `KeyboardBackgroundView`;
+- move `isSystemDarkMode` extensions to `Context`;
+- create new `currentImePackage` extension;
+- create resource files;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for KeyboardExtender;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 35, API 36 - real device);
+- Pixel 9 Pro (API 31, API 33, API 34, API 35, API 36 - emulator);
+- Xiaomi Redmi Note 5 Pro (API 28 - real device);
+- iPhone 11 (iOS 18.5 - real device);
+- iPhone 6s (iOS 15.8 - real device);
+- iPhone 14 Pro (iOS 18.4 - real device).
+- iPhone 16 Pro (iOS 18.5, 26.0 - simulator)
+- iPhone 15 Pro (iOS 17.5 - simulator)
+
+plus tested on all e2e devices (via e2e tests).
+
+## 📸 Screenshots (if appropriate):
+
+### Shared surface
+
+|Android|iOS|
+|--------|---|
+|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/1bbbbdf3-17af-4277-a33a-390a413c50e5"" />|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/489ace49-8a68-4fdf-a98a-bd4bdc0a0418"">|
+
+### ""Meatball""/Ask AI/Liquid keyboard
+
+|Android|iOS|
+|--------|---|
+|<video src=""https://github.com/user-attachments/assets/ac3efba6-2a6a-43a1-b0ee-501e2b5be361"">|<video src=""https://github.com/user-attachments/assets/2f7d5c3e-4e32-43d9-b2d4-9658accc757a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mock
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index e8402da..836e932 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -4,6 +4,7 @@ import { View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
++  KeyboardBackgroundView,
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
+@@ -74,6 +75,10 @@ function OverKeyboardViewTest() {
+   );
+ }
+ 
++function KeyboardBackgroundViewTest() {
++  return <KeyboardBackgroundView />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -102,4 +107,8 @@ describe(""components rendering"", () => {
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardBackgroundView`"", () => {
++    expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+981,aed22b7397fbc3947fd397b7e7f3081bbfc5201e,0069c73ff4b5462a84ba35961c25d4f1badaf655,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardBackgroundView` - component designed to match keyboard backdrop UI.
+
+## 💡 Motivation and Context
+
+This component can be useful when you want to continue keyboard surface and embed advanced elements (such as `TextInput` inside it). Using this component you can achieve a similar UI to Photos app or Safari app search on iOS. Additioanlly this component will be used as a polyfill implementation for `KeyboardExtender` on Android (just because `KeyboardExtender` can not be implemented natively on Android).
+
+> [!WARNING]
+> This component only matches default keyboard UI background. If user customizes it -> it will look differently and will not match keyboard design. There is no way to check displayed keyboard color on a native side, but some apps still use this approach, so I thought to export that possibility from `keyboard-controller` too.
+
+On iOS we can use system class `UIKBBackdropView` to match the keyboard background. On Android keyboard is a 3rd party process so there is no API at all, so I kind of reverse-engineered it: we have an access to keyboard package name and then based on pacakge name and phone preferences we can ""guess"" keyboard color. In reality it may vary from OS version o OS version and may be even dynamic and depend on wallpaper generic color. To solve it I Added a class that has a basic color (can be dynamic too) and then we have additional property called `tone`, which can slightly adjust the color. The idea is that color like `#3c3c3c` with tone `+2` will become `#3e3e3e`. For now it works and we can successfully match default keyboard color.
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### E2E
+
+- cover `KeyboardBackgroundView` by e2e tests;
+
+### Docs
+
+- mention new feature in README;
+- new docs page `KeyboardBackgroundView`;
+- new chapter in Components Overview guide.
+
+### JS
+
+- added `KeyboardBackgroundView`;
+- added unit-tests for `KeyboardBackgroundView`.
+
+### iOS
+
+- added `KeyboardBackgroundView`;
+
+### Android
+
+- added `KeyboardBackgroundView`;
+- move `isSystemDarkMode` extensions to `Context`;
+- create new `currentImePackage` extension;
+- create resource files;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for KeyboardExtender;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- Pixel 7 Pro (API 35, API 36 - real device);
+- Pixel 9 Pro (API 31, API 33, API 34, API 35, API 36 - emulator);
+- Xiaomi Redmi Note 5 Pro (API 28 - real device);
+- iPhone 11 (iOS 18.5 - real device);
+- iPhone 6s (iOS 15.8 - real device);
+- iPhone 14 Pro (iOS 18.4 - real device).
+- iPhone 16 Pro (iOS 18.5, 26.0 - simulator)
+- iPhone 15 Pro (iOS 17.5 - simulator)
+
+plus tested on all e2e devices (via e2e tests).
+
+## 📸 Screenshots (if appropriate):
+
+### Shared surface
+
+|Android|iOS|
+|--------|---|
+|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/1bbbbdf3-17af-4277-a33a-390a413c50e5"" />|<img width=""300"" alt=""android"" src=""https://github.com/user-attachments/assets/489ace49-8a68-4fdf-a98a-bd4bdc0a0418"">|
+
+### ""Meatball""/Ask AI/Liquid keyboard
+
+|Android|iOS|
+|--------|---|
+|<video src=""https://github.com/user-attachments/assets/ac3efba6-2a6a-43a1-b0ee-501e2b5be361"">|<video src=""https://github.com/user-attachments/assets/2f7d5c3e-4e32-43d9-b2d4-9658accc757a"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","fix: mock
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index e8402da..836e932 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -4,6 +4,7 @@ import { View } from ""react-native"";
+ import {
+   KeyboardAvoidingView,
+   KeyboardAwareScrollView,
++  KeyboardBackgroundView,
+   KeyboardControllerView,
+   KeyboardProvider,
+   KeyboardStickyView,
+@@ -74,6 +75,10 @@ function OverKeyboardViewTest() {
+   );
+ }
+ 
++function KeyboardBackgroundViewTest() {
++  return <KeyboardBackgroundView />;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -102,4 +107,8 @@ describe(""components rendering"", () => {
+   it(""should render `OverKeyboardView`"", () => {
+     expect(render(<OverKeyboardViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardBackgroundView`"", () => {
++    expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+982,298be8103c441a97b9c5e573771f782c1f584471,463c2968496b3a6be89efbf6efafd86b7e72015d,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardExtender` component.
+
+## 💡 Motivation and Context
+
+This is a part of a big research that I did over several months.
+
+This PR implements `KeyboardExtender` component. On iOS it utilizes native capabilities of the OS and on Android it uses polyfill (`KeyboardBackgroundView`+`KeyboardStickyView`+`useKeyboardAnimation` for `opacity` animation).
+
+That component aims to help developers to build various keyboard extensions which will be shown above the keyboard and visually mimic to it. The initial idea of implementation was inspired by Revolut app:
+
+<div align=""center"">
+<video src=""https://github.com/user-attachments/assets/320da57f-7ad8-41e3-931a-1be7780fc6f8"">
+</div>
+
+And the `KeyboardExtender` ideally fits for building such things, another example is:
+
+<div align=""center"">
+<img src=""https://github.com/user-attachments/assets/bb338e9b-b2f6-4a8a-a933-babe94a662fd"" width=""300"">
+</div>
+
+And I think developers can take inspiration and build even more advanced features (such as voice search etc.)
+
+To implement this on iOS I used [UIInputView](https://developer.apple.com/documentation/uikit/uiinputview#overview) with [keyboard](https://developer.apple.com/documentation/uikit/uiinputview/style/keyboard) style.
+
+> [!WARNING]
+> On iOS 26 it looks bad and the view is not getting embedded into the keyboard. See [tweet](https://x.com/ziusko/status/1932492809258381350) about it. For now let's wait for Apple fixes and if they are not going to fix it, then most likely we'll have to write separate implementation for iSO 26 to use liquid glass design.
+
+On Android I'm trying to re--create iOS effect, but it's obviously not possible to match it fully, so I'm trying to make it looking as close as possible to. For sure I can not fully hide the view and make it moving together with keyboard from the very beginning, so I decided to use `opacity` interpolation and always show it above the keyboard (using `KeyboardStickyView`).
+
+> I decided not to use parallax animation (as in `KeyboardToolbar`) here. Let's see if `opacity` + frame-in-frame motion looks better than parallax effect 👀 
+
+<hr>
+
+Last but not least - for now I decided to make this component very simple and barely customizable (I expose only `enabled` property). And it can cause certain issues, for example if you switch between QWERTY keyboard (where you don't want `KeyboardExtender` to be present) to numeric (where you'd like to see `KeyboardExtender`), then you will see how react updates everything asynchronously and for a fraction of a second you will see QWERTY-keyboard with `KeyboardExtender`. Theoretically I could introduce binding through `nativeID` and ""connect"" specific inputs with specific extenders, but for now let's not do an over-engineering and try to handle all cases. Let's handle everything step-by-step and when we get a bug report then we can do another round of investigation how such thing can be implemented 👀 
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- added new page for `KeyboardExtender`;
+- added new chapter in `Components Overview`;
+- mention `KeyboardExtender` feature in `README`;
+
+### E2E
+
+- added new test for `KeyboardExtender`;
+
+### JS
+
+- added `KeyboardExtender` component;
+- added `KeyboardExtender` spec;
+- added `KeyboardExtender` mock.
+
+### iOS
+
+- expose `KeyboardExtender` view;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for `KeyboardExtender`;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 15 Pro (iOS 17.5, simulator)
+- iPhone 16 Pro (iOS 18.4, simulator)
+- iPhone 6s (iOS 15.5, real device)
+- iPhone 16 Pro (iOS 26.0, simulator) - doesn't look good there, filled bug to Apple
+- Medium Phone API 35 (emulator)
+- Pixel 7 Pro (API 36, real device)
+- Xiaomi Redmi Note 5 Pro (API 28, real device)
+
+## 📸 Screenshots (if appropriate):
+
+|iOS|Android|
+|----|--------|
+|<video src=""https://github.com/user-attachments/assets/a5c7c515-6b0e-4966-a74c-78e00619c137"">|<video src=""https://github.com/user-attachments/assets/f6119e63-ae41-4e0f-b732-e112f2e7c4e6"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: keyboard extender
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 836e932..f154e64 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -6,6 +6,7 @@ import {
+   KeyboardAwareScrollView,
+   KeyboardBackgroundView,
+   KeyboardControllerView,
++  KeyboardExtender,
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
+@@ -79,6 +80,10 @@ function KeyboardBackgroundViewTest() {
+   return <KeyboardBackgroundView />;
+ }
+ 
++function KeyboardExtenderTest() {
++  return <KeyboardExtender enabled={true}>{<EmptyView />}</KeyboardExtender>;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -111,4 +116,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardBackgroundView`"", () => {
+     expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardExtenderTest`"", () => {
++    expect(render(<KeyboardExtenderTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+982,298be8103c441a97b9c5e573771f782c1f584471,463c2968496b3a6be89efbf6efafd86b7e72015d,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardExtender` component.
+
+## 💡 Motivation and Context
+
+This is a part of a big research that I did over several months.
+
+This PR implements `KeyboardExtender` component. On iOS it utilizes native capabilities of the OS and on Android it uses polyfill (`KeyboardBackgroundView`+`KeyboardStickyView`+`useKeyboardAnimation` for `opacity` animation).
+
+That component aims to help developers to build various keyboard extensions which will be shown above the keyboard and visually mimic to it. The initial idea of implementation was inspired by Revolut app:
+
+<div align=""center"">
+<video src=""https://github.com/user-attachments/assets/320da57f-7ad8-41e3-931a-1be7780fc6f8"">
+</div>
+
+And the `KeyboardExtender` ideally fits for building such things, another example is:
+
+<div align=""center"">
+<img src=""https://github.com/user-attachments/assets/bb338e9b-b2f6-4a8a-a933-babe94a662fd"" width=""300"">
+</div>
+
+And I think developers can take inspiration and build even more advanced features (such as voice search etc.)
+
+To implement this on iOS I used [UIInputView](https://developer.apple.com/documentation/uikit/uiinputview#overview) with [keyboard](https://developer.apple.com/documentation/uikit/uiinputview/style/keyboard) style.
+
+> [!WARNING]
+> On iOS 26 it looks bad and the view is not getting embedded into the keyboard. See [tweet](https://x.com/ziusko/status/1932492809258381350) about it. For now let's wait for Apple fixes and if they are not going to fix it, then most likely we'll have to write separate implementation for iSO 26 to use liquid glass design.
+
+On Android I'm trying to re--create iOS effect, but it's obviously not possible to match it fully, so I'm trying to make it looking as close as possible to. For sure I can not fully hide the view and make it moving together with keyboard from the very beginning, so I decided to use `opacity` interpolation and always show it above the keyboard (using `KeyboardStickyView`).
+
+> I decided not to use parallax animation (as in `KeyboardToolbar`) here. Let's see if `opacity` + frame-in-frame motion looks better than parallax effect 👀 
+
+<hr>
+
+Last but not least - for now I decided to make this component very simple and barely customizable (I expose only `enabled` property). And it can cause certain issues, for example if you switch between QWERTY keyboard (where you don't want `KeyboardExtender` to be present) to numeric (where you'd like to see `KeyboardExtender`), then you will see how react updates everything asynchronously and for a fraction of a second you will see QWERTY-keyboard with `KeyboardExtender`. Theoretically I could introduce binding through `nativeID` and ""connect"" specific inputs with specific extenders, but for now let's not do an over-engineering and try to handle all cases. Let's handle everything step-by-step and when we get a bug report then we can do another round of investigation how such thing can be implemented 👀 
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- added new page for `KeyboardExtender`;
+- added new chapter in `Components Overview`;
+- mention `KeyboardExtender` feature in `README`;
+
+### E2E
+
+- added new test for `KeyboardExtender`;
+
+### JS
+
+- added `KeyboardExtender` component;
+- added `KeyboardExtender` spec;
+- added `KeyboardExtender` mock.
+
+### iOS
+
+- expose `KeyboardExtender` view;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for `KeyboardExtender`;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 15 Pro (iOS 17.5, simulator)
+- iPhone 16 Pro (iOS 18.4, simulator)
+- iPhone 6s (iOS 15.5, real device)
+- iPhone 16 Pro (iOS 26.0, simulator) - doesn't look good there, filled bug to Apple
+- Medium Phone API 35 (emulator)
+- Pixel 7 Pro (API 36, real device)
+- Xiaomi Redmi Note 5 Pro (API 28, real device)
+
+## 📸 Screenshots (if appropriate):
+
+|iOS|Android|
+|----|--------|
+|<video src=""https://github.com/user-attachments/assets/a5c7c515-6b0e-4966-a74c-78e00619c137"">|<video src=""https://github.com/user-attachments/assets/f6119e63-ae41-4e0f-b732-e112f2e7c4e6"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: keyboard extender
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 836e932..f154e64 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -6,6 +6,7 @@ import {
+   KeyboardAwareScrollView,
+   KeyboardBackgroundView,
+   KeyboardControllerView,
++  KeyboardExtender,
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
+@@ -79,6 +80,10 @@ function KeyboardBackgroundViewTest() {
+   return <KeyboardBackgroundView />;
+ }
+ 
++function KeyboardExtenderTest() {
++  return <KeyboardExtender enabled={true}>{<EmptyView />}</KeyboardExtender>;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -111,4 +116,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardBackgroundView`"", () => {
+     expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardExtenderTest`"", () => {
++    expect(render(<KeyboardExtenderTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+982,298be8103c441a97b9c5e573771f782c1f584471,463c2968496b3a6be89efbf6efafd86b7e72015d,FabricExample/__tests__/__snapshots__/components-rendering.spec.tsx.snap,FabricExample/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardExtender` component.
+
+## 💡 Motivation and Context
+
+This is a part of a big research that I did over several months.
+
+This PR implements `KeyboardExtender` component. On iOS it utilizes native capabilities of the OS and on Android it uses polyfill (`KeyboardBackgroundView`+`KeyboardStickyView`+`useKeyboardAnimation` for `opacity` animation).
+
+That component aims to help developers to build various keyboard extensions which will be shown above the keyboard and visually mimic to it. The initial idea of implementation was inspired by Revolut app:
+
+<div align=""center"">
+<video src=""https://github.com/user-attachments/assets/320da57f-7ad8-41e3-931a-1be7780fc6f8"">
+</div>
+
+And the `KeyboardExtender` ideally fits for building such things, another example is:
+
+<div align=""center"">
+<img src=""https://github.com/user-attachments/assets/bb338e9b-b2f6-4a8a-a933-babe94a662fd"" width=""300"">
+</div>
+
+And I think developers can take inspiration and build even more advanced features (such as voice search etc.)
+
+To implement this on iOS I used [UIInputView](https://developer.apple.com/documentation/uikit/uiinputview#overview) with [keyboard](https://developer.apple.com/documentation/uikit/uiinputview/style/keyboard) style.
+
+> [!WARNING]
+> On iOS 26 it looks bad and the view is not getting embedded into the keyboard. See [tweet](https://x.com/ziusko/status/1932492809258381350) about it. For now let's wait for Apple fixes and if they are not going to fix it, then most likely we'll have to write separate implementation for iSO 26 to use liquid glass design.
+
+On Android I'm trying to re--create iOS effect, but it's obviously not possible to match it fully, so I'm trying to make it looking as close as possible to. For sure I can not fully hide the view and make it moving together with keyboard from the very beginning, so I decided to use `opacity` interpolation and always show it above the keyboard (using `KeyboardStickyView`).
+
+> I decided not to use parallax animation (as in `KeyboardToolbar`) here. Let's see if `opacity` + frame-in-frame motion looks better than parallax effect 👀 
+
+<hr>
+
+Last but not least - for now I decided to make this component very simple and barely customizable (I expose only `enabled` property). And it can cause certain issues, for example if you switch between QWERTY keyboard (where you don't want `KeyboardExtender` to be present) to numeric (where you'd like to see `KeyboardExtender`), then you will see how react updates everything asynchronously and for a fraction of a second you will see QWERTY-keyboard with `KeyboardExtender`. Theoretically I could introduce binding through `nativeID` and ""connect"" specific inputs with specific extenders, but for now let's not do an over-engineering and try to handle all cases. Let's handle everything step-by-step and when we get a bug report then we can do another round of investigation how such thing can be implemented 👀 
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- added new page for `KeyboardExtender`;
+- added new chapter in `Components Overview`;
+- mention `KeyboardExtender` feature in `README`;
+
+### E2E
+
+- added new test for `KeyboardExtender`;
+
+### JS
+
+- added `KeyboardExtender` component;
+- added `KeyboardExtender` spec;
+- added `KeyboardExtender` mock.
+
+### iOS
+
+- expose `KeyboardExtender` view;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for `KeyboardExtender`;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 15 Pro (iOS 17.5, simulator)
+- iPhone 16 Pro (iOS 18.4, simulator)
+- iPhone 6s (iOS 15.5, real device)
+- iPhone 16 Pro (iOS 26.0, simulator) - doesn't look good there, filled bug to Apple
+- Medium Phone API 35 (emulator)
+- Pixel 7 Pro (API 36, real device)
+- Xiaomi Redmi Note 5 Pro (API 28, real device)
+
+## 📸 Screenshots (if appropriate):
+
+|iOS|Android|
+|----|--------|
+|<video src=""https://github.com/user-attachments/assets/a5c7c515-6b0e-4966-a74c-78e00619c137"">|<video src=""https://github.com/user-attachments/assets/f6119e63-ae41-4e0f-b732-e112f2e7c4e6"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: keyboard extender
+","diff --git a/FabricExample/__tests__/components-rendering.spec.tsx b/FabricExample/__tests__/components-rendering.spec.tsx
+index 836e932..f154e64 100644
+--- a/FabricExample/__tests__/components-rendering.spec.tsx
++++ b/FabricExample/__tests__/components-rendering.spec.tsx
+@@ -6,6 +6,7 @@ import {
+   KeyboardAwareScrollView,
+   KeyboardBackgroundView,
+   KeyboardControllerView,
++  KeyboardExtender,
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
+@@ -79,6 +80,10 @@ function KeyboardBackgroundViewTest() {
+   return <KeyboardBackgroundView />;
+ }
+ 
++function KeyboardExtenderTest() {
++  return <KeyboardExtender enabled={true}>{<EmptyView />}</KeyboardExtender>;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -111,4 +116,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardBackgroundView`"", () => {
+     expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardExtenderTest`"", () => {
++    expect(render(<KeyboardExtenderTest />)).toMatchSnapshot();
++  });
+ });
+",0,
+982,298be8103c441a97b9c5e573771f782c1f584471,463c2968496b3a6be89efbf6efafd86b7e72015d,example/__tests__/__snapshots__/components-rendering.spec.tsx.snap,example/__tests__/components-rendering.spec.tsx,"## 📜 Description
+
+Added `KeyboardExtender` component.
+
+## 💡 Motivation and Context
+
+This is a part of a big research that I did over several months.
+
+This PR implements `KeyboardExtender` component. On iOS it utilizes native capabilities of the OS and on Android it uses polyfill (`KeyboardBackgroundView`+`KeyboardStickyView`+`useKeyboardAnimation` for `opacity` animation).
+
+That component aims to help developers to build various keyboard extensions which will be shown above the keyboard and visually mimic to it. The initial idea of implementation was inspired by Revolut app:
+
+<div align=""center"">
+<video src=""https://github.com/user-attachments/assets/320da57f-7ad8-41e3-931a-1be7780fc6f8"">
+</div>
+
+And the `KeyboardExtender` ideally fits for building such things, another example is:
+
+<div align=""center"">
+<img src=""https://github.com/user-attachments/assets/bb338e9b-b2f6-4a8a-a933-babe94a662fd"" width=""300"">
+</div>
+
+And I think developers can take inspiration and build even more advanced features (such as voice search etc.)
+
+To implement this on iOS I used [UIInputView](https://developer.apple.com/documentation/uikit/uiinputview#overview) with [keyboard](https://developer.apple.com/documentation/uikit/uiinputview/style/keyboard) style.
+
+> [!WARNING]
+> On iOS 26 it looks bad and the view is not getting embedded into the keyboard. See [tweet](https://x.com/ziusko/status/1932492809258381350) about it. For now let's wait for Apple fixes and if they are not going to fix it, then most likely we'll have to write separate implementation for iSO 26 to use liquid glass design.
+
+On Android I'm trying to re--create iOS effect, but it's obviously not possible to match it fully, so I'm trying to make it looking as close as possible to. For sure I can not fully hide the view and make it moving together with keyboard from the very beginning, so I decided to use `opacity` interpolation and always show it above the keyboard (using `KeyboardStickyView`).
+
+> I decided not to use parallax animation (as in `KeyboardToolbar`) here. Let's see if `opacity` + frame-in-frame motion looks better than parallax effect 👀 
+
+<hr>
+
+Last but not least - for now I decided to make this component very simple and barely customizable (I expose only `enabled` property). And it can cause certain issues, for example if you switch between QWERTY keyboard (where you don't want `KeyboardExtender` to be present) to numeric (where you'd like to see `KeyboardExtender`), then you will see how react updates everything asynchronously and for a fraction of a second you will see QWERTY-keyboard with `KeyboardExtender`. Theoretically I could introduce binding through `nativeID` and ""connect"" specific inputs with specific extenders, but for now let's not do an over-engineering and try to handle all cases. Let's handle everything step-by-step and when we get a bug report then we can do another round of investigation how such thing can be implemented 👀 
+
+## 📢 Changelog
+
+<!-- High level overview of important changes -->
+<!-- For example: fixed status bar manipulation; added new types declarations; -->
+<!-- If your changes don't affect one of platform/language below - then remove this platform/language -->
+
+### Docs
+
+- added new page for `KeyboardExtender`;
+- added new chapter in `Components Overview`;
+- mention `KeyboardExtender` feature in `README`;
+
+### E2E
+
+- added new test for `KeyboardExtender`;
+
+### JS
+
+- added `KeyboardExtender` component;
+- added `KeyboardExtender` spec;
+- added `KeyboardExtender` mock.
+
+### iOS
+
+- expose `KeyboardExtender` view;
+
+### C++
+
+- added c++ bindings (shadow nodes, component descriptor, etc.) for `KeyboardExtender`;
+
+## 🤔 How Has This Been Tested?
+
+Tested manually on:
+- iPhone 15 Pro (iOS 17.5, simulator)
+- iPhone 16 Pro (iOS 18.4, simulator)
+- iPhone 6s (iOS 15.5, real device)
+- iPhone 16 Pro (iOS 26.0, simulator) - doesn't look good there, filled bug to Apple
+- Medium Phone API 35 (emulator)
+- Pixel 7 Pro (API 36, real device)
+- Xiaomi Redmi Note 5 Pro (API 28, real device)
+
+## 📸 Screenshots (if appropriate):
+
+|iOS|Android|
+|----|--------|
+|<video src=""https://github.com/user-attachments/assets/a5c7c515-6b0e-4966-a74c-78e00619c137"">|<video src=""https://github.com/user-attachments/assets/f6119e63-ae41-4e0f-b732-e112f2e7c4e6"">|
+
+## 📝 Checklist
+
+- [x] CI successfully passed
+- [x] I added new mocks and corresponding unit-tests if library API was changed
+","feat: keyboard extender
+","diff --git a/example/__tests__/components-rendering.spec.tsx b/example/__tests__/components-rendering.spec.tsx
+index 836e932..f154e64 100644
+--- a/example/__tests__/components-rendering.spec.tsx
++++ b/example/__tests__/components-rendering.spec.tsx
+@@ -6,6 +6,7 @@ import {
+   KeyboardAwareScrollView,
+   KeyboardBackgroundView,
+   KeyboardControllerView,
++  KeyboardExtender,
+   KeyboardProvider,
+   KeyboardStickyView,
+   KeyboardToolbar,
+@@ -79,6 +80,10 @@ function KeyboardBackgroundViewTest() {
+   return <KeyboardBackgroundView />;
+ }
+ 
++function KeyboardExtenderTest() {
++  return <KeyboardExtender enabled={true}>{<EmptyView />}</KeyboardExtender>;
++}
++
+ describe(""components rendering"", () => {
+   it(""should render `KeyboardControllerView`"", () => {
+     expect(render(<KeyboardControllerViewTest />)).toMatchSnapshot();
+@@ -111,4 +116,8 @@ describe(""components rendering"", () => {
+   it(""should render `KeyboardBackgroundView`"", () => {
+     expect(render(<KeyboardBackgroundViewTest />)).toMatchSnapshot();
+   });
++
++  it(""should render `KeyboardExtenderTest`"", () => {
++    expect(render(<KeyboardExtenderTest />)).toMatchSnapshot();
++  });
+ });
+",0,

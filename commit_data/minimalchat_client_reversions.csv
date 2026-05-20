@@ -1,0 +1,469 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+22,bdb4b775917636969aa175fca8e16bb1f98954d2,bdb4b775917636969aa175fca8e16bb1f98954d2,"#22 This PR goes along with [minimalchat/daemon#19](https://github.com/minimalchat/daemon/pull/19) and [minimalchat/operator-app#46](https://github.com/minimalchat/operator-app/pull/46)
+
+Small refactor to handle Operator/Client bi-directional communication. Changes:
+
+- Added new `chat:new` event listener to save the Chat session in state
+- Refactored emitting events to the sockets to use JSON objects with more context
+- Upgraded socket.io from `1.7.3` to `2.0.3`
+- Adding `prop-types` and importing PropTypes from that package instead of the deprecated PropTypes in react
+- Adding test before run in `Makefile`
+","Adding prop-types package and moving over PropTypes to use that, fixing tests, updating Makefile to run tests before running example server
+","diff --git a/src/components/Input/Input.test.jsx b/src/components/Input/Input.test.jsx
+index 2931552..d4bff98 100644
+--- a/src/components/Input/Input.test.jsx
++++ b/src/components/Input/Input.test.jsx
+@@ -14,7 +14,13 @@ const store = {
+   dispatch: jest.fn(),
+   getState: jest.fn(() => ({
+     ui: { style: 'TEST' },
+-    chat: { status: 'TEST' },
++    chat: {
++      status: 'TEST',
++      session: {
++        id: 'TEST123',
++        client: { id: 'TEST123' },
++      },
++    },
+   })),
+ };
+ 
+",0,,9,29,1,2,12,111
+24,366fc51fae53087a2d6df5ab056282ce78a62c50,9d32c7cc55d895f7371b1d7a18f1c77e8af1431a,"![](https://media.giphy.com/media/4IAzyrhy9rkis/giphy.gif)
+
+### For posterity:
+
+- This is a rewrite: react -> preact. 
+- No more redux. 
+- Added Prettier
+
+Before:
+```
+                 Asset     Size  Chunks                    Chunk Names
+    mnml-full-0.1.0.js     1 MB       0  [emitted]  [big]  main
+mnml-full-0.1.0.js.map  1.21 MB       0  [emitted]         main
+  [16] ./~/react/react.js 56 bytes {0} [built]
+  [22] ./~/prop-types/index.js 1.08 kB {0} [built]
+  [25] ./~/react/lib/React.js 3.32 kB {0} [built]
+  [26] ./~/react-redux/lib/index.js 475 bytes {0} [built]
+  [43] ./src/containers/Chat/actions.js 837 bytes {0} [built]
+  [44] ./src/containers/Chat/constants.js 722 bytes {0} [built]
+ [111] ./~/redux/es/index.js 1.08 kB {0} [built]
+ [120] ./src/containers/index.js 647 bytes {0} [built]
+ [121] ./~/react-dom/index.js 59 bytes {0} [built]
+ [127] ./src/containers/Chat/reducer.js 3.43 kB {0} [built]
+ [128] ./src/containers/UI/actions.js 674 bytes {0} [built]
+ [129] ./src/containers/UI/reducer.js 1.3 kB {0} [built]
+ [130] ./src/script.jsx 2.75 kB {0} [built]
+ [199] ./~/react-dom/lib/ReactDOM.js 5.14 kB {0} [built]
+ [276] ./~/socket.io-client/lib/index.js 1.74 kB {0} [built]
+    + 274 hidden modules
+
+```
+
+After: 
+
+```
+            Asset     Size  Chunks             Chunk Names
+mnml-0.2.0.min.js  30.9 kB       0  [emitted]  main
+   [0] ../~/preact/dist/preact.js 20.5 kB {0} [built]
+   [1] ../~/css-loader/lib/css-base.js 2.26 kB {0} [built]
+   [2] ../~/style-loader/lib/addStyles.js 8.7 kB {0} [built]
+   [3] ../~/prop-types/index.js 1.08 kB {0} [built]
+  [11] ./index.js 359 bytes {0} [built]
+  [19] ../~/fbjs/lib/emptyFunction.js 1.08 kB {0} [built]
+  [20] ../~/fbjs/lib/invariant.js 1.63 kB {0} [built]
+  [21] ../~/prop-types/factoryWithThrowingShims.js 1.59 kB {0} [built]
+  [22] ../~/prop-types/lib/ReactPropTypesSecret.js 436 bytes {0} [built]
+  [30] ../~/style-loader/lib/urls.js 3.01 kB {0} [built]
+    + 21 hidden modules
+
+```","Im so sorry
+","diff --git a/src/components/App/index.test.js b/src/components/App/index.test.js
+new file mode 100644
+index 0000000..0f556c0
+--- /dev/null
++++ b/src/components/App/index.test.js
+@@ -0,0 +1,12 @@
++/* const render = require('preact-render-to-string');
++ * const App = require('../thing');*/
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import App from '.';
++
++describe('App component', () => {
++  it('should render ', () => {
++    const tree = render(<App />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/Chat/Chat.test.jsx b/src/components/Chat/Chat.test.jsx
+deleted file mode 100644
+index d273018..0000000
+--- a/src/components/Chat/Chat.test.jsx
++++ /dev/null
+@@ -1,49 +0,0 @@
+-import React from 'react';
+-import { Provider } from 'react-redux';
+-import io from 'socket.io-client';
+-
+-import { shallow, render } from 'enzyme';
+-
+-import Chat from './Chat.jsx';
+-
+-const socket = {
+-  on: jest.fn(),
+-};
+-
+-const store = {
+-  subscribe: jest.fn(),
+-  dispatch: jest.fn(),
+-  getState: jest.fn(() => ({
+-    ui: { style: 'TEST' },
+-    chat: {
+-      messages: [],
+-      status: 'TEST',
+-      session: {
+-        id: 'TEST123',
+-        client: { id: 'TEST123' },
+-      },
+-    },
+-  })),
+-};
+-
+-io.connect = jest.fn(() => socket);
+-
+-describe('Chat', () => {
+-  it('matches snapshot', () => {
+-    const component = shallow(<Chat store={store} />);
+-
+-    expect(component).toMatchSnapshot();
+-  });
+-
+-  it('starts a socket connection', () => {
+-    // Requires a store/Provider for render or mount enzyme functions for
+-    //  some reason
+-    render(
+-      <Provider store={store}>
+-        <Chat />
+-      </Provider>,
+-    );
+-
+-    expect(io.connect).toHaveBeenCalled();
+-  });
+-});
+
+diff --git a/src/components/Chat/index.test.js b/src/components/Chat/index.test.js
+new file mode 100644
+index 0000000..7422427
+--- /dev/null
++++ b/src/components/Chat/index.test.js
+@@ -0,0 +1,16 @@
++/* const render = require('preact-render-to-string');
++ * const App = require('../thing');*/
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import Chat from '.';
++
++describe('App component', () => {
++  it('should render ', () => {
++    const props = {
++      messages: [],
++    };
++
++    const tree = render(<Chat messages={props.messages} />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/ClosedState/index.test.js b/src/components/ClosedState/index.test.js
+new file mode 100644
+index 0000000..2640da7
+--- /dev/null
++++ b/src/components/ClosedState/index.test.js
+@@ -0,0 +1,12 @@
++/* const render = require('preact-render-to-string');
++ * const App = require('../thing');*/
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import ClosedState from '.';
++
++describe('App component', () => {
++  it('should render ', () => {
++    const tree = render(<ClosedState />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/Header/index.test.js b/src/components/Header/index.test.js
+new file mode 100644
+index 0000000..6fc9a9d
+--- /dev/null
++++ b/src/components/Header/index.test.js
+@@ -0,0 +1,13 @@
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import Header from '.';
++
++describe('Header component', () => {
++  it('should render ', () => {
++    const props = {
++    };
++
++    const tree = render(<Header />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/Input/Input.test.jsx b/src/components/Input/Input.test.jsx
+deleted file mode 100644
+index d4bff98..0000000
+--- a/src/components/Input/Input.test.jsx
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import React from 'react';
+-
+-import { shallow, mount } from 'enzyme';
+-
+-import Input from './Input.jsx';
+-
+-const socket = {
+-  // on: jest.fn(),
+-  emit: jest.fn(),
+-};
+-
+-const store = {
+-  subscribe: jest.fn(),
+-  dispatch: jest.fn(),
+-  getState: jest.fn(() => ({
+-    ui: { style: 'TEST' },
+-    chat: {
+-      status: 'TEST',
+-      session: {
+-        id: 'TEST123',
+-        client: { id: 'TEST123' },
+-      },
+-    },
+-  })),
+-};
+-
+-describe('Input', () => {
+-  afterEach(() => {
+-    socket.emit.mockReset();
+-  });
+-
+-  it('matches snapshot', () => {
+-    const component = shallow(<Input store={store} socket={socket} />);
+-    expect(component).toMatchSnapshot();
+-  });
+-
+-  it('emits a client:typing event on keyDown', () => {
+-    const component = mount(<Input store={store} socket={socket} />);
+-    component.find('textarea').simulate('keyDown', {
+-      keyCode: 84,
+-      key: 't',
+-    });
+-
+-    expect(socket.emit).toHaveBeenCalled();
+-    expect(socket.emit).toHaveBeenCalledWith('client:typing');
+-  });
+-
+-  it('emits a client:message event on keyDown', () => {
+-    const component = mount(<Input store={store} socket={socket} />);
+-
+-    component.find('textarea').simulate('keyDown', {
+-      keyCode: 13,
+-      shiftKey: false,
+-      key: 'Enter',
+-    });
+-
+-    expect(socket.emit).toHaveBeenCalledTimes(2);
+-    expect(socket.emit.mock.calls[0][0]).toBe('client:message');
+-  });
+-});
+
+diff --git a/src/components/Input/index.test.js b/src/components/Input/index.test.js
+new file mode 100644
+index 0000000..0a1677e
+--- /dev/null
++++ b/src/components/Input/index.test.js
+@@ -0,0 +1,12 @@
++/* const render = require('preact-render-to-string');
++ * const App = require('../thing');*/
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import Input from '.';
++
++describe('App component', () => {
++  it('should render ', () => {
++    const tree = render(<Input />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/Message/Message.test.jsx b/src/components/Message/Message.test.jsx
+deleted file mode 100644
+index 865391b..0000000
+--- a/src/components/Message/Message.test.jsx
++++ /dev/null
+@@ -1,34 +0,0 @@
+-import React from 'react';
+-
+-import { shallow } from 'enzyme';
+-
+-import Message from './Message.jsx';
+-
+-const store = {
+-  subscribe: jest.fn(),
+-  dispatch: jest.fn(),
+-  getState: jest.fn(() => ({
+-    ui: { style: 'TEST' },
+-  })),
+-};
+-
+-describe('Message', () => {
+-  it('matches snapshot', () => {
+-    const message = {
+-      key: 0,
+-      author: 'Test User',
+-      content: ['Foo Bar'],
+-    };
+-
+-    const component = shallow(
+-      <Message
+-        store={store}
+-        key={message.key}
+-        author={message.author}
+-        content={message.content}
+-      />,
+-    );
+-
+-    expect(component).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/components/Message/index.test.js b/src/components/Message/index.test.js
+new file mode 100644
+index 0000000..92749da
+--- /dev/null
++++ b/src/components/Message/index.test.js
+@@ -0,0 +1,15 @@
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import Message from '.';
++
++describe('Message component', () => {
++  it('should render ', () => {
++    const props = {
++      content: [], // message content
++      type: ""client-tihodijakl""
++    };
++
++    const tree = render(<Message type={props.type} content={props.content} />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/components/Messages/Messages.test.jsx b/src/components/Messages/Messages.test.jsx
+deleted file mode 100644
+index 075440a..0000000
+--- a/src/components/Messages/Messages.test.jsx
++++ /dev/null
+@@ -1,27 +0,0 @@
+-import React from 'react';
+-
+-import { shallow } from 'enzyme';
+-// import { snapshot } from 'react-test-renderer';
+-
+-import Messages from './Messages.jsx';
+-
+-const socket = {
+-  on: jest.fn(),
+-  emit: jest.fn(),
+-};
+-
+-const store = {
+-  subscribe: jest.fn(),
+-  dispatch: jest.fn(),
+-  getState: jest.fn(() => ({
+-    ui: { style: 'TEST' },
+-    chat: { messages: [] },
+-  })),
+-};
+-
+-describe('MessageList', () => {
+-  it('matches snapshot', () => {
+-    const component = shallow(<Messages store={store} socket={socket} />);
+-    expect(component).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/components/ThemeProvider/index.test.js b/src/components/ThemeProvider/index.test.js
+new file mode 100644
+index 0000000..188d9d5
+--- /dev/null
++++ b/src/components/ThemeProvider/index.test.js
+@@ -0,0 +1,12 @@
++/* const render = require('preact-render-to-string');
++ * const App = require('../thing');*/
++import render from 'preact-render-to-string';
++import { h } from 'preact';
++import ThemeProvider from '.';
++
++describe('App component', () => {
++  it('should render ', () => {
++    const tree = render(<ThemeProvider />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,,77,3616,11,3,80,3670
+27,b869a68ae12d265411c6ff1d10e39b14926dcb29,9982b226d8e03fbe7f585b191ce74730f604e990,"This enables displaying notifications based on socket status. 
+this updated the state object in the app; as well as some socket handlers.
+
+Eventually I think it might bet worth abstracting the socket updates to a function so we don't have a ton of functions like 
+
+```
+  handleDisconnected = () => {
+    this.setState({
+      network: ""disconnected""
+    });
+  };
+```
+
+but it's not a big deal
+
+GET INTO IT!
+
+At first when I got on this issue I was like:
+
+![stubborn-shiba](https://user-images.githubusercontent.com/12987958/28251616-58fc1296-6a4f-11e7-9e04-93b0defb176b.png)
+
+
+but now i'm like
+
+![devj58mxoaai9x5](https://user-images.githubusercontent.com/12987958/28251618-5c617516-6a4f-11e7-8498-1ffb84677a84.jpg)
+
+
+## UI UPDATES! 
+
+![jul-16-2017 17-48-19](https://user-images.githubusercontent.com/12987958/28251615-535a9b8c-6a4f-11e7-8cae-3a24ce028037.gif)
+","Create socket-connection notifications.
+","diff --git a/src/components/Notification/index.test.js b/src/components/Notification/index.test.js
+new file mode 100644
+index 0000000..1258cdb
+--- /dev/null
++++ b/src/components/Notification/index.test.js
+@@ -0,0 +1,11 @@
++import { h } from 'preact';
++import render from 'preact-render-to-string';
++
++import Header from '.';
++
++describe('<Header />', () => {
++  it('should render ', () => {
++    const tree = render(<Header />);
++    expect(tree).toMatchSnapshot();
++  });
++});
+",0,,8,266,1,5,10,171

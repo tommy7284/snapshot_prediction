@@ -1,0 +1,141 @@
+{
+    "id": 21934004,
+    "name": "react-tags/react-tags",
+    "isFork": false,
+    "commits": 571,
+    "branches": 62,
+    "releases": 41,
+    "forks": 386,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://stackblitz.com/edit/react-tag-input-1nelrc",
+    "watchers": 24,
+    "stargazers": 1458,
+    "contributors": 70,
+    "size": 5927,
+    "createdAt": "2015-05-06T12:02:03",
+    "pushedAt": "2024-05-03T05:52:42",
+    "updatedAt": "2024-05-03T07:42:00",
+    "totalIssues": 330,
+    "openIssues": 65,
+    "totalPullRequests": 627,
+    "openPullRequests": 25,
+    "blankLines": 576,
+    "codeLines": 4196,
+    "commentLines": 361,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 527,
+            "blankLines": 162
+        },
+        {
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 14,
+            "blankLines": 5
+        },
+        {
+            "language": "CSS",
+            "commentLines": 5,
+            "codeLines": 98,
+            "blankLines": 14
+        },
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 1,
+            "codeLines": 25,
+            "blankLines": 5
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 68,
+            "blankLines": 3
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 1
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 0,
+            "codeLines": 25,
+            "blankLines": 6
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 125,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 333,
+            "codeLines": 3141,
+            "blankLines": 370
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 21,
+            "codeLines": 167,
+            "blankLines": 9
+        }
+    ],
+    "lastCommit": "2024-05-03T05:52:40",
+    "lastCommitSHA": "c0a7a6904a68fce41691c25f6a937772b224fa3e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 103048,
+        "JavaScript": 5129,
+        "CSS": 2000,
+        "Shell": 989,
+        "SCSS": 431,
+        "HTML": 317
+    },
+    "labels": [
+        "accessibility",
+        "bug",
+        "dependencies",
+        "do not merge",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "greenkeeper",
+        "hacktoberfest",
+        "help wanted",
+        "ie",
+        "issue taken",
+        "mobile",
+        "needs discussion",
+        "needs investigation",
+        "next",
+        "pending review changes",
+        "pinned",
+        "question",
+        "rebase",
+        "released",
+        "security",
+        "stale",
+        "under review",
+        "waiting for user input",
+        "wontfix"
+    ],
+    "topics": [
+        "autocomplete",
+        "dragdrop",
+        "hacktoberfest",
+        "hacktoberfest2023",
+        "javascript",
+        "react",
+        "react-tags"
+    ]
+}

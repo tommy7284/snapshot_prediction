@@ -1,0 +1,91 @@
+{
+    "id": 6842404,
+    "name": "vonovak/react-navigation-header-buttons",
+    "isFork": false,
+    "commits": 234,
+    "branches": 6,
+    "releases": 46,
+    "forks": 59,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 858,
+    "contributors": 24,
+    "size": 6849,
+    "createdAt": "2018-01-28T01:12:53",
+    "pushedAt": "2024-04-25T08:32:01",
+    "updatedAt": "2024-04-26T06:53:55",
+    "totalIssues": 79,
+    "openIssues": 2,
+    "totalPullRequests": 151,
+    "openPullRequests": 4,
+    "blankLines": 470,
+    "codeLines": 3390,
+    "commentLines": 245,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 224,
+            "codeLines": 2458,
+            "blankLines": 244
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 17,
+            "codeLines": 115,
+            "blankLines": 22
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 4
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 80,
+            "blankLines": 14
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 275,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 4,
+            "codeLines": 451,
+            "blankLines": 185
+        }
+    ],
+    "lastCommit": "2024-04-25T08:31:58",
+    "lastCommitSHA": "cca6ce6d04d3b106efe7aa62279101db33c7941b",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 62674,
+        "JavaScript": 3274
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "hacktoberfest",
+        "react-native",
+        "react-navigation"
+    ]
+}

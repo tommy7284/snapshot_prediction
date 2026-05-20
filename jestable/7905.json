@@ -1,0 +1,132 @@
+{
+    "id": 6685205,
+    "name": "stevenpersia/tinder-react-native",
+    "isFork": false,
+    "commits": 74,
+    "branches": 6,
+    "releases": 0,
+    "forks": 335,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 31,
+    "stargazers": 879,
+    "contributors": 6,
+    "size": 22260,
+    "createdAt": "2019-01-14T04:43:35",
+    "pushedAt": "2023-02-28T06:56:31",
+    "updatedAt": "2023-03-25T02:00:50",
+    "totalIssues": 18,
+    "openIssues": 0,
+    "totalPullRequests": 36,
+    "openPullRequests": 5,
+    "blankLines": 250,
+    "codeLines": 14349,
+    "commentLines": 172,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 12,
+            "language": "Java",
+            "commentLines": 4,
+            "codeLines": 46
+        },
+        {
+            "blankLines": 23,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 59
+        },
+        {
+            "blankLines": 2,
+            "language": "ProGuard",
+            "commentLines": 15,
+            "codeLines": 0
+        },
+        {
+            "blankLines": 76,
+            "language": "JavaScript",
+            "commentLines": 13,
+            "codeLines": 955
+        },
+        {
+            "blankLines": 21,
+            "language": "Bourne Shell",
+            "commentLines": 22,
+            "codeLines": 129
+        },
+        {
+            "blankLines": 39,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 101
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 6,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 26,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 38
+        },
+        {
+            "blankLines": 5,
+            "language": "XML",
+            "commentLines": 3,
+            "codeLines": 492
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12355
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 18,
+            "codeLines": 79
+        },
+        {
+            "blankLines": 16,
+            "language": "Gradle",
+            "commentLines": 89,
+            "codeLines": 90
+        }
+    ],
+    "lastCommit": "2021-03-12T11:14:57",
+    "lastCommitSHA": "4f26280d383e06e6814dcf406c88c1faee3eaa0c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 23928,
+        "Objective-C": 4041,
+        "Starlark": 1732,
+        "Java": 1524
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

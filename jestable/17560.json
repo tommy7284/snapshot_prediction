@@ -1,0 +1,96 @@
+{
+    "id": 58080755,
+    "name": "bottenderjs/messaging-apis",
+    "isFork": false,
+    "commits": 1244,
+    "branches": 20,
+    "releases": 81,
+    "forks": 211,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://bottenderjs.github.io/messaging-apis/latest/",
+    "watchers": 65,
+    "stargazers": 1836,
+    "contributors": 24,
+    "size": 11450,
+    "createdAt": "2017-05-10T12:38:40",
+    "pushedAt": "2023-02-03T04:53:24",
+    "updatedAt": "2023-02-10T01:26:52",
+    "totalIssues": 147,
+    "openIssues": 8,
+    "totalPullRequests": 541,
+    "openPullRequests": 4,
+    "blankLines": 6450,
+    "codeLines": 34623,
+    "commentLines": 16577,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 447,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 16567,
+            "codeLines": 28618,
+            "blankLines": 4734
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 6,
+            "codeLines": 222,
+            "blankLines": 33
+        },
+        {
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 74,
+            "blankLines": 20
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 5259,
+            "blankLines": 1662
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2022-12-13T04:06:36",
+    "lastCommitSHA": "39fef4af57efa4104e4463694e6eb4def5c18dad",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 1365360,
+        "JavaScript": 2275,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discord",
+        "doc",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "invalid",
+        "line",
+        "messenger",
+        "question",
+        "slack",
+        "telegram",
+        "viber",
+        "wechat",
+        "wontfix"
+    ],
+    "topics": []
+}

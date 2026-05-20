@@ -1,0 +1,52 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+343,75948be4a5e4669a86efc4d7f82d9072586179ca,8c668dab48c5462b29044e28eefa6483f3190803,"closes #282 
+
+- [x] ~~zeit deployments https://react-sortable-tree.now.sh/~~
+- [x] SURGE deployments http://react-sortable-tree.surge.sh/
+- [x] site + main demo (try out docusourous too)
+- [ ] ~~style storybook~~
+- [ ] util function docs // <-- follow up PR
+","moving storybook to root website
+","diff --git a/examples/storybooks/storyshots.test.js b/examples/storybooks/storyshots.test.js
+deleted file mode 100644
+index bce8f9e..0000000
+--- a/examples/storybooks/storyshots.test.js
++++ /dev/null
+@@ -1,10 +0,0 @@
+-/* eslint-disable import/no-extraneous-dependencies */
+-import initStoryshots, {
+-  snapshotWithOptions,
+-} from '@storybook/addon-storyshots';
+-
+-initStoryshots({
+-  test: snapshotWithOptions({
+-    createNodeMock: () => ({}),
+-  }),
+-});
+
+diff --git a/stories/storyshots.test.js b/stories/storyshots.test.js
+new file mode 100644
+index 0000000..bce8f9e
+--- /dev/null
++++ b/stories/storyshots.test.js
+@@ -0,0 +1,10 @@
++/* eslint-disable import/no-extraneous-dependencies */
++import initStoryshots, {
++  snapshotWithOptions,
++} from '@storybook/addon-storyshots';
++
++initStoryshots({
++  test: snapshotWithOptions({
++    createNodeMock: () => ({}),
++  }),
++});
+",0,,51,14965,2,11,62,11717
+421,d28a76e924971e4f877945276326c893a86615e1,d28a76e924971e4f877945276326c893a86615e1,"Some test are still failing and also when used in storybook, though when I use it in my project it is working.
+There library used, which also needs to be upgraded, but that repo is half-abandoned :/
+https://github.com/azuqua/react-dnd-scrollzone/pull/38
+
+I will try to look into it more, or if someone have time/idea - improvements are welcome :)
+
+closes: #363 
+closes: #336 ","Using own version of react-dnd-scrollzone
+",,0,,5,34,1,6,19,9071

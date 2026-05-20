@@ -1,0 +1,121 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+124,ebd8c4977476b35ce78757387d58e7b05a257887,ebd8c4977476b35ce78757387d58e7b05a257887,tests/__snapshots__/utils.spec.js.snap,tests/utils.spec.js,Closes #118,"feat: Add 'sort-by' option
+","diff --git a/tests/utils.spec.js b/tests/utils.spec.js
+index 6a39cb8..b76c7f3 100644
+--- a/tests/utils.spec.js
++++ b/tests/utils.spec.js
+@@ -47,13 +47,19 @@ test('diffTable', () => {
+ 			filename: 'four.js',
+ 			size: 4500,
+ 			delta: 9
+-		}
++		},
++		{
++			filename: 'five.js',
++			size: 6500,
++			delta: 0
++		},
+ 	];
+ 	const defaultOptions = {
+ 		showTotal: true,
+ 		collapseUnchanged: true,
+ 		omitUnchanged: false,
+-		minimumChangeThreshold: 1
++		minimumChangeThreshold: 1,
++		sortBy: /** @type {const} */ ('Filename:asc')
+ 	};
+ 
+ 	expect(diffTable(files, { ...defaultOptions })).toMatchSnapshot();
+@@ -64,6 +70,10 @@ test('diffTable', () => {
+ 	expect(diffTable(files.map(file => ({...file, delta: 0})), { ...defaultOptions })).toMatchSnapshot();
+ 
+ 	expect(diffTable([files[2]], { ...defaultOptions })).toMatchSnapshot();
++
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Filename:desc' })).toMatchSnapshot();
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Size:asc' })).toMatchSnapshot();
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Change:desc' })).toMatchSnapshot();
+ });
+ 
+ test('getPackageManagerAndInstallScript', async () => {
+",0,
+124,ebd8c4977476b35ce78757387d58e7b05a257887,ebd8c4977476b35ce78757387d58e7b05a257887,tests/__snapshots__/utils.spec.js.snap,tests/utils.spec.js,Closes #118,"feat: Add 'sort-by' option
+","diff --git a/tests/utils.spec.js b/tests/utils.spec.js
+index 6a39cb8..b76c7f3 100644
+--- a/tests/utils.spec.js
++++ b/tests/utils.spec.js
+@@ -47,13 +47,19 @@ test('diffTable', () => {
+ 			filename: 'four.js',
+ 			size: 4500,
+ 			delta: 9
+-		}
++		},
++		{
++			filename: 'five.js',
++			size: 6500,
++			delta: 0
++		},
+ 	];
+ 	const defaultOptions = {
+ 		showTotal: true,
+ 		collapseUnchanged: true,
+ 		omitUnchanged: false,
+-		minimumChangeThreshold: 1
++		minimumChangeThreshold: 1,
++		sortBy: /** @type {const} */ ('Filename:asc')
+ 	};
+ 
+ 	expect(diffTable(files, { ...defaultOptions })).toMatchSnapshot();
+@@ -64,6 +70,10 @@ test('diffTable', () => {
+ 	expect(diffTable(files.map(file => ({...file, delta: 0})), { ...defaultOptions })).toMatchSnapshot();
+ 
+ 	expect(diffTable([files[2]], { ...defaultOptions })).toMatchSnapshot();
++
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Filename:desc' })).toMatchSnapshot();
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Size:asc' })).toMatchSnapshot();
++	expect(diffTable(files, { ...defaultOptions, sortBy: 'Change:desc' })).toMatchSnapshot();
+ });
+ 
+ test('getPackageManagerAndInstallScript', async () => {
+",0,
+97,1cacfe99760c48bd7c6dd957cd7ed1802d4a9a60,1cacfe99760c48bd7c6dd957cd7ed1802d4a9a60,tests/__snapshots__/utils.spec.js.snap,tests/utils.spec.js,"Adds a `percent-decimal-places` option to set the precision used for percentages in the markdown table, for a better overview of small changes, e.g. `+63 B (+0.10%)` if set to `2`.
+
+Default value is `0`, i.e the current behaviour.","refactor: Hold off on making it a new option
+","diff --git a/tests/utils.spec.js b/tests/utils.spec.js
+index cd9d91e..5aaef4b 100644
+--- a/tests/utils.spec.js
++++ b/tests/utils.spec.js
+@@ -15,10 +15,8 @@ test('getDeltaText', () => {
+ 	expect(getDeltaText(-5000, 20000)).toBe('-5 kB (-25%)');
+ 	expect(getDeltaText(210, 0)).toBe('+210 B (new file)');
+ 	expect(getDeltaText(0, 0)).toBe('0 B');
+-	expect(getDeltaText(4875, 20000)).toBe('+4.88 kB (+24%)');
+-	expect(getDeltaText(-4875, 20000)).toBe('-4.88 kB (-24%)');
+-	expect(getDeltaText(4875, 20000, 2)).toBe('+4.88 kB (+24.38%)');
+-	expect(getDeltaText(-4875, 20000,2)).toBe('-4.88 kB (-24.38%)');
++	expect(getDeltaText(4875, 20000)).toBe('+4.88 kB (+24.38%)');
++	expect(getDeltaText(-4875, 20000)).toBe('-4.88 kB (-24.38%)');
+ });
+ 
+ test('iconForDifference', () => {
+",0,
+97,1cacfe99760c48bd7c6dd957cd7ed1802d4a9a60,1cacfe99760c48bd7c6dd957cd7ed1802d4a9a60,tests/__snapshots__/utils.spec.js.snap,tests/utils.spec.js,"Adds a `percent-decimal-places` option to set the precision used for percentages in the markdown table, for a better overview of small changes, e.g. `+63 B (+0.10%)` if set to `2`.
+
+Default value is `0`, i.e the current behaviour.","refactor: Hold off on making it a new option
+","diff --git a/tests/utils.spec.js b/tests/utils.spec.js
+index cd9d91e..5aaef4b 100644
+--- a/tests/utils.spec.js
++++ b/tests/utils.spec.js
+@@ -15,10 +15,8 @@ test('getDeltaText', () => {
+ 	expect(getDeltaText(-5000, 20000)).toBe('-5 kB (-25%)');
+ 	expect(getDeltaText(210, 0)).toBe('+210 B (new file)');
+ 	expect(getDeltaText(0, 0)).toBe('0 B');
+-	expect(getDeltaText(4875, 20000)).toBe('+4.88 kB (+24%)');
+-	expect(getDeltaText(-4875, 20000)).toBe('-4.88 kB (-24%)');
+-	expect(getDeltaText(4875, 20000, 2)).toBe('+4.88 kB (+24.38%)');
+-	expect(getDeltaText(-4875, 20000,2)).toBe('-4.88 kB (-24.38%)');
++	expect(getDeltaText(4875, 20000)).toBe('+4.88 kB (+24.38%)');
++	expect(getDeltaText(-4875, 20000)).toBe('-4.88 kB (-24.38%)');
+ });
+ 
+ test('iconForDifference', () => {
+",0,

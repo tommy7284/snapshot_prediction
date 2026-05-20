@@ -1,0 +1,279 @@
+{
+    "id": 7988018,
+    "name": "gatsbyjs/gatsby",
+    "isFork": false,
+    "commits": 21651,
+    "branches": 425,
+    "releases": 134,
+    "forks": 10360,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.gatsbyjs.com",
+    "watchers": 741,
+    "stargazers": 55015,
+    "contributors": 417,
+    "size": 1141904,
+    "createdAt": "2015-05-21T10:43:05",
+    "pushedAt": "2024-04-26T12:09:12",
+    "updatedAt": "2024-04-26T06:57:00",
+    "totalIssues": 14033,
+    "openIssues": 167,
+    "totalPullRequests": 22112,
+    "openPullRequests": 186,
+    "blankLines": 139696,
+    "codeLines": 913955,
+    "commentLines": 48180,
+    "metrics": [
+        {
+            "blankLines": 173,
+            "language": "JSX",
+            "commentLines": 22,
+            "codeLines": 1299
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON5",
+            "commentLines": 119,
+            "codeLines": 28835
+        },
+        {
+            "blankLines": 50,
+            "language": "SQL",
+            "commentLines": 8,
+            "codeLines": 4795
+        },
+        {
+            "blankLines": 85,
+            "language": "AsciiDoc",
+            "commentLines": 18,
+            "codeLines": 216
+        },
+        {
+            "blankLines": 14263,
+            "language": "TypeScript",
+            "commentLines": 11333,
+            "codeLines": 101648
+        },
+        {
+            "blankLines": 26,
+            "language": "SCSS",
+            "commentLines": 4,
+            "codeLines": 229
+        },
+        {
+            "blankLines": 1,
+            "language": "Python",
+            "commentLines": 5,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 2,
+            "language": "Less",
+            "commentLines": 0,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 26,
+            "language": "Sass",
+            "commentLines": 2,
+            "codeLines": 231
+        },
+        {
+            "blankLines": 0,
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 19,
+            "language": "PHP",
+            "commentLines": 1,
+            "codeLines": 75
+        },
+        {
+            "blankLines": 78406,
+            "language": "Markdown",
+            "commentLines": 116,
+            "codeLines": 127734
+        },
+        {
+            "blankLines": 76,
+            "language": "YAML",
+            "commentLines": 27,
+            "codeLines": 1198
+        },
+        {
+            "blankLines": 143,
+            "language": "GraphQL",
+            "commentLines": 3,
+            "codeLines": 1007
+        },
+        {
+            "blankLines": 0,
+            "language": "CSV",
+            "commentLines": 0,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 41,
+            "language": "Stylus",
+            "commentLines": 4,
+            "codeLines": 109
+        },
+        {
+            "blankLines": 19,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 356759
+        },
+        {
+            "blankLines": 35,
+            "language": "Dockerfile",
+            "commentLines": 15,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 1032,
+            "language": "CSS",
+            "commentLines": 188,
+            "codeLines": 10148
+        },
+        {
+            "blankLines": 5,
+            "language": "Bourne Again Shell",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 101,
+            "language": "HTML",
+            "commentLines": 5,
+            "codeLines": 1156
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 414
+        },
+        {
+            "blankLines": 65,
+            "language": "Bourne Shell",
+            "commentLines": 55,
+            "codeLines": 241
+        },
+        {
+            "blankLines": 45105,
+            "language": "JavaScript",
+            "commentLines": 36247,
+            "codeLines": 277635
+        },
+        {
+            "blankLines": 17,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 47
+        },
+        {
+            "blankLines": 1,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 5,
+            "language": "TOML",
+            "commentLines": 8,
+            "codeLines": 18
+        }
+    ],
+    "lastCommit": "2024-04-25T11:34:25",
+    "lastCommitSHA": "89cb1292f3c8524a53fdbb109f5c400b4a2a62e9",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 5324820,
+        "TypeScript": 3507696,
+        "CSS": 94587,
+        "HTML": 62235,
+        "MDX": 40139,
+        "Shell": 9795,
+        "Dockerfile": 2751,
+        "Handlebars": 2206,
+        "PHP": 2010,
+        "EJS": 461,
+        "Python": 281,
+        "SCSS": 218,
+        "Less": 218,
+        "Stylus": 206
+    },
+    "labels": [
+        "bot: merge on green",
+        "breaking change",
+        "gatsby",
+        "good first issue",
+        "help wanted",
+        "not stale",
+        "rebase",
+        "sprint-candidate",
+        "stale?",
+        "status: accepted",
+        "status: awaiting author response",
+        "status: awaiting reviewer response",
+        "status: blocked",
+        "status: completed",
+        "status: confirmed",
+        "status: duplicate",
+        "status: needs core review",
+        "status: needs docs review",
+        "status: needs more info",
+        "status: needs reproduction",
+        "status: rejected",
+        "status: triage needed",
+        "topic: a11y",
+        "topic: adapters",
+        "topic: automation",
+        "topic: benchmarks",
+        "topic: build",
+        "topic: cli",
+        "topic: core",
+        "topic: data",
+        "topic: dx",
+        "topic: frontend",
+        "topic: graphql",
+        "topic: media",
+        "topic: performance",
+        "topic: plugins",
+        "topic: plugins-analytics",
+        "topic: plugins-pwa",
+        "topic: plugins-styling",
+        "topic: remark/mdx",
+        "topic: render-mode",
+        "topic: source-contentful",
+        "topic: source-drupal",
+        "topic: source-plugins",
+        "topic: source-shopify",
+        "topic: source-wordpress",
+        "topic: typescript",
+        "topic: webpack/babel",
+        "type: bug",
+        "type: cherry",
+        "type: documentation",
+        "type: feature or enhancement",
+        "type: maintenance",
+        "type: question or discussion",
+        "type: upstream"
+    ],
+    "topics": [
+        "blog",
+        "compiler",
+        "gatsby",
+        "graphql",
+        "react",
+        "static-site-generator",
+        "web-app"
+    ]
+}

@@ -1,0 +1,92 @@
+{
+    "id": 4045191,
+    "name": "awslabs/diagram-maker",
+    "isFork": false,
+    "commits": 88,
+    "branches": 2,
+    "releases": 0,
+    "forks": 131,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://awslabs.github.io/diagram-maker",
+    "watchers": 51,
+    "stargazers": 2347,
+    "contributors": 11,
+    "size": 8617,
+    "createdAt": "2020-08-31T07:30:19",
+    "pushedAt": "2023-04-26T07:24:44",
+    "updatedAt": "2023-05-01T12:08:11",
+    "totalIssues": 38,
+    "openIssues": 2,
+    "totalPullRequests": 81,
+    "openPullRequests": 0,
+    "blankLines": 3173,
+    "codeLines": 75003,
+    "commentLines": 1348,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 58,
+            "blankLines": 18
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1297,
+            "blankLines": 256
+        },
+        {
+            "language": "Sass",
+            "commentLines": 0,
+            "codeLines": 345,
+            "blankLines": 43
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 55571,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1338,
+            "codeLines": 17475,
+            "blankLines": 2846
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 6,
+            "codeLines": 257,
+            "blankLines": 10
+        }
+    ],
+    "lastCommit": "2023-04-26T07:24:44",
+    "lastCommitSHA": "b0971917b36000f9a38cac3e782d50263d48c1fd",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 719849,
+        "SCSS": 7914,
+        "JavaScript": 6993,
+        "HTML": 262
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "question",
+        "ruby",
+        "wontfix"
+    ],
+    "topics": []
+}

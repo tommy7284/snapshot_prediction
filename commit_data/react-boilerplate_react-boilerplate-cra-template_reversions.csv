@@ -1,0 +1,1022 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+107,134702e818c183b7e5799c46f1edad54fd5ec3f9,e3a1ee61a333a20280469063ef8971d8369ca675,"`Container/Component` folder structure is outdated long ago. With redux-toolkit and hooks, the line is blurry. Therefore, the folder structured is removed and left for the developer to decide.
+
+Changes:
+- Containers folder removed and generators updated to put the components anywhere
+- Redux Slices are isolated from component and grouped in a folder
+  - A new generator added to support slice generation separate from the component
+  
+Examine the changes in the documentation to see what has changed and how. 
+","updated the folder structure
+","diff --git a/src/app/components/NavBar/__tests__/Logo.test.tsx b/src/app/components/NavBar/__tests__/Logo.test.tsx
+new file mode 100644
+index 0000000..354d961
+--- /dev/null
++++ b/src/app/components/NavBar/__tests__/Logo.test.tsx
+@@ -0,0 +1,10 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { Logo } from '../Logo';
++
++describe('<Logo />', () => {
++  it('should match snapshot', () => {
++    const logo = render(<Logo />);
++    expect(logo.container.firstChild).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/app/components/NavBar/__tests__/Nav.test.tsx b/src/app/components/NavBar/__tests__/Nav.test.tsx
+new file mode 100644
+index 0000000..9d47a58
+--- /dev/null
++++ b/src/app/components/NavBar/__tests__/Nav.test.tsx
+@@ -0,0 +1,15 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { Nav } from '../Nav';
++import { MemoryRouter } from 'react-router-dom';
++
++describe('<Nav />', () => {
++  it('should match the snapshot', () => {
++    const logo = render(
++      <MemoryRouter>
++        <Nav />
++      </MemoryRouter>,
++    );
++    expect(logo.container.firstChild).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/app/components/NavBar/__tests__/index.test.tsx b/src/app/components/NavBar/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..4b634ba
+--- /dev/null
++++ b/src/app/components/NavBar/__tests__/index.test.tsx
+@@ -0,0 +1,13 @@
++import * as React from 'react';
++import { createRenderer } from 'react-test-renderer/shallow';
++import { NavBar } from '../index';
++
++const shallowRenderer = createRenderer();
++
++describe('<NavBar />', () => {
++  it('should match snapshot', () => {
++    shallowRenderer.render(<NavBar />);
++    const renderedOutput = shallowRenderer.getRenderOutput();
++    expect(renderedOutput).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/app/containers/GithubRepoForm/__tests__/RepoItem.test.tsx b/src/app/containers/GithubRepoForm/__tests__/RepoItem.test.tsx
+deleted file mode 100644
+index 2d52ba0..0000000
+--- a/src/app/containers/GithubRepoForm/__tests__/RepoItem.test.tsx
++++ /dev/null
+@@ -1,40 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { RepoItem } from '../RepoItem';
+-
+-const renderRepoItem = (props: Parameters<typeof RepoItem>[number]) =>
+-  render(<RepoItem {...props} />);
+-
+-describe('<RepoItem />', () => {
+-  it('should match the snapshot', () => {
+-    const repoItem = renderRepoItem({
+-      name: 'test',
+-      starCount: 1,
+-      url: 'testUrl',
+-    });
+-    expect(repoItem.container.firstChild).toMatchSnapshot();
+-  });
+-
+-  it('should have url in <a> child', () => {
+-    const url = 'url1';
+-    const repoItem = renderRepoItem({
+-      name: 'test',
+-      starCount: 1,
+-      url: url,
+-    });
+-    expect(repoItem.container.querySelector('a')).toHaveAttribute('href', url);
+-  });
+-
+-  it('should have props displayed', () => {
+-    const url = 'url1';
+-    const starCount = 1;
+-    const name = 'test';
+-    const repoItem = renderRepoItem({
+-      name: name,
+-      starCount: starCount,
+-      url: url,
+-    });
+-    expect(repoItem.queryByText(name)).toBeInTheDocument();
+-    expect(repoItem.queryByText(starCount.toString())).toBeInTheDocument();
+-  });
+-});
+
+diff --git a/src/app/containers/GithubRepoForm/__tests__/saga.test.ts b/src/app/containers/GithubRepoForm/__tests__/saga.test.ts
+deleted file mode 100644
+index d9ce24b..0000000
+--- a/src/app/containers/GithubRepoForm/__tests__/saga.test.ts
++++ /dev/null
+@@ -1,110 +0,0 @@
+-import { put, takeLatest } from 'redux-saga/effects';
+-import * as slice from '../slice';
+-
+-import { githubRepoFormSaga, getRepos } from '../saga';
+-import { RepoErrorType } from '../types';
+-
+-describe('getRepos Saga', () => {
+-  let username: any;
+-  let repos: any;
+-  let getReposIterator: ReturnType<typeof getRepos>;
+-
+-  // We have to test twice, once for a successful load and once for an unsuccessful one
+-  // so we do all the stuff that happens beforehand automatically in the beforeEach
+-  beforeEach(() => {
+-    getReposIterator = getRepos();
+-    const delayDescriptor = getReposIterator.next().value;
+-    expect(delayDescriptor).toMatchSnapshot();
+-
+-    const selectDescriptor = getReposIterator.next().value;
+-    expect(selectDescriptor).toMatchSnapshot();
+-  });
+-
+-  it('should return error if username is empty', () => {
+-    username = '';
+-    const putDescriptor = getReposIterator.next(username).value;
+-    expect(putDescriptor).toEqual(
+-      put(slice.actions.repoError(RepoErrorType.USERNAME_EMPTY)),
+-    );
+-
+-    const iteration = getReposIterator.next();
+-    expect(iteration.done).toBe(true);
+-  });
+-
+-  it('should dispatch the reposLoaded action if it requests the data successfully', () => {
+-    username = 'test';
+-    repos = [
+-      {
+-        name: 'repo1',
+-        owner: {
+-          login: 'username1',
+-        },
+-      },
+-    ];
+-
+-    const requestDescriptor = getReposIterator.next(username).value;
+-    expect(requestDescriptor).toMatchSnapshot();
+-
+-    const putDescriptor = getReposIterator.next(repos).value;
+-    expect(putDescriptor).toEqual(put(slice.actions.reposLoaded(repos)));
+-  });
+-
+-  it('should dispatch the user not found error', () => {
+-    username = 'test';
+-
+-    const requestDescriptor = getReposIterator.next(username).value;
+-    expect(requestDescriptor).toMatchSnapshot();
+-
+-    const putDescriptor = getReposIterator.throw({ response: { status: 404 } })
+-      .value;
+-    expect(putDescriptor).toEqual(
+-      put(slice.actions.repoError(RepoErrorType.USER_NOT_FOUND)),
+-    );
+-  });
+-  it('should dispatch the user has no repo error', () => {
+-    username = 'test';
+-    repos = [];
+-
+-    const requestDescriptor = getReposIterator.next(username).value;
+-    expect(requestDescriptor).toMatchSnapshot();
+-
+-    const putDescriptor = getReposIterator.next(repos).value;
+-    expect(putDescriptor).toEqual(
+-      put(slice.actions.repoError(RepoErrorType.USER_HAS_NO_REPO)),
+-    );
+-  });
+-  it('should dispatch the github rate limit error', () => {
+-    username = 'test';
+-
+-    const requestDescriptor = getReposIterator.next(username).value;
+-    expect(requestDescriptor).toMatchSnapshot();
+-
+-    const putDescriptor = getReposIterator.throw(new Error('Failed to fetch'))
+-      .value;
+-    expect(putDescriptor).toEqual(
+-      put(slice.actions.repoError(RepoErrorType.GITHUB_RATE_LIMIT)),
+-    );
+-  });
+-
+-  it('should dispatch the response error', () => {
+-    username = 'test';
+-
+-    const requestDescriptor = getReposIterator.next(username).value;
+-    expect(requestDescriptor).toMatchSnapshot();
+-
+-    const putDescriptor = getReposIterator.throw(new Error('some error')).value;
+-    expect(putDescriptor).toEqual(
+-      put(slice.actions.repoError(RepoErrorType.RESPONSE_ERROR)),
+-    );
+-  });
+-});
+-
+-describe('githubRepoFormSaga Saga', () => {
+-  const githubRepoFormIterator = githubRepoFormSaga();
+-  it('should start task to watch for loadRepos action', () => {
+-    const takeLatestDescriptor = githubRepoFormIterator.next().value;
+-    expect(takeLatestDescriptor).toEqual(
+-      takeLatest(slice.actions.loadRepos.type, getRepos),
+-    );
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/__tests__/Features.test.tsx b/src/app/containers/HomePage/__tests__/Features.test.tsx
+deleted file mode 100644
+index 0fcb416..0000000
+--- a/src/app/containers/HomePage/__tests__/Features.test.tsx
++++ /dev/null
+@@ -1,34 +0,0 @@
+-import * as React from 'react';
+-import { createRenderer } from 'react-test-renderer/shallow';
+-import { Features } from '../Features';
+-import i18next from 'i18next';
+-
+-const shallowRenderer = createRenderer();
+-
+-describe('<Features />', () => {
+-  it('should render with en translations', () => {
+-    i18next.changeLanguage('en');
+-    shallowRenderer.render(<Features />);
+-    const renderedOutput = shallowRenderer.getRenderOutput();
+-    expect(renderedOutput).toMatchSnapshot();
+-  });
+-
+-  it('should render with de translations', () => {
+-    i18next.changeLanguage('de');
+-    shallowRenderer.render(<Features />);
+-    const renderedOutput = shallowRenderer.getRenderOutput();
+-    expect(renderedOutput).toMatchSnapshot();
+-  });
+-
+-  it('should render different after language change', () => {
+-    i18next.changeLanguage('en');
+-    shallowRenderer.render(<Features />);
+-    const renderedOutput1 = shallowRenderer.getRenderOutput();
+-
+-    i18next.changeLanguage('de');
+-    shallowRenderer.render(<Features />);
+-    const renderedOutput2 = shallowRenderer.getRenderOutput();
+-
+-    expect(renderedOutput1).not.toEqual(renderedOutput2);
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/__tests__/Logos.test.tsx b/src/app/containers/HomePage/__tests__/Logos.test.tsx
+deleted file mode 100644
+index 68a198f..0000000
+--- a/src/app/containers/HomePage/__tests__/Logos.test.tsx
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import * as React from 'react';
+-import { Logos } from '../Logos';
+-import { render } from '@testing-library/react';
+-import { ThemeProvider, DefaultTheme } from 'styled-components';
+-
+-import { themes } from 'styles/theme/themes';
+-
+-const renderLogos = (theme: DefaultTheme) =>
+-  render(
+-    <ThemeProvider theme={theme}>
+-      <Logos />
+-    </ThemeProvider>,
+-  );
+-describe('<Logos />', () => {
+-  it('should render and match the snapshot', () => {
+-    const logos = renderLogos(themes.light);
+-    expect(logos.asFragment()).toMatchSnapshot();
+-  });
+-
+-  it('should use theme from props', () => {
+-    let logos = renderLogos(themes.light);
+-    expect(logos.container.firstChild).toHaveStyle(
+-      `color: ${themes.light.border}`,
+-    );
+-    logos = renderLogos(themes.dark);
+-    expect(logos.container.firstChild).toHaveStyle(
+-      `color: ${themes.dark.border}`,
+-    );
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/__tests__/Masthead.test.tsx b/src/app/containers/HomePage/__tests__/Masthead.test.tsx
+deleted file mode 100644
+index 2295a6d..0000000
+--- a/src/app/containers/HomePage/__tests__/Masthead.test.tsx
++++ /dev/null
+@@ -1,13 +0,0 @@
+-import * as React from 'react';
+-import { Masthead } from '../Masthead';
+-import { createRenderer } from 'react-test-renderer/shallow';
+-
+-const shallowRenderer = createRenderer();
+-
+-describe('<Masthead />', () => {
+-  it('should render and match the snapshot', () => {
+-    shallowRenderer.render(<Masthead />);
+-    const renderedOutput = shallowRenderer.getRenderOutput();
+-    expect(renderedOutput).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/__tests__/index.test.tsx b/src/app/containers/HomePage/__tests__/index.test.tsx
+deleted file mode 100644
+index db55958..0000000
+--- a/src/app/containers/HomePage/__tests__/index.test.tsx
++++ /dev/null
+@@ -1,14 +0,0 @@
+-import * as React from 'react';
+-import { createRenderer } from 'react-test-renderer/shallow';
+-
+-import { HomePage } from '..';
+-
+-const shallowRenderer = createRenderer();
+-
+-describe('<HomePage />', () => {
+-  it('should render and match the snapshot', () => {
+-    shallowRenderer.render(<HomePage />);
+-    const renderedOutput = shallowRenderer.getRenderOutput();
+-    expect(renderedOutput).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/components/__tests__/Lead.test.tsx b/src/app/containers/HomePage/components/__tests__/Lead.test.tsx
+deleted file mode 100644
+index a64873d..0000000
+--- a/src/app/containers/HomePage/components/__tests__/Lead.test.tsx
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { DefaultTheme } from 'styled-components';
+-import { themes } from 'styles/theme/themes';
+-import { Lead } from '../Lead';
+-
+-const renderWithTheme = (theme: DefaultTheme) => render(<Lead theme={theme} />);
+-
+-describe('<Lead />', () => {
+-  it('should render and match the snapshot', () => {
+-    const lead = renderWithTheme(themes.light);
+-    expect(lead.container.firstChild).toMatchSnapshot();
+-  });
+-
+-  it('should use theme from props', () => {
+-    let lead = renderWithTheme(themes.light);
+-    expect(lead.container.firstChild).toHaveStyle(
+-      `color: ${themes.light.textSecondary}`,
+-    );
+-    lead = renderWithTheme(themes.dark);
+-    expect(lead.container.firstChild).toHaveStyle(
+-      `color: ${themes.dark.textSecondary}`,
+-    );
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/components/__tests__/P.test.tsx b/src/app/containers/HomePage/components/__tests__/P.test.tsx
+deleted file mode 100644
+index 142c2a8..0000000
+--- a/src/app/containers/HomePage/components/__tests__/P.test.tsx
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { DefaultTheme } from 'styled-components';
+-import { themes } from 'styles/theme/themes';
+-import { P } from '../P';
+-
+-const renderWithTheme = (theme: DefaultTheme) => render(<P theme={theme} />);
+-
+-describe('<P />', () => {
+-  it('should render and match the snapshot', () => {
+-    const p = renderWithTheme(themes.light);
+-    expect(p.container.firstChild).toMatchSnapshot();
+-  });
+-
+-  it('should use theme from props', () => {
+-    let p = renderWithTheme(themes.light);
+-    expect(p.container.firstChild).toHaveStyle(
+-      `color: ${themes.light.textSecondary}`,
+-    );
+-    p = renderWithTheme(themes.dark);
+-    expect(p.container.firstChild).toHaveStyle(
+-      `color: ${themes.dark.textSecondary}`,
+-    );
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/components/__tests__/Subtitle.test.tsx b/src/app/containers/HomePage/components/__tests__/Subtitle.test.tsx
+deleted file mode 100644
+index 8748c68..0000000
+--- a/src/app/containers/HomePage/components/__tests__/Subtitle.test.tsx
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { DefaultTheme } from 'styled-components';
+-import { themes } from 'styles/theme/themes';
+-import { SubTitle } from '../SubTitle';
+-
+-const renderWithTheme = (theme: DefaultTheme) =>
+-  render(<SubTitle theme={theme} />);
+-
+-describe('<Subtitle />', () => {
+-  it('should render and match the snapshot', () => {
+-    const comp = renderWithTheme(themes.light);
+-    expect(comp.container.firstChild).toMatchSnapshot();
+-  });
+-
+-  it('should use theme from props', () => {
+-    let comp = renderWithTheme(themes.light);
+-    expect(comp.container.firstChild).toHaveStyle(
+-      `color: ${themes.light.text}`,
+-    );
+-    comp = renderWithTheme(themes.dark);
+-    expect(comp.container.firstChild).toHaveStyle(`color: ${themes.dark.text}`);
+-  });
+-});
+
+diff --git a/src/app/containers/HomePage/components/__tests__/Title.test.tsx b/src/app/containers/HomePage/components/__tests__/Title.test.tsx
+deleted file mode 100644
+index 86a95c9..0000000
+--- a/src/app/containers/HomePage/components/__tests__/Title.test.tsx
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { DefaultTheme } from 'styled-components';
+-import { themes } from 'styles/theme/themes';
+-import { Title } from '../Title';
+-
+-const renderWithTheme = (theme: DefaultTheme) =>
+-  render(<Title theme={theme} />);
+-
+-describe('<Title />', () => {
+-  it('should render and match the snapshot', () => {
+-    const comp = renderWithTheme(themes.light);
+-    expect(comp.container.firstChild).toMatchSnapshot();
+-  });
+-
+-  it('should use theme from props', () => {
+-    let comp = renderWithTheme(themes.light);
+-    expect(comp.container.firstChild).toHaveStyle(
+-      `color: ${themes.light.text}`,
+-    );
+-    comp = renderWithTheme(themes.dark);
+-    expect(comp.container.firstChild).toHaveStyle(`color: ${themes.dark.text}`);
+-  });
+-});
+
+diff --git a/src/app/containers/NavBar/__tests__/Logo.test.tsx b/src/app/containers/NavBar/__tests__/Logo.test.tsx
+deleted file mode 100644
+index 354d961..0000000
+--- a/src/app/containers/NavBar/__tests__/Logo.test.tsx
++++ /dev/null
+@@ -1,10 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { Logo } from '../Logo';
+-
+-describe('<Logo />', () => {
+-  it('should match snapshot', () => {
+-    const logo = render(<Logo />);
+-    expect(logo.container.firstChild).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/app/containers/NavBar/__tests__/Nav.test.tsx b/src/app/containers/NavBar/__tests__/Nav.test.tsx
+deleted file mode 100644
+index 9d47a58..0000000
+--- a/src/app/containers/NavBar/__tests__/Nav.test.tsx
++++ /dev/null
+@@ -1,15 +0,0 @@
+-import * as React from 'react';
+-import { render } from '@testing-library/react';
+-import { Nav } from '../Nav';
+-import { MemoryRouter } from 'react-router-dom';
+-
+-describe('<Nav />', () => {
+-  it('should match the snapshot', () => {
+-    const logo = render(
+-      <MemoryRouter>
+-        <Nav />
+-      </MemoryRouter>,
+-    );
+-    expect(logo.container.firstChild).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/app/containers/NavBar/__tests__/index.test.tsx b/src/app/containers/NavBar/__tests__/index.test.tsx
+deleted file mode 100644
+index 4b634ba..0000000
+--- a/src/app/containers/NavBar/__tests__/index.test.tsx
++++ /dev/null
+@@ -1,13 +0,0 @@
+-import * as React from 'react';
+-import { createRenderer } from 'react-test-renderer/shallow';
+-import { NavBar } from '../index';
+-
+-const shallowRenderer = createRenderer();
+-
+-describe('<NavBar />', () => {
+-  it('should match snapshot', () => {
+-    shallowRenderer.render(<NavBar />);
+-    const renderedOutput = shallowRenderer.getRenderOutput();
+-    expect(renderedOutput).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/app/containers/NotFoundPage/__tests__/index.test.tsx b/src/app/containers/NotFoundPage/__tests__/index.test.tsx
+deleted file mode 100644
+index d753a45..0000000
+--- a/src/app/containers/NotFoundPage/__tests__/index.test.tsx
++++ /dev/null
+@@ -1,31 +0,0 @@
+-import * as React from 'react';
+-import { NotFoundPage } from '..';
+-import { MemoryRouter } from 'react-router-dom';
+-import { ThemeProvider } from 'styled-components';
+-import { themes } from 'styles/theme/themes';
+-import { HelmetProvider } from 'react-helmet-async';
+-import renderer from 'react-test-renderer';
+-import { Link } from 'app/components/Link';
+-
+-const renderPage = () =>
+-  renderer.create(
+-    <MemoryRouter>
+-      <ThemeProvider theme={themes.light}>
+-        <HelmetProvider>
+-          <NotFoundPage />
+-        </HelmetProvider>
+-      </ThemeProvider>
+-    </MemoryRouter>,
+-  );
+-
+-describe('<NotFoundPage />', () => {
+-  it('should match snapshot', () => {
+-    const notFoundPage = renderPage();
+-    expect(notFoundPage.toJSON()).toMatchSnapshot();
+-  });
+-
+-  it('should should contain Link', () => {
+-    const notFoundPage = renderPage();
+-    expect(notFoundPage.root.findByType(Link)).toBeDefined();
+-  });
+-});
+
+diff --git a/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/RepoItem.test.tsx b/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/RepoItem.test.tsx
+new file mode 100644
+index 0000000..2d52ba0
+--- /dev/null
++++ b/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/RepoItem.test.tsx
+@@ -0,0 +1,40 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { RepoItem } from '../RepoItem';
++
++const renderRepoItem = (props: Parameters<typeof RepoItem>[number]) =>
++  render(<RepoItem {...props} />);
++
++describe('<RepoItem />', () => {
++  it('should match the snapshot', () => {
++    const repoItem = renderRepoItem({
++      name: 'test',
++      starCount: 1,
++      url: 'testUrl',
++    });
++    expect(repoItem.container.firstChild).toMatchSnapshot();
++  });
++
++  it('should have url in <a> child', () => {
++    const url = 'url1';
++    const repoItem = renderRepoItem({
++      name: 'test',
++      starCount: 1,
++      url: url,
++    });
++    expect(repoItem.container.querySelector('a')).toHaveAttribute('href', url);
++  });
++
++  it('should have props displayed', () => {
++    const url = 'url1';
++    const starCount = 1;
++    const name = 'test';
++    const repoItem = renderRepoItem({
++      name: name,
++      starCount: starCount,
++      url: url,
++    });
++    expect(repoItem.queryByText(name)).toBeInTheDocument();
++    expect(repoItem.queryByText(starCount.toString())).toBeInTheDocument();
++  });
++});
+
+diff --git a/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/saga.test.ts b/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/saga.test.ts
+new file mode 100644
+index 0000000..d9ce24b
+--- /dev/null
++++ b/src/app/pages/HomePage/Features/GithubRepoForm/__tests__/saga.test.ts
+@@ -0,0 +1,110 @@
++import { put, takeLatest } from 'redux-saga/effects';
++import * as slice from '../slice';
++
++import { githubRepoFormSaga, getRepos } from '../saga';
++import { RepoErrorType } from '../types';
++
++describe('getRepos Saga', () => {
++  let username: any;
++  let repos: any;
++  let getReposIterator: ReturnType<typeof getRepos>;
++
++  // We have to test twice, once for a successful load and once for an unsuccessful one
++  // so we do all the stuff that happens beforehand automatically in the beforeEach
++  beforeEach(() => {
++    getReposIterator = getRepos();
++    const delayDescriptor = getReposIterator.next().value;
++    expect(delayDescriptor).toMatchSnapshot();
++
++    const selectDescriptor = getReposIterator.next().value;
++    expect(selectDescriptor).toMatchSnapshot();
++  });
++
++  it('should return error if username is empty', () => {
++    username = '';
++    const putDescriptor = getReposIterator.next(username).value;
++    expect(putDescriptor).toEqual(
++      put(slice.actions.repoError(RepoErrorType.USERNAME_EMPTY)),
++    );
++
++    const iteration = getReposIterator.next();
++    expect(iteration.done).toBe(true);
++  });
++
++  it('should dispatch the reposLoaded action if it requests the data successfully', () => {
++    username = 'test';
++    repos = [
++      {
++        name: 'repo1',
++        owner: {
++          login: 'username1',
++        },
++      },
++    ];
++
++    const requestDescriptor = getReposIterator.next(username).value;
++    expect(requestDescriptor).toMatchSnapshot();
++
++    const putDescriptor = getReposIterator.next(repos).value;
++    expect(putDescriptor).toEqual(put(slice.actions.reposLoaded(repos)));
++  });
++
++  it('should dispatch the user not found error', () => {
++    username = 'test';
++
++    const requestDescriptor = getReposIterator.next(username).value;
++    expect(requestDescriptor).toMatchSnapshot();
++
++    const putDescriptor = getReposIterator.throw({ response: { status: 404 } })
++      .value;
++    expect(putDescriptor).toEqual(
++      put(slice.actions.repoError(RepoErrorType.USER_NOT_FOUND)),
++    );
++  });
++  it('should dispatch the user has no repo error', () => {
++    username = 'test';
++    repos = [];
++
++    const requestDescriptor = getReposIterator.next(username).value;
++    expect(requestDescriptor).toMatchSnapshot();
++
++    const putDescriptor = getReposIterator.next(repos).value;
++    expect(putDescriptor).toEqual(
++      put(slice.actions.repoError(RepoErrorType.USER_HAS_NO_REPO)),
++    );
++  });
++  it('should dispatch the github rate limit error', () => {
++    username = 'test';
++
++    const requestDescriptor = getReposIterator.next(username).value;
++    expect(requestDescriptor).toMatchSnapshot();
++
++    const putDescriptor = getReposIterator.throw(new Error('Failed to fetch'))
++      .value;
++    expect(putDescriptor).toEqual(
++      put(slice.actions.repoError(RepoErrorType.GITHUB_RATE_LIMIT)),
++    );
++  });
++
++  it('should dispatch the response error', () => {
++    username = 'test';
++
++    const requestDescriptor = getReposIterator.next(username).value;
++    expect(requestDescriptor).toMatchSnapshot();
++
++    const putDescriptor = getReposIterator.throw(new Error('some error')).value;
++    expect(putDescriptor).toEqual(
++      put(slice.actions.repoError(RepoErrorType.RESPONSE_ERROR)),
++    );
++  });
++});
++
++describe('githubRepoFormSaga Saga', () => {
++  const githubRepoFormIterator = githubRepoFormSaga();
++  it('should start task to watch for loadRepos action', () => {
++    const takeLatestDescriptor = githubRepoFormIterator.next().value;
++    expect(takeLatestDescriptor).toEqual(
++      takeLatest(slice.actions.loadRepos.type, getRepos),
++    );
++  });
++});
+
+diff --git a/src/app/pages/HomePage/__tests__/Features.test.tsx b/src/app/pages/HomePage/__tests__/Features.test.tsx
+new file mode 100644
+index 0000000..0fcb416
+--- /dev/null
++++ b/src/app/pages/HomePage/__tests__/Features.test.tsx
+@@ -0,0 +1,34 @@
++import * as React from 'react';
++import { createRenderer } from 'react-test-renderer/shallow';
++import { Features } from '../Features';
++import i18next from 'i18next';
++
++const shallowRenderer = createRenderer();
++
++describe('<Features />', () => {
++  it('should render with en translations', () => {
++    i18next.changeLanguage('en');
++    shallowRenderer.render(<Features />);
++    const renderedOutput = shallowRenderer.getRenderOutput();
++    expect(renderedOutput).toMatchSnapshot();
++  });
++
++  it('should render with de translations', () => {
++    i18next.changeLanguage('de');
++    shallowRenderer.render(<Features />);
++    const renderedOutput = shallowRenderer.getRenderOutput();
++    expect(renderedOutput).toMatchSnapshot();
++  });
++
++  it('should render different after language change', () => {
++    i18next.changeLanguage('en');
++    shallowRenderer.render(<Features />);
++    const renderedOutput1 = shallowRenderer.getRenderOutput();
++
++    i18next.changeLanguage('de');
++    shallowRenderer.render(<Features />);
++    const renderedOutput2 = shallowRenderer.getRenderOutput();
++
++    expect(renderedOutput1).not.toEqual(renderedOutput2);
++  });
++});
+
+diff --git a/src/app/pages/HomePage/__tests__/Logos.test.tsx b/src/app/pages/HomePage/__tests__/Logos.test.tsx
+new file mode 100644
+index 0000000..68a198f
+--- /dev/null
++++ b/src/app/pages/HomePage/__tests__/Logos.test.tsx
+@@ -0,0 +1,30 @@
++import * as React from 'react';
++import { Logos } from '../Logos';
++import { render } from '@testing-library/react';
++import { ThemeProvider, DefaultTheme } from 'styled-components';
++
++import { themes } from 'styles/theme/themes';
++
++const renderLogos = (theme: DefaultTheme) =>
++  render(
++    <ThemeProvider theme={theme}>
++      <Logos />
++    </ThemeProvider>,
++  );
++describe('<Logos />', () => {
++  it('should render and match the snapshot', () => {
++    const logos = renderLogos(themes.light);
++    expect(logos.asFragment()).toMatchSnapshot();
++  });
++
++  it('should use theme from props', () => {
++    let logos = renderLogos(themes.light);
++    expect(logos.container.firstChild).toHaveStyle(
++      `color: ${themes.light.border}`,
++    );
++    logos = renderLogos(themes.dark);
++    expect(logos.container.firstChild).toHaveStyle(
++      `color: ${themes.dark.border}`,
++    );
++  });
++});
+
+diff --git a/src/app/pages/HomePage/__tests__/Masthead.test.tsx b/src/app/pages/HomePage/__tests__/Masthead.test.tsx
+new file mode 100644
+index 0000000..2295a6d
+--- /dev/null
++++ b/src/app/pages/HomePage/__tests__/Masthead.test.tsx
+@@ -0,0 +1,13 @@
++import * as React from 'react';
++import { Masthead } from '../Masthead';
++import { createRenderer } from 'react-test-renderer/shallow';
++
++const shallowRenderer = createRenderer();
++
++describe('<Masthead />', () => {
++  it('should render and match the snapshot', () => {
++    shallowRenderer.render(<Masthead />);
++    const renderedOutput = shallowRenderer.getRenderOutput();
++    expect(renderedOutput).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/app/pages/HomePage/__tests__/index.test.tsx b/src/app/pages/HomePage/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..db55958
+--- /dev/null
++++ b/src/app/pages/HomePage/__tests__/index.test.tsx
+@@ -0,0 +1,14 @@
++import * as React from 'react';
++import { createRenderer } from 'react-test-renderer/shallow';
++
++import { HomePage } from '..';
++
++const shallowRenderer = createRenderer();
++
++describe('<HomePage />', () => {
++  it('should render and match the snapshot', () => {
++    shallowRenderer.render(<HomePage />);
++    const renderedOutput = shallowRenderer.getRenderOutput();
++    expect(renderedOutput).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/app/pages/HomePage/components/__tests__/Lead.test.tsx b/src/app/pages/HomePage/components/__tests__/Lead.test.tsx
+new file mode 100644
+index 0000000..a64873d
+--- /dev/null
++++ b/src/app/pages/HomePage/components/__tests__/Lead.test.tsx
+@@ -0,0 +1,25 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { DefaultTheme } from 'styled-components';
++import { themes } from 'styles/theme/themes';
++import { Lead } from '../Lead';
++
++const renderWithTheme = (theme: DefaultTheme) => render(<Lead theme={theme} />);
++
++describe('<Lead />', () => {
++  it('should render and match the snapshot', () => {
++    const lead = renderWithTheme(themes.light);
++    expect(lead.container.firstChild).toMatchSnapshot();
++  });
++
++  it('should use theme from props', () => {
++    let lead = renderWithTheme(themes.light);
++    expect(lead.container.firstChild).toHaveStyle(
++      `color: ${themes.light.textSecondary}`,
++    );
++    lead = renderWithTheme(themes.dark);
++    expect(lead.container.firstChild).toHaveStyle(
++      `color: ${themes.dark.textSecondary}`,
++    );
++  });
++});
+
+diff --git a/src/app/pages/HomePage/components/__tests__/P.test.tsx b/src/app/pages/HomePage/components/__tests__/P.test.tsx
+new file mode 100644
+index 0000000..142c2a8
+--- /dev/null
++++ b/src/app/pages/HomePage/components/__tests__/P.test.tsx
+@@ -0,0 +1,25 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { DefaultTheme } from 'styled-components';
++import { themes } from 'styles/theme/themes';
++import { P } from '../P';
++
++const renderWithTheme = (theme: DefaultTheme) => render(<P theme={theme} />);
++
++describe('<P />', () => {
++  it('should render and match the snapshot', () => {
++    const p = renderWithTheme(themes.light);
++    expect(p.container.firstChild).toMatchSnapshot();
++  });
++
++  it('should use theme from props', () => {
++    let p = renderWithTheme(themes.light);
++    expect(p.container.firstChild).toHaveStyle(
++      `color: ${themes.light.textSecondary}`,
++    );
++    p = renderWithTheme(themes.dark);
++    expect(p.container.firstChild).toHaveStyle(
++      `color: ${themes.dark.textSecondary}`,
++    );
++  });
++});
+
+diff --git a/src/app/pages/HomePage/components/__tests__/Subtitle.test.tsx b/src/app/pages/HomePage/components/__tests__/Subtitle.test.tsx
+new file mode 100644
+index 0000000..8748c68
+--- /dev/null
++++ b/src/app/pages/HomePage/components/__tests__/Subtitle.test.tsx
+@@ -0,0 +1,24 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { DefaultTheme } from 'styled-components';
++import { themes } from 'styles/theme/themes';
++import { SubTitle } from '../SubTitle';
++
++const renderWithTheme = (theme: DefaultTheme) =>
++  render(<SubTitle theme={theme} />);
++
++describe('<Subtitle />', () => {
++  it('should render and match the snapshot', () => {
++    const comp = renderWithTheme(themes.light);
++    expect(comp.container.firstChild).toMatchSnapshot();
++  });
++
++  it('should use theme from props', () => {
++    let comp = renderWithTheme(themes.light);
++    expect(comp.container.firstChild).toHaveStyle(
++      `color: ${themes.light.text}`,
++    );
++    comp = renderWithTheme(themes.dark);
++    expect(comp.container.firstChild).toHaveStyle(`color: ${themes.dark.text}`);
++  });
++});
+
+diff --git a/src/app/pages/HomePage/components/__tests__/Title.test.tsx b/src/app/pages/HomePage/components/__tests__/Title.test.tsx
+new file mode 100644
+index 0000000..86a95c9
+--- /dev/null
++++ b/src/app/pages/HomePage/components/__tests__/Title.test.tsx
+@@ -0,0 +1,24 @@
++import * as React from 'react';
++import { render } from '@testing-library/react';
++import { DefaultTheme } from 'styled-components';
++import { themes } from 'styles/theme/themes';
++import { Title } from '../Title';
++
++const renderWithTheme = (theme: DefaultTheme) =>
++  render(<Title theme={theme} />);
++
++describe('<Title />', () => {
++  it('should render and match the snapshot', () => {
++    const comp = renderWithTheme(themes.light);
++    expect(comp.container.firstChild).toMatchSnapshot();
++  });
++
++  it('should use theme from props', () => {
++    let comp = renderWithTheme(themes.light);
++    expect(comp.container.firstChild).toHaveStyle(
++      `color: ${themes.light.text}`,
++    );
++    comp = renderWithTheme(themes.dark);
++    expect(comp.container.firstChild).toHaveStyle(`color: ${themes.dark.text}`);
++  });
++});
+
+diff --git a/src/app/pages/NotFoundPage/__tests__/index.test.tsx b/src/app/pages/NotFoundPage/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..d753a45
+--- /dev/null
++++ b/src/app/pages/NotFoundPage/__tests__/index.test.tsx
+@@ -0,0 +1,31 @@
++import * as React from 'react';
++import { NotFoundPage } from '..';
++import { MemoryRouter } from 'react-router-dom';
++import { ThemeProvider } from 'styled-components';
++import { themes } from 'styles/theme/themes';
++import { HelmetProvider } from 'react-helmet-async';
++import renderer from 'react-test-renderer';
++import { Link } from 'app/components/Link';
++
++const renderPage = () =>
++  renderer.create(
++    <MemoryRouter>
++      <ThemeProvider theme={themes.light}>
++        <HelmetProvider>
++          <NotFoundPage />
++        </HelmetProvider>
++      </ThemeProvider>
++    </MemoryRouter>,
++  );
++
++describe('<NotFoundPage />', () => {
++  it('should match snapshot', () => {
++    const notFoundPage = renderPage();
++    expect(notFoundPage.toJSON()).toMatchSnapshot();
++  });
++
++  it('should should contain Link', () => {
++    const notFoundPage = renderPage();
++    expect(notFoundPage.root.findByType(Link)).toBeDefined();
++  });
++});
+",1,None=None,163,6422,28,7,137,1776

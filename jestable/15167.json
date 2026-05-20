@@ -1,0 +1,124 @@
+{
+    "id": 4057408,
+    "name": "ferdikoomen/openapi-typescript-codegen",
+    "isFork": false,
+    "commits": 2618,
+    "branches": 1,
+    "releases": 20,
+    "forks": 509,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 2687,
+    "contributors": 50,
+    "size": 23720,
+    "createdAt": "2019-11-05T09:22:03",
+    "pushedAt": "2024-05-09T09:52:01",
+    "updatedAt": "2024-05-10T10:38:25",
+    "totalIssues": 480,
+    "openIssues": 207,
+    "totalPullRequests": 1655,
+    "openPullRequests": 37,
+    "blankLines": 1067,
+    "codeLines": 34841,
+    "commentLines": 509,
+    "metrics": [
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 288,
+            "blankLines": 79
+        },
+        {
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 112,
+            "blankLines": 10
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 24528,
+            "blankLines": 3
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 495,
+            "codeLines": 7868,
+            "blankLines": 627
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 11,
+            "codeLines": 236,
+            "blankLines": 22
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 16,
+            "blankLines": 5
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 0
+        },
+        {
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 1766,
+            "blankLines": 319
+        }
+    ],
+    "lastCommit": "2024-05-09T09:51:55",
+    "lastCommitSHA": "a0f0df36ae45c281c05937d5cb91709db62f5cb5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 319086,
+        "Handlebars": 52973,
+        "JavaScript": 8872,
+        "HTML": 171,
+        "Dockerfile": 170
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "help wanted",
+        "question",
+        "roadmap",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "angular",
+        "axios",
+        "codegen",
+        "generator",
+        "javascript",
+        "nodejs",
+        "openapi",
+        "swagger",
+        "typescript"
+    ]
+}

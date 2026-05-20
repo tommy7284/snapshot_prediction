@@ -1,0 +1,128 @@
+{
+    "id": 6756594,
+    "name": "jhen0409/react-native-debugger",
+    "isFork": false,
+    "commits": 960,
+    "branches": 17,
+    "releases": 95,
+    "forks": 851,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 82,
+    "stargazers": 10189,
+    "contributors": 62,
+    "size": 8483,
+    "createdAt": "2016-05-29T10:40:01",
+    "pushedAt": "2023-10-21T02:55:24",
+    "updatedAt": "2023-12-15T05:06:40",
+    "totalIssues": 492,
+    "openIssues": 163,
+    "totalPullRequests": 305,
+    "openPullRequests": 8,
+    "blankLines": 991,
+    "codeLines": 31691,
+    "commentLines": 303,
+    "metrics": [
+        {
+            "blankLines": 9,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 185
+        },
+        {
+            "blankLines": 22,
+            "language": "Diff",
+            "commentLines": 64,
+            "codeLines": 262
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 52
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 24994
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 639,
+            "language": "JavaScript",
+            "commentLines": 231,
+            "codeLines": 5411
+        },
+        {
+            "blankLines": 293,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 649
+        },
+        {
+            "blankLines": 25,
+            "language": "Bourne Shell",
+            "commentLines": 5,
+            "codeLines": 91
+        }
+    ],
+    "lastCommit": "2023-07-31T05:03:45",
+    "lastCommitSHA": "bd3435a456a29e1eda017ad37b94451834b4ee3a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 172432,
+        "Shell": 3925,
+        "HTML": 329
+    },
+    "labels": [
+        "bug",
+        "cannot-reproduce",
+        "dependencies",
+        "documentation",
+        "don't merge",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "feature/network-inspect",
+        "has pr",
+        "help wanted",
+        "integration/apollo-client-devtools",
+        "integration/react-devtools",
+        "integration/redux-devtools",
+        "invalid",
+        "more-information-needed",
+        "package/react-native-debugger-open",
+        "question",
+        "rfc",
+        "stale",
+        "trivial",
+        "upstream",
+        "waiting-for-response",
+        "wip",
+        "wontfix"
+    ],
+    "topics": [
+        "debugger",
+        "electron",
+        "react-devtools",
+        "react-native",
+        "redux-devtools-extension"
+    ]
+}

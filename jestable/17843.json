@@ -1,0 +1,75 @@
+{
+    "id": 69727402,
+    "name": "kiliman/remix-flat-routes",
+    "isFork": false,
+    "commits": 114,
+    "branches": 1,
+    "releases": 0,
+    "forks": 21,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 10,
+    "stargazers": 581,
+    "contributors": 8,
+    "size": 4131,
+    "createdAt": "2022-04-18T07:53:35",
+    "pushedAt": "2024-05-09T12:26:52",
+    "updatedAt": "2024-05-09T12:26:55",
+    "totalIssues": 78,
+    "openIssues": 12,
+    "totalPullRequests": 19,
+    "openPullRequests": 6,
+    "blankLines": 300,
+    "codeLines": 22344,
+    "commentLines": 145,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 137,
+            "codeLines": 1274,
+            "blankLines": 125
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 20553,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 8,
+            "codeLines": 514,
+            "blankLines": 175
+        }
+    ],
+    "lastCommit": "2024-05-09T12:26:49",
+    "lastCommitSHA": "59c67f9df83155512eb84b2c872fe14513e627b1",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 40431,
+        "JavaScript": 1951
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

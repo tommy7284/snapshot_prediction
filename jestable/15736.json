@@ -1,0 +1,132 @@
+{
+    "id": 4097188,
+    "name": "posva/pinia",
+    "isFork": false,
+    "commits": 1208,
+    "branches": 7,
+    "releases": 61,
+    "forks": 163,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "v2",
+    "license": "MIT License",
+    "homepage": "https://pinia.esm.dev",
+    "watchers": 32,
+    "stargazers": 4006,
+    "contributors": 57,
+    "size": 6999,
+    "createdAt": "2019-11-18T09:05:01",
+    "pushedAt": "2021-12-07T10:32:46",
+    "updatedAt": "2021-12-09T05:15:47",
+    "totalIssues": 213,
+    "openIssues": 14,
+    "totalPullRequests": 476,
+    "openPullRequests": 4,
+    "blankLines": 6814,
+    "codeLines": 28065,
+    "commentLines": 1751,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 625,
+            "blankLines": 14
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 7,
+            "codeLines": 2,
+            "blankLines": 4
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 9126,
+            "blankLines": 3999
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1544,
+            "codeLines": 8558,
+            "blankLines": 1401
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 118,
+            "codeLines": 772,
+            "blankLines": 110
+        },
+        {
+            "language": "YAML",
+            "commentLines": 32,
+            "codeLines": 7519,
+            "blankLines": 1069
+        },
+        {
+            "language": "CSS",
+            "commentLines": 31,
+            "codeLines": 231,
+            "blankLines": 37
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 39,
+            "blankLines": 3
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "Vuejs Component",
+            "commentLines": 19,
+            "codeLines": 1180,
+            "blankLines": 177
+        }
+    ],
+    "lastCommit": "2021-12-07T10:32:46",
+    "lastCommitSHA": "75430315d2dc704ecd3f3e1f169b0dd1d39e3c11",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 242600,
+        "Vue": 32646,
+        "JavaScript": 30465,
+        "CSS": 10648,
+        "HTML": 1010,
+        "Shell": 536
+    },
+    "labels": [
+        "bug",
+        "contribution welcome",
+        "dependencies",
+        "discussion",
+        "docs",
+        "enhancement",
+        "external",
+        "feature request",
+        "good first issue",
+        "has workaround",
+        "help wanted",
+        "need repro",
+        "plugin-api",
+        "plugins",
+        "question",
+        "typescript",
+        "v1",
+        "v2",
+        "wip",
+        "wontfix"
+    ],
+    "topics": []
+}

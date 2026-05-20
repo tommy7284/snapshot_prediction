@@ -1,0 +1,145 @@
+{
+    "id": 6822967,
+    "name": "auth0/lock",
+    "isFork": false,
+    "commits": 3666,
+    "branches": 48,
+    "releases": 122,
+    "forks": 580,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://auth0.com/docs/libraries/lock",
+    "watchers": 89,
+    "stargazers": 1121,
+    "contributors": 198,
+    "size": 160259,
+    "createdAt": "2014-08-12T06:28:41",
+    "pushedAt": "2024-02-02T08:41:05",
+    "updatedAt": "2024-02-02T12:09:07",
+    "totalIssues": 978,
+    "openIssues": 1,
+    "totalPullRequests": 1529,
+    "openPullRequests": 6,
+    "blankLines": 5804,
+    "codeLines": 58068,
+    "commentLines": 1280,
+    "metrics": [
+        {
+            "blankLines": 117,
+            "language": "Sass",
+            "commentLines": 15,
+            "codeLines": 527
+        },
+        {
+            "blankLines": 1147,
+            "language": "JSX",
+            "commentLines": 101,
+            "codeLines": 7226
+        },
+        {
+            "blankLines": 117,
+            "language": "SCSS",
+            "commentLines": 15,
+            "codeLines": 527
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 39
+        },
+        {
+            "blankLines": 431,
+            "language": "Stylus",
+            "commentLines": 240,
+            "codeLines": 1934
+        },
+        {
+            "blankLines": 150,
+            "language": "HTML",
+            "commentLines": 36,
+            "codeLines": 1311
+        },
+        {
+            "blankLines": 33,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 101
+        },
+        {
+            "blankLines": 103,
+            "language": "YAML",
+            "commentLines": 47,
+            "codeLines": 538
+        },
+        {
+            "blankLines": 1094,
+            "language": "Markdown",
+            "commentLines": 18,
+            "codeLines": 1891
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 23011
+        },
+        {
+            "blankLines": 6,
+            "language": "make",
+            "commentLines": 2,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 2606,
+            "language": "JavaScript",
+            "commentLines": 804,
+            "codeLines": 20949
+        }
+    ],
+    "lastCommit": "2024-01-29T02:46:12",
+    "lastCommitSHA": "aaae03fc11585a48d425ac5f069b50d0ce8b5e9e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 1166391,
+        "Stylus": 200056,
+        "HTML": 54999,
+        "SCSS": 9814,
+        "Shell": 676,
+        "Makefile": 344
+    },
+    "labels": [
+        "bug",
+        "bug report",
+        "cannot repro",
+        "closed:stale",
+        "dependencies",
+        "design",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "github_actions",
+        "invalid",
+        "javascript",
+        "language file",
+        "more-tests",
+        "needs investigation",
+        "needs more info",
+        "question",
+        "review:large",
+        "review:medium",
+        "review:small",
+        "review:tiny",
+        "translations",
+        "v12",
+        "wontfix"
+    ],
+    "topics": [
+        "dx-sdk",
+        "lock"
+    ]
+}

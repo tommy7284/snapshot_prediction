@@ -1,0 +1,85 @@
+{
+    "id": 5742591,
+    "name": "no-context/moo",
+    "isFork": false,
+    "commits": 363,
+    "branches": 7,
+    "releases": 6,
+    "forks": 67,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 733,
+    "contributors": 15,
+    "size": 788,
+    "createdAt": "2017-03-10T05:28:28",
+    "pushedAt": "2023-05-16T05:37:53",
+    "updatedAt": "2023-05-27T02:25:39",
+    "totalIssues": 98,
+    "openIssues": 22,
+    "totalPullRequests": 86,
+    "openPullRequests": 10,
+    "blankLines": 1166,
+    "codeLines": 10864,
+    "commentLines": 886,
+    "metrics": [
+        {
+            "blankLines": 127,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 285
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 647,
+            "language": "Python",
+            "commentLines": 696,
+            "codeLines": 1141
+        },
+        {
+            "blankLines": 392,
+            "language": "JavaScript",
+            "commentLines": 190,
+            "codeLines": 2498
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6931
+        }
+    ],
+    "lastCommit": "2023-04-25T08:30:07",
+    "lastCommitSHA": "8d3379e26c63af610a90fea144d3b1d7429c1f8e",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 83943,
+        "Python": 74229
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "javascript",
+        "lexer",
+        "regexp",
+        "tokenizer"
+    ]
+}

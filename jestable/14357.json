@@ -1,0 +1,90 @@
+{
+    "id": 4049298,
+    "name": "airbnb/react-sketchapp",
+    "isFork": false,
+    "commits": 780,
+    "branches": 7,
+    "releases": 28,
+    "forks": 893,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://airbnb.io/react-sketchapp/",
+    "watchers": 411,
+    "stargazers": 14957,
+    "contributors": 57,
+    "size": 4428,
+    "createdAt": "2017-04-21T06:27:39",
+    "pushedAt": "2023-03-04T02:16:59",
+    "updatedAt": "2023-03-25T10:43:18",
+    "totalIssues": 299,
+    "openIssues": 30,
+    "totalPullRequests": 227,
+    "openPullRequests": 5,
+    "blankLines": 2270,
+    "codeLines": 12335,
+    "commentLines": 564,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 9,
+            "codeLines": 16,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1007,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 532,
+            "codeLines": 7304,
+            "blankLines": 1267
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 23,
+            "codeLines": 2166,
+            "blankLines": 248
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1842,
+            "blankLines": 753
+        }
+    ],
+    "lastCommit": "2021-03-30T07:57:30",
+    "lastCommitSHA": "b238e69c6f1e65ec6b1d8a908a91fbd9a8cc43a7",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 252490,
+        "JavaScript": 6094
+    },
+    "labels": [
+        "awaiting-review",
+        "bug",
+        "chore",
+        "discuss",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "external-dependency",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "meta",
+        "please-test",
+        "question",
+        "skpm",
+        "technical",
+        "user-feedback",
+        "wontfix"
+    ],
+    "topics": []
+}

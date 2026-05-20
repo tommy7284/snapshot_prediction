@@ -1,0 +1,78 @@
+{
+    "id": 7484960,
+    "name": "jasongaare/react-native-walkthrough-tooltip",
+    "isFork": false,
+    "commits": 194,
+    "branches": 3,
+    "releases": 25,
+    "forks": 181,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 8,
+    "stargazers": 563,
+    "contributors": 21,
+    "size": 580,
+    "createdAt": "2018-04-18T05:50:46",
+    "pushedAt": "2024-01-09T04:10:10",
+    "updatedAt": "2024-01-10T05:41:00",
+    "totalIssues": 110,
+    "openIssues": 48,
+    "totalPullRequests": 77,
+    "openPullRequests": 7,
+    "blankLines": 185,
+    "codeLines": 1236,
+    "commentLines": 117,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 67
+        },
+        {
+            "blankLines": 29,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 100
+        },
+        {
+            "blankLines": 35,
+            "language": "TypeScript",
+            "commentLines": 97,
+            "codeLines": 57
+        },
+        {
+            "blankLines": 121,
+            "language": "JavaScript",
+            "commentLines": 20,
+            "codeLines": 1012
+        }
+    ],
+    "lastCommit": "2024-01-09T04:09:55",
+    "lastCommitSHA": "7135589217f82f3cbc8dda51b2e1c30f374417a9",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 30453
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "highlighting",
+        "react-native",
+        "tooltip"
+    ]
+}

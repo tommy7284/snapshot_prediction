@@ -1,0 +1,105 @@
+{
+    "id": 94681634,
+    "name": "lint-staged/lint-staged",
+    "isFork": false,
+    "commits": 1003,
+    "branches": 14,
+    "releases": 226,
+    "forks": 409,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/lint-staged",
+    "watchers": 43,
+    "stargazers": 12859,
+    "contributors": 131,
+    "size": 5624,
+    "createdAt": "2016-01-15T07:51:21",
+    "pushedAt": "2024-04-22T02:26:21",
+    "updatedAt": "2024-04-23T05:35:04",
+    "totalIssues": 773,
+    "openIssues": 102,
+    "totalPullRequests": 627,
+    "openPullRequests": 4,
+    "blankLines": 2501,
+    "codeLines": 18666,
+    "commentLines": 914,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 1412,
+            "language": "JavaScript",
+            "commentLines": 876,
+            "codeLines": 5499
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11256
+        },
+        {
+            "blankLines": 1066,
+            "language": "Markdown",
+            "commentLines": 17,
+            "codeLines": 1655
+        },
+        {
+            "blankLines": 17,
+            "language": "YAML",
+            "commentLines": 21,
+            "codeLines": 234
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 13
+        }
+    ],
+    "lastCommit": "2024-02-05T02:22:13",
+    "lastCommitSHA": "4d4270b4125a5c0286cf2bdf2cb01283c47e0873",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 252345,
+        "Shell": 241
+    },
+    "labels": [
+        "? needs validation ?",
+        "blocker",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "idea",
+        "invalid",
+        "linux",
+        "macos",
+        "question",
+        "released",
+        "released on @beta",
+        "released on @next",
+        "windows",
+        "wontfix"
+    ],
+    "topics": [
+        "developer-experience",
+        "eslint",
+        "git",
+        "linter",
+        "stage-files",
+        "stylelint",
+        "workflow"
+    ]
+}

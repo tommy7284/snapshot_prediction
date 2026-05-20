@@ -1,0 +1,72 @@
+{
+    "id": 4771260,
+    "name": "vesparny/statty",
+    "isFork": false,
+    "commits": 65,
+    "branches": 2,
+    "releases": 7,
+    "forks": 24,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 16,
+    "stargazers": 517,
+    "contributors": 6,
+    "size": 219,
+    "createdAt": "2017-07-14T12:46:09",
+    "pushedAt": "2018-04-11T09:51:45",
+    "updatedAt": "2020-12-10T02:04:11",
+    "totalIssues": 4,
+    "openIssues": 0,
+    "totalPullRequests": 14,
+    "openPullRequests": 0,
+    "blankLines": 152,
+    "codeLines": 553,
+    "commentLines": 5,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 118,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 182
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 97
+        },
+        {
+            "blankLines": 34,
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 261
+        }
+    ],
+    "lastCommit": "2018-04-11T09:45:40",
+    "lastCommitSHA": "db945812d89178ee8a7522b2c4a5ea86751bc62e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 7655
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

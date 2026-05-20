@@ -1,0 +1,95 @@
+{
+    "id": 6597568,
+    "name": "spatie/laravel-mix-purgecss",
+    "isFork": false,
+    "commits": 196,
+    "branches": 1,
+    "releases": 16,
+    "forks": 40,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://spatie.be/en/opensource",
+    "watchers": 10,
+    "stargazers": 874,
+    "contributors": 21,
+    "size": 588,
+    "createdAt": "2018-01-10T01:29:48",
+    "pushedAt": "2022-03-21T01:01:56",
+    "updatedAt": "2022-03-18T05:09:19",
+    "totalIssues": 65,
+    "openIssues": 2,
+    "totalPullRequests": 34,
+    "openPullRequests": 0,
+    "blankLines": 93,
+    "codeLines": 320,
+    "commentLines": 0,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 79,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 190
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 0,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 0,
+            "language": "Blade",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 9,
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 12
+        }
+    ],
+    "lastCommit": "2022-03-21T01:01:56",
+    "lastCommitSHA": "6b38d6594eb4300266835b4a898d767842f0ed0b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 1195,
+        "CSS": 160,
+        "Shell": 114,
+        "Blade": 81
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

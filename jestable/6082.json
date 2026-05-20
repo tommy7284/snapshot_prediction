@@ -1,0 +1,110 @@
+{
+    "id": 6227502,
+    "name": "babel/minify",
+    "isFork": false,
+    "commits": 999,
+    "branches": 26,
+    "releases": 18,
+    "forks": 251,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://babeljs.io/repl",
+    "watchers": 55,
+    "stargazers": 4359,
+    "contributors": 73,
+    "size": 12095,
+    "createdAt": "2016-04-07T07:43:56",
+    "pushedAt": "2023-02-26T08:23:36",
+    "updatedAt": "2023-03-25T10:53:55",
+    "totalIssues": 564,
+    "openIssues": 165,
+    "totalPullRequests": 480,
+    "openPullRequests": 35,
+    "blankLines": 3161,
+    "codeLines": 19002,
+    "commentLines": 1305,
+    "metrics": [
+        {
+            "blankLines": 16,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 152
+        },
+        {
+            "blankLines": 18,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 69
+        },
+        {
+            "blankLines": 2129,
+            "language": "JavaScript",
+            "commentLines": 1197,
+            "codeLines": 14835
+        },
+        {
+            "blankLines": 907,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2675
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 729
+        },
+        {
+            "blankLines": 91,
+            "language": "Python",
+            "commentLines": 108,
+            "codeLines": 542
+        }
+    ],
+    "lastCommit": "2022-05-06T06:33:25",
+    "lastCommitSHA": "8f9c7c0a32103653bd6793d0ce44730f937e1ddf",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 397362,
+        "Python": 25156,
+        "Shell": 1501
+    },
+    "labels": [
+        "babel",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "ecma262",
+        "enhancement",
+        "good first issue",
+        "has pr",
+        "help wanted",
+        "i: needs triage",
+        "internal",
+        "invalid",
+        "needs info",
+        "needs-confirmation",
+        "perf",
+        "question",
+        "repl",
+        "scope",
+        "tag: breaking change",
+        "tag: bug fix",
+        "tag: chore",
+        "tag: docs",
+        "tag: internal",
+        "tag: new feature",
+        "tag: perf",
+        "tag: polish",
+        "tag: spec compliancy",
+        "wip",
+        "with es2015",
+        "wontfix"
+    ],
+    "topics": []
+}

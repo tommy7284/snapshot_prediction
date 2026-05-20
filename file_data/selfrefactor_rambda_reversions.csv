@@ -1,0 +1,89 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+725,bc829c54035e6a4533172bc52241ffb3977abce1,bc829c54035e6a4533172bc52241ffb3977abce1,source/__snapshots__/equals.spec.js.snap,source/equals.spec.js,"It seems like R.equals does a lot of work even if passed the same reference, for example:
+
+```js
+const x = {/* big structure */}
+R.equals(x, x) // does deep compare
+```
+
+Is there a reason that it doesn't have an `Object.is` short-circuit?","perf: faster equals with Object.is short circuit
+","diff --git a/source/equals.spec.js b/source/equals.spec.js
+index 6d238eb..2e0824a 100644
+--- a/source/equals.spec.js
++++ b/source/equals.spec.js
+@@ -309,7 +309,7 @@ describe('brute force', () => {
+ {
+   ""ERRORS_MESSAGE_MISMATCH"": 0,
+   ""ERRORS_TYPE_MISMATCH"": 0,
+-  ""RESULTS_MISMATCH"": 8,
++  ""RESULTS_MISMATCH"": 0,
+   ""SHOULD_NOT_THROW"": 0,
+   ""SHOULD_THROW"": 0,
+   ""TOTAL_TESTS"": 289,
+",0,
+725,bc829c54035e6a4533172bc52241ffb3977abce1,bc829c54035e6a4533172bc52241ffb3977abce1,source/__snapshots__/equals.spec.js.snap,source/equals.spec.js,"It seems like R.equals does a lot of work even if passed the same reference, for example:
+
+```js
+const x = {/* big structure */}
+R.equals(x, x) // does deep compare
+```
+
+Is there a reason that it doesn't have an `Object.is` short-circuit?","perf: faster equals with Object.is short circuit
+","diff --git a/source/equals.spec.js b/source/equals.spec.js
+index 6d238eb..2e0824a 100644
+--- a/source/equals.spec.js
++++ b/source/equals.spec.js
+@@ -309,7 +309,7 @@ describe('brute force', () => {
+ {
+   ""ERRORS_MESSAGE_MISMATCH"": 0,
+   ""ERRORS_TYPE_MISMATCH"": 0,
+-  ""RESULTS_MISMATCH"": 8,
++  ""RESULTS_MISMATCH"": 0,
+   ""SHOULD_NOT_THROW"": 0,
+   ""SHOULD_THROW"": 0,
+   ""TOTAL_TESTS"": 289,
+",0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/clone.spec.js.snap,source/clone.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropLastWhile.spec.js.snap,source/dropLastWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropRepeats.spec.js.snap,source/dropRepeats.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropRepeatsWith.spec.js.snap,source/dropRepeatsWith.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropWhile.spec.js.snap,source/dropWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/eqProps.spec.js.snap,source/eqProps.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/evolve.spec.js.snap,source/evolve.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/indexOf.spec.js.snap,source/indexOf.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/lastIndexOf.spec.js.snap,source/lastIndexOf.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/takeWhile.spec.js.snap,source/takeWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/tryCatch.spec.js.snap,source/tryCatch.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/clone.spec.js.snap,source/clone.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropLastWhile.spec.js.snap,source/dropLastWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropRepeats.spec.js.snap,source/dropRepeats.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropRepeatsWith.spec.js.snap,source/dropRepeatsWith.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/dropWhile.spec.js.snap,source/dropWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/eqProps.spec.js.snap,source/eqProps.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/evolve.spec.js.snap,source/evolve.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/indexOf.spec.js.snap,source/indexOf.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/lastIndexOf.spec.js.snap,source/lastIndexOf.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/takeWhile.spec.js.snap,source/takeWhile.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,
+761,b686858d09d94a47042d48db8281881bce813d7a,487b01e1818c8e8cb100497b05c6b7b6badfc11e,source/__snapshots__/tryCatch.spec.js.snap,source/tryCatch.spec.js,Major bump marking new direction of this library.,"chore@small
+",,0,

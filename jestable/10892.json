@@ -1,0 +1,154 @@
+{
+    "id": 7504010,
+    "name": "poooi/poi",
+    "isFork": false,
+    "commits": 6504,
+    "branches": 20,
+    "releases": 175,
+    "forks": 344,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://poi.moe",
+    "watchers": 94,
+    "stargazers": 1672,
+    "contributors": 61,
+    "size": 50247,
+    "createdAt": "2015-05-04T05:19:54",
+    "pushedAt": "2024-04-10T02:17:05",
+    "updatedAt": "2024-04-09T04:40:49",
+    "totalIssues": 1617,
+    "openIssues": 75,
+    "totalPullRequests": 937,
+    "openPullRequests": 9,
+    "blankLines": 865,
+    "codeLines": 57985,
+    "commentLines": 575,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 477,
+            "language": "TypeScript",
+            "commentLines": 347,
+            "codeLines": 3865
+        },
+        {
+            "blankLines": 140,
+            "language": "JavaScript",
+            "commentLines": 57,
+            "codeLines": 1103
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 49437
+        },
+        {
+            "blankLines": 10,
+            "language": "CSON",
+            "commentLines": 18,
+            "codeLines": 509
+        },
+        {
+            "blankLines": 133,
+            "language": "Markdown",
+            "commentLines": 53,
+            "codeLines": 263
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 5,
+            "language": "SVG",
+            "commentLines": 61,
+            "codeLines": 2279
+        },
+        {
+            "blankLines": 36,
+            "language": "YAML",
+            "commentLines": 29,
+            "codeLines": 185
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 45
+        },
+        {
+            "blankLines": 63,
+            "language": "CSS",
+            "commentLines": 10,
+            "codeLines": 270
+        }
+    ],
+    "lastCommit": "2024-03-13T01:47:41",
+    "lastCommitSHA": "271b4c6daf462419bce2aff6c51545192d4d55c4",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 725178,
+        "TypeScript": 126760,
+        "CSS": 5952,
+        "HTML": 1556,
+        "Erlang": 237,
+        "Shell": 58
+    },
+    "labels": [
+        "announcement",
+        "bug",
+        "chibug",
+        "critical",
+        "dependencies",
+        "do not want to fix",
+        "duplicate",
+        "good first issue",
+        "help-wanted",
+        "invalid",
+        "known-issue",
+        "os/all",
+        "os/linux",
+        "os/mac",
+        "os/win",
+        "pinned",
+        "semver: major",
+        "semver: minor",
+        "stale",
+        "tanaka",
+        "third-party",
+        "triage",
+        "type/changelog",
+        "type/development",
+        "type/discussion",
+        "type/enhancement",
+        "type/faq",
+        "type/feature",
+        "type/plugin",
+        "type/plugin request",
+        "type/satellite",
+        "upstream",
+        "wontfix"
+    ],
+    "topics": [
+        "electron",
+        "electron-app",
+        "electron-react",
+        "kancolle",
+        "kantai-collection",
+        "poi",
+        "reactjs",
+        "redux"
+    ]
+}

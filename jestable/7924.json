@@ -1,0 +1,88 @@
+{
+    "id": 6685909,
+    "name": "preactjs/compressed-size-action",
+    "isFork": false,
+    "commits": 159,
+    "branches": 3,
+    "releases": 10,
+    "forks": 82,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://github.com/marketplace/actions/compressed-size-action",
+    "watchers": 10,
+    "stargazers": 582,
+    "contributors": 29,
+    "size": 529,
+    "createdAt": "2020-01-22T04:00:10",
+    "pushedAt": "2024-04-23T06:25:16",
+    "updatedAt": "2024-04-23T06:24:49",
+    "totalIssues": 40,
+    "openIssues": 13,
+    "totalPullRequests": 61,
+    "openPullRequests": 4,
+    "blankLines": 127,
+    "codeLines": 13020,
+    "commentLines": 262,
+    "metrics": [
+        {
+            "blankLines": 72,
+            "language": "JavaScript",
+            "commentLines": 262,
+            "codeLines": 247
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12563
+        },
+        {
+            "blankLines": 50,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 131
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 64
+        }
+    ],
+    "lastCommit": "2024-04-23T06:24:45",
+    "lastCommitSHA": "f780fd104362cfce9e118f9198df2ee37d12946c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 16337
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "action",
+        "actions",
+        "bytes",
+        "compressed",
+        "prs",
+        "size",
+        "workflow"
+    ]
+}

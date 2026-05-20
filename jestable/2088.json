@@ -1,0 +1,81 @@
+{
+    "id": 4996552,
+    "name": "markdalgleish/static-site-generator-webpack-plugin",
+    "isFork": false,
+    "commits": 106,
+    "branches": 33,
+    "releases": 21,
+    "forks": 91,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 17,
+    "stargazers": 1587,
+    "contributors": 14,
+    "size": 99,
+    "createdAt": "2015-04-12T09:22:14",
+    "pushedAt": "2018-12-28T12:27:40",
+    "updatedAt": "2021-02-05T10:12:55",
+    "totalIssues": 70,
+    "openIssues": 37,
+    "totalPullRequests": 72,
+    "openPullRequests": 9,
+    "blankLines": 225,
+    "codeLines": 1152,
+    "commentLines": 9,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 45
+        },
+        {
+            "blankLines": 2,
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 66,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 194
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 157,
+            "language": "JavaScript",
+            "commentLines": 9,
+            "codeLines": 892
+        }
+    ],
+    "lastCommit": "2018-11-19T09:47:04",
+    "lastCommitSHA": "69d2b22865da8f537ab881ba4a9b64f06c2ddebe",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 29969,
+        "HTML": 1237
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "triage",
+        "wontfix"
+    ],
+    "topics": []
+}

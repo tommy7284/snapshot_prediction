@@ -1,0 +1,117 @@
+{
+    "id": 6940461,
+    "name": "jbetancur/react-data-table-component",
+    "isFork": false,
+    "commits": 931,
+    "branches": 10,
+    "releases": 151,
+    "forks": 397,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://react-data-table-component.netlify.app",
+    "watchers": 32,
+    "stargazers": 1990,
+    "contributors": 60,
+    "size": 25969,
+    "createdAt": "2018-03-16T04:31:39",
+    "pushedAt": "2024-05-02T04:27:52",
+    "updatedAt": "2024-05-03T06:37:43",
+    "totalIssues": 774,
+    "openIssues": 41,
+    "totalPullRequests": 453,
+    "openPullRequests": 13,
+    "blankLines": 1901,
+    "codeLines": 14169,
+    "commentLines": 347,
+    "metrics": [
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 12,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 12,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 234,
+            "blankLines": 0
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 12,
+            "blankLines": 3
+        },
+        {
+            "language": "YAML",
+            "commentLines": 16,
+            "codeLines": 39,
+            "blankLines": 8
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1866,
+            "blankLines": 542
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 88,
+            "codeLines": 5955,
+            "blankLines": 997
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 243,
+            "codeLines": 6039,
+            "blankLines": 349
+        }
+    ],
+    "lastCommit": "2024-03-09T12:21:30",
+    "lastCommitSHA": "59c6ac1b6a3004ac9e719815290524f6a5752bdc",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 202518,
+        "JavaScript": 164951,
+        "MDX": 125266,
+        "CSS": 307
+    },
+    "labels": [
+        "bug",
+        "demo",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "in progress",
+        "insufficient details",
+        "invalid",
+        "investigating",
+        "maintenance",
+        "more info needed",
+        "next",
+        "pinned",
+        "question",
+        "wontfix",
+        "works as designed"
+    ],
+    "topics": [
+        "react",
+        "react-components",
+        "reactjs",
+        "table"
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "id": 87911447,
+    "name": "reacttooltip/react-tooltip",
+    "isFork": false,
+    "commits": 1497,
+    "branches": 8,
+    "releases": 151,
+    "forks": 520,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://react-tooltip.com/",
+    "watchers": 26,
+    "stargazers": 3458,
+    "contributors": 123,
+    "size": 56663,
+    "createdAt": "2015-04-07T01:15:04",
+    "pushedAt": "2024-05-09T02:24:08",
+    "updatedAt": "2024-05-09T07:53:31",
+    "totalIssues": 764,
+    "openIssues": 11,
+    "totalPullRequests": 385,
+    "openPullRequests": 1,
+    "blankLines": 1595,
+    "codeLines": 9644,
+    "commentLines": 674,
+    "metrics": [
+        {
+            "language": "JavaScript",
+            "commentLines": 195,
+            "codeLines": 1858,
+            "blankLines": 253
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 1,
+            "codeLines": 237,
+            "blankLines": 6
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 506,
+            "blankLines": 8
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 430,
+            "codeLines": 2433,
+            "blankLines": 291
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 20,
+            "blankLines": 5
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 50,
+            "blankLines": 10
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 1
+        },
+        {
+            "language": "CSS",
+            "commentLines": 37,
+            "codeLines": 570,
+            "blankLines": 59
+        },
+        {
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 543,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 2992,
+            "blankLines": 920
+        },
+        {
+            "language": "Sass",
+            "commentLines": 1,
+            "codeLines": 237,
+            "blankLines": 6
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 4,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 190,
+            "blankLines": 35
+        }
+    ],
+    "lastCommit": "2024-05-08T02:35:39",
+    "lastCommitSHA": "e59397cb1272e8375e930867023e4b42368351f0",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 72890,
+        "JavaScript": 61820,
+        "CSS": 6341,
+        "SCSS": 4471,
+        "HTML": 2267,
+        "Shell": 94
+    },
+    "labels": [
+        "awaiting merge",
+        "bug",
+        "ci/cd",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "information needed",
+        "invalid",
+        "question",
+        "semantic-release",
+        "stale",
+        "v4",
+        "v6",
+        "wontfix"
+    ],
+    "topics": [
+        "javascript",
+        "react",
+        "react18",
+        "tooltip",
+        "typescript"
+    ]
+}

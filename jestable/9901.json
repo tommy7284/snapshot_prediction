@@ -1,0 +1,96 @@
+{
+    "id": 6880708,
+    "name": "arb/celebrate",
+    "isFork": false,
+    "commits": 187,
+    "branches": 1,
+    "releases": 10,
+    "forks": 67,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 9,
+    "stargazers": 1315,
+    "contributors": 25,
+    "size": 533,
+    "createdAt": "2016-06-01T09:02:04",
+    "pushedAt": "2023-11-02T02:18:38",
+    "updatedAt": "2023-11-30T07:44:42",
+    "totalIssues": 143,
+    "openIssues": 0,
+    "totalPullRequests": 101,
+    "openPullRequests": 0,
+    "blankLines": 260,
+    "codeLines": 1652,
+    "commentLines": 78,
+    "metrics": [
+        {
+            "blankLines": 76,
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 196
+        },
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 9,
+            "codeLines": 36
+        },
+        {
+            "blankLines": 14,
+            "language": "TypeScript",
+            "commentLines": 42,
+            "codeLines": 52
+        },
+        {
+            "blankLines": 165,
+            "language": "JavaScript",
+            "commentLines": 24,
+            "codeLines": 1287
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 26
+        }
+    ],
+    "lastCommit": "2023-11-02T02:17:15",
+    "lastCommitSHA": "e8dc55a73d5ad0c9597f6130bc6b4796b82e0a95",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37574
+    },
+    "labels": [
+        "breaking-change",
+        "bug",
+        "dependency",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "release-notes",
+        "stale",
+        "testing",
+        "types"
+    ],
+    "topics": [
+        "express",
+        "express-middleware",
+        "express-validation",
+        "joi",
+        "validation"
+    ]
+}

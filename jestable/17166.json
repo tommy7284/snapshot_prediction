@@ -1,0 +1,145 @@
+{
+    "id": 24311723,
+    "name": "shikijs/twoslash",
+    "isFork": false,
+    "commits": 441,
+    "branches": 9,
+    "releases": 0,
+    "forks": 48,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://shikijs.github.io/twoslash/",
+    "watchers": 6,
+    "stargazers": 943,
+    "contributors": 33,
+    "size": 6148,
+    "createdAt": "2021-05-26T07:27:27",
+    "pushedAt": "2024-02-19T12:13:47",
+    "updatedAt": "2024-02-19T08:33:58",
+    "totalIssues": 115,
+    "openIssues": 56,
+    "totalPullRequests": 79,
+    "openPullRequests": 6,
+    "blankLines": 4547,
+    "codeLines": 44103,
+    "commentLines": 3152,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 22319,
+            "blankLines": 9
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2668,
+            "codeLines": 3258,
+            "blankLines": 955
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 20,
+            "codeLines": 743,
+            "blankLines": 120
+        },
+        {
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 1
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 2
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 284,
+            "codeLines": 1006,
+            "blankLines": 192
+        },
+        {
+            "language": "Svelte",
+            "commentLines": 6,
+            "codeLines": 525,
+            "blankLines": 90
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 18,
+            "codeLines": 3233,
+            "blankLines": 1422
+        },
+        {
+            "language": "Sass",
+            "commentLines": 2,
+            "codeLines": 761,
+            "blankLines": 120
+        },
+        {
+            "language": "YAML",
+            "commentLines": 30,
+            "codeLines": 9750,
+            "blankLines": 1364
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 576,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 7,
+            "codeLines": 1294,
+            "blankLines": 192
+        },
+        {
+            "language": "Diff",
+            "commentLines": 8,
+            "codeLines": 5,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 109,
+            "codeLines": 612,
+            "blankLines": 80
+        }
+    ],
+    "lastCommit": "2024-02-19T12:13:47",
+    "lastCommitSHA": "42015c138b41f1618f0df74d72e8f3ecc8f844ef",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 259728,
+        "HTML": 94008,
+        "JavaScript": 29467,
+        "MDX": 16481,
+        "SCSS": 15716,
+        "CSS": 13620
+    },
+    "labels": [
+        "bug",
+        "enhancement",
+        "exploration",
+        "hard",
+        "you can do this"
+    ],
+    "topics": [
+        "docusaurus",
+        "javascript",
+        "markdown-it",
+        "markdown-it-plugin",
+        "remark",
+        "remark-plugin",
+        "shiki",
+        "shiki-twoslash",
+        "typescript"
+    ]
+}

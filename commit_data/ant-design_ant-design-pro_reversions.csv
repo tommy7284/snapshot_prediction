@@ -1,0 +1,251 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+10914,e83e37e24749712f25a6eefd34227bdd2baea007,8e15d2854d62b2d2784acb4e22284f3ddc128eb4,"解决文件名大小写可能导致项目运行不起来问题。 
+
+拉取了最新的 v6-all-block 分支，并且使用 pnpm 安装依赖后， 项目运行不起来。修改了文件名大小写解决。不知道是不是 umijs 的问题， 先提交提交一个 pr 解决一下。","chore: renmae
+
+chore: rename back
+","diff --git a/src/pages/User/Login/login.test.tsx b/src/pages/User/Login/login.test.tsx
+deleted file mode 100644
+index 4ee313c..0000000
+--- a/src/pages/User/Login/login.test.tsx
++++ /dev/null
+@@ -1,96 +0,0 @@
+-﻿import { TestBrowser } from '@@/testBrowser';
+-import { act, fireEvent, render } from '@testing-library/react';
+-import React from 'react';
+-
+-// @ts-ignore
+-import { startMock } from '@@/requestRecordMock';
+-
+-const waitTime = (time: number = 100) => {
+-  return new Promise((resolve) => {
+-    setTimeout(() => {
+-      resolve(true);
+-    }, time);
+-  });
+-};
+-
+-let server: {
+-  close: () => void;
+-};
+-
+-describe('Login Page', () => {
+-  beforeAll(async () => {
+-    server = await startMock({
+-      port: 8000,
+-      scene: 'login',
+-    });
+-  });
+-
+-  afterAll(() => {
+-    server?.close();
+-  });
+-
+-  it('should show login form', async () => {
+-    const historyRef = React.createRef<any>();
+-    const rootContainer = render(
+-      <TestBrowser
+-        historyRef={historyRef}
+-        location={{
+-          pathname: '/user/login',
+-        }}
+-      />,
+-    );
+-
+-    await rootContainer.findAllByText('Ant Design');
+-
+-    act(() => {
+-      historyRef.current?.push('/user/login');
+-    });
+-
+-    expect(rootContainer.baseElement?.querySelector('.ant-pro-form-login-desc')?.textContent).toBe(
+-      'Ant Design is the most influential web design specification in Xihu district',
+-    );
+-
+-    expect(rootContainer.asFragment()).toMatchSnapshot();
+-
+-    rootContainer.unmount();
+-  });
+-
+-  it('should login success', async () => {
+-    const historyRef = React.createRef<any>();
+-    const rootContainer = render(
+-      <TestBrowser
+-        historyRef={historyRef}
+-        location={{
+-          pathname: '/user/login',
+-        }}
+-      />,
+-    );
+-
+-    await rootContainer.findAllByText('Ant Design');
+-
+-    const userNameInput = await rootContainer.findByPlaceholderText('Username: admin or user');
+-
+-    act(() => {
+-      fireEvent.change(userNameInput, { target: { value: 'admin' } });
+-    });
+-
+-    const passwordInput = await rootContainer.findByPlaceholderText('Password: ant.design');
+-
+-    act(() => {
+-      fireEvent.change(passwordInput, { target: { value: 'ant.design' } });
+-    });
+-
+-    await (await rootContainer.findByText('Login')).click();
+-
+-    // 等待接口返回结果
+-    await waitTime(5000);
+-
+-    await rootContainer.findAllByText('Ant Design Pro');
+-
+-    expect(rootContainer.asFragment()).toMatchSnapshot();
+-
+-    await waitTime(2000);
+-
+-    rootContainer.unmount();
+-  });
+-});
+
+diff --git a/src/pages/user/login/login.test.tsx b/src/pages/user/login/login.test.tsx
+new file mode 100644
+index 0000000..4ee313c
+--- /dev/null
++++ b/src/pages/user/login/login.test.tsx
+@@ -0,0 +1,96 @@
++﻿import { TestBrowser } from '@@/testBrowser';
++import { act, fireEvent, render } from '@testing-library/react';
++import React from 'react';
++
++// @ts-ignore
++import { startMock } from '@@/requestRecordMock';
++
++const waitTime = (time: number = 100) => {
++  return new Promise((resolve) => {
++    setTimeout(() => {
++      resolve(true);
++    }, time);
++  });
++};
++
++let server: {
++  close: () => void;
++};
++
++describe('Login Page', () => {
++  beforeAll(async () => {
++    server = await startMock({
++      port: 8000,
++      scene: 'login',
++    });
++  });
++
++  afterAll(() => {
++    server?.close();
++  });
++
++  it('should show login form', async () => {
++    const historyRef = React.createRef<any>();
++    const rootContainer = render(
++      <TestBrowser
++        historyRef={historyRef}
++        location={{
++          pathname: '/user/login',
++        }}
++      />,
++    );
++
++    await rootContainer.findAllByText('Ant Design');
++
++    act(() => {
++      historyRef.current?.push('/user/login');
++    });
++
++    expect(rootContainer.baseElement?.querySelector('.ant-pro-form-login-desc')?.textContent).toBe(
++      'Ant Design is the most influential web design specification in Xihu district',
++    );
++
++    expect(rootContainer.asFragment()).toMatchSnapshot();
++
++    rootContainer.unmount();
++  });
++
++  it('should login success', async () => {
++    const historyRef = React.createRef<any>();
++    const rootContainer = render(
++      <TestBrowser
++        historyRef={historyRef}
++        location={{
++          pathname: '/user/login',
++        }}
++      />,
++    );
++
++    await rootContainer.findAllByText('Ant Design');
++
++    const userNameInput = await rootContainer.findByPlaceholderText('Username: admin or user');
++
++    act(() => {
++      fireEvent.change(userNameInput, { target: { value: 'admin' } });
++    });
++
++    const passwordInput = await rootContainer.findByPlaceholderText('Password: ant.design');
++
++    act(() => {
++      fireEvent.change(passwordInput, { target: { value: 'ant.design' } });
++    });
++
++    await (await rootContainer.findByText('Login')).click();
++
++    // 等待接口返回结果
++    await waitTime(5000);
++
++    await rootContainer.findAllByText('Ant Design Pro');
++
++    expect(rootContainer.asFragment()).toMatchSnapshot();
++
++    await waitTime(2000);
++
++    rootContainer.unmount();
++  });
++});
+",0,,14,4512,2,2,8,3
+11323,98ef5e46fd5eac54114146df0c0dba62b61d156d,2e9e8d7943e5fb6f3a9772f8c14343a0fe55ff2d,"
+
+<!-- This is an auto-generated comment: release notes by coderabbit.ai -->
+## Summary by CodeRabbit
+
+
+- **New Features**
+	- Added a repository link in the package metadata for easier access to the source code.
+	- Included a note in the README regarding version compatibility with `umi@4`.
+
+- **Bug Fixes**
+	- Removed tooltip text in the `TableList` component, which may affect user experience.
+
+- **Documentation**
+	- Improved readability of the README file with additional blank lines.
+
+- **Refactor**
+	- Reordered import statements across multiple files for better organization.
+
+- **Chores**
+	- Enhanced formatting in API function definitions for improved readability.
+	- Updated Node.js versioning and action versions in GitHub Actions workflow.
+	- Updated the version of `@testing-library/react` in package metadata.
+
+<!-- end of auto-generated comment: release notes by coderabbit.ai -->","tests: fix test case
+","diff --git a/src/pages/User/Login/login.test.tsx b/src/pages/User/Login/login.test.tsx
+index 4ee313c..b610765 100644
+--- a/src/pages/User/Login/login.test.tsx
++++ b/src/pages/User/Login/login.test.tsx
+@@ -1,6 +1,6 @@
+ ﻿import { TestBrowser } from '@@/testBrowser';
+-import { act, fireEvent, render } from '@testing-library/react';
+-import React from 'react';
++import { fireEvent, render } from '@testing-library/react';
++import React, { act } from 'react';
+ 
+ // @ts-ignore
+ import { startMock } from '@@/requestRecordMock';
+",0,,4,73,1,8,16,6404

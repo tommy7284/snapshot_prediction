@@ -1,0 +1,124 @@
+{
+    "id": 6756652,
+    "name": "facebook/jscodeshift",
+    "isFork": false,
+    "commits": 487,
+    "branches": 3,
+    "releases": 42,
+    "forks": 451,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 93,
+    "stargazers": 8868,
+    "contributors": 108,
+    "size": 1546,
+    "createdAt": "2015-03-07T12:32:16",
+    "pushedAt": "2024-02-26T04:50:47",
+    "updatedAt": "2024-02-26T06:25:32",
+    "totalIssues": 330,
+    "openIssues": 128,
+    "totalPullRequests": 253,
+    "openPullRequests": 8,
+    "blankLines": 9553,
+    "codeLines": 21130,
+    "commentLines": 891,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 4,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 726,
+            "language": "JavaScript",
+            "commentLines": 795,
+            "codeLines": 4319
+        },
+        {
+            "blankLines": 1,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 24
+        },
+        {
+            "blankLines": 221,
+            "language": "Markdown",
+            "commentLines": 1,
+            "codeLines": 690
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 71
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 10987
+        },
+        {
+            "blankLines": 95,
+            "language": "CSS",
+            "commentLines": 50,
+            "codeLines": 456
+        },
+        {
+            "blankLines": 33,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 169
+        },
+        {
+            "blankLines": 8466,
+            "language": "HTML",
+            "commentLines": 45,
+            "codeLines": 4388
+        }
+    ],
+    "lastCommit": "2024-02-22T05:00:47",
+    "lastCommitSHA": "4851fc8a01036868efb4cf9676f3e97836097376",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 158894
+    },
+    "labels": [
+        "add to docs",
+        "bug",
+        "cla signed",
+        "dependencies",
+        "discussion",
+        "do-not-reap",
+        "documentation",
+        "duplicate",
+        "help wanted",
+        "improvement",
+        "invalid",
+        "maintenance",
+        "question",
+        "refactoring",
+        "revisit later",
+        "upstream",
+        "wontfix"
+    ],
+    "topics": []
+}

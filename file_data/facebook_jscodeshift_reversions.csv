@@ -1,0 +1,357 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+471,fb4e7748eb495c40794b8489a744c88a09d44a42,fb4e7748eb495c40794b8489a744c88a09d44a42,sample/__tests__/__snapshots__/reverse-identifiers-test.js.snap,sample/__tests__/reverse-identifiers-test.js,"Adds a wrapper function, `defineSnapshotWithFixture` around `defineSnapshotTest` that mimics the loading/parsing behavior of `defineTest` to load the file based on the testFilePrefix in the `__testfixtures__` directory. Adds a quick test in the sample directory as well as updates documentation.","feat: add a snapshot test util that loads the file for users
+","diff --git a/sample/__tests__/reverse-identifiers-test.js b/sample/__tests__/reverse-identifiers-test.js
+index e99371b..9d43da2 100644
+--- a/sample/__tests__/reverse-identifiers-test.js
++++ b/sample/__tests__/reverse-identifiers-test.js
+@@ -18,6 +18,7 @@
+ jest.autoMockOff();
+ const defineTest = require('../../src/testUtils').defineTest;
+ const defineInlineTest = require('../../src/testUtils').defineInlineTest;
++const defineSnapshotTestFromFixture = require('../../src/testUtils').defineSnapshotTestFromFixture;
+ const transform = require('../reverse-identifiers');
+ 
+ defineTest(__dirname, 'reverse-identifiers');
+@@ -39,3 +40,6 @@ var egassem = droWtsrif + droWdnoces;
+     'Reverses function names'
+   );
+ });
++
++// the snapshot output of this file should be the same as reverse-identifiers.output.js
++defineSnapshotTestFromFixture(__dirname, transform, {}, 'reverse-identifiers');
+",0,
+471,fb4e7748eb495c40794b8489a744c88a09d44a42,fb4e7748eb495c40794b8489a744c88a09d44a42,sample/__tests__/__snapshots__/reverse-identifiers-test.js.snap,sample/__tests__/reverse-identifiers-test.js,"Adds a wrapper function, `defineSnapshotWithFixture` around `defineSnapshotTest` that mimics the loading/parsing behavior of `defineTest` to load the file based on the testFilePrefix in the `__testfixtures__` directory. Adds a quick test in the sample directory as well as updates documentation.","feat: add a snapshot test util that loads the file for users
+","diff --git a/sample/__tests__/reverse-identifiers-test.js b/sample/__tests__/reverse-identifiers-test.js
+index e99371b..9d43da2 100644
+--- a/sample/__tests__/reverse-identifiers-test.js
++++ b/sample/__tests__/reverse-identifiers-test.js
+@@ -18,6 +18,7 @@
+ jest.autoMockOff();
+ const defineTest = require('../../src/testUtils').defineTest;
+ const defineInlineTest = require('../../src/testUtils').defineInlineTest;
++const defineSnapshotTestFromFixture = require('../../src/testUtils').defineSnapshotTestFromFixture;
+ const transform = require('../reverse-identifiers');
+ 
+ defineTest(__dirname, 'reverse-identifiers');
+@@ -39,3 +40,6 @@ var egassem = droWtsrif + droWdnoces;
+     'Reverses function names'
+   );
+ });
++
++// the snapshot output of this file should be the same as reverse-identifiers.output.js
++defineSnapshotTestFromFixture(__dirname, transform, {}, 'reverse-identifiers');
+",0,
+646,71f14399d879eb1cb767834f5aed39b3e259829b,b3ff2008aabe530e9683c3b7755857754d8fb945,src/__tests__/__snapshots__/testUtils-test.js.snap,src/__tests__/testUtils-test.js,"Currently the available [test utilities](https://github.com/facebook/jscodeshift?tab=readme-ov-file#unit-testing) exposed by the library helps a lot when developers need to test their custom transformation but they only support synchronous transformations.
+
+I've seen others also asking about this feature ([reference1](https://github.com/facebook/jscodeshift/issues/516), [reference 2](https://github.com/facebook/jscodeshift/issues/454)) so I've decided to give it a try and update those utilities to be able to manage both sync and async transformations.
+
+Please let me know if this is something that could potentially be adopted by `jscodeshift`.
+
+Thanks.","refactor: enable async tranformers in test utils
+","diff --git a/src/__tests__/testUtils-test.js b/src/__tests__/testUtils-test.js
+new file mode 100644
+index 0000000..d9cfe04
+--- /dev/null
++++ b/src/__tests__/testUtils-test.js
+@@ -0,0 +1,143 @@
++/**
++ * Copyright (c) Facebook, Inc. and its affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ */
++
++'use strict';
++
++const fs = require('fs');
++const path = require('path');
++const testSyncTransform = require('../__testfixtures__/test-sync-transform');
++const testAsyncTransform = require('../__testfixtures__/test-async-transform');
++
++const testUtils = require('../testUtils');
++
++const testInputSource = 'export const sum = (a, b) => a + b;';
++const expectedInlineOutput = 'export const addition = (a, b) => a + b;';
++
++const getModuleToTransform = () => {
++  const moduleToTransformPath = path.join(__dirname, '..', '__testfixtures__', 'test-sync-transform.input.js');
++  const source = fs.readFileSync(moduleToTransformPath, 'utf8');
++  return {
++    path: moduleToTransformPath,
++    source,
++  }
++}
++
++describe('testUtils', () => {
++  describe('synchronous', () => {
++    it('should apply transformation', () => {
++      const moduleToTransform = getModuleToTransform();
++      const transformedCode = testUtils.applyTransform(testSyncTransform, null, moduleToTransform);
++
++      expect(transformedCode).not.toMatch(/sum/);
++      expect(transformedCode).toMatch(/addition/);
++    });
++
++    it('should run test', () => {
++      testUtils.runTest(
++        __dirname,
++        path.join('__testfixtures__',
++        'test-sync-transform'),
++        null,
++        'test-sync-transform'
++      );
++    });
++
++    it ('should run snapshot test', () => {
++      const moduleToTransform = getModuleToTransform();
++      testUtils.runSnapshotTest(testSyncTransform, null, moduleToTransform);
++    });
++
++    it('should run inline test', () => {
++      const moduleToTransform = getModuleToTransform();
++      testUtils.runInlineTest(testSyncTransform, null, moduleToTransform, expectedInlineOutput);
++    });
++
++    testUtils.defineTest(
++      __dirname,
++      path.join('__testfixtures__', 'test-sync-transform'),
++      null,
++      'test-sync-transform'
++    );
++
++    testUtils.defineInlineTest(
++      testSyncTransform,
++      null,
++      testInputSource,
++      expectedInlineOutput,
++      'should run sync defineInlineTest'
++    );
++
++    testUtils.defineSnapshotTest(
++      testSyncTransform,
++      null,
++      testInputSource,
++      'should run sync defineSnapshotTest'
++    );
++
++    testUtils.defineSnapshotTestFromFixture(
++      __dirname,
++      testSyncTransform,
++      null,
++      'test-sync-transform',
++      'should run sync defineSnapshotTestFromFixture'
++    );
++  });
++
++  describe('async', () => {
++    it('should apply transformation', async () => {
++      const moduleToTransform = getModuleToTransform();
++      const transformedCode = await testUtils.applyTransform(testAsyncTransform, null, moduleToTransform);
++
++      expect(transformedCode).not.toMatch(/sum/);
++      expect(transformedCode).toMatch(/addition/);
++    });
++
++    it('should run test', () => {
++      return testUtils.runTest(__dirname, path.join('__testfixtures__', 'test-async-transform'), null, 'test-async-transform');
++    });
++
++    it ('should run snapshot test', () => {
++      const moduleToTransform = getModuleToTransform();
++      return testUtils.runSnapshotTest(testAsyncTransform, null, moduleToTransform);
++    });
++
++    it('should run inline test', () => {
++      const moduleToTransform = getModuleToTransform();
++      return testUtils.runInlineTest(testAsyncTransform, null, moduleToTransform, expectedInlineOutput);
++    });
++
++    testUtils.defineTest(
++      __dirname,
++      path.join('__testfixtures__', 'test-async-transform'),
++      null,
++      'test-async-transform'
++    );
++
++    testUtils.defineInlineTest(
++      testAsyncTransform,
++      null,
++      testInputSource,
++      expectedInlineOutput,
++      'should run async defineInlineTest'
++    );
++
++    testUtils.defineSnapshotTest(
++      testAsyncTransform,
++      null,
++      testInputSource,
++      'should run async defineSnapshotTest'
++    );
++
++    testUtils.defineSnapshotTestFromFixture(
++      __dirname,
++      testSyncTransform,
++      null,
++      'test-async-transform',
++      'should run async defineSnapshotTestFromFixture'
++    );
++  });
++});
+",0,
+646,71f14399d879eb1cb767834f5aed39b3e259829b,b3ff2008aabe530e9683c3b7755857754d8fb945,src/__tests__/__snapshots__/testUtils-test.js.snap,src/__tests__/testUtils-test.js,"Currently the available [test utilities](https://github.com/facebook/jscodeshift?tab=readme-ov-file#unit-testing) exposed by the library helps a lot when developers need to test their custom transformation but they only support synchronous transformations.
+
+I've seen others also asking about this feature ([reference1](https://github.com/facebook/jscodeshift/issues/516), [reference 2](https://github.com/facebook/jscodeshift/issues/454)) so I've decided to give it a try and update those utilities to be able to manage both sync and async transformations.
+
+Please let me know if this is something that could potentially be adopted by `jscodeshift`.
+
+Thanks.","refactor: enable async tranformers in test utils
+","diff --git a/src/__tests__/testUtils-test.js b/src/__tests__/testUtils-test.js
+new file mode 100644
+index 0000000..d9cfe04
+--- /dev/null
++++ b/src/__tests__/testUtils-test.js
+@@ -0,0 +1,143 @@
++/**
++ * Copyright (c) Facebook, Inc. and its affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ */
++
++'use strict';
++
++const fs = require('fs');
++const path = require('path');
++const testSyncTransform = require('../__testfixtures__/test-sync-transform');
++const testAsyncTransform = require('../__testfixtures__/test-async-transform');
++
++const testUtils = require('../testUtils');
++
++const testInputSource = 'export const sum = (a, b) => a + b;';
++const expectedInlineOutput = 'export const addition = (a, b) => a + b;';
++
++const getModuleToTransform = () => {
++  const moduleToTransformPath = path.join(__dirname, '..', '__testfixtures__', 'test-sync-transform.input.js');
++  const source = fs.readFileSync(moduleToTransformPath, 'utf8');
++  return {
++    path: moduleToTransformPath,
++    source,
++  }
++}
++
++describe('testUtils', () => {
++  describe('synchronous', () => {
++    it('should apply transformation', () => {
++      const moduleToTransform = getModuleToTransform();
++      const transformedCode = testUtils.applyTransform(testSyncTransform, null, moduleToTransform);
++
++      expect(transformedCode).not.toMatch(/sum/);
++      expect(transformedCode).toMatch(/addition/);
++    });
++
++    it('should run test', () => {
++      testUtils.runTest(
++        __dirname,
++        path.join('__testfixtures__',
++        'test-sync-transform'),
++        null,
++        'test-sync-transform'
++      );
++    });
++
++    it ('should run snapshot test', () => {
++      const moduleToTransform = getModuleToTransform();
++      testUtils.runSnapshotTest(testSyncTransform, null, moduleToTransform);
++    });
++
++    it('should run inline test', () => {
++      const moduleToTransform = getModuleToTransform();
++      testUtils.runInlineTest(testSyncTransform, null, moduleToTransform, expectedInlineOutput);
++    });
++
++    testUtils.defineTest(
++      __dirname,
++      path.join('__testfixtures__', 'test-sync-transform'),
++      null,
++      'test-sync-transform'
++    );
++
++    testUtils.defineInlineTest(
++      testSyncTransform,
++      null,
++      testInputSource,
++      expectedInlineOutput,
++      'should run sync defineInlineTest'
++    );
++
++    testUtils.defineSnapshotTest(
++      testSyncTransform,
++      null,
++      testInputSource,
++      'should run sync defineSnapshotTest'
++    );
++
++    testUtils.defineSnapshotTestFromFixture(
++      __dirname,
++      testSyncTransform,
++      null,
++      'test-sync-transform',
++      'should run sync defineSnapshotTestFromFixture'
++    );
++  });
++
++  describe('async', () => {
++    it('should apply transformation', async () => {
++      const moduleToTransform = getModuleToTransform();
++      const transformedCode = await testUtils.applyTransform(testAsyncTransform, null, moduleToTransform);
++
++      expect(transformedCode).not.toMatch(/sum/);
++      expect(transformedCode).toMatch(/addition/);
++    });
++
++    it('should run test', () => {
++      return testUtils.runTest(__dirname, path.join('__testfixtures__', 'test-async-transform'), null, 'test-async-transform');
++    });
++
++    it ('should run snapshot test', () => {
++      const moduleToTransform = getModuleToTransform();
++      return testUtils.runSnapshotTest(testAsyncTransform, null, moduleToTransform);
++    });
++
++    it('should run inline test', () => {
++      const moduleToTransform = getModuleToTransform();
++      return testUtils.runInlineTest(testAsyncTransform, null, moduleToTransform, expectedInlineOutput);
++    });
++
++    testUtils.defineTest(
++      __dirname,
++      path.join('__testfixtures__', 'test-async-transform'),
++      null,
++      'test-async-transform'
++    );
++
++    testUtils.defineInlineTest(
++      testAsyncTransform,
++      null,
++      testInputSource,
++      expectedInlineOutput,
++      'should run async defineInlineTest'
++    );
++
++    testUtils.defineSnapshotTest(
++      testAsyncTransform,
++      null,
++      testInputSource,
++      'should run async defineSnapshotTest'
++    );
++
++    testUtils.defineSnapshotTestFromFixture(
++      __dirname,
++      testSyncTransform,
++      null,
++      'test-async-transform',
++      'should run async defineSnapshotTestFromFixture'
++    );
++  });
++});
+",0,

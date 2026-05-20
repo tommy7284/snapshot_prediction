@@ -1,0 +1,115 @@
+{
+    "id": 6941693,
+    "name": "marp-team/marpit",
+    "isFork": false,
+    "commits": 1255,
+    "branches": 2,
+    "releases": 77,
+    "forks": 41,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://marpit.marp.app/",
+    "watchers": 13,
+    "stargazers": 838,
+    "contributors": 7,
+    "size": 4222,
+    "createdAt": "2018-03-17T07:19:58",
+    "pushedAt": "2023-10-28T03:04:34",
+    "updatedAt": "2023-12-08T07:34:54",
+    "totalIssues": 97,
+    "openIssues": 15,
+    "totalPullRequests": 269,
+    "openPullRequests": 0,
+    "blankLines": 2622,
+    "codeLines": 9557,
+    "commentLines": 1256,
+    "metrics": [
+        {
+            "blankLines": 51,
+            "language": "Sass",
+            "commentLines": 15,
+            "codeLines": 252
+        },
+        {
+            "blankLines": 4,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 15,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 199
+        },
+        {
+            "blankLines": 29,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 167
+        },
+        {
+            "blankLines": 977,
+            "language": "Markdown",
+            "commentLines": 41,
+            "codeLines": 1546
+        },
+        {
+            "blankLines": 51,
+            "language": "SCSS",
+            "commentLines": 17,
+            "codeLines": 250
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 127
+        },
+        {
+            "blankLines": 31,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 129
+        },
+        {
+            "blankLines": 1464,
+            "language": "JavaScript",
+            "commentLines": 1183,
+            "codeLines": 6866
+        }
+    ],
+    "lastCommit": "2023-10-28T03:04:33",
+    "lastCommitSHA": "5645028d25c01843070f8a256ac1c8ca345d010f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 298366,
+        "SCSS": 8330
+    },
+    "labels": [
+        "better-for-plugin",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question \ud83d\udcac",
+        "upstream",
+        "wontfix"
+    ],
+    "topics": [
+        "deck",
+        "framework",
+        "markdown",
+        "marp",
+        "marpit",
+        "presentation",
+        "slides"
+    ]
+}

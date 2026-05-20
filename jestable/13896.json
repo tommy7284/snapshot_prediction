@@ -1,0 +1,93 @@
+{
+    "id": 4039204,
+    "name": "rangle/redux-beacon",
+    "isFork": false,
+    "commits": 287,
+    "branches": 23,
+    "releases": 16,
+    "forks": 72,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://rangle.gitbook.io/redux-beacon/",
+    "watchers": 15,
+    "stargazers": 667,
+    "contributors": 29,
+    "size": 1741,
+    "createdAt": "2016-12-19T04:20:11",
+    "pushedAt": "2022-12-07T09:46:54",
+    "updatedAt": "2023-01-11T07:29:20",
+    "totalIssues": 74,
+    "openIssues": 10,
+    "totalPullRequests": 307,
+    "openPullRequests": 29,
+    "blankLines": 1563,
+    "codeLines": 8004,
+    "commentLines": 160,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2689,
+            "blankLines": 838
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 23,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 58,
+            "codeLines": 4246,
+            "blankLines": 658
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 15,
+            "codeLines": 105,
+            "blankLines": 53
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 471,
+            "blankLines": 0
+        },
+        {
+            "language": "SVG",
+            "commentLines": 2,
+            "codeLines": 214,
+            "blankLines": 1
+        },
+        {
+            "language": "Diff",
+            "commentLines": 85,
+            "codeLines": 256,
+            "blankLines": 13
+        }
+    ],
+    "lastCommit": "2021-04-29T10:34:42",
+    "lastCommitSHA": "8e5b18f6543e4207ac8f17eb2efcf119f2840e0c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 130002,
+        "JavaScript": 4973
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

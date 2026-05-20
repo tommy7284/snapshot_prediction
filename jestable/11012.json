@@ -1,0 +1,249 @@
+{
+    "id": 7528685,
+    "name": "securecodebox/securecodebox",
+    "isFork": false,
+    "commits": 7410,
+    "branches": 11,
+    "releases": 68,
+    "forks": 146,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": "https://www.secureCodeBox.io",
+    "watchers": 26,
+    "stargazers": 714,
+    "contributors": 54,
+    "size": 68512,
+    "createdAt": "2017-02-02T09:48:05",
+    "pushedAt": "2024-04-25T09:21:04",
+    "updatedAt": "2024-04-24T03:27:02",
+    "totalIssues": 523,
+    "openIssues": 102,
+    "totalPullRequests": 1855,
+    "openPullRequests": 5,
+    "blankLines": 19368,
+    "codeLines": 499294,
+    "commentLines": 12722,
+    "metrics": [
+        {
+            "blankLines": 21,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 69
+        },
+        {
+            "blankLines": 1478,
+            "language": "Go",
+            "commentLines": 1099,
+            "codeLines": 8189
+        },
+        {
+            "blankLines": 348,
+            "language": "TypeScript",
+            "commentLines": 234,
+            "codeLines": 2805
+        },
+        {
+            "blankLines": 57,
+            "language": "SCSS",
+            "commentLines": 56,
+            "codeLines": 245
+        },
+        {
+            "blankLines": 19,
+            "language": "Mustache",
+            "commentLines": 4,
+            "codeLines": 43
+        },
+        {
+            "blankLines": 8,
+            "language": "INI",
+            "commentLines": 3,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 118,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 419
+        },
+        {
+            "blankLines": 0,
+            "language": "Properties",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 500,
+            "language": "XML",
+            "commentLines": 98,
+            "codeLines": 5360
+        },
+        {
+            "blankLines": 13,
+            "language": "Gradle",
+            "commentLines": 12,
+            "codeLines": 58
+        },
+        {
+            "blankLines": 21,
+            "language": "PHP",
+            "commentLines": 70,
+            "codeLines": 206
+        },
+        {
+            "blankLines": 955,
+            "language": "Python",
+            "commentLines": 839,
+            "codeLines": 3509
+        },
+        {
+            "blankLines": 1869,
+            "language": "YAML",
+            "commentLines": 4960,
+            "codeLines": 89902
+        },
+        {
+            "blankLines": 7961,
+            "language": "Markdown",
+            "commentLines": 2488,
+            "codeLines": 26702
+        },
+        {
+            "blankLines": 2703,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 339109
+        },
+        {
+            "blankLines": 155,
+            "language": "Dockerfile",
+            "commentLines": 228,
+            "codeLines": 409
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 4,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 39,
+            "language": "PlantUML",
+            "commentLines": 9,
+            "codeLines": 124
+        },
+        {
+            "blankLines": 963,
+            "language": "Java",
+            "commentLines": 827,
+            "codeLines": 3170
+        },
+        {
+            "blankLines": 1490,
+            "language": "JavaScript",
+            "commentLines": 954,
+            "codeLines": 15771
+        },
+        {
+            "blankLines": 8,
+            "language": "Nunjucks",
+            "commentLines": 20,
+            "codeLines": 174
+        },
+        {
+            "blankLines": 392,
+            "language": "make",
+            "commentLines": 439,
+            "codeLines": 1251
+        },
+        {
+            "blankLines": 15,
+            "language": "CSS",
+            "commentLines": 31,
+            "codeLines": 65
+        },
+        {
+            "blankLines": 217,
+            "language": "Bourne Shell",
+            "commentLines": 334,
+            "codeLines": 902
+        },
+        {
+            "blankLines": 17,
+            "language": "SVG",
+            "commentLines": 11,
+            "codeLines": 770
+        }
+    ],
+    "lastCommit": "2024-04-24T03:20:53",
+    "lastCommitSHA": "ec9ae77c3a0b8bd7303f292c4167445083e4b2c6",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 488286,
+        "Go": 319772,
+        "Python": 190372,
+        "Java": 164860,
+        "TypeScript": 85706,
+        "Makefile": 68660,
+        "Shell": 35592,
+        "Smarty": 34366,
+        "Dockerfile": 31608,
+        "PHP": 9305,
+        "Nunjucks": 5971,
+        "Mustache": 1758,
+        "HTML": 234
+    },
+    "labels": [
+        "architecture",
+        "auto-discovery",
+        "backport",
+        "breaking",
+        "bug",
+        "cascading-scans",
+        "ci",
+        "cli",
+        "crd",
+        "defectdojo",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "findings",
+        "github_actions",
+        "go",
+        "good first issue",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "hook",
+        "invalid",
+        "java",
+        "javascript",
+        "maintenance",
+        "persistence",
+        "planned",
+        "python",
+        "question",
+        "scanner",
+        "skip-changelog",
+        "testing",
+        "wontfix"
+    ],
+    "topics": [
+        "devsecops",
+        "hacktoberfest",
+        "kubernetes",
+        "kubernetes-operator",
+        "owasp",
+        "owasp-zap",
+        "securecodebox",
+        "security",
+        "security-automation",
+        "security-testing",
+        "security-tools"
+    ]
+}

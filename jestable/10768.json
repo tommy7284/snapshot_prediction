@@ -1,0 +1,123 @@
+{
+    "id": 7483928,
+    "name": "tulios/kafkajs",
+    "isFork": false,
+    "commits": 3095,
+    "branches": 27,
+    "releases": 46,
+    "forks": 495,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://kafka.js.org",
+    "watchers": 39,
+    "stargazers": 3520,
+    "contributors": 113,
+    "size": 12166,
+    "createdAt": "2017-08-01T08:44:12",
+    "pushedAt": "2024-02-01T07:29:21",
+    "updatedAt": "2024-02-02T05:40:37",
+    "totalIssues": 935,
+    "openIssues": 289,
+    "totalPullRequests": 729,
+    "openPullRequests": 33,
+    "blankLines": 11945,
+    "codeLines": 64777,
+    "commentLines": 5504,
+    "metrics": [
+        {
+            "blankLines": 20,
+            "language": "CSS",
+            "commentLines": 1,
+            "codeLines": 86
+        },
+        {
+            "blankLines": 38,
+            "language": "YAML",
+            "commentLines": 56,
+            "codeLines": 1418
+        },
+        {
+            "blankLines": 4984,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 17875
+        },
+        {
+            "blankLines": 200,
+            "language": "TypeScript",
+            "commentLines": 25,
+            "codeLines": 1426
+        },
+        {
+            "blankLines": 6607,
+            "language": "JavaScript",
+            "commentLines": 5395,
+            "codeLines": 42407
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 821
+        },
+        {
+            "blankLines": 80,
+            "language": "Bourne Shell",
+            "commentLines": 7,
+            "codeLines": 366
+        },
+        {
+            "blankLines": 5,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 334
+        },
+        {
+            "blankLines": 11,
+            "language": "Java",
+            "commentLines": 20,
+            "codeLines": 44
+        }
+    ],
+    "lastCommit": "2023-02-27T01:31:37",
+    "lastCommitSHA": "ff3b1117f316d527ae170b550bc0f772614338e9",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 1616115,
+        "Shell": 14273,
+        "TypeScript": 9014,
+        "Java": 2370,
+        "CSS": 1737
+    },
+    "labels": [
+        "breaking-change",
+        "bug",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "eos support",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "investigate",
+        "kafka 0.10.2",
+        "kafka 0.11",
+        "maintainer-wanted",
+        "question",
+        "type definitions",
+        "wontfix",
+        "zstd support"
+    ],
+    "topics": [
+        "kafka",
+        "kafka-client",
+        "nodejs",
+        "npm-package"
+    ]
+}

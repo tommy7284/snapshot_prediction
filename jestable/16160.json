@@ -1,0 +1,90 @@
+{
+    "id": 5369786,
+    "name": "lint-md/lint-md",
+    "isFork": false,
+    "commits": 182,
+    "branches": 3,
+    "releases": 0,
+    "forks": 49,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 15,
+    "stargazers": 901,
+    "contributors": 13,
+    "size": 295,
+    "createdAt": "2018-11-07T01:38:30",
+    "pushedAt": "2023-09-12T02:36:39",
+    "updatedAt": "2023-09-04T09:38:48",
+    "totalIssues": 50,
+    "openIssues": 8,
+    "totalPullRequests": 52,
+    "openPullRequests": 0,
+    "blankLines": 399,
+    "codeLines": 2252,
+    "commentLines": 227,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 112,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 226,
+            "codeLines": 1971,
+            "blankLines": 303
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 145,
+            "blankLines": 91
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 21,
+            "blankLines": 5
+        }
+    ],
+    "lastCommit": "2023-09-12T02:36:39",
+    "lastCommitSHA": "7dcd649d043fc55a26ba06236b270015880ef598",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 69076,
+        "JavaScript": 63
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "pr need",
+        "question",
+        "wontfix",
+        "\u4e09\u65b9\u5de5\u5177\u96c6\u6210",
+        "\u53ef\u9009\u89c4\u5219",
+        "\u5468\u8fb9\u751f\u6001"
+    ],
+    "topics": [
+        "lint",
+        "lint-markdown",
+        "lint-md",
+        "lint-md-cli",
+        "markdown"
+    ]
+}

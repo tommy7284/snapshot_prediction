@@ -1,0 +1,155 @@
+{
+    "id": 6940240,
+    "name": "webpack-contrib/html-loader",
+    "isFork": false,
+    "commits": 355,
+    "branches": 4,
+    "releases": 28,
+    "forks": 208,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1163,
+    "contributors": 54,
+    "size": 3928,
+    "createdAt": "2014-01-24T03:04:35",
+    "pushedAt": "2024-04-08T01:21:40",
+    "updatedAt": "2024-04-02T03:24:53",
+    "totalIssues": 214,
+    "openIssues": 7,
+    "totalPullRequests": 298,
+    "openPullRequests": 1,
+    "blankLines": 1062,
+    "codeLines": 31674,
+    "commentLines": 341,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 26793
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 427,
+            "language": "Markdown",
+            "commentLines": 71,
+            "codeLines": 1213
+        },
+        {
+            "blankLines": 149,
+            "language": "HTML",
+            "commentLines": 46,
+            "codeLines": 787
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 86
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 0,
+            "language": "Handlebars",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 454,
+            "language": "JavaScript",
+            "commentLines": 222,
+            "codeLines": 2749
+        }
+    ],
+    "lastCommit": "2024-04-08T01:21:40",
+    "lastCommitSHA": "18addbe4a1c4e8146050f0eed43a67e69f28e1d0",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 90929,
+        "Shell": 151
+    },
+    "labels": [
+        "branch: next",
+        "dependencies",
+        "flag: community help wanted",
+        "flag: has pull request",
+        "flag: needs docs",
+        "flag: needs more info",
+        "flag: needs tests",
+        "flag: performance",
+        "good first contributon",
+        "pr_action: blocked",
+        "pr_action: discuss",
+        "pr_action: merge ready",
+        "pr_action: rebase",
+        "pr_action: review",
+        "pr_action: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (required)",
+        "priority: 4 (important)",
+        "priority: 5 (nice to have)",
+        "scope: minifier",
+        "scope: parser",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (inconvenient)",
+        "severity: 5 (confusing)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: needs repro",
+        "status: needs triage",
+        "status: pending",
+        "type: bug",
+        "type: build",
+        "type: chore",
+        "type: ci",
+        "type: documentation",
+        "type: feature",
+        "type: refactor",
+        "type: style"
+    ],
+    "topics": [
+        "html",
+        "webpack-loader"
+    ]
+}

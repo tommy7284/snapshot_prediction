@@ -1,0 +1,116 @@
+{
+    "id": 66047038,
+    "name": "geist-org/geist-ui",
+    "isFork": false,
+    "commits": 959,
+    "branches": 2,
+    "releases": 97,
+    "forks": 330,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://geist-ui.dev",
+    "watchers": 23,
+    "stargazers": 4111,
+    "contributors": 51,
+    "size": 6264,
+    "createdAt": "2020-03-18T05:14:17",
+    "pushedAt": "2024-01-13T05:49:45",
+    "updatedAt": "2024-01-13T03:45:28",
+    "totalIssues": 301,
+    "openIssues": 37,
+    "totalPullRequests": 452,
+    "openPullRequests": 12,
+    "blankLines": 5803,
+    "codeLines": 41983,
+    "commentLines": 250,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 153,
+            "codeLines": 25722,
+            "blankLines": 2969
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 97,
+            "codeLines": 1905,
+            "blankLines": 375
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 13460,
+            "blankLines": 2423
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 600,
+            "blankLines": 1
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 54,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 121,
+            "blankLines": 21
+        },
+        {
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 110,
+            "blankLines": 14
+        }
+    ],
+    "lastCommit": "2023-04-21T05:25:25",
+    "lastCommitSHA": "b48b8238e7aaf92b2aa3749a688e4ffcb29476e4",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 819930,
+        "JavaScript": 57915
+    },
+    "labels": [
+        ":eyes: delay",
+        ":incoming_envelope: archived",
+        ":lady_beetle: not a bug",
+        ":lock: overtime",
+        ":speech_balloon:  in discussion",
+        ":spiral_notepad: waiting for release",
+        "duplicate",
+        "type: bug",
+        "type: chore",
+        "type: dependencies",
+        "type: documentation",
+        "type: feature",
+        "type: need review",
+        "type: refactor",
+        "type: styles",
+        "type: test",
+        "type: work in progress",
+        "\u2728 geist components catalog"
+    ],
+    "topics": [
+        "design-system",
+        "design-systems",
+        "geist",
+        "geist-ui",
+        "hacktoberfest",
+        "react",
+        "react-components"
+    ]
+}

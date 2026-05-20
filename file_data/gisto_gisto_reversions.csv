@@ -1,0 +1,165 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/loading.test.tsx.snap,src/components/loading.test.tsx,,"build: packages dependencies upgrade
+",,0,
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/simple-tooltip.test.tsx.snap,src/components/simple-tooltip.test.tsx,,"build: packages dependencies upgrade
+",,0,
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/zod-error.test.tsx.snap,src/components/zod-error.test.tsx,,"build: packages dependencies upgrade
+","diff --git a/src/components/zod-error.test.tsx b/src/components/zod-error.test.tsx
+index 8911eb7..8899249 100644
+--- a/src/components/zod-error.test.tsx
++++ b/src/components/zod-error.test.tsx
+@@ -5,8 +5,8 @@ import { ZodError } from './zod-error';
+ 
+ describe('ZodError Component', () => {
+   it('renders the error message when an error exists for the given path', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+@@ -16,8 +16,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('renders nothing when no error exists for the given path', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field2';
+ 
+@@ -27,8 +27,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('renders with correct styles and animation', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+@@ -39,8 +39,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('matches the snapshot', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+",0,
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/loading.test.tsx.snap,src/components/loading.test.tsx,,"build: packages dependencies upgrade
+",,0,
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/simple-tooltip.test.tsx.snap,src/components/simple-tooltip.test.tsx,,"build: packages dependencies upgrade
+",,0,
+502,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,57b2959339fc7624cf5e9ae7d239fa91d4dc558a,src/components/__snapshots__/zod-error.test.tsx.snap,src/components/zod-error.test.tsx,,"build: packages dependencies upgrade
+","diff --git a/src/components/zod-error.test.tsx b/src/components/zod-error.test.tsx
+index 8911eb7..8899249 100644
+--- a/src/components/zod-error.test.tsx
++++ b/src/components/zod-error.test.tsx
+@@ -5,8 +5,8 @@ import { ZodError } from './zod-error';
+ 
+ describe('ZodError Component', () => {
+   it('renders the error message when an error exists for the given path', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+@@ -16,8 +16,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('renders nothing when no error exists for the given path', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field2';
+ 
+@@ -27,8 +27,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('renders with correct styles and animation', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+@@ -39,8 +39,8 @@ describe('ZodError Component', () => {
+   });
+ 
+   it('matches the snapshot', () => {
+-    const errors: z.ZodIssue[] = [
+-      { path: ['field1'], message: 'Field1 is required', code: 'custom' },
++    const errors: z.core.$ZodIssue[] = [
++      { path: ['field1'], message: 'Field1 is required', code: 'custom', input: undefined },
+     ];
+     const path = 'field1';
+ 
+",0,
+551,bad45e0d2349b2c74bbb7273d33c567d011078fd,bad45e0d2349b2c74bbb7273d33c567d011078fd,src/components/__snapshots__/loading.test.tsx.snap,src/components/loading.test.tsx,,"refactor(app): main entry point app and login
+","diff --git a/src/components/loading.test.tsx b/src/components/loading.test.tsx
+index 78b7e6b..8aae06d 100644
+--- a/src/components/loading.test.tsx
++++ b/src/components/loading.test.tsx
+@@ -7,4 +7,21 @@ describe('Loading', () => {
+     const { container } = render(<Loading />);
+     expect(container).toMatchSnapshot();
+   });
++
++  it('renders with message', () => {
++    const { getByText } = render(<Loading message=""Loading data..."" />);
++    expect(getByText('Loading data...')).toBeInTheDocument();
++  });
++
++  it('renders with custom size', () => {
++    const { container } = render(<Loading size={4} />);
++    const svg = container.querySelector('svg');
++    expect(svg).toHaveClass('size-4');
++  });
++
++  it('renders with custom className', () => {
++    const { container } = render(<Loading className=""custom-class"" />);
++    const div = container.firstChild;
++    expect(div).toHaveClass('custom-class');
++  });
+ });
+",0,
+551,bad45e0d2349b2c74bbb7273d33c567d011078fd,bad45e0d2349b2c74bbb7273d33c567d011078fd,src/components/__snapshots__/loading.test.tsx.snap,src/components/loading.test.tsx,,"refactor(app): main entry point app and login
+","diff --git a/src/components/loading.test.tsx b/src/components/loading.test.tsx
+index 78b7e6b..8aae06d 100644
+--- a/src/components/loading.test.tsx
++++ b/src/components/loading.test.tsx
+@@ -7,4 +7,21 @@ describe('Loading', () => {
+     const { container } = render(<Loading />);
+     expect(container).toMatchSnapshot();
+   });
++
++  it('renders with message', () => {
++    const { getByText } = render(<Loading message=""Loading data..."" />);
++    expect(getByText('Loading data...')).toBeInTheDocument();
++  });
++
++  it('renders with custom size', () => {
++    const { container } = render(<Loading size={4} />);
++    const svg = container.querySelector('svg');
++    expect(svg).toHaveClass('size-4');
++  });
++
++  it('renders with custom className', () => {
++    const { container } = render(<Loading className=""custom-class"" />);
++    const div = container.firstChild;
++    expect(div).toHaveClass('custom-class');
++  });
+ });
+",0,

@@ -1,0 +1,72 @@
+{
+    "id": 5314101,
+    "name": "peerigon/updtr",
+    "isFork": false,
+    "commits": 167,
+    "branches": 1,
+    "releases": 4,
+    "forks": 54,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "The Unlicense",
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 2197,
+    "contributors": 13,
+    "size": 1615,
+    "createdAt": "2015-10-02T03:48:28",
+    "pushedAt": "2021-08-20T03:26:39",
+    "updatedAt": "2021-08-20T03:26:41",
+    "totalIssues": 44,
+    "openIssues": 12,
+    "totalPullRequests": 43,
+    "openPullRequests": 2,
+    "blankLines": 939,
+    "codeLines": 19149,
+    "commentLines": 162,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12941
+        },
+        {
+            "blankLines": 848,
+            "language": "JavaScript",
+            "commentLines": 162,
+            "codeLines": 6083
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 84,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 97
+        }
+    ],
+    "lastCommit": "2021-08-20T03:25:58",
+    "lastCommitSHA": "cb5cdda66f600d20000e88384b6bb87cb1591f65",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 209679
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

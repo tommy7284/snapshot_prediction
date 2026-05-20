@@ -1,0 +1,87 @@
+{
+    "id": 5401823,
+    "name": "felixrieseberg/react-spreadsheet-component",
+    "isFork": false,
+    "commits": 99,
+    "branches": 3,
+    "releases": 14,
+    "forks": 91,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 27,
+    "stargazers": 726,
+    "contributors": 5,
+    "size": 1556,
+    "createdAt": "2015-05-06T11:10:12",
+    "pushedAt": "2020-04-29T10:29:18",
+    "updatedAt": "2021-02-06T04:31:04",
+    "totalIssues": 20,
+    "openIssues": 14,
+    "totalPullRequests": 8,
+    "openPullRequests": 2,
+    "blankLines": 4627,
+    "codeLines": 16547,
+    "commentLines": 4819,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 55,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 226
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 22,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 111
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 100
+        },
+        {
+            "blankLines": 4550,
+            "language": "JavaScript",
+            "commentLines": 4819,
+            "codeLines": 16080
+        }
+    ],
+    "lastCommit": "2018-11-12T01:57:52",
+    "lastCommitSHA": "19802930bb1ce4e2f78ceaa6279da7b3076aa48f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 397239,
+        "CSS": 4446,
+        "HTML": 1397
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

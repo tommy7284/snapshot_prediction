@@ -1,0 +1,130 @@
+{
+    "id": 6861080,
+    "name": "glayzzle/php-parser",
+    "isFork": false,
+    "commits": 1835,
+    "branches": 37,
+    "releases": 41,
+    "forks": 95,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": "https://php-parser.glayzzle.com/",
+    "watchers": 19,
+    "stargazers": 500,
+    "contributors": 32,
+    "size": 30915,
+    "createdAt": "2014-12-07T10:11:57",
+    "pushedAt": "2023-09-11T05:49:31",
+    "updatedAt": "2023-09-10T09:07:15",
+    "totalIssues": 278,
+    "openIssues": 24,
+    "totalPullRequests": 851,
+    "openPullRequests": 10,
+    "blankLines": 60327,
+    "codeLines": 86223,
+    "commentLines": 4890,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 119
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 14655
+        },
+        {
+            "blankLines": 12,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 124
+        },
+        {
+            "blankLines": 393,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 934
+        },
+        {
+            "blankLines": 58496,
+            "language": "HTML",
+            "commentLines": 476,
+            "codeLines": 53657
+        },
+        {
+            "blankLines": 35,
+            "language": "Python",
+            "commentLines": 47,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 216,
+            "language": "CSS",
+            "commentLines": 65,
+            "codeLines": 948
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 765,
+            "codeLines": 680
+        },
+        {
+            "blankLines": 1175,
+            "language": "JavaScript",
+            "commentLines": 3536,
+            "codeLines": 15051
+        }
+    ],
+    "lastCommit": "2023-09-11T05:49:31",
+    "lastCommitSHA": "80eb9460679188f76166dd25a9a2666b8ff129aa",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 513024,
+        "Python": 4177
+    },
+    "labels": [
+        "ast",
+        "bug",
+        "code-climate",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "high-pri",
+        "invalid",
+        "investigating",
+        "lexer",
+        "major",
+        "minor",
+        "parser",
+        "php-langspec",
+        "php5",
+        "php7",
+        "question",
+        "release-ready",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "ast",
+        "development",
+        "javascript",
+        "lexer",
+        "parser",
+        "php",
+        "php-ast",
+        "php-parser",
+        "static-code-analysis",
+        "tokenizer"
+    ]
+}

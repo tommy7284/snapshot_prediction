@@ -1,0 +1,70 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+14,7b63d7b717e0cc1ce068bb038c7307210d51c104,a70ff21617ca3a0cd90270bfd394e68f899cd0c8,"###  Please see CHANGELOG and UPGRADING for details
+
+**TODOs**
+* [x] Add animated SVG 
+    - [x] Add color props for SVG
+    - [x] Add background prop for overlay
+   -  [x] Allow svg sizing
+* [x] Add additional slot for text after loading icon
+* [x] Remove unused CSS
+* [x] Allow passing slots to `loading.show()` method as second argument
+* [x] Allow global option in plugin `Vue.use()`
+* [x] Live demo on gh-pages
+* [x] TravisCI auto deploy to gh-pages
+* [x] Keep package light weight, allow tree shaking, or pack less svg
+* [x] Update examples
+* [x] Update changelog
+* [x] Upgrade deps
+* [x] Remove SCSS and related configs, use plain CSS
+* [x] Add upgrade guide
+* [x] Update readme
+* [x] Test Test Test
+
+### Before new release
+* [x] Previous version branch
+* [x] Add a note for previous version in readme
+ 
+### Links
+* https://github.com/jxnblk/loading
+* https://github.com/SamHerbert/SVG-Loaders
+* https://css-tricks.com/creating-vue-js-component-instances-programmatically/
+* https://medium.com/@codetheorist/using-vuejs-computed-properties-for-dynamic-module-imports-2046743afcaf
+* https://alligator.io/vuejs/lazy-loaded-wizard/
+
+","Update tests
+","diff --git a/__test__/plugin.spec.js b/__test__/plugin.spec.js
+new file mode 100644
+index 0000000..831a33a
+--- /dev/null
++++ b/__test__/plugin.spec.js
+@@ -0,0 +1,28 @@
++import {mount, createLocalVue} from '@vue/test-utils'
++import Plugin from '../src/index';
++
++describe('Loading plugin', () => {
++
++  // Make a copy of local vue
++  let localVue = createLocalVue();
++  // Define the global component
++  localVue.use(Plugin);
++
++  test('has instance registered', () => {
++    expect(localVue.$loading).toBeDefined()
++  });
++
++  test('has show method on instance', () => {
++    expect(localVue.$loading.show).toBeDefined()
++  });
++
++  test('has hide method on instance returned by show()', () => {
++    let loader = localVue.$loading.show();
++
++    expect(loader.$el).toMatchSnapshot();
++    expect(loader.hide).toBeDefined();
++    loader.hide();
++  });
++
++});
++
+",0,,5,108,1,26,34,3934

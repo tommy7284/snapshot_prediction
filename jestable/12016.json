@@ -1,0 +1,246 @@
+{
+    "id": 55532036,
+    "name": "cloudflare/wrangler2",
+    "isFork": false,
+    "commits": 960,
+    "branches": 40,
+    "releases": 54,
+    "forks": 99,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://developers.cloudflare.com/workers/",
+    "watchers": 30,
+    "stargazers": 645,
+    "contributors": 54,
+    "size": 31477,
+    "createdAt": "2021-11-10T02:45:40",
+    "pushedAt": "2022-07-18T04:53:49",
+    "updatedAt": "2022-07-17T03:48:48",
+    "totalIssues": 669,
+    "openIssues": 156,
+    "totalPullRequests": 821,
+    "openPullRequests": 16,
+    "blankLines": 16923,
+    "codeLines": 176572,
+    "commentLines": 31400,
+    "metrics": [
+        {
+            "blankLines": 10,
+            "language": "ReasonML",
+            "commentLines": 0,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 25,
+            "language": "Rust",
+            "commentLines": 18,
+            "codeLines": 97
+        },
+        {
+            "blankLines": 262,
+            "language": "CSS",
+            "commentLines": 14,
+            "codeLines": 1684
+        },
+        {
+            "blankLines": 220,
+            "language": "HTML",
+            "commentLines": 60,
+            "codeLines": 1922
+        },
+        {
+            "blankLines": 3,
+            "language": "Bourne Again Shell",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 58,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 62021
+        },
+        {
+            "blankLines": 1,
+            "language": "Kotlin",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 257,
+            "language": "Diff",
+            "commentLines": 931,
+            "codeLines": 4597
+        },
+        {
+            "blankLines": 18,
+            "language": "Vuejs Component",
+            "commentLines": 2,
+            "codeLines": 115
+        },
+        {
+            "blankLines": 20,
+            "language": "Scala",
+            "commentLines": 0,
+            "codeLines": 97
+        },
+        {
+            "blankLines": 0,
+            "language": "COBOL",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 7,
+            "language": "PHP",
+            "commentLines": 19,
+            "codeLines": 60
+        },
+        {
+            "blankLines": 181,
+            "language": "YAML",
+            "commentLines": 19,
+            "codeLines": 1047
+        },
+        {
+            "blankLines": 3515,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 5806
+        },
+        {
+            "blankLines": 120,
+            "language": "TOML",
+            "commentLines": 142,
+            "codeLines": 471
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 0,
+            "language": "WebAssembly",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 10,
+            "language": "Python",
+            "commentLines": 3,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 6,
+            "language": "Dart",
+            "commentLines": 0,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 16,
+            "language": "C",
+            "commentLines": 21,
+            "codeLines": 53
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 117,
+            "language": "Mustache",
+            "commentLines": 1,
+            "codeLines": 687
+        },
+        {
+            "blankLines": 11161,
+            "language": "TypeScript",
+            "commentLines": 28371,
+            "codeLines": 80944
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 74
+        },
+        {
+            "blankLines": 3,
+            "language": "Gradle",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 55,
+            "language": "F#",
+            "commentLines": 125,
+            "codeLines": 240
+        },
+        {
+            "blankLines": 29,
+            "language": "SQL",
+            "commentLines": 174,
+            "codeLines": 3739
+        },
+        {
+            "blankLines": 36,
+            "language": "Bourne Shell",
+            "commentLines": 43,
+            "codeLines": 175
+        },
+        {
+            "blankLines": 761,
+            "language": "JavaScript",
+            "commentLines": 1452,
+            "codeLines": 12553
+        },
+        {
+            "blankLines": 2,
+            "language": "Perl",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 6,
+            "language": "make",
+            "commentLines": 2,
+            "codeLines": 25
+        }
+    ],
+    "lastCommit": "2022-07-15T08:56:59",
+    "lastCommitSHA": "0953af8e42f0eca599306bd02a263dc30196781d",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 322700,
+        "JavaScript": 4516,
+        "HTML": 2202
+    },
+    "labels": [
+        "big idea",
+        "bug",
+        "cleanup",
+        "deprecation",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "maintenance",
+        "pages",
+        "question",
+        "wontfix",
+        "\ud83c\udfd6 umbrella"
+    ],
+    "topics": []
+}

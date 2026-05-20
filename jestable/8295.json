@@ -1,0 +1,87 @@
+{
+    "id": 6725579,
+    "name": "kirankalyan5/react-native-segmented-control-tab",
+    "isFork": false,
+    "commits": 212,
+    "branches": 31,
+    "releases": 4,
+    "forks": 118,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 595,
+    "contributors": 22,
+    "size": 2318,
+    "createdAt": "2016-09-26T04:01:22",
+    "pushedAt": "2023-12-20T02:08:55",
+    "updatedAt": "2023-12-22T10:01:07",
+    "totalIssues": 74,
+    "openIssues": 3,
+    "totalPullRequests": 315,
+    "openPullRequests": 11,
+    "blankLines": 62,
+    "codeLines": 27681,
+    "commentLines": 31,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 26939
+        },
+        {
+            "blankLines": 1,
+            "language": "TypeScript",
+            "commentLines": 25,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 35,
+            "language": "JavaScript",
+            "commentLines": 6,
+            "codeLines": 566
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 26,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 131
+        }
+    ],
+    "lastCommit": "2022-01-17T09:41:07",
+    "lastCommitSHA": "42bfe4cfd5cc2271efb1b9d84cef0873b6628721",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 11453
+    },
+    "labels": [
+        "bug",
+        "code has conflicts - fix it!",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "security",
+        "\u26a0\ufe0f changes requested",
+        "\u2705 approved",
+        "\u2728 merged",
+        "\ud83c\udf1f needs more approvals",
+        "\ud83d\udc4c ready for review",
+        "\ud83d\udea7 wip"
+    ],
+    "topics": []
+}

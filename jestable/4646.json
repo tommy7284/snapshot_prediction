@@ -1,0 +1,74 @@
+{
+    "id": 5627062,
+    "name": "cowchimp/headless-devtools",
+    "isFork": false,
+    "commits": 9,
+    "branches": 11,
+    "releases": 0,
+    "forks": 18,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 553,
+    "contributors": 1,
+    "size": 2043,
+    "createdAt": "2018-01-03T04:12:26",
+    "pushedAt": "2022-12-10T11:18:46",
+    "updatedAt": "2022-12-08T03:11:58",
+    "totalIssues": 5,
+    "openIssues": 5,
+    "totalPullRequests": 12,
+    "openPullRequests": 10,
+    "blankLines": 108,
+    "codeLines": 15131,
+    "commentLines": 43,
+    "metrics": [
+        {
+            "blankLines": 34,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 73,
+            "language": "JavaScript",
+            "commentLines": 43,
+            "codeLines": 356
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 14702
+        }
+    ],
+    "lastCommit": "2020-03-28T12:19:04",
+    "lastCommitSHA": "40ada5d172549d2043cd5e49fb401b55e141708d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 12651
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

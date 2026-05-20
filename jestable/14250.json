@@ -1,0 +1,88 @@
+{
+    "id": 4047224,
+    "name": "dai-shi/reactive-react-redux",
+    "isFork": false,
+    "commits": 328,
+    "branches": 29,
+    "releases": 0,
+    "forks": 12,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/reactive-react-redux",
+    "watchers": 11,
+    "stargazers": 503,
+    "contributors": 3,
+    "size": 7249,
+    "createdAt": "2018-11-15T07:41:19",
+    "pushedAt": "2023-01-07T03:10:52",
+    "updatedAt": "2023-01-13T05:59:12",
+    "totalIssues": 32,
+    "openIssues": 4,
+    "totalPullRequests": 52,
+    "openPullRequests": 23,
+    "blankLines": 389,
+    "codeLines": 2525,
+    "commentLines": 75,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 267,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 62,
+            "blankLines": 16
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 444,
+            "blankLines": 147
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 74,
+            "codeLines": 1648,
+            "blankLines": 216
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 96,
+            "blankLines": 10
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2021-09-06T12:22:11",
+    "lastCommitSHA": "868a2b267751a518f6e496172e1b3126bdeb63b3",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 7992,
+        "JavaScript": 893
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs repro",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

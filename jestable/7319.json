@@ -1,0 +1,73 @@
+{
+    "id": 6622501,
+    "name": "jamiebuilds/react-loadable",
+    "isFork": false,
+    "commits": 220,
+    "branches": 5,
+    "releases": 0,
+    "forks": 853,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 144,
+    "stargazers": 16440,
+    "contributors": 87,
+    "size": 325,
+    "createdAt": "2017-03-09T06:41:17",
+    "pushedAt": "2022-10-12T02:29:29",
+    "updatedAt": "2022-10-20T04:11:48",
+    "totalIssues": 0,
+    "openIssues": 0,
+    "totalPullRequests": 239,
+    "openPullRequests": 34,
+    "blankLines": 443,
+    "codeLines": 1811,
+    "commentLines": 1,
+    "metrics": [
+        {
+            "blankLines": 288,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 962
+        },
+        {
+            "blankLines": 155,
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 794
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 48
+        }
+    ],
+    "lastCommit": "2020-03-03T05:55:52",
+    "lastCommitSHA": "6201c5837b212d6244c57f3748f2b1375096beeb",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 23521
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

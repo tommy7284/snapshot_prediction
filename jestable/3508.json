@@ -1,0 +1,73 @@
+{
+    "id": 5381375,
+    "name": "trivago/parallel-webpack",
+    "isFork": false,
+    "commits": 100,
+    "branches": 2,
+    "releases": 3,
+    "forks": 102,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "BSD 3-Clause New or Revised License",
+    "homepage": null,
+    "watchers": 27,
+    "stargazers": 1478,
+    "contributors": 19,
+    "size": 177,
+    "createdAt": "2015-12-10T10:27:04",
+    "pushedAt": "2022-01-25T03:37:34",
+    "updatedAt": "2022-01-25T03:37:39",
+    "totalIssues": 76,
+    "openIssues": 32,
+    "totalPullRequests": 38,
+    "openPullRequests": 5,
+    "blankLines": 395,
+    "codeLines": 1856,
+    "commentLines": 94,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 190,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 413
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 62
+        },
+        {
+            "blankLines": 197,
+            "language": "JavaScript",
+            "commentLines": 93,
+            "codeLines": 1364
+        }
+    ],
+    "lastCommit": "2022-01-25T03:37:34",
+    "lastCommitSHA": "3096771f4d4bb748a0220b71284b93ccaaf23a6b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 59179
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "release 3.x",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,116 @@
+{
+    "id": 6773471,
+    "name": "rahuldkjain/github-profile-readme-generator",
+    "isFork": false,
+    "commits": 596,
+    "branches": 41,
+    "releases": 3,
+    "forks": 5922,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://rahuldkjain.github.io/gh-profile-readme-generator",
+    "watchers": 90,
+    "stargazers": 19716,
+    "contributors": 83,
+    "size": 15009,
+    "createdAt": "2020-07-15T11:20:48",
+    "pushedAt": "2024-04-11T04:58:43",
+    "updatedAt": "2024-04-12T01:44:08",
+    "totalIssues": 368,
+    "openIssues": 188,
+    "totalPullRequests": 422,
+    "openPullRequests": 137,
+    "blankLines": 762,
+    "codeLines": 87431,
+    "commentLines": 205,
+    "metrics": [
+        {
+            "blankLines": 180,
+            "language": "JSX",
+            "commentLines": 14,
+            "codeLines": 3469
+        },
+        {
+            "blankLines": 75,
+            "language": "SVG",
+            "commentLines": 167,
+            "codeLines": 11476
+        },
+        {
+            "blankLines": 216,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 498
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 7,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 46,
+            "language": "CSS",
+            "commentLines": 3,
+            "codeLines": 223
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 69360
+        },
+        {
+            "blankLines": 238,
+            "language": "JavaScript",
+            "commentLines": 14,
+            "codeLines": 2379
+        }
+    ],
+    "lastCommit": "2022-06-28T01:35:03",
+    "lastCommitSHA": "888aff31e1d26dd2a6acf6afebbc34970aeb0118",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 200901,
+        "CSS": 4678,
+        "Shell": 71
+    },
+    "labels": [
+        "announcement",
+        "appreciation",
+        "bug",
+        "community",
+        "dependencies",
+        "design",
+        "discuss",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "gatsby",
+        "generator",
+        "github",
+        "hacktoberfest",
+        "markdown",
+        "react",
+        "readme"
+    ]
+}

@@ -1,0 +1,105 @@
+{
+    "id": 5091523,
+    "name": "cloudflare/cf-ui",
+    "isFork": false,
+    "commits": 884,
+    "branches": 32,
+    "releases": 1008,
+    "forks": 91,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 1298,
+    "contributors": 20,
+    "size": 9586,
+    "createdAt": "2016-06-09T02:05:46",
+    "pushedAt": "2019-04-14T10:52:40",
+    "updatedAt": "2021-01-13T07:50:09",
+    "totalIssues": 101,
+    "openIssues": 1,
+    "totalPullRequests": 282,
+    "openPullRequests": 1,
+    "blankLines": 4183,
+    "codeLines": 18760,
+    "commentLines": 303,
+    "metrics": [
+        {
+            "blankLines": 2328,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 4316
+        },
+        {
+            "blankLines": 2,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 22,
+            "language": "Bourne Shell",
+            "commentLines": 6,
+            "codeLines": 61
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 80
+        },
+        {
+            "blankLines": 1831,
+            "language": "JavaScript",
+            "commentLines": 295,
+            "codeLines": 13126
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1120
+        }
+    ],
+    "lastCommit": "2017-09-25T07:39:02",
+    "lastCommitSHA": "39c9a7247314286afe7a7202c8717c5c8e981ed5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 383017,
+        "Shell": 2461,
+        "HTML": 252
+    },
+    "labels": [
+        "blocked",
+        "breaking change",
+        "bug",
+        "deprecate",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "priority: low",
+        "priority: medium",
+        "priorty: high",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

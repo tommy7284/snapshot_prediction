@@ -1,0 +1,95 @@
+{
+    "id": 4909663,
+    "name": "webpack-contrib/webpack-serve",
+    "isFork": false,
+    "commits": 151,
+    "branches": 2,
+    "releases": 18,
+    "forks": 87,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://github.com/shellscape/webpack-serve",
+    "watchers": 29,
+    "stargazers": 1127,
+    "contributors": 28,
+    "size": 678,
+    "createdAt": "2017-12-26T05:06:30",
+    "pushedAt": "2018-09-18T09:57:09",
+    "updatedAt": "2020-12-20T12:44:16",
+    "totalIssues": 210,
+    "openIssues": 0,
+    "totalPullRequests": 81,
+    "openPullRequests": 0,
+    "blankLines": 660,
+    "codeLines": 18204,
+    "commentLines": 132,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 160
+        },
+        {
+            "blankLines": 272,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 646
+        },
+        {
+            "blankLines": 385,
+            "language": "JavaScript",
+            "commentLines": 129,
+            "codeLines": 2134
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 15230
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 34
+        }
+    ],
+    "lastCommit": "2018-09-18T09:57:08",
+    "lastCommitSHA": "edaf28c6c935c3e29d26dbb02a9d6b672cc5148a",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 58655
+    },
+    "labels": [
+        "pr: review",
+        "pr: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (important)",
+        "priority: 4 (nice to have)",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (confusing)",
+        "severity: 4 (inconvenient)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: pending",
+        "type: bug",
+        "type: chore",
+        "type: docs",
+        "type: feature",
+        "type: refactor",
+        "type: test"
+    ],
+    "topics": []
+}

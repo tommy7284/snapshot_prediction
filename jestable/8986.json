@@ -1,0 +1,150 @@
+{
+    "id": 6797633,
+    "name": "webpack-contrib/postcss-loader",
+    "isFork": false,
+    "commits": 578,
+    "branches": 4,
+    "releases": 53,
+    "forks": 207,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 48,
+    "stargazers": 2848,
+    "contributors": 84,
+    "size": 3973,
+    "createdAt": "2014-10-03T03:29:46",
+    "pushedAt": "2024-04-08T01:06:15",
+    "updatedAt": "2024-04-08T06:12:19",
+    "totalIssues": 375,
+    "openIssues": 1,
+    "totalPullRequests": 311,
+    "openPullRequests": 0,
+    "blankLines": 1201,
+    "codeLines": 22025,
+    "commentLines": 169,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "SugarSS",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 0,
+            "language": "Sass",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 88
+        },
+        {
+            "blankLines": 593,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 1425
+        },
+        {
+            "blankLines": 0,
+            "language": "SCSS",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 17159
+        },
+        {
+            "blankLines": 13,
+            "language": "TypeScript",
+            "commentLines": 1,
+            "codeLines": 69
+        },
+        {
+            "blankLines": 546,
+            "language": "JavaScript",
+            "commentLines": 105,
+            "codeLines": 3175
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 16,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 78
+        }
+    ],
+    "lastCommit": "2024-04-08T01:06:15",
+    "lastCommitSHA": "b1aecd9b18ede38b0ad4e693a94dadd2b2531429",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 100921,
+        "Shell": 151
+    },
+    "labels": [
+        "ci: failed",
+        "ci: ok",
+        "dependencies",
+        "good first issue",
+        "good first pr",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "pr",
+        "pr: discuss",
+        "pr: docs",
+        "pr: refactor",
+        "pr: review",
+        "pr: style",
+        "pr: tests",
+        "priority: critical",
+        "priority: high",
+        "priority: low",
+        "priority: medium",
+        "question",
+        "scope: postcss",
+        "scope: postcss-load-config",
+        "scope: webpack",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: pending",
+        "status: rebase",
+        "status: reproduce",
+        "type: bug",
+        "type: build",
+        "type: chore",
+        "type: ci",
+        "type: docs",
+        "type: feature",
+        "type: perf",
+        "type: refactor",
+        "type: revert",
+        "type: style",
+        "type: test"
+    ],
+    "topics": []
+}

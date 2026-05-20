@@ -1,0 +1,72 @@
+{
+    "id": 6725150,
+    "name": "flowtype/flow-for-vscode",
+    "isFork": false,
+    "commits": 406,
+    "branches": 16,
+    "releases": 3,
+    "forks": 115,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 26,
+    "stargazers": 940,
+    "contributors": 46,
+    "size": 3999,
+    "createdAt": "2015-11-10T09:19:59",
+    "pushedAt": "2021-09-26T06:48:59",
+    "updatedAt": "2021-09-26T06:48:58",
+    "totalIssues": 315,
+    "openIssues": 85,
+    "totalPullRequests": 117,
+    "openPullRequests": 2,
+    "blankLines": 1244,
+    "codeLines": 7641,
+    "commentLines": 1329,
+    "metrics": [
+        {
+            "blankLines": 124,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 244
+        },
+        {
+            "blankLines": 3,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 280
+        },
+        {
+            "blankLines": 1117,
+            "language": "JavaScript",
+            "commentLines": 1329,
+            "codeLines": 7117
+        }
+    ],
+    "lastCommit": "2021-09-26T06:48:55",
+    "lastCommitSHA": "59de23221a2fc86c62882970fda72c2b6aff6182",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 87511
+    },
+    "labels": [
+        "bug",
+        "cla signed",
+        "dependencies",
+        "do-not-reap",
+        "duplicate",
+        "enhancement",
+        "feat-request",
+        "flow-issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "windows-issue",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,467 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+291,67564fdc6eaf367efe56b5d78dfd1ee60d00ae01,9979da9a21f4f9aa69728ada3211874a3594b644,"Modifications for Here maps API. 
+
+- [Geocoding]( https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics-api/code-geocode-examples.html)
+- [Reverse](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics-api/code-revgeocode.html)
+
+Impossible to use the old one as the identification method changed. (Not event prompted when creating a account)
+
+/!\ This is a pretty big modification that might break people who use the old one /!\
+
+(And i added a changelog)","Here maps new api
+","diff --git a/spec/here.spec.ts b/spec/here.spec.ts
+index 06569b3..953dbec 100644
+--- a/spec/here.spec.ts
++++ b/spec/here.spec.ts
+@@ -1,5 +1,6 @@
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { HERE } from '../src/geocoders/here';
++import { HEREv2 } from '../src/geocoders/here';
+ import { GeocodingResult } from '../src/geocoders/api';
+ 
+ describe('L.Control.Geocoder.HERE', () => {
+@@ -85,3 +86,83 @@ describe('L.Control.Geocoder.HERE', () => {
+     expect(callback.mock.calls).toMatchSnapshot();
+   });
+ });
++
++describe('L.Control.Geocoder.HEREv2', () => {
++  it('geocodes Innsbruck', () => {
++    let geocodingParams = {at:'50.62925,3.057256'};
++    const geocoder = new HEREv2({ apiKey: 'xxx', geocodingQueryParams: geocodingParams });
++    const callback = jest.fn();
++    testXMLHttpRequest(
++      'https://geocode.search.hereapi.com/v1/discover?q=Innsbruck&apiKey=xxx&at=50.62925%2C3.057256',
++      {
++        ""items"": [
++          {
++            ""title"": ""Salumeria Italiana"",
++            ""id"": ""here:pds:place:840drt3p-898f6ee434794fe59895e71ccf9381e1"",
++            ""ontologyId"": ""here:cm:ontology:restaurant"",
++            ""resultType"": ""place"",
++            ""address"": {
++              ""label"": ""Salumeria Italiana, 151 Richmond St, Boston, MA 02109, United States"",
++              ""countryCode"": ""USA"",
++              ""countryName"": ""United States"",
++              ""stateCode"": ""MA"",
++              ""state"": ""Massachusetts"",
++              ""county"": ""Suffolk"",
++              ""city"": ""Boston"",
++              ""district"": ""North End"",
++              ""street"": ""Richmond St"",
++              ""postalCode"": ""02109"",
++              ""houseNumber"": ""151""
++            },
++            ""position"": { ""lat"": 42.36355, ""lng"": -71.05439 },
++            ""access"": [{ ""lat"": 42.3635, ""lng"": -71.05448 }],
++            ""distance"": 11,
++            ""categories"": [
++              { ""id"": ""600-6300-0066"", ""name"": ""Grocery"", ""primary"": true },
++              { ""id"": ""100-1000-0000"", ""name"": ""Restaurant"" },
++              { ""id"": ""100-1000-0006"", ""name"": ""Deli"" },
++              { ""id"": ""600-6300-0067"", ""name"": ""Specialty Food Store"" }
++            ],
++            ""references"": [
++              { ""supplier"": { ""id"": ""core"" }, ""id"": ""31213861"" },
++              { ""supplier"": { ""id"": ""tripadvisor"" }, ""id"": ""3172680"" },
++              { ""supplier"": { ""id"": ""yelp"" }, ""id"": ""JNx0DlfndRurT-8KhSym7g"" },
++              { ""supplier"": { ""id"": ""yelp"" }, ""id"": ""P44VNcZUUNZfiFy-c4SUJw"" }
++            ],
++            ""foodTypes"": [
++              { ""id"": ""304-000"", ""name"": ""Italian"", ""primary"": true },
++              { ""id"": ""800-057"", ""name"": ""Pizza"" },
++              { ""id"": ""800-060"", ""name"": ""Sandwich"" }
++            ],
++            ""contacts"": [
++              {
++                ""phone"": [{ ""value"": ""+16175234946"" }, { ""value"": ""+16175238743"" }, { ""value"": ""+16177204243"" }],
++                ""fax"": [{ ""value"": ""+16175234946"" }],
++                ""www"": [
++                  { ""value"": ""http://www.salumeriaitaliana.com"" }
++                ],
++                ""email"": [{ ""value"": ""contact@salumeriaitaliana.com"" }]
++              }
++            ],
++            ""openingHours"": [
++              {
++                ""text"": [""Mon-Sat: 08:00 - 17:00"", ""Sun: 10:00 - 16:00""],
++                ""isOpen"": false,
++                ""structured"": [
++                  { ""start"": ""T080000"", ""duration"": ""PT11H00M"", ""recurrence"": ""FREQ:DAILY;BYDAY:MO,TU,WE,TH,FR,SA"" },
++                  { ""start"": ""T100000"", ""duration"": ""PT06H00M"", ""recurrence"": ""FREQ:DAILY;BYDAY:SU"" }
++                ]
++              }
++            ]
++          }
++        ]
++      },
++      () => geocoder.geocode('Innsbruck', callback)
++    );
++
++    const feature: GeocodingResult = callback.mock.calls[0][0][0];
++    expect(feature.name).toBe('Salumeria Italiana, 151 Richmond St, Boston, MA 02109, United States');
++    expect(feature.center).toStrictEqual({ ""lat"": 42.36355, ""lng"": -71.05439 });
++    expect(callback.mock.calls).toMatchSnapshot();
++  });
++});
+",0,,3,215,1,3,3,228
+304,2d7dd9afdd68bf1f257d5056f984482fb7c78e70,2d7dd9afdd68bf1f257d5056f984482fb7c78e70,,"Introduce interface ReverseGeocodingResult
+",,0,,4,55,1,4,27,1263
+305,2a5ced161f21cd842339e737f9ebebfdb63a3fef,bdf709f929aa01f3cddcac24aec0acd7724bf0ef,,"Add arcgis.spec.ts
+","diff --git a/spec/arcgis.spec.ts b/spec/arcgis.spec.ts
+new file mode 100644
+index 0000000..1e527a0
+--- /dev/null
++++ b/spec/arcgis.spec.ts
+@@ -0,0 +1,39 @@
++import { testXMLHttpRequest } from './mockXMLHttpRequest';
++import { ArcGis } from '../src/geocoders/arcgis';
++
++describe('L.Control.Geocoder.ArcGis', () => {
++  it('geocodes Innsbruck', () => {
++    const geocoder = new ArcGis('');
++    const callback = jest.fn();
++    testXMLHttpRequest(
++      'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?token=&SingleLine=Innsbruck&outFields=Addr_Type&forStorage=false&maxLocations=10&f=json',
++      {
++        spatialReference: { wkid: 4326, latestWkid: 4326 },
++        candidates: [
++          {
++            address: 'Innsbruck, Innsbruck-Stadt, Tirol',
++            location: { x: 11.391300000000058, y: 47.268000000000029 },
++            score: 100,
++            attributes: { Addr_Type: 'Locality' },
++            extent: {
++              xmin: 11.315300000000057,
++              ymin: 47.192000000000029,
++              xmax: 11.467300000000058,
++              ymax: 47.34400000000003
++            }
++          }
++        ]
++      },
++      () => geocoder.geocode('Innsbruck', callback)
++    );
++
++    const feature = callback.mock.calls[0][0][0];
++    expect(feature.name).toBe('Innsbruck, Innsbruck-Stadt, Tirol');
++    expect(feature.center).toStrictEqual({ lat: 47.26800000000003, lng: 11.391300000000058 });
++    expect(feature.bbox).toStrictEqual({
++      _northEast: { lat: 47.34400000000003, lng: 11.467300000000058 },
++      _southWest: { lat: 47.19200000000003, lng: 11.315300000000057 }
++    });
++    expect(callback.mock.calls).toMatchSnapshot();
++  });
++});
+",0,,2,66,1,5,10,604
+352,2d14de7ce7f42542732e2a81bf5a5d5bc787e873,2d14de7ce7f42542732e2a81bf5a5d5bc787e873,,"tests: Migrate unit tests to Vitest
+","diff --git a/spec/arcgis.spec.ts b/spec/arcgis.spec.ts
+index 52cd821..8230b3a 100644
+--- a/spec/arcgis.spec.ts
++++ b/spec/arcgis.spec.ts
+@@ -1,10 +1,11 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { ArcGis } from '../src/geocoders/arcgis';
+ 
+ describe('L.Control.Geocoder.ArcGis', () => {
+   it('geocodes Innsbruck', () => {
+     const geocoder = new ArcGis();
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?token=&SingleLine=Innsbruck&outFields=Addr_Type&forStorage=false&maxLocations=10&f=json',
+       {
+
+diff --git a/spec/google.spec.ts b/spec/google.spec.ts
+index 4004de7..16226af 100644
+--- a/spec/google.spec.ts
++++ b/spec/google.spec.ts
+@@ -1,3 +1,4 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { Google } from '../src/geocoders/google';
+ import { GeocodingResult } from '../src/geocoders/api';
+@@ -5,7 +6,7 @@ import { GeocodingResult } from '../src/geocoders/api';
+ describe('L.Control.Geocoder.Google', () => {
+   it('geocodes Innsbruck', () => {
+     const geocoder = new Google({ apiKey: '0123xyz' });
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://maps.googleapis.com/maps/api/geocode/json?key=0123xyz&address=Innsbruck',
+       {
+
+diff --git a/spec/here.spec.ts b/spec/here.spec.ts
+index 9c736dd..88e4426 100644
+--- a/spec/here.spec.ts
++++ b/spec/here.spec.ts
+@@ -1,3 +1,4 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { HERE } from '../src/geocoders/here';
+ import { HEREv2 } from '../src/geocoders/here';
+@@ -6,7 +7,7 @@ import { GeocodingResult } from '../src/geocoders/api';
+ describe('L.Control.Geocoder.HERE', () => {
+   it('geocodes Innsbruck', () => {
+     const geocoder = new HERE({ app_id: 'xxx', app_code: 'yyy' });
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://geocoder.api.here.com/6.2/geocode.json?searchtext=Innsbruck&gen=9&app_id=xxx&app_code=yyy&jsonattributes=1&maxresults=5',
+       {
+@@ -91,7 +92,7 @@ describe('L.Control.Geocoder.HEREv2', () => {
+   it('geocodes Innsbruck', () => {
+     const geocodingParams = { at: '50.62925,3.057256' };
+     const geocoder = new HEREv2({ apiKey: 'xxx', geocodingQueryParams: geocodingParams });
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://geocode.search.hereapi.com/v1/discover?q=Innsbruck&apiKey=xxx&limit=10&at=50.62925%2C3.057256',
+       {
+
+diff --git a/spec/mapbox.spec.ts b/spec/mapbox.spec.ts
+index 13a0c42..a0f6c21 100644
+--- a/spec/mapbox.spec.ts
++++ b/spec/mapbox.spec.ts
+@@ -1,10 +1,11 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { Mapbox } from '../src/geocoders/mapbox';
+ 
+ describe('L.Control.Geocoder.Mapbox', () => {
+   it('geocodes Milwaukee Ave', () => {
+     const geocoder = new Mapbox({ apiKey: '0123' });
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://api.mapbox.com/geocoding/v5/mapbox.places/Milwaukee%20Ave.json?access_token=0123',
+       {
+
+diff --git a/spec/nominatim.spec.ts b/spec/nominatim.spec.ts
+index f9ea9e2..1fecd11 100644
+--- a/spec/nominatim.spec.ts
++++ b/spec/nominatim.spec.ts
+@@ -1,3 +1,4 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { Nominatim } from '../src/geocoders/nominatim';
+ 
+@@ -5,7 +6,7 @@ describe('L.Control.Geocoder.Nominatim', () => {
+   const geocoder = new Nominatim();
+ 
+   it('geocodes Innsbruck', () => {
+-    const callback = jest.fn();
++    const callback = vi.fn();
+ 
+     testXMLHttpRequest(
+       'https://nominatim.openstreetmap.org/search?q=innsbruck&limit=5&format=json&addressdetails=1',
+@@ -54,7 +55,7 @@ describe('L.Control.Geocoder.Nominatim', () => {
+   });
+ 
+   it('reverse geocodes 47.3/11.3', () => {
+-    const callback = jest.fn();
++    const callback = vi.fn();
+ 
+     testXMLHttpRequest(
+       'https://nominatim.openstreetmap.org/reverse?lat=47.3&lon=11.3&zoom=9&addressdetails=1&format=json',
+
+diff --git a/spec/pelias.spec.ts b/spec/pelias.spec.ts
+index 3cdf14f..32e8f1c 100644
+--- a/spec/pelias.spec.ts
++++ b/spec/pelias.spec.ts
+@@ -1,3 +1,4 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { Openrouteservice } from '../src/geocoders/pelias';
+ 
+@@ -5,7 +6,7 @@ describe('L.Control.Geocoder.Openrouteservice', () => {
+   const geocoder = new Openrouteservice({ apiKey: '0123' });
+ 
+   it('geocodes Innsbruck', () => {
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://api.openrouteservice.org/geocode/search?api_key=0123&text=innsbruck',
+       {
+
+diff --git a/spec/photon.spec.ts b/spec/photon.spec.ts
+index 5366608..463720a 100644
+--- a/spec/photon.spec.ts
++++ b/spec/photon.spec.ts
+@@ -1,3 +1,4 @@
++import { describe, expect, it, vi } from 'vitest';
+ import { testXMLHttpRequest } from './mockXMLHttpRequest';
+ import { Photon } from '../src/geocoders/photon';
+ import { GeocodingResult } from '../src/geocoders/api';
+@@ -5,7 +6,7 @@ import { GeocodingResult } from '../src/geocoders/api';
+ describe('L.Control.Geocoder.Photon', () => {
+   it('geocodes Innsbruck', () => {
+     const geocoder = new Photon();
+-    const callback = jest.fn();
++    const callback = vi.fn();
+     testXMLHttpRequest(
+       'https://photon.komoot.io/api/?q=Innsbruck',
+       {
+",0,,21,16007,7,3,22,18008
+354,6940681d0d1b162d62499fcfac0426d9784b91de,70342223f93f667edeb37f35a51403e36ff7770b,"Use modern features:
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+- https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await","Migrate from callbacks to async-await
+","diff --git a/spec/nominatim.spec.ts b/spec/nominatim.spec.ts
+index 81d7a9a..4844e8b 100644
+--- a/spec/nominatim.spec.ts
++++ b/spec/nominatim.spec.ts
+@@ -7,9 +7,7 @@ describe('L.Control.Geocoder.Nominatim', () => {
+   const geocoder = new Nominatim();
+ 
+   it('geocodes Innsbruck', async () => {
+-    const callback = vi.fn();
+-
+-    mockFetchRequest(
++    const result = await mockFetchRequest(
+       'https://nominatim.openstreetmap.org/search?q=innsbruck&limit=5&format=json&addressdetails=1',
+       [
+         {
+@@ -35,11 +33,10 @@ describe('L.Control.Geocoder.Nominatim', () => {
+           }
+         }
+       ],
+-      () => geocoder.geocode('innsbruck', callback)
++      () => geocoder.geocode('innsbruck')
+     );
+ 
+-    await vi.waitUntil(() => callback.mock.calls.length);
+-    const feature = callback.mock.calls[0][0][0];
++    const feature = result[0];
+     expect(feature.name).toBe('Innsbruck, Tyrol, Austria');
+     expect(feature.html).toBe(
+       '<span class=""""> Innsbruck   </span><br/><span class=""leaflet-control-geocoder-address-context"">Tyrol Austria</span>'
+@@ -52,13 +49,11 @@ describe('L.Control.Geocoder.Nominatim', () => {
+       country: 'Austria',
+       country_code: 'at'
+     });
+-    expect(callback.mock.calls).toMatchSnapshot();
++    expect([[result]]).toMatchSnapshot();
+   });
+ 
+   it('reverse geocodes 47.3/11.3', async () => {
+-    const callback = vi.fn();
+-
+-    mockFetchRequest(
++    const result = await mockFetchRequest(
+       'https://nominatim.openstreetmap.org/reverse?lat=47.3&lon=11.3&zoom=9&addressdetails=1&format=json',
+       {
+         place_id: 197718025,
+@@ -76,11 +71,10 @@ describe('L.Control.Geocoder.Nominatim', () => {
+         },
+         boundingbox: ['46.9624854', '47.4499229', '10.9896868', '11.7051742']
+       },
+-      () => geocoder.reverse({ lat: 47.3, lng: 11.3 }, 131000, callback)
++      () => geocoder.reverse({ lat: 47.3, lng: 11.3 }, 131000)
+     );
+ 
+-    await vi.waitUntil(() => callback.mock.calls.length);
+-    const feature = callback.mock.calls[0][0][0];
++    const feature = result[0];
+     expect(feature.name).toBe('Innsbruck-Land, Tyrol, Austria');
+     expect(feature.html).toBe('<span class="""">Tyrol Austria</span>');
+     expect(feature.properties.address).toStrictEqual({
+@@ -89,6 +83,6 @@ describe('L.Control.Geocoder.Nominatim', () => {
+       country: 'Austria',
+       country_code: 'at'
+     });
+-    expect(callback.mock.calls).toMatchSnapshot();
++    expect([[result]]).toMatchSnapshot();
+   });
+ });
+",0,,29,1142,1,4,30,1584
+365,a0c2f4a295f73e03eae0274e537d17cf35c43d92,a0c2f4a295f73e03eae0274e537d17cf35c43d92,"- [x] standardize bbox param
+- [x] simplify parser logic
+- [x] update types","pelias: update type defs
+","diff --git a/spec/pelias.spec.ts b/spec/pelias.spec.ts
+index 7d119b3..9df0b0b 100644
+--- a/spec/pelias.spec.ts
++++ b/spec/pelias.spec.ts
+@@ -13,8 +13,17 @@ describe('L.Control.Geocoder.Openrouteservice', () => {
+         geocoding: {
+           version: '0.2',
+           attribution: 'openrouteservice.org | OpenStreetMap contributors | Geocoding by Pelias',
+-          query: {},
+-          warnings: [""performance optimization: excluding 'address' layer""],
++          query: {
++            size: 10,
++            lang:  {
++              name: 'English',
++              iso6391: 'en',
++              iso6393: 'eng',
++              via: 'header',
++              defaulted: false
++            }
++          },
++          warnings: [`performance optimization: excluding 'address' layer`],
+           engine: { name: 'Pelias', author: 'Mapzen', version: '1.0' }
+         },
+         type: 'FeatureCollection',
+@@ -24,22 +33,45 @@ describe('L.Control.Geocoder.Openrouteservice', () => {
+             geometry: { type: 'Point', coordinates: [11.407851, 47.272308] },
+             properties: {
+               id: '101748061',
++              gid: 'whosonfirst:locality:101748061',
+               layer: 'locality',
++              source: 'whosonfirst',
+               source_id: '101748061',
++              country_code: 'AT',
+               name: 'Innsbruck',
+-              confidence: 1,
+-              match_type: 'exact',
++              distance: 739.011,
+               accuracy: 'centroid',
+               country: 'Austria',
++              country_gid: 'whosonfirst:country:85632785',
+               country_a: 'AUT',
+-              region: 'Tirol',
++              region: 'Tyrol',
++              region_gid: 'whosonfirst:region:85681661',
+               region_a: 'TR',
+               county: 'Innsbruck',
+-              county_a: 'IN',
++              county_gid: 'whosonfirst:county:102049723',
+               localadmin: 'Innsbruck',
++              localadmin_gid: 'whosonfirst:localadmin:1108837687',
+               locality: 'Innsbruck',
++              locality_gid: 'whosonfirst:locality:101748061',
+               continent: 'Europe',
+-              label: 'Innsbruck, Austria'
++              continent_gid: 'whosonfirst:continent:102191581',
++              label: 'Innsbruck, TR, Austria',
++              category: [
++                'admin:admin2',
++                'admin'
++              ],
++              addendum: {
++                concordances: {
++                  'dbp:id': 'Innsbruck',
++                  'fb:id': 'en.innsbruck',
++                  'gn:id': 2775220,
++                  'gp:id': 550763,
++                  'nyt:id': 'N21126484242539583751',
++                  'qs_pg:id': 274233,
++                  'wd:id': 'Q1735',
++                  'wk:page': 'Innsbruck'
++                }
++              }
+             },
+             bbox: [11.3218091258, 47.2470573997, 11.452584553, 47.29398]
+           }
+@@ -50,7 +82,7 @@ describe('L.Control.Geocoder.Openrouteservice', () => {
+     );
+ 
+     const feature = result[0];
+-    expect(feature.name).toBe('Innsbruck, Austria');
++    expect(feature.name).toBe('Innsbruck, TR, Austria');
+     expect(feature.center).toStrictEqual({ lat: 47.272308, lng: 11.407851 });
+     expect(feature.bbox).toStrictEqual({
+       _southWest: { lat: 47.2470573997, lng: 11.3218091258 },
+",0,,3,229,1,2,3,276

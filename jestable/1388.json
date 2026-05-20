@@ -1,0 +1,80 @@
+{
+    "id": 4720147,
+    "name": "storybook-eol/react-cdk",
+    "isFork": false,
+    "commits": 79,
+    "branches": 3,
+    "releases": 10,
+    "forks": 44,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "v3-develop",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 40,
+    "stargazers": 583,
+    "contributors": 7,
+    "size": 394,
+    "createdAt": "2016-04-12T05:06:54",
+    "pushedAt": "2018-02-08T07:34:56",
+    "updatedAt": "2020-11-25T05:51:01",
+    "totalIssues": 26,
+    "openIssues": 10,
+    "totalPullRequests": 7,
+    "openPullRequests": 1,
+    "blankLines": 355,
+    "codeLines": 1212,
+    "commentLines": 60,
+    "metrics": [
+        {
+            "blankLines": 143,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 170
+        },
+        {
+            "blankLines": 5,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 207,
+            "language": "JavaScript",
+            "commentLines": 60,
+            "codeLines": 808
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 204
+        }
+    ],
+    "lastCommit": "2018-02-08T07:33:06",
+    "lastCommitSHA": "27ee872c5594e02bdf2d38f34fd8bf7c4163fae6",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 32360,
+        "CSS": 754
+    },
+    "labels": [
+        "bug",
+        "discuss",
+        "duplicate",
+        "feature",
+        "invalid",
+        "needs pr",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

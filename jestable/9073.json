@@ -1,0 +1,74 @@
+{
+    "id": 6805507,
+    "name": "jacklam718/react-native-modals",
+    "isFork": false,
+    "commits": 367,
+    "branches": 34,
+    "releases": 1,
+    "forks": 296,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 28,
+    "stargazers": 2085,
+    "contributors": 19,
+    "size": 15940,
+    "createdAt": "2016-09-11T12:56:21",
+    "pushedAt": "2022-12-07T06:23:09",
+    "updatedAt": "2022-12-25T02:31:38",
+    "totalIssues": 230,
+    "openIssues": 91,
+    "totalPullRequests": 76,
+    "openPullRequests": 37,
+    "blankLines": 255,
+    "codeLines": 2215,
+    "commentLines": 43,
+    "metrics": [
+        {
+            "blankLines": 190,
+            "language": "JavaScript",
+            "commentLines": 43,
+            "codeLines": 1684
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 65,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 363
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 153
+        }
+    ],
+    "lastCommit": "2020-12-19T03:57:48",
+    "lastCommitSHA": "d68d1cba2066bb87fc082d837dd129681349989e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 48857
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

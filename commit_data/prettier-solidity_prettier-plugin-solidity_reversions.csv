@@ -1,0 +1,2351 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+102,6800023d56bba93d65dff3a9a32abad85ccdb2fa,6800023d56bba93d65dff3a9a32abad85ccdb2fa,"Closes #101.
+
+I don't like how this handles this scenario:
+
+```
+  function someParamsSomeModifiers(uint x1, uint x2, uint x3) modifier1 modifier2 modifier3 {
+    a = 1;
+  }
+```
+
+That is printed as this:
+
+```
+  function someParamsSomeModifiers(uint x1, uint x2, uint x3)
+    modifier1
+    modifier2
+    modifier3
+  {
+    a = 1;
+  }
+```
+
+while I'd prefer this:
+
+```
+  function someParamsSomeModifiers(
+    uint x1,
+    uint x2,
+    uint x3
+  ) modifier1 modifier2 modifier3 {
+    a = 1;
+  }
+```
+
+I mean: if the function definition is too long, break the params first. If that's not enough, then break the modifiers. But, according to [this](https://github.com/prettier/prettier/blob/master/commands.md#group), `group` breaks the ""outermost"" group first (I guess that's the last one) so I don't know if there's some way of doing this.
+
+@j-f1 do you know if there's some trick we can use here?","Group and break modifiers
+","diff --git a/tests/FunctionDefinitions/jsfmt.spec.js b/tests/FunctionDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/FunctionDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,10,472,7,1,10,472
+1033,2fee9bbe0d71aa3e512a833d9fa750c75bca880e,c8a3020ac354705b29ef3a676305899593302b7a,So there won't be many critical changes to the tests when moving to Slang.,"Necessary tweaks to the current formatting so there won't be many critical changes when moving to Slang.
+","diff --git a/tests/format/AllSolidityFeaturesV0.4.26/jsfmt.spec.js b/tests/format/AllSolidityFeaturesV0.4.26/jsfmt.spec.js
+new file mode 100644
+index 0000000..fb95358
+--- /dev/null
++++ b/tests/format/AllSolidityFeaturesV0.4.26/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.26' });
+
+diff --git a/tests/format/AssemblyV0.4.26/jsfmt.spec.js b/tests/format/AssemblyV0.4.26/jsfmt.spec.js
+new file mode 100644
+index 0000000..fb95358
+--- /dev/null
++++ b/tests/format/AssemblyV0.4.26/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.26' });
+
+diff --git a/tests/format/BasicIterator/jsfmt.spec.js b/tests/format/BasicIterator/jsfmt.spec.js
+index 765dd60..fb95358 100644
+--- a/tests/format/BasicIterator/jsfmt.spec.js
++++ b/tests/format/BasicIterator/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.26' });
+
+diff --git a/tests/format/BinaryOperators/jsfmt.spec.js b/tests/format/BinaryOperators/jsfmt.spec.js
+index 765dd60..9468588 100644
+--- a/tests/format/BinaryOperators/jsfmt.spec.js
++++ b/tests/format/BinaryOperators/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.5.8' });
+
+diff --git a/tests/format/Comments/jsfmt.spec.js b/tests/format/Comments/jsfmt.spec.js
+index 765dd60..daacfb2 100644
+--- a/tests/format/Comments/jsfmt.spec.js
++++ b/tests/format/Comments/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.24' });
+
+diff --git a/tests/format/FunctionDefinitions/jsfmt.spec.js b/tests/format/FunctionDefinitions/jsfmt.spec.js
+index 765dd60..41e6db5 100644
+--- a/tests/format/FunctionDefinitions/jsfmt.spec.js
++++ b/tests/format/FunctionDefinitions/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.8.0' });
+
+diff --git a/tests/format/FunctionDefinitionsV0.5.0/jsfmt.spec.js b/tests/format/FunctionDefinitionsV0.5.0/jsfmt.spec.js
+new file mode 100644
+index 0000000..417487a
+--- /dev/null
++++ b/tests/format/FunctionDefinitionsV0.5.0/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.5.0' });
+
+diff --git a/tests/format/IndexOf/jsfmt.spec.js b/tests/format/IndexOf/jsfmt.spec.js
+index 765dd60..fb95358 100644
+--- a/tests/format/IndexOf/jsfmt.spec.js
++++ b/tests/format/IndexOf/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.26' });
+
+diff --git a/tests/format/ModifierInvocations/jsfmt.spec.js b/tests/format/ModifierInvocations/jsfmt.spec.js
+index 765dd60..41e6db5 100644
+--- a/tests/format/ModifierInvocations/jsfmt.spec.js
++++ b/tests/format/ModifierInvocations/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.8.0' });
+
+diff --git a/tests/format/Proxy/jsfmt.spec.js b/tests/format/Proxy/jsfmt.spec.js
+index 765dd60..daacfb2 100644
+--- a/tests/format/Proxy/jsfmt.spec.js
++++ b/tests/format/Proxy/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.4.24' });
+
+diff --git a/tests/format/StyleGuide/jsfmt.spec.js b/tests/format/StyleGuide/jsfmt.spec.js
+index 765dd60..417487a 100644
+--- a/tests/format/StyleGuide/jsfmt.spec.js
++++ b/tests/format/StyleGuide/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(import.meta, ['solidity-parse']);
++run_spec(import.meta, ['solidity-parse'], { compiler: '0.5.0' });
+
+diff --git a/tests/format/Tuples/jsfmt.spec.js b/tests/format/Tuples/jsfmt.spec.js
+new file mode 100644
+index 0000000..765dd60
+--- /dev/null
++++ b/tests/format/Tuples/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(import.meta, ['solidity-parse']);
+
+diff --git a/tests/format/Tupples/jsfmt.spec.js b/tests/format/Tupples/jsfmt.spec.js
+deleted file mode 100644
+index 765dd60..0000000
+--- a/tests/format/Tupples/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(import.meta, ['solidity-parse']);
+",0,,85,2355,29,2,84,2241
+1047,e1620f62db71605fc825ed1208d1cd3c8282de89,2464fd42bae12e14882c32d6ccda37808a267af6,"The version inference works as follows:
+
+1. Slang is error-tolerant, so we can parse using any version.
+2. We read the pragma statements from the parsed output.
+3. We use the pragma statements to figure out the latest supported version.
+
+Simple enough but when developing I encountered cases where:
+
+- slang would still throw when parsing
+- there are no pragma statements
+- the pragma statements is not a supported version
+
+Therefore, to mitigate errors we calculate milestone versions which are the first and last patch versions of any minor version supported (`0.8.26`, `0.8.0`, `0.7.6`, `0.7.0`, `0.6.12`, `0.6.0`, `0.5.17`, `0.5.0`, `0.4.26`, `0.4.11`).
+
+Starting from the latest version, we attempt the original steps.
+If there are errors or no pragma statement, we attempt with the next version (this will add a processing tax on older syntaxes)
+If the pragma statement is not a supported version (e.g. `0.8.27`), we assume the latest supported version.
+
+Another albeit ridiculous thing that could happen is that a developer could add a random comment.
+```Solidity
+pragma solidity ^0.5.0 /* ^0.6.0 */ ^0.7.0;
+```
+
+To address this we use our own AST structure, to fetch the comments and replace them manually with empty space from the unparsed version range.","upgrading tests for version inferrence
+","diff --git a/tests/format/AllSolidityFeaturesV0.4.26/format.test.js b/tests/format/AllSolidityFeaturesV0.4.26/format.test.js
+index 33e4200..903b20e 100644
+--- a/tests/format/AllSolidityFeaturesV0.4.26/format.test.js
++++ b/tests/format/AllSolidityFeaturesV0.4.26/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/AssemblyV0.4.26/format.test.js b/tests/format/AssemblyV0.4.26/format.test.js
+index 33e4200..903b20e 100644
+--- a/tests/format/AssemblyV0.4.26/format.test.js
++++ b/tests/format/AssemblyV0.4.26/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/BasicIterator/format.test.js b/tests/format/BasicIterator/format.test.js
+index 33e4200..903b20e 100644
+--- a/tests/format/BasicIterator/format.test.js
++++ b/tests/format/BasicIterator/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/BinaryOperators/format.test.js b/tests/format/BinaryOperators/format.test.js
+index 93df2ba..903b20e 100644
+--- a/tests/format/BinaryOperators/format.test.js
++++ b/tests/format/BinaryOperators/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.5.8' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/BreakingChangesV0.7.4/format.test.js b/tests/format/BreakingChangesV0.7.4/format.test.js
+index d321048..3bf2fe1 100644
+--- a/tests/format/BreakingChangesV0.7.4/format.test.js
++++ b/tests/format/BreakingChangesV0.7.4/format.test.js
+@@ -8,5 +8,3 @@ runFormatTest(import.meta, ['slang-solidity'], {
+   compiler: '0.7.3',
+   bracketSpacing: true
+ });
+-runFormatTest(import.meta, ['slang-solidity']);
+-runFormatTest(import.meta, ['slang-solidity'], { bracketSpacing: true });
+
+diff --git a/tests/format/Comments/format.test.js b/tests/format/Comments/format.test.js
+index 7369083..903b20e 100644
+--- a/tests/format/Comments/format.test.js
++++ b/tests/format/Comments/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.24' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/ConstructorsV0.4.26/format.test.js b/tests/format/ConstructorsV0.4.26/format.test.js
+new file mode 100644
+index 0000000..903b20e
+--- /dev/null
++++ b/tests/format/ConstructorsV0.4.26/format.test.js
+@@ -0,0 +1 @@
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/FunctionDefinitions/format.test.js b/tests/format/FunctionDefinitions/format.test.js
+index 7b2a6b7..903b20e 100644
+--- a/tests/format/FunctionDefinitions/format.test.js
++++ b/tests/format/FunctionDefinitions/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.8.0' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/FunctionDefinitionsv0.5.0/format.test.js b/tests/format/FunctionDefinitionsv0.5.0/format.test.js
+index 356182f..903b20e 100644
+--- a/tests/format/FunctionDefinitionsv0.5.0/format.test.js
++++ b/tests/format/FunctionDefinitionsv0.5.0/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.5.0' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/IndexOf/format.test.js b/tests/format/IndexOf/format.test.js
+index 33e4200..903b20e 100644
+--- a/tests/format/IndexOf/format.test.js
++++ b/tests/format/IndexOf/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/ModifierInvocations/format.test.js b/tests/format/ModifierInvocations/format.test.js
+index 7b2a6b7..903b20e 100644
+--- a/tests/format/ModifierInvocations/format.test.js
++++ b/tests/format/ModifierInvocations/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.8.0' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/Parentheses/format.test.js b/tests/format/Parentheses/format.test.js
+index 37e3183..903b20e 100644
+--- a/tests/format/Parentheses/format.test.js
++++ b/tests/format/Parentheses/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.8.6' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/Proxy/format.test.js b/tests/format/Proxy/format.test.js
+index 7369083..903b20e 100644
+--- a/tests/format/Proxy/format.test.js
++++ b/tests/format/Proxy/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.4.24' });
++runFormatTest(import.meta, ['slang-solidity']);
+
+diff --git a/tests/format/StyleGuide/format.test.js b/tests/format/StyleGuide/format.test.js
+index 356182f..903b20e 100644
+--- a/tests/format/StyleGuide/format.test.js
++++ b/tests/format/StyleGuide/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang-solidity'], { compiler: '0.5.0' });
++runFormatTest(import.meta, ['slang-solidity']);
+",0,,40,273,18,14,55,704
+1066,3b32273f85a13bfb04e8a16eeb4dcdc3c5069e9d,2b9686c020215266b2c86886adf8901483b1e2bd,"This one is a trimmed down PR #1063.
+It's cleaner and more straight forward but also not being as aggressive.
+
+The error we throw if presented with the weird pragmas is ""Couldn't infer any version from the ranges in the pragmas."".","rebase fix
+","diff --git a/tests/format/FunctionDefinitionsV0.5.0/format.test.js b/tests/format/FunctionDefinitionsV0.5.0/format.test.js
+new file mode 100644
+index 0000000..903b20e
+--- /dev/null
++++ b/tests/format/FunctionDefinitionsV0.5.0/format.test.js
+@@ -0,0 +1 @@
++runFormatTest(import.meta, ['slang-solidity']);
+",0,,3,24,1,6,7,197
+1117,20ebf65984187ab9cf3cb8f6e7e5450c6d1b7444,d1339c6dc80dc7e631ff0aa0eb4f6208bb3aab08,"This is the support for the storage layout for the antlr4 parser.
+This parser doesn't give us enough detail to put comments in the place better suited for them but it is good enough and we are moving to Slang shortly.","support storage layout
+","diff --git a/tests/format/InheritanceSpecifier/jsfmt.spec.js b/tests/format/InheritanceSpecifier/jsfmt.spec.js
+deleted file mode 100644
+index 765dd60..0000000
+--- a/tests/format/InheritanceSpecifier/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(import.meta, ['solidity-parse']);
+",0,,6,321,2,3,11,545
+1158,a48c29a3252b1f5e442c1bd2dc5198d060a976ae,a1acee2dcc4d7b615110c7fc2887daf94cb98f4c,"Slang also offers a new tool to infer the language using pragma statements.
+
+With this we can drop out our custom Language inference tool but we have to keep some of it's logic for the cases where there is a very broad set of supported languages but the code has a very specific syntax that was not taken in consideration when defining the pragma statement. The slang team stated that this is beyond the scope of their tool.
+
+Another change is that the Slang documentation contains a list of every version that has a syntax change. With this information we can change our old behaviour of using minor versions as syntax change steps.
+
+Also in the previous version we were caching the last successful `parser`. Since prettier's function are async, multiple calls can be made with different pragmas and syntaxes and this could create issues if the `parser` can be changed in a non synchronous way.","Fixing test with conflicting pragmas and syntax
+","diff --git a/tests/format/Pragma/format.test.js b/tests/format/Pragma/format.test.js
+index 6021bbb..875eca8 100644
+--- a/tests/format/Pragma/format.test.js
++++ b/tests/format/Pragma/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang']);
++runFormatTest(import.meta, ['slang'], { compiler: '0.8.0' });
+",0,,6,25,3,12,30,387
+1162,b4a96c6135f86bdb8363e630d08170c06f5762b9,4f1e6b2f53a2c0dd4eef7a2f28f308245dc4952c,"Latest prettier option that also makes sense for Solidity.
+
+this was part of #1097 that had too many topics at once.","support for experimentalOperatorPosition
+","diff --git a/tests/format/BinaryOperators/format.test.js b/tests/format/BinaryOperators/format.test.js
+index 6021bbb..96d4065 100644
+--- a/tests/format/BinaryOperators/format.test.js
++++ b/tests/format/BinaryOperators/format.test.js
+@@ -1 +1,4 @@
+ runFormatTest(import.meta, ['slang']);
++runFormatTest(import.meta, ['slang'], {
++  experimentalOperatorPosition: 'start'
++});
+",0,,5,1441,1,2,7,1462
+1178,6032dfce69925a610d47a911cba3409687a65af8,9b1a7712a151affb5064648d591537110f63716e,"by looking at openzeppelin's  long imports I noticed that forcing to break a single deconstructed import into multiple lines, only makes the file longer and the most important part is the imported object.
+
+This makes files with multiple imports where some of them break and some don't a bit confusing to read. That's why I think we could review the import rule so only deconstructions longer than one item will break.
+
+**This will force the `openzeppelin-contracts` package to re-write some of the contracts that were just updated when they upgraded to `prettier-plugin-solidity@2.0.0` because of this reason, which is undesirable but I believe is an important tweak.** ","adding tests for import directives
+","diff --git a/tests/format/ImportDirective/format.test.js b/tests/format/ImportDirective/format.test.js
+index e49333c..f9bd3f7 100644
+--- a/tests/format/ImportDirective/format.test.js
++++ b/tests/format/ImportDirective/format.test.js
+@@ -1,2 +1,3 @@
+ runFormatTest(import.meta, ['slang']);
+ runFormatTest(import.meta, ['slang'], { bracketSpacing: true });
++runFormatTest(import.meta, ['slang'], { compiler: '0.7.3' });
+",0,,3,126,1,3,5,126
+1223,6c5f5909f6c705b2c08666febead07105a93219b,ac4b9764afa7350ed1a34740d041ca435266538f,"spotted 2 patterns that further clean our printers:
+
+- `printGroupAndIndentIfBreakPair`: usually we do have a `group` followed by an `indentIfBreak` pointing to that same group. This involves creating a `Symbol`. All of this can be put in the same logic.
+
+- `printIndentedGroupOrSpacedDocument`: when printing (usually the body of a loop statement) we have to choose between a `[' ', body]` or `group(indent([line, body]))` this can be simplified by just having a helper with the `body` and a condition.
+
+I also had a look at the `printPreservingEmptyLines` helper and added the logic for the comments when there are no lines. This also showed me that our `printComments` function was ignoring empty lines between comments.
+
+Finally the `printSeparatedItem` helper has a `grouped` option that should always be false if the `firstSeparator` is a `hardline`","standardising `printPreservingEmptyLines`
+","diff --git a/tests/format/Empty/format.test.js b/tests/format/Empty/format.test.js
+new file mode 100644
+index 0000000..6021bbb
+--- /dev/null
++++ b/tests/format/Empty/format.test.js
+@@ -0,0 +1 @@
++runFormatTest(import.meta, ['slang']);
+",0,,14,183,1,11,39,543
+1225,857af30ca3e63d07913ec1af72badd69d4847da9,857af30ca3e63d07913ec1af72badd69d4847da9,Closes #1218.,"using the expected resolution of the compiler instead of forcing it in tests
+","diff --git a/tests/format/MemberAccess/format.test.js b/tests/format/MemberAccess/format.test.js
+index 569e4c7..6021bbb 100644
+--- a/tests/format/MemberAccess/format.test.js
++++ b/tests/format/MemberAccess/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.6.12' });
++runFormatTest(import.meta, ['slang']);
+
+diff --git a/tests/format/Pragma/format.test.js b/tests/format/Pragma/format.test.js
+index 875eca8..6021bbb 100644
+--- a/tests/format/Pragma/format.test.js
++++ b/tests/format/Pragma/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.8.0' });
++runFormatTest(import.meta, ['slang']);
+
+diff --git a/tests/format/SimpleStorage/format.test.js b/tests/format/SimpleStorage/format.test.js
+index 85c6f9a..6021bbb 100644
+--- a/tests/format/SimpleStorage/format.test.js
++++ b/tests/format/SimpleStorage/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang']);
+
+diff --git a/tests/format/StyleGuide/format.test.js b/tests/format/StyleGuide/format.test.js
+index 80d418f..6021bbb 100644
+--- a/tests/format/StyleGuide/format.test.js
++++ b/tests/format/StyleGuide/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.5.17' });
++runFormatTest(import.meta, ['slang']);
+
+diff --git a/tests/format/strings/format.test.js b/tests/format/strings/format.test.js
+index 85c6f9a..6021bbb 100644
+--- a/tests/format/strings/format.test.js
++++ b/tests/format/strings/format.test.js
+@@ -1 +1 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.4.26' });
++runFormatTest(import.meta, ['slang']);
+",0,,10,46,5,4,12,61
+131,ecbb7132b8ec8935cc3e9dd1f3e27c39940de804,701571c92960f82b4b1d66c6287b371652beffcc,this is a simplified list from the [Solidity Style Guide](https://solidity.readthedocs.io/en/v0.5.9/style-guide.html) made to help find the patterns still needed to be implemented.,"Adding tests for every scenario in the styleguides and added the necessary TODOs  to be fully compliant.
+Scenarios like function order or enforcing visibility in every function where not included as it is not a task for prettier.
+","diff --git a/tests/StyleGuide/jsfmt.spec.js b/tests/StyleGuide/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/StyleGuide/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,10,1028,1,3,11,1445
+132,e21013d4f041928cca7a2b68fb1291dbb01c4f4e,e21013d4f041928cca7a2b68fb1291dbb01c4f4e,"Fix for #117
+
+I took inspiration from the format that prettier uses in javascript.
+
+```Solidity
+// a long conditional splits into 3 lines, condition, trueExpression, and falseExpression
+address contextAddress = longAddress_ == address(0)
+    ? msg.sender
+    : currentContextAddress_;
+
+// a short conditional fits in a line
+uint a = true ? 0 : 1;
+```","Fix for the conditional formating
+","diff --git a/tests/Conditional/jsfmt.spec.js b/tests/Conditional/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Conditional/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,79,1,1,4,79
+134,7d54fcc2e60320f528a22f70fd22d451764c46de,7d54fcc2e60320f528a22f70fd22d451764c46de,"solving #113 
+
+Before prettier
+```Solidity
+contract Foo is AContract, AnotherContract, YetAnotherContract, ThisShouldBeSplit {
+  function foo(uint x, uint x2, uint x3, uint x4, uint x5, uint x6, uint x7, uint x8) {
+    a = 1;
+  }
+}
+```
+
+After prettier
+```Solidity
+contract Foo is
+    AContract,
+    AnotherContract,
+    YetAnotherContract,
+    ThisShouldBeSplit
+{
+    function foo(
+        uint x,
+        uint x2,
+        uint x3,
+        uint x4,
+        uint x5,
+        uint x6,
+        uint x7,
+        uint x8
+    ) {
+        a = 1;
+    }
+}
+```","when having multiple base contracts we split the Base contracts and keep the `is` keyword in the first line.
+","diff --git a/tests/ContractDefinitions/jsfmt.spec.js b/tests/ContractDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/ContractDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,82,1,1,4,82
+136,999ece2499b987b4b21814ee4d8b6140f1ad3cac,999ece2499b987b4b21814ee4d8b6140f1ad3cac,"halfway fixing #115
+still working on splitting function calls on the `.` character.","avoid splitting parentheses of a function call without arguments
+","diff --git a/tests/FunctionCalls/jsfmt.spec.js b/tests/FunctionCalls/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/FunctionCalls/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,107,1,1,4,107
+1425,6eb9015f85820ba8073ea45218e827418625df9d,e9e905da88647c8ba3f9a21305e1a5423b7c3534,"This was inspired by #1413, which if merged will drop some of the code coverage when instancing a `variant` and it won't be so strict.
+
+With this, if #1413 is approved, all possible cases would have been covered and we only would need to be diligent when adding new `variant`s.
+
+There was an improvement on the total coverage but mainly the goal was to closely check on every possibility described in Slang's documentation.
+
+|            |        Statements        |        Branches        |      Functions       |          Lines           |
+| :--------- | :----------------------: | :--------------------: | :------------------: | :----------------------: |
+| **Before** | **98.38%** (11453/11641) | **94.13%** (1412/1500) | **98.83%** (508/514) | **98.38%** (11453/11641) |
+| **After**  | **98.95%** (11519/11641) | **95.91%** (1478/1541) | **100%** (514/514)  | **98.95%** (11519/11641) |
+","updating the code coverage on more niche syntaxes
+","diff --git a/tests/format/FunctionDefinitionsv0.5.0/format.test.js b/tests/format/FunctionDefinitionsv0.5.0/format.test.js
+deleted file mode 100644
+index 80d418f..0000000
+--- a/tests/format/FunctionDefinitionsv0.5.0/format.test.js
++++ /dev/null
+@@ -1 +0,0 @@
+-runFormatTest(import.meta, ['slang'], { compiler: '0.5.17' });
+",0,,25,118,12,5,31,187
+1444,1d5fd1e4cf4ae8e6ee3bc7e787f20ad02b215de5,1d5fd1e4cf4ae8e6ee3bc7e787f20ad02b215de5,"a few details to view here:
+
+- in some cases this didn't need to be a public function since it's called straight from the constructor.
+- the check for `typeof attribute !== 'string'` is obsolete.
+- if the compiler is `<0.5.0` constructors where functions with the same name as the contract which is the reason for this being a public function, but we had forgotten that libraries can also invoke modifiers. I also added a test case for this scenario.","Reviewing how and when we call `cleanModifierInvocationArguments`
+","diff --git a/tests/format/ModifierInvocationsV0.4.26/format.test.js b/tests/format/ModifierInvocationsV0.4.26/format.test.js
+new file mode 100644
+index 0000000..85c6f9a
+--- /dev/null
++++ b/tests/format/ModifierInvocationsV0.4.26/format.test.js
+@@ -0,0 +1 @@
++runFormatTest(import.meta, ['slang'], { compiler: '0.4.26' });
+",0,,12,244,2,1,12,244
+1454,8ce3b9862913429bd8b4cf90ae7e01a000a1ccdb,bb597651d3c2a5116f1d8b2ecde6c1c012d877d2,"I just bumped into this scenario where the right side of an assignment is a `TupleExpression`.
+Prettier would just remove this but in solidity we haven't reviewed deeply this scenario so we just keep it.
+It just makes sense that it should be in the same line of the equal.
+
+Since this is a quick patch I also put the new version in this PR","Edge case for assignments
+","diff --git a/tests/format/Assignments/format.test.js b/tests/format/Assignments/format.test.js
+new file mode 100644
+index 0000000..6021bbb
+--- /dev/null
++++ b/tests/format/Assignments/format.test.js
+@@ -0,0 +1 @@
++runFormatTest(import.meta, ['slang']);
+",0,,4,66,1,4,7,74
+146,24665e0a6d9ba47136cdf47ca20c4353db17c184,24665e0a6d9ba47136cdf47ca20c4353db17c184,"Solving #145, by chance this also solves #140 (sorry @minggas).
+
+However this uncovered 2 hidden bugs.
+
+1. Trailing comments are considered in the `printWidth` rule.
+2. `if` and `while` and `for` conditions should break in the logic operators. `||`, `&&`, `<`, `>`,`<=`, `>=`, `==`","fixing array indentation and also solved the return statements.
+","diff --git a/tests/Arrays/jsfmt.spec.js b/tests/Arrays/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Arrays/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,7,86,3,1,7,86
+155,2a78809c13bd7d8ef57a04687a70716742b1a44d,bf3b789d6e49e165e6c7535fc4b0fa47fea220b9,"doing #152 from a branch instead of a fork to test @mattiaerre codecov theory
+
+Before this PR is merged:
+```Solidity
+if (thisIsAnExtremelyVeryLongAndComplicatedCondition) {
+    doSomething();
+}
+
+while (thisIsAnExtremelyVeryLongAndComplicatedCondition) {
+    doSomething();
+}
+
+for (thisIsAVeryLongVariableInitiation; thisIsAnExtremelyVeryLongAndComplicatedCondition; thisIsAComplicatedLoopRule) {
+    doSomething();
+}
+```
+
+After this PR is merged:
+```Solidity
+if (
+    thisIsAnExtremelyVeryLongAndComplicatedCondition
+) {
+    doSomething();
+}
+
+while (
+    thisIsAnExtremelyVeryLongAndComplicatedCondition
+) {
+    doSomething();
+}
+
+for (
+    thisIsAVeryLongVariableInitiation;
+    thisIsAnExtremelyVeryLongAndComplicatedCondition;
+    thisIsAComplicatedLoopRule
+) {
+    doSomething();
+}
+```","if condition splits now
+","diff --git a/tests/IfStatements/jsfmt.spec.js b/tests/IfStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/IfStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,6,238,3,4,10,313
+156,e32b1e1cb18250898d29d91ee6551f55855dd911,23dfe0862e8cf83c134235cef29ea56e7415e16f,"I'm experimenting using prettier within the browser and was surprised by all of the warnings and difficulty to run.
+
+Then I noticed prettier also provides a [standalone](https://prettier.io/docs/en/browser.html) script for browsers.
+
+This script mainly doesn't load plugins from the filesystem and you have to provide the plugin in a javascript object.
+
+By requiring `prettier` we are loading also all of the filesystem's libraries into the build (probably Webpack then removes them as we don't use them) but warnings are raised and also a feeling of uneasiness.
+
+This Pull Request uses `prettier/standalone` to load all of the core builders.
+Also (and I'm very sorry for this) I had to remove `dir-to-object` from this plugin's dependencies and explicitly require each File. This could be done in a `prepublish` script but I feel like we would be adding an extra step just to avoid having an explicit list of files.
+
+Now, this plugin is fully compatible with the browser and the node environments.
+","binary-options-printers index generated using the script
+","diff --git a/__tests__/nodes/index.test.js b/__tests__/nodes/index.test.js
+index 4bc7df5..937676e 100644
+--- a/__tests__/nodes/index.test.js
++++ b/__tests__/nodes/index.test.js
+@@ -1,5 +1,10 @@
+ const nodes = require('../../src/nodes');
++const binary_operator_printers = require('../../src/binary-operator-printers');
+ 
+ test('nodes list to match snapshot', () => {
+   expect(Object.keys(nodes)).toMatchSnapshot();
+ });
++
++test('binary operators list to match snapshot', () => {
++  expect(Object.keys(binary_operator_printers)).toMatchSnapshot();
++});
+",1,OID=OID,8,100,1,9,62,280
+159,0579c821b28b4d993296e065fd2fae7d30ca343d,b58a5f888cc74fdd8d19311167f3e4c7c6c219cc,"while solving #138
+I found that there's a mismatch between the AST for `if (x) return true;` and `if (x) { return true; }`.
+Nonetheless, I found some benefits in the exercise of creating the feature so for the moment as a compromise, this PR indents the bodies of an `IfStatement`, `ForStatement`, and `WhileStatement` in case of them being too long.
+I also added the case of forcing the indentation of a nested `if`.
+```Solidity
+// Before Prettier
+if (a) if (b) return true; else return false; else if (c) break; else throw;
+
+// After Prettier
+if (a)
+    if (b) return true;
+    else return false;
+else if (c) break;
+else throw;
+```
+","adding brakets using ifBreak
+","diff --git a/tests/ForStatements/jsfmt.spec.js b/tests/ForStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/ForStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+
+diff --git a/tests/WhileStatements/jsfmt.spec.js b/tests/WhileStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/WhileStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",1,OID=OID,13,833,5,4,12,878
+161,54299132717c6b7bd32cb62f9fced18695b353d2,c4c9747742c5d72ccefd8a48c662b55e87c0b853,"Fixes #160 
+
+the AST doesn't give us much info regarding modifiers metadata.
+In this case, I'm relying on Constructor calls starting with an Uppercase letter.
+
+I'll write an issue in [solidity-parser-antlr](https://github.com/federicobond/solidity-parser-antlr/issues/67) to see if they can solve this one.","Fixing ""Modifier-style base constructor call without arguments"" compiling error
+","diff --git a/tests/Constructors/jsfmt.spec.js b/tests/Constructors/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Constructors/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,5,95,2,3,6,93
+164,ca921444e94f0b1d604d1e0a89e37e4ff9de8d1e,ca921444e94f0b1d604d1e0a89e37e4ff9de8d1e,"closes #115 
+Before this PR
+
+```Solidity
+veryLongVariable.veryLongMember.veryLongMember.veryLongMember.veryLongMember.veryLongMember;
+```
+
+After this PR
+```Solidity
+veryLongVariable
+    .veryLongMember
+    .veryLongMember
+    .veryLongMember
+    .veryLongMember
+    .veryLongMember;
+```
+
+This cleans up the code in many places, so the snapshot where updated and reviewed.","indenting chained member and function call
+","diff --git a/tests/MemberAccess/jsfmt.spec.js b/tests/MemberAccess/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/MemberAccess/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,8,130,5,1,8,130
+167,250ed3770bde3806841bffb2d8dfa5f1a6150ac4,4f83632f553894f07cbc6dc70f60d01bc02f392d,"Additionally added the options object.
+Prettier would not accept the default option `false` until I described it in this object.
+Reading the official plugins, they relist every supported option, so I figured we do the same here.
+
+As following the style guide, the default is no space.
+","Adding the common configuration spacingBrackets and a list of every option supported by this plugin.
+","diff --git a/tests/FunctionCalls/jsfmt.spec.js b/tests/FunctionCalls/jsfmt.spec.js
+index 989047b..923a644 100644
+--- a/tests/FunctionCalls/jsfmt.spec.js
++++ b/tests/FunctionCalls/jsfmt.spec.js
+@@ -1 +1,2 @@
+ run_spec(__dirname);
++run_spec(__dirname, { bracketSpacing: true });
+",0,,6,146,1,2,10,225
+170,8d93b79d0151fe9556f60772217f105772eb782c,1a888ace002a7142c7ef23d8cb12cfdcc4ddbbc1,"before this PR:
+
+```Solidity
+a = a + 10000000000 + 100000000 - 1000000000
+```
+after this PR:
+
+```Solidity
+a = a
+    + 10000000000
+    + 100000000
+    - 1000000000
+```
+This PR mimics the behaviour of prettier JS operators.
+
+Arithmetic operators: `['+', '-', '*', '/', '**', '%']`
+Assignment operators: `['=', '|=', '^=', '&=', '<<=', '>>=', '+=', '-=', '*=', '/=', '%=']`
+Bit operators: `['&', '|', '^']`
+Comparisson operators: `['<', '>', '<=', '>=', '==', '!=']`
+Logical Operators: `['&&', '||']`
+Shift operators: `['<<', '>>']`
+","binary operations indentation rules mimicking prettier-js
+","diff --git a/tests/BinaryOperators/jsfmt.spec.js b/tests/BinaryOperators/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/BinaryOperators/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,16,960,5,5,18,896
+171,050952b2ecfe40bf9c95e315137d9518b789230c,050952b2ecfe40bf9c95e315137d9518b789230c,"This PR will enable the team to decide what type of unit declaration they would rather have across the project.
+`explicitTypes: always` will force every instance of `uint`, `int`, and `byte` to be expanded as `uint256`, `int256`, and `bytes1`.
+The option `explicitTypes: never` will prefer `uint`, `int`, and `byte` over the aliases.
+Finally the option `explicitTypes: preserve` will leave the declaration untouched.
+
+The manipulation is done in the parsing step, so there will be no problem when comparing the AST.
+
+As a best practice, I choose to have this option as `always` by default, but we can change this.","Adding the option to standardise the type declarations
+","diff --git a/tests/ExplicitVariableTypes/jsfmt.spec.js b/tests/ExplicitVariableTypes/jsfmt.spec.js
+new file mode 100644
+index 0000000..5c83d26
+--- /dev/null
++++ b/tests/ExplicitVariableTypes/jsfmt.spec.js
+@@ -0,0 +1,3 @@
++run_spec(__dirname);
++run_spec(__dirname, { explicitTypes: 'never' });
++run_spec(__dirname, { explicitTypes: 'preserve' });
+",0,,18,1101,14,1,18,1101
+177,80531e00eb6fb2f36792f7ce2291fea23e63cb1f,80531e00eb6fb2f36792f7ce2291fea23e63cb1f,"Simple enough.
+
+before the PR while using `bracketSpacing = true` we would print:
+
+```Solidity
+import {symbol1 as alias, symbol2} from ""File.sol"";
+import {symbol1 as alias1, symbol2 as alias2, symbol3 as alias3, symbol4} from ""File2.sol"";
+```
+
+after the PR:
+
+```Solidity
+import { symbol1 as alias, symbol2 } from ""File.sol"";
+import {
+    symbol1 as alias1,
+    symbol2 as alias2,
+    symbol3 as alias3,
+    symbol4
+} from ""File2.sol"";
+```
+
+It is a case that I didn't even know existed in import rules 😂 ","this is an edge case that was missing braket spacing and indenting
+","diff --git a/tests/ImportDirective/jsfmt.spec.js b/tests/ImportDirective/jsfmt.spec.js
+new file mode 100644
+index 0000000..923a644
+--- /dev/null
++++ b/tests/ImportDirective/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname);
++run_spec(__dirname, { bracketSpacing: true });
+",0,,4,64,1,1,4,64
+202,58a3d56d90eded467899a99991101bbf4d6dbeb6,824021233e926a1c85b236ad926e7250150d40d9,Using the util `hasNodeIgnoreComment` we can filter and print the original code instead of processing that branch of the tree.,"adding support for prettier-ignore
+","diff --git a/tests/PrettierIgnore/jsfmt.spec.js b/tests/PrettierIgnore/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/PrettierIgnore/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,62,1,2,4,62
+212,1e975d1e1af344bad6ed345f3684bf0ff65f5965,1e975d1e1af344bad6ed345f3684bf0ff65f5965,Fixes #211 ,"adding commas between arguments and indenting the arguments
+","diff --git a/tests/InheritanceSpecifier/jsfmt.spec.js b/tests/InheritanceSpecifier/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/InheritanceSpecifier/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,52,1,1,4,52
+257,1901453df49fca0eca5900f5d6742021d634235d,1901453df49fca0eca5900f5d6742021d634235d,"The idea of splitting not only when the line is too long but also when the line is complex is something we should look more into.
+Here is an idea proposed by @Jaime-Iglesias in #256 ","Adding an extra rule for splitting params if the list is longer than 2 independent of the length on the line
+","diff --git a/tests/ModifierDefinitions/jsfmt.spec.js b/tests/ModifierDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/ModifierDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,12,313,8,1,12,313
+266,33d76228a482e2aa09386b0bfef9008ecd956f65,33d76228a482e2aa09386b0bfef9008ecd956f65,"# Description
+
+closes #265 
+
+- add test case
+
+- update @solidity-parser/parser
+
+- update `VariableDeclaration `
+
+## Notes
+
+the test, before the parser's update, was throwing the following error:
+
+```bash
+ FAIL  tests/C/jsfmt.spec.js
+  ● Test suite failed to run
+
+    ParserError: extraneous input 'decimals' expecting {';', '='} (7:19)
+
+      14 |
+      15 | function parse(text, parsers, options) {
+    > 16 |   const parsed = parser.parse(text, { loc: true, range: true });
+         |                         ^
+      17 |   parsed.comments = extract(text);
+      18 |
+      19 |   parser.visit(parsed, {
+
+      at Object.parse (node_modules/@solidity-parser/parser/dist/index.js:79:11)
+      at Object.parse (src/parser.js:16:25)
+      at Object.parse (node_modules/prettier/index.js:11379:19)
+      at coreFormat (node_modules/prettier/index.js:14795:25)
+      at format (node_modules/prettier/index.js:15031:75)
+      at formatWithCursor (node_modules/prettier/index.js:15047:12)
+      at Object.args [as formatWithCursor] (node_modules/prettier/index.js:50695:12)
+      at prettyprint (tests_config/run_spec.js:83:27)
+      at fs.readdirSync.forEach.filename (tests_config/run_spec.js:45:22)
+          at Array.forEach (<anonymous>)
+```
+","s/C/Immutable
+","diff --git a/tests/C/jsfmt.spec.js b/tests/C/jsfmt.spec.js
+deleted file mode 100644
+index 989047b..0000000
+--- a/tests/C/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname);
+
+diff --git a/tests/Immutable/jsfmt.spec.js b/tests/Immutable/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Immutable/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",1,None=None,6,136,2,6,7,2253
+271,0170a6382cfd047fcefd6c9628220322c2c21bfb,dfd02bf0824ce8286390c919a75ef9f4d366167a,closes #269,"Index Range Access
+","diff --git a/tests/IndexRangeAccess/jsfmt.spec.js b/tests/IndexRangeAccess/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/IndexRangeAccess/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,11,73,3,4,10,73
+275,998d04991bdbc9117806469b3e75328f0e093114,998d04991bdbc9117806469b3e75328f0e093114,"Addresses #274
+Took me a while to do the array of names and the array of values elegantly @fvictorio 🤣 ","Adding node for NameValueExpression
+","diff --git a/tests/NameValueExpression/jsfmt.spec.js b/tests/NameValueExpression/jsfmt.spec.js
+new file mode 100644
+index 0000000..923a644
+--- /dev/null
++++ b/tests/NameValueExpression/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname);
++run_spec(__dirname, { bracketSpacing: true });
+",0,,9,111,3,1,9,111
+34,a1d3ba0701c8d11eea9060d7dd34a010ead31fcf,a9208dab11d945a643bb4fc4caa55a85731b6e31,"# Description
+
+- ready to alpha
+
+- fix #30 
+
+- fix #31 
+
+- fix #33 
+
+- the `tests` folder has been reorganized
+ ","s/default/
+","diff --git a/tests/variable-declaration/jsfmt.spec.js b/tests/variable-declaration/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/variable-declaration/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",1,None=None,4,51,1,5,13,91
+388,aee4f5125c58da1459e86077c0290f10e69c18f9,aee4f5125c58da1459e86077c0290f10e69c18f9,"```solidity
+contract Contract {                                                                                                             
+   bytes32 private constant DOMAIN_SEPARATOR_TYPEHASH = 0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749;      
+ }
+```
+
+becomes
+
+```solidity
+contract Contract {                                                                                                             
+     bytes32 private constant DOMAIN_SEPARATOR_TYPEHASH =                                                                        
+         0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749;                                                     
+ }
+```","Handle long state variable declarations
+","diff --git a/tests/StateVariableDeclarations/jsfmt.spec.js b/tests/StateVariableDeclarations/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/StateVariableDeclarations/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,34,1,1,4,34
+39,127c3622be4e37d3c5e8ed9b965d7a0dec8ea8c5,d960d135f587e1ee80a3a6e0fd7f746999cbd948,"# Description
+
+- add a line before `ContractDefinition` 
+
+- add space after the condition for `IfStatement`
+
+- fix #37 
+
+- fix #38 
+","add line before ContractDefinition and space after condition for IfStatement
+","diff --git a/tests/SimpleAuction/jsfmt.spec.js b/tests/SimpleAuction/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/SimpleAuction/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,6,309,2,4,9,440
+42,2ed86cbfd4ac3b2200b02ac816aec58782c127e4,2ed86cbfd4ac3b2200b02ac816aec58782c127e4,"# Description
+
+- 1 test 1 folder
+","1 test 1 folder
+","diff --git a/tests/Inbox/jsfmt.spec.js b/tests/Inbox/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Inbox/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+
+diff --git a/tests/Ownable/jsfmt.spec.js b/tests/Ownable/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Ownable/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+
+diff --git a/tests/SimpleStorage/jsfmt.spec.js b/tests/SimpleStorage/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/SimpleStorage/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+
+diff --git a/tests/jsfmt.spec.js b/tests/jsfmt.spec.js
+deleted file mode 100644
+index 989047b..0000000
+--- a/tests/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname);
+",0,,16,710,4,1,11,176
+448,c9f50a31b5cc0b9c45fa9359ba4e2e449f9848f7,75b54f94c1314a6764a507cc1f1708b833842c1a,"there are a few benefits of updating our testing framework.
+  - the new snapshots give more details.
+  - the `FULL_TEST` not only compares `AST` but also different `EOL`, `BOM`, and compares the file formatted twice (as described in Prettier's [documentation](https://github.com/prettier/prettier/blob/main/CONTRIBUTING.md#deeper-testing)) which led to the discovery with Assembly Labels adding an extra line if there is an existing one.","fix call to run_spec and new snapshots
+","diff --git a/tests/AddressPayable/jsfmt.spec.js b/tests/AddressPayable/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/AddressPayable/jsfmt.spec.js
++++ b/tests/AddressPayable/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/AllSolidityFeatures/jsfmt.spec.js b/tests/AllSolidityFeatures/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/AllSolidityFeatures/jsfmt.spec.js
++++ b/tests/AllSolidityFeatures/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Arrays/jsfmt.spec.js b/tests/Arrays/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Arrays/jsfmt.spec.js
++++ b/tests/Arrays/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Assembly/jsfmt.spec.js b/tests/Assembly/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Assembly/jsfmt.spec.js
++++ b/tests/Assembly/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/BasicIterator/jsfmt.spec.js b/tests/BasicIterator/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/BasicIterator/jsfmt.spec.js
++++ b/tests/BasicIterator/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/BinaryOperators/jsfmt.spec.js b/tests/BinaryOperators/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/BinaryOperators/jsfmt.spec.js
++++ b/tests/BinaryOperators/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Comments/jsfmt.spec.js b/tests/Comments/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Comments/jsfmt.spec.js
++++ b/tests/Comments/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Conditional/jsfmt.spec.js b/tests/Conditional/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Conditional/jsfmt.spec.js
++++ b/tests/Conditional/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Constructors/jsfmt.spec.js b/tests/Constructors/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Constructors/jsfmt.spec.js
++++ b/tests/Constructors/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ContractDefinitions/jsfmt.spec.js b/tests/ContractDefinitions/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/ContractDefinitions/jsfmt.spec.js
++++ b/tests/ContractDefinitions/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/EnumDefinitions/jsfmt.spec.js b/tests/EnumDefinitions/jsfmt.spec.js
+index 923a644..ba3fe57 100644
+--- a/tests/EnumDefinitions/jsfmt.spec.js
++++ b/tests/EnumDefinitions/jsfmt.spec.js
+@@ -1,2 +1,2 @@
+-run_spec(__dirname);
+-run_spec(__dirname, { bracketSpacing: true });
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Etc/jsfmt.spec.js b/tests/Etc/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Etc/jsfmt.spec.js
++++ b/tests/Etc/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ExplicitVariableTypes/jsfmt.spec.js b/tests/ExplicitVariableTypes/jsfmt.spec.js
+index 5c83d26..f60c5ef 100644
+--- a/tests/ExplicitVariableTypes/jsfmt.spec.js
++++ b/tests/ExplicitVariableTypes/jsfmt.spec.js
+@@ -1,3 +1,3 @@
+-run_spec(__dirname);
+-run_spec(__dirname, { explicitTypes: 'never' });
+-run_spec(__dirname, { explicitTypes: 'preserve' });
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'never' });
++run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'preserve' });
+
+diff --git a/tests/ForStatements/jsfmt.spec.js b/tests/ForStatements/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/ForStatements/jsfmt.spec.js
++++ b/tests/ForStatements/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/FunctionCalls/jsfmt.spec.js b/tests/FunctionCalls/jsfmt.spec.js
+index 923a644..ba3fe57 100644
+--- a/tests/FunctionCalls/jsfmt.spec.js
++++ b/tests/FunctionCalls/jsfmt.spec.js
+@@ -1,2 +1,2 @@
+-run_spec(__dirname);
+-run_spec(__dirname, { bracketSpacing: true });
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/FunctionDefinitions/jsfmt.spec.js b/tests/FunctionDefinitions/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/FunctionDefinitions/jsfmt.spec.js
++++ b/tests/FunctionDefinitions/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/IfStatements/jsfmt.spec.js b/tests/IfStatements/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/IfStatements/jsfmt.spec.js
++++ b/tests/IfStatements/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Immutable/jsfmt.spec.js b/tests/Immutable/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Immutable/jsfmt.spec.js
++++ b/tests/Immutable/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ImportDirective/jsfmt.spec.js b/tests/ImportDirective/jsfmt.spec.js
+index 923a644..ba3fe57 100644
+--- a/tests/ImportDirective/jsfmt.spec.js
++++ b/tests/ImportDirective/jsfmt.spec.js
+@@ -1,2 +1,2 @@
+-run_spec(__dirname);
+-run_spec(__dirname, { bracketSpacing: true });
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Inbox/jsfmt.spec.js b/tests/Inbox/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Inbox/jsfmt.spec.js
++++ b/tests/Inbox/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/IndexOf/jsfmt.spec.js b/tests/IndexOf/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/IndexOf/jsfmt.spec.js
++++ b/tests/IndexOf/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/IndexRangeAccess/jsfmt.spec.js b/tests/IndexRangeAccess/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/IndexRangeAccess/jsfmt.spec.js
++++ b/tests/IndexRangeAccess/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/InheritanceSpecifier/jsfmt.spec.js b/tests/InheritanceSpecifier/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/InheritanceSpecifier/jsfmt.spec.js
++++ b/tests/InheritanceSpecifier/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Issues/jsfmt.spec.js b/tests/Issues/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Issues/jsfmt.spec.js
++++ b/tests/Issues/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/MemberAccess/jsfmt.spec.js b/tests/MemberAccess/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/MemberAccess/jsfmt.spec.js
++++ b/tests/MemberAccess/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ModifierDefinitions/jsfmt.spec.js b/tests/ModifierDefinitions/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/ModifierDefinitions/jsfmt.spec.js
++++ b/tests/ModifierDefinitions/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/MultipartStrings/jsfmt.spec.js b/tests/MultipartStrings/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/MultipartStrings/jsfmt.spec.js
++++ b/tests/MultipartStrings/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/NameValueExpression/jsfmt.spec.js b/tests/NameValueExpression/jsfmt.spec.js
+index 923a644..ba3fe57 100644
+--- a/tests/NameValueExpression/jsfmt.spec.js
++++ b/tests/NameValueExpression/jsfmt.spec.js
+@@ -1,2 +1,2 @@
+-run_spec(__dirname);
+-run_spec(__dirname, { bracketSpacing: true });
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Ownable/jsfmt.spec.js b/tests/Ownable/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Ownable/jsfmt.spec.js
++++ b/tests/Ownable/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Pragma/jsfmt.spec.js b/tests/Pragma/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Pragma/jsfmt.spec.js
++++ b/tests/Pragma/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/PrettierIgnore/jsfmt.spec.js b/tests/PrettierIgnore/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/PrettierIgnore/jsfmt.spec.js
++++ b/tests/PrettierIgnore/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Proxy/jsfmt.spec.js b/tests/Proxy/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Proxy/jsfmt.spec.js
++++ b/tests/Proxy/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SampleCrowdsale/jsfmt.spec.js b/tests/SampleCrowdsale/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/SampleCrowdsale/jsfmt.spec.js
++++ b/tests/SampleCrowdsale/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SimpleAuction/jsfmt.spec.js b/tests/SimpleAuction/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/SimpleAuction/jsfmt.spec.js
++++ b/tests/SimpleAuction/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SimpleStorage/jsfmt.spec.js b/tests/SimpleStorage/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/SimpleStorage/jsfmt.spec.js
++++ b/tests/SimpleStorage/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SplittableCommodity/jsfmt.spec.js b/tests/SplittableCommodity/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/SplittableCommodity/jsfmt.spec.js
++++ b/tests/SplittableCommodity/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/StateVariableDeclarations/jsfmt.spec.js b/tests/StateVariableDeclarations/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/StateVariableDeclarations/jsfmt.spec.js
++++ b/tests/StateVariableDeclarations/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/StyleGuide/jsfmt.spec.js b/tests/StyleGuide/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/StyleGuide/jsfmt.spec.js
++++ b/tests/StyleGuide/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/TryCatch/jsfmt.spec.js b/tests/TryCatch/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/TryCatch/jsfmt.spec.js
++++ b/tests/TryCatch/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Tupples/jsfmt.spec.js b/tests/Tupples/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/Tupples/jsfmt.spec.js
++++ b/tests/Tupples/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/WhileStatements/jsfmt.spec.js b/tests/WhileStatements/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/WhileStatements/jsfmt.spec.js
++++ b/tests/WhileStatements/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/quotes/jsfmt.spec.js b/tests/quotes/jsfmt.spec.js
+index 09d5de4..68a7220 100644
+--- a/tests/quotes/jsfmt.spec.js
++++ b/tests/quotes/jsfmt.spec.js
+@@ -1,2 +1,2 @@
+-run_spec(__dirname, { singleQuote: true });
+-run_spec(__dirname, { singleQuote: false });
++run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
++run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/strings/jsfmt.spec.js b/tests/strings/jsfmt.spec.js
+index 989047b..f7722a7 100644
+--- a/tests/strings/jsfmt.spec.js
++++ b/tests/strings/jsfmt.spec.js
+@@ -1 +1 @@
+-run_spec(__dirname);
++run_spec(__dirname, ['solidity-parse']);
+",0,,86,967,43,10,104,11390
+461,0274898ae3f69fdb07b5ccad6c3fc98fd7f20d04,7c1b5b9ea659a7dad83bcb85d3d1303b76829d98,"There are 3 different cases where we make changes to the AST while parsing.
+
+  1. `HexLiteral`: if the plugin needs to change the quote of a `HexLiteral` because of the `singleQuote` setting, this is better done while parsing to avoid throwing an error in the tests for a different AST after formatting.
+  2. Types and Alias: `uint` and `int` are aliases for `uint256` and `int256` respectively. These will generate different ASTs when using a different setting for `explicitTypes`
+  3. Parentheses: To help the reading of mathematic expressions, we enforce the use the use of Parentheses in specific cases.
+    - ie: `a / b * c` will be formatted as `(a / b) * c`.
+    This clearly implies a change in the AST.
+
+As nice as these changes to the AST can be for formatting, the compiled bytecode should remain the same. To enforce this, this PR will add the ability to compare the bytecode of some contracts designed to trigger all of these AST changes.","comparing bytecode of the contracts that change the AST to make decisions in the format
+","diff --git a/tests/HexLiteral/jsfmt.spec.js b/tests/HexLiteral/jsfmt.spec.js
+new file mode 100644
+index 0000000..68a7220
+--- /dev/null
++++ b/tests/HexLiteral/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
++run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/Parentheses/jsfmt.spec.js b/tests/Parentheses/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/Parentheses/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+",0,,23,12105,3,3,23,12111
+502,19cb68c47e6cd6664e12088eee0904ceef585776,063e4ccaab4d9cac45e7ae5f3a260603afd16c49,Closes #485. Way overdue :sweat_smile: ,"Add support for custom errors
+","diff --git a/tests/CustomErrors/jsfmt.spec.js b/tests/CustomErrors/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/CustomErrors/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+",0,,9,131,1,6,14,231
+532,df7df73eda045a4b0baa104ebd991af560727e75,a1e5e1ccbb0a602ab7353c2de4c14160e1bacfa1,the organisation makes a lot of sense and gives us a standard.,"using the new test organisation from prettier
+","diff --git a/__tests__/binary-operator-printers/index.test.js b/__tests__/binary-operator-printers/index.test.js
+deleted file mode 100644
+index e0f0862..0000000
+--- a/__tests__/binary-operator-printers/index.test.js
++++ /dev/null
+@@ -1,5 +0,0 @@
+-const binaryOperatorPrinters = require('../../src/binary-operator-printers');
+-
+-test('binary operators printers to match snapshot', () => {
+-  expect(Object.keys(binaryOperatorPrinters)).toMatchSnapshot();
+-});
+
+diff --git a/tests/AddressPayable/jsfmt.spec.js b/tests/AddressPayable/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/AddressPayable/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/AllSolidityFeatures/jsfmt.spec.js b/tests/AllSolidityFeatures/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/AllSolidityFeatures/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Arrays/jsfmt.spec.js b/tests/Arrays/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Arrays/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Assembly/jsfmt.spec.js b/tests/Assembly/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Assembly/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/BasicIterator/jsfmt.spec.js b/tests/BasicIterator/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/BasicIterator/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/BinaryOperators/jsfmt.spec.js b/tests/BinaryOperators/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/BinaryOperators/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Comments/jsfmt.spec.js b/tests/Comments/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Comments/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Conditional/jsfmt.spec.js b/tests/Conditional/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Conditional/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Constructors/jsfmt.spec.js b/tests/Constructors/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Constructors/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ContractDefinitions/jsfmt.spec.js b/tests/ContractDefinitions/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/ContractDefinitions/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/CustomErrors/jsfmt.spec.js b/tests/CustomErrors/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/CustomErrors/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/EnumDefinitions/jsfmt.spec.js b/tests/EnumDefinitions/jsfmt.spec.js
+deleted file mode 100644
+index ba3fe57..0000000
+--- a/tests/EnumDefinitions/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+-run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Etc/jsfmt.spec.js b/tests/Etc/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Etc/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ExplicitVariableTypes/jsfmt.spec.js b/tests/ExplicitVariableTypes/jsfmt.spec.js
+deleted file mode 100644
+index f60c5ef..0000000
+--- a/tests/ExplicitVariableTypes/jsfmt.spec.js
++++ /dev/null
+@@ -1,3 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+-run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'never' });
+-run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'preserve' });
+
+diff --git a/tests/ForStatements/jsfmt.spec.js b/tests/ForStatements/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/ForStatements/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/FunctionCalls/jsfmt.spec.js b/tests/FunctionCalls/jsfmt.spec.js
+deleted file mode 100644
+index ba3fe57..0000000
+--- a/tests/FunctionCalls/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+-run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/FunctionDefinitions/jsfmt.spec.js b/tests/FunctionDefinitions/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/FunctionDefinitions/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/HexLiteral/jsfmt.spec.js b/tests/HexLiteral/jsfmt.spec.js
+deleted file mode 100644
+index 68a7220..0000000
+--- a/tests/HexLiteral/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
+-run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/IfStatements/jsfmt.spec.js b/tests/IfStatements/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/IfStatements/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Immutable/jsfmt.spec.js b/tests/Immutable/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Immutable/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ImportDirective/jsfmt.spec.js b/tests/ImportDirective/jsfmt.spec.js
+deleted file mode 100644
+index ba3fe57..0000000
+--- a/tests/ImportDirective/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+-run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Inbox/jsfmt.spec.js b/tests/Inbox/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Inbox/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/IndexOf/jsfmt.spec.js b/tests/IndexOf/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/IndexOf/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/IndexRangeAccess/jsfmt.spec.js b/tests/IndexRangeAccess/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/IndexRangeAccess/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/InheritanceSpecifier/jsfmt.spec.js b/tests/InheritanceSpecifier/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/InheritanceSpecifier/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Issues/jsfmt.spec.js b/tests/Issues/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Issues/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/MemberAccess/jsfmt.spec.js b/tests/MemberAccess/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/MemberAccess/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/ModifierDefinitions/jsfmt.spec.js b/tests/ModifierDefinitions/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/ModifierDefinitions/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/MultipartStrings/jsfmt.spec.js b/tests/MultipartStrings/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/MultipartStrings/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/NameValueExpression/jsfmt.spec.js b/tests/NameValueExpression/jsfmt.spec.js
+deleted file mode 100644
+index ba3fe57..0000000
+--- a/tests/NameValueExpression/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+-run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/Ownable/jsfmt.spec.js b/tests/Ownable/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Ownable/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Parentheses/jsfmt.spec.js b/tests/Parentheses/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Parentheses/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Pragma/jsfmt.spec.js b/tests/Pragma/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Pragma/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/PrettierIgnore/jsfmt.spec.js b/tests/PrettierIgnore/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/PrettierIgnore/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Proxy/jsfmt.spec.js b/tests/Proxy/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Proxy/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SampleCrowdsale/jsfmt.spec.js b/tests/SampleCrowdsale/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/SampleCrowdsale/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SimpleAuction/jsfmt.spec.js b/tests/SimpleAuction/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/SimpleAuction/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SimpleStorage/jsfmt.spec.js b/tests/SimpleStorage/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/SimpleStorage/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/SplittableCommodity/jsfmt.spec.js b/tests/SplittableCommodity/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/SplittableCommodity/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/StateVariableDeclarations/jsfmt.spec.js b/tests/StateVariableDeclarations/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/StateVariableDeclarations/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/StyleGuide/jsfmt.spec.js b/tests/StyleGuide/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/StyleGuide/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/TryCatch/jsfmt.spec.js b/tests/TryCatch/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/TryCatch/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/Tupples/jsfmt.spec.js b/tests/Tupples/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/Tupples/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/WhileStatements/jsfmt.spec.js b/tests/WhileStatements/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/WhileStatements/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/AddressPayable/jsfmt.spec.js b/tests/format/AddressPayable/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/AddressPayable/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/AllSolidityFeatures/jsfmt.spec.js b/tests/format/AllSolidityFeatures/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/AllSolidityFeatures/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Arrays/jsfmt.spec.js b/tests/format/Arrays/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Arrays/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Assembly/jsfmt.spec.js b/tests/format/Assembly/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Assembly/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/BasicIterator/jsfmt.spec.js b/tests/format/BasicIterator/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/BasicIterator/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/BinaryOperators/jsfmt.spec.js b/tests/format/BinaryOperators/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/BinaryOperators/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Comments/jsfmt.spec.js b/tests/format/Comments/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Comments/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Conditional/jsfmt.spec.js b/tests/format/Conditional/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Conditional/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Constructors/jsfmt.spec.js b/tests/format/Constructors/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Constructors/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/ContractDefinitions/jsfmt.spec.js b/tests/format/ContractDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/ContractDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/CustomErrors/jsfmt.spec.js b/tests/format/CustomErrors/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/CustomErrors/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/EnumDefinitions/jsfmt.spec.js b/tests/format/EnumDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..ba3fe57
+--- /dev/null
++++ b/tests/format/EnumDefinitions/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/format/Etc/jsfmt.spec.js b/tests/format/Etc/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Etc/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/ExplicitVariableTypes/jsfmt.spec.js b/tests/format/ExplicitVariableTypes/jsfmt.spec.js
+new file mode 100644
+index 0000000..f60c5ef
+--- /dev/null
++++ b/tests/format/ExplicitVariableTypes/jsfmt.spec.js
+@@ -0,0 +1,3 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'never' });
++run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'preserve' });
+
+diff --git a/tests/format/ForStatements/jsfmt.spec.js b/tests/format/ForStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/ForStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/FunctionCalls/jsfmt.spec.js b/tests/format/FunctionCalls/jsfmt.spec.js
+new file mode 100644
+index 0000000..ba3fe57
+--- /dev/null
++++ b/tests/format/FunctionCalls/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/format/FunctionDefinitions/jsfmt.spec.js b/tests/format/FunctionDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/FunctionDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/HexLiteral/jsfmt.spec.js b/tests/format/HexLiteral/jsfmt.spec.js
+new file mode 100644
+index 0000000..68a7220
+--- /dev/null
++++ b/tests/format/HexLiteral/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
++run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/format/IfStatements/jsfmt.spec.js b/tests/format/IfStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/IfStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Immutable/jsfmt.spec.js b/tests/format/Immutable/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Immutable/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/ImportDirective/jsfmt.spec.js b/tests/format/ImportDirective/jsfmt.spec.js
+new file mode 100644
+index 0000000..ba3fe57
+--- /dev/null
++++ b/tests/format/ImportDirective/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/format/Inbox/jsfmt.spec.js b/tests/format/Inbox/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Inbox/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/IndexOf/jsfmt.spec.js b/tests/format/IndexOf/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/IndexOf/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/IndexRangeAccess/jsfmt.spec.js b/tests/format/IndexRangeAccess/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/IndexRangeAccess/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/InheritanceSpecifier/jsfmt.spec.js b/tests/format/InheritanceSpecifier/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/InheritanceSpecifier/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Issues/jsfmt.spec.js b/tests/format/Issues/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Issues/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/MemberAccess/jsfmt.spec.js b/tests/format/MemberAccess/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/MemberAccess/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/ModifierDefinitions/jsfmt.spec.js b/tests/format/ModifierDefinitions/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/ModifierDefinitions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/MultipartStrings/jsfmt.spec.js b/tests/format/MultipartStrings/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/MultipartStrings/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/NameValueExpression/jsfmt.spec.js b/tests/format/NameValueExpression/jsfmt.spec.js
+new file mode 100644
+index 0000000..ba3fe57
+--- /dev/null
++++ b/tests/format/NameValueExpression/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+
+diff --git a/tests/format/Ownable/jsfmt.spec.js b/tests/format/Ownable/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Ownable/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Parentheses/jsfmt.spec.js b/tests/format/Parentheses/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Parentheses/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Pragma/jsfmt.spec.js b/tests/format/Pragma/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Pragma/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/PrettierIgnore/jsfmt.spec.js b/tests/format/PrettierIgnore/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/PrettierIgnore/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Proxy/jsfmt.spec.js b/tests/format/Proxy/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Proxy/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/SampleCrowdsale/jsfmt.spec.js b/tests/format/SampleCrowdsale/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/SampleCrowdsale/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/SimpleAuction/jsfmt.spec.js b/tests/format/SimpleAuction/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/SimpleAuction/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/SimpleStorage/jsfmt.spec.js b/tests/format/SimpleStorage/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/SimpleStorage/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/SplittableCommodity/jsfmt.spec.js b/tests/format/SplittableCommodity/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/SplittableCommodity/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/StateVariableDeclarations/jsfmt.spec.js b/tests/format/StateVariableDeclarations/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/StateVariableDeclarations/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/StyleGuide/jsfmt.spec.js b/tests/format/StyleGuide/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/StyleGuide/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/TryCatch/jsfmt.spec.js b/tests/format/TryCatch/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/TryCatch/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/Tupples/jsfmt.spec.js b/tests/format/Tupples/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/Tupples/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/WhileStatements/jsfmt.spec.js b/tests/format/WhileStatements/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/WhileStatements/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/format/quotes/jsfmt.spec.js b/tests/format/quotes/jsfmt.spec.js
+new file mode 100644
+index 0000000..68a7220
+--- /dev/null
++++ b/tests/format/quotes/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
++run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/format/strings/jsfmt.spec.js b/tests/format/strings/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/strings/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/quotes/jsfmt.spec.js b/tests/quotes/jsfmt.spec.js
+deleted file mode 100644
+index 68a7220..0000000
+--- a/tests/quotes/jsfmt.spec.js
++++ /dev/null
+@@ -1,2 +0,0 @@
+-run_spec(__dirname, ['solidity-parse'], { singleQuote: true });
+-run_spec(__dirname, ['solidity-parse'], { singleQuote: false });
+
+diff --git a/tests/strings/jsfmt.spec.js b/tests/strings/jsfmt.spec.js
+deleted file mode 100644
+index f7722a7..0000000
+--- a/tests/strings/jsfmt.spec.js
++++ /dev/null
+@@ -1 +0,0 @@
+-run_spec(__dirname, ['solidity-parse']);
+
+diff --git a/tests/unit/binary-operator-printers/index.test.js b/tests/unit/binary-operator-printers/index.test.js
+new file mode 100644
+index 0000000..6e48852
+--- /dev/null
++++ b/tests/unit/binary-operator-printers/index.test.js
+@@ -0,0 +1,5 @@
++const binaryOperatorPrinters = require('../../../src/binary-operator-printers');
++
++test('binary operators printers to match snapshot', () => {
++  expect(Object.keys(binaryOperatorPrinters)).toMatchSnapshot();
++});
+",0,,334,34286,94,3,183,718
+535,1f0d3fa6ec3dfa28d330d36013168763ab68d00e,1b35f52c492559b7cb0b6ded4134403c771f596b,"We added the option to specify the compiler we want prettier to use.
+
+we can specify a particular version and we'll log a warning if the `PragmaDirective`s don't support the chosen compiler.
+
+Now that we have knowledge of the compiler being used, we can make some formatting choices.
+
+We can decide whether we should split an `ImportDirective`.
+
+- If no compiler is given we will not split the `ImportDirective`.
+- If the given compiler satisfies `<0.7.4` we will not split the `ImportDirective`.
+- If the given compiler satisfies `>=0.7.4` we will not split the `ImportDirective` if necessary (as the bug that didn't recognise a split import was fixed here).
+
+Also the type `byte` was used by `explicitTypes` comes back.
+
+- If no compiler is given we enforce `bytes1`.
+- If the given compiler satisfies `<0.8.0` we rely on the `explicitTypes` option.
+- If the given compiler satisfies `>=0.8.0` we enforce `bytes1`.
+
+Finally we are supporting adding parentheses to exponentiation of exponentiation operations.
+- If no compiler is given we keep `a**b**c`.
+- If the given compiler satisfies `<0.8.0` we format `(a**b)**c`.
+- If the given compiler satisfies `>=0.8.0` we format `a**(b**c)`.","adding tests for the scenarios
+","diff --git a/tests/format/ExplicitVariableTypes/jsfmt.spec.js b/tests/format/ExplicitVariableTypes/jsfmt.spec.js
+index f60c5ef..befe2dd 100644
+--- a/tests/format/ExplicitVariableTypes/jsfmt.spec.js
++++ b/tests/format/ExplicitVariableTypes/jsfmt.spec.js
+@@ -1,3 +1,14 @@
+ run_spec(__dirname, ['solidity-parse']);
+ run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'never' });
+ run_spec(__dirname, ['solidity-parse'], { explicitTypes: 'preserve' });
++run_spec(__dirname, ['solidity-parse'], {
++  compiler: '0.8.0'
++});
++run_spec(__dirname, ['solidity-parse'], {
++  compiler: 'earliest',
++  explicitTypes: 'always'
++});
++run_spec(__dirname, ['solidity-parse'], {
++  compiler: 'earliest',
++  explicitTypes: 'never'
++});
+",1,None=None,4,662,1,24,28,3884
+549,ecc2a11ccedca12b0e7fa40eb40bde9509139b84,2510fc7317a91e89de38759f6caa752b284247b9,"For correctness I'm adding back all of the options supported by our plugin, so other tools can use this information (e.g. generate documentation or generate a form for all of the options)
+
+These where removed in the past because they were overriding Prettier's default options for other plugins (see #375).
+I added a test to see that this isn't the case this time. It works well but Standalone mode doesn't have a strong default strategy (I reported an issue prettier/prettier#11107).
+","having all options defined in our options object and making sure the defaults are being respected. See #375
+","diff --git a/tests/format/RespectDefaultOptions/jsfmt.spec.js b/tests/format/RespectDefaultOptions/jsfmt.spec.js
+new file mode 100644
+index 0000000..c14a298
+--- /dev/null
++++ b/tests/format/RespectDefaultOptions/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['babel']);
+",0,,7,69,1,4,7,78
+555,194637e6513ee6fada4223becd3be8753cf0abbc,57dc617e2b9a2ec39ef766a71112483117f920b6,addresses #554 and #165,"only constructors allow modifiers with empty Parentheses, everywhere else no Parentheses is enforced
+","diff --git a/tests/format/ModifierInvocations/jsfmt.spec.js b/tests/format/ModifierInvocations/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/ModifierInvocations/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+",1,OID=OID,8,84,3,10,11,155
+56,a6fe7e48e0c0930c2f4c1f91b924683253fe9dd3,4dcd2e1234ec868da6323c0f5d9b97ab2c592d39,"# Description
+
+- see #54 
+","fix `storageLocation`
+","diff --git a/tests/SplittableCommodity/jsfmt.spec.js b/tests/SplittableCommodity/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/SplittableCommodity/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,7,202,2,2,7,200
+575,aec6ac1e1caf6d6e210d3aeaf5c8a0a7c2ee4c6f,aec6ac1e1caf6d6e210d3aeaf5c8a0a7c2ee4c6f,Fixes #574 ,"forcing multiple string literals to split in multiple lines
+","diff --git a/tests/format/StringLiteral/jsfmt.spec.js b/tests/format/StringLiteral/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/StringLiteral/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+",0,,6,80,3,1,6,80
+607,17ce1f0eb62e3d01d4464233fbd57a32dcf5d74b,4bf62bd8aebcfa507ebf0dc763eafa90fdf801e0,Closes #606,"Add failing test case
+","diff --git a/tests/format/TypeDefinition/jsfmt.spec.js b/tests/format/TypeDefinition/jsfmt.spec.js
+new file mode 100644
+index 0000000..f7722a7
+--- /dev/null
++++ b/tests/format/TypeDefinition/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['solidity-parse']);
+",0,,3,87,1,3,7,105
+61,103ac0bec4ba3b839ec655a593a71baf8f13920f,103ac0bec4ba3b839ec655a593a71baf8f13920f,"# Description
+
+- fix #58 
+
+## Notes
+
+there is still an issue w/ the `ForStatement` where
+
+```javascript
+for(uint i = 0; i < parts.length; i++)
+  length += parts[i]._len;
+```
+
+is printed as
+
+```javascript
+for (uint i = 0; i < parts.length; i++) length += parts[i]._len
+```
+
+> N.B.: missing `;` at the end of line
+","fix Parameter
+",,0,,2,104,1,4,4,2285
+683,8f504ee6c89219eba532698d6854033548dd36a5,9f9df23fcee633f17d7be8fa4c3c0fe76a85c39e,"Closes #674
+
+Adding support for a list of functions for `UsingForDeclaration`s
+Adding support for the word global
+","UsingForDeclaration with support for functions
+","diff --git a/tests/format/Libraries/jsfmt.spec.js b/tests/format/Libraries/jsfmt.spec.js
+new file mode 100644
+index 0000000..ba3fe57
+--- /dev/null
++++ b/tests/format/Libraries/jsfmt.spec.js
+@@ -0,0 +1,2 @@
++run_spec(__dirname, ['solidity-parse']);
++run_spec(__dirname, ['solidity-parse'], { bracketSpacing: true });
+",0,,4,136,1,3,9,154
+727,f52f375512cf690c5471b7660387d53c8ba4bd31,1d529d6033e4013969bf12698cc419faa3b481f7,"Using Webpack I created a bundle that works on browsers and node.
+
+I'd like some feedback on where else this can be improved.
+","using ## instead - to avoid a bug in the markdown standalone plugin
+",,0,,2,12,1,22,25,3252
+765,de1028e3fa2496ba3408c5fd30fc51d0557c2e5b,de1028e3fa2496ba3408c5fd30fc51d0557c2e5b,"Relates to #764
+
+Could be unnecessary once Prettier fixes the bug on their side. But at least we'll have ready tests for this case.","Omit last line if there's a parent parser
+","diff --git a/tests/format/Markdown/jsfmt.spec.js b/tests/format/Markdown/jsfmt.spec.js
+new file mode 100644
+index 0000000..fbebb4c
+--- /dev/null
++++ b/tests/format/Markdown/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname, ['markdown']);
+",0,,7,73,1,1,7,73
+90,20c30f3164cd6ddcfc1c990efd6820ff4a0801e6,20c30f3164cd6ddcfc1c990efd6820ff4a0801e6,,"Add support for AssemblyIf
+","diff --git a/tests/Assembly/jsfmt.spec.js b/tests/Assembly/jsfmt.spec.js
+new file mode 100644
+index 0000000..989047b
+--- /dev/null
++++ b/tests/Assembly/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(__dirname);
+",0,,4,43,1,1,4,43
+953,1e9d20e926d4d171a4c62e259f46f1f0ac06f3f1,61e5c68fba60d267aa8348dd7120cad1ce74f5ff,"I really liked Prettier's [`experimentalTernaries`](https://prettier.io/blog/2023/11/13/curious-ternaries) and would like to propose it for this plugin as well.
+
+I took the same examples from prettier's tests.
+
+There is one detail that makes this approach slightly different and that is that the length of the indentation in javascript is 2 and that makes the true and false expressions align.
+
+```Javascript
+condition ?
+  trueExpression
+: falseExpression;
+```
+
+with 4 spaces in solidity the code looks like this
+
+```Solidity
+condition ?
+    trueExpression
+: falseExpression;
+```
+
+I could force this indentation to be 2 only for this one case but would love to see how the community reacts to this.","introduction of experimentalTernaries
+","diff --git a/tests/format/ExperimentalTernaries/jsfmt.spec.js b/tests/format/ExperimentalTernaries/jsfmt.spec.js
+new file mode 100644
+index 0000000..b061f05
+--- /dev/null
++++ b/tests/format/ExperimentalTernaries/jsfmt.spec.js
+@@ -0,0 +1 @@
++run_spec(import.meta, ['solidity-parse'], { experimentalTernaries: true });
+",0,,7,651,1,27,12,2531

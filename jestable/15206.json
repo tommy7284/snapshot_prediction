@@ -1,0 +1,102 @@
+{
+    "id": 4070843,
+    "name": "manosim/gitify",
+    "isFork": false,
+    "commits": 1207,
+    "branches": 7,
+    "releases": 32,
+    "forks": 243,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://www.gitify.io",
+    "watchers": 48,
+    "stargazers": 3851,
+    "contributors": 22,
+    "size": 8283,
+    "createdAt": "2015-05-21T06:15:28",
+    "pushedAt": "2022-10-25T11:58:10",
+    "updatedAt": "2022-11-11T02:38:47",
+    "totalIssues": 257,
+    "openIssues": 89,
+    "totalPullRequests": 298,
+    "openPullRequests": 16,
+    "blankLines": 1824,
+    "codeLines": 11122,
+    "commentLines": 44,
+    "metrics": [
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 53,
+            "blankLines": 10
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 206,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 39,
+            "codeLines": 4586,
+            "blankLines": 785
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 275,
+            "blankLines": 41
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5930,
+            "blankLines": 953
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 64,
+            "blankLines": 35
+        }
+    ],
+    "lastCommit": "2021-11-16T08:23:42",
+    "lastCommitSHA": "f8a6ac26c5a58d17f9c2eb639489b045aec1a780",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 160735,
+        "JavaScript": 7440,
+        "HTML": 1340
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "freeze",
+        "github-api-limitation",
+        "help wanted",
+        "information-needed",
+        "invalid",
+        "platform-linux",
+        "platform-macos",
+        "platform-windows",
+        "question",
+        "release",
+        "review needed",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": []
+}

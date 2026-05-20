@@ -1,0 +1,173 @@
+{
+    "id": 19421168,
+    "name": "andymatuschak/orbit",
+    "isFork": false,
+    "commits": 1059,
+    "branches": 27,
+    "releases": 0,
+    "forks": 50,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://withorbit.com",
+    "watchers": 32,
+    "stargazers": 1630,
+    "contributors": 7,
+    "size": 57043,
+    "createdAt": "2020-03-24T05:47:54",
+    "pushedAt": "2024-04-18T08:32:35",
+    "updatedAt": "2024-04-20T11:03:58",
+    "totalIssues": 228,
+    "openIssues": 63,
+    "totalPullRequests": 67,
+    "openPullRequests": 23,
+    "blankLines": 2734,
+    "codeLines": 29142,
+    "commentLines": 978,
+    "metrics": [
+        {
+            "language": "Java",
+            "commentLines": 15,
+            "codeLines": 109,
+            "blankLines": 20
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 3314,
+            "blankLines": 4
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 61,
+            "blankLines": 24
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 15,
+            "codeLines": 0,
+            "blankLines": 2
+        },
+        {
+            "language": "Ruby",
+            "commentLines": 18,
+            "codeLines": 133,
+            "blankLines": 41
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 91,
+            "codeLines": 109,
+            "blankLines": 21
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 428,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 737,
+            "codeLines": 22800,
+            "blankLines": 2324
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 40,
+            "codeLines": 162,
+            "blankLines": 48
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 666,
+            "blankLines": 40
+        },
+        {
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16,
+            "blankLines": 2
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 17,
+            "blankLines": 4
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 322,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 342,
+            "blankLines": 142
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 73,
+            "blankLines": 1
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 20,
+            "codeLines": 22,
+            "blankLines": 16
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 39,
+            "codeLines": 568,
+            "blankLines": 45
+        }
+    ],
+    "lastCommit": "2024-04-18T08:32:31",
+    "lastCommitSHA": "889fc74ffb10be36447937bfe93e2c5d56b72b4c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 784055,
+        "HTML": 26919,
+        "JavaScript": 23196,
+        "Roff": 11679,
+        "Objective-C": 9613,
+        "Ruby": 8103,
+        "Java": 4512,
+        "Starlark": 2338,
+        "Shell": 1176
+    },
+    "labels": [
+        "dependencies",
+        "\ud83c\udf0f web",
+        "\ud83c\udfad duplicate",
+        "\ud83c\udfaf declined",
+        "\ud83d\udccd ios/mac",
+        "\ud83d\udccd native",
+        "\ud83d\udcd1 docs",
+        "\ud83d\udd26 help wanted",
+        "\ud83d\uddc2 design bug",
+        "\ud83d\uddc2 polish",
+        "\ud83d\udea9 awaiting filer response",
+        "\ud83d\udea9 needs product design",
+        "\ud83d\udeab blocked",
+        "\ud83d\udee0\ufe0f maintenance",
+        "\ud83e\udd16 android",
+        "\ud83e\udd17 enhancement",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": [
+        "memory-augmentation",
+        "mnemonic-medium",
+        "research-platform",
+        "spaced-repetition"
+    ]
+}

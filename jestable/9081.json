@@ -1,0 +1,102 @@
+{
+    "id": 6805675,
+    "name": "react-materialize/react-materialize",
+    "isFork": false,
+    "commits": 1916,
+    "branches": 15,
+    "releases": 29,
+    "forks": 317,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://react-materialize.github.io/",
+    "watchers": 40,
+    "stargazers": 1388,
+    "contributors": 84,
+    "size": 24896,
+    "createdAt": "2014-12-04T01:36:00",
+    "pushedAt": "2023-01-27T10:20:10",
+    "updatedAt": "2023-02-06T02:28:56",
+    "totalIssues": 540,
+    "openIssues": 43,
+    "totalPullRequests": 693,
+    "openPullRequests": 12,
+    "blankLines": 1542,
+    "codeLines": 43969,
+    "commentLines": 1238,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 40
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 1,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 34240
+        },
+        {
+            "blankLines": 187,
+            "language": "TypeScript",
+            "commentLines": 153,
+            "codeLines": 1270
+        },
+        {
+            "blankLines": 1056,
+            "language": "JavaScript",
+            "commentLines": 1083,
+            "codeLines": 7837
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 78
+        },
+        {
+            "blankLines": 288,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 491
+        }
+    ],
+    "lastCommit": "2022-11-23T08:59:10",
+    "lastCommitSHA": "d36a4ddad2781e1eb206007c5b615033c5c1c5d5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 225062,
+        "TypeScript": 9478,
+        "HTML": 231,
+        "CSS": 201
+    },
+    "labels": [
+        "bug",
+        "codereview",
+        "dependencies",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "question",
+        "ready-to-merge",
+        "typescript",
+        "wip"
+    ],
+    "topics": []
+}

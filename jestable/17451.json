@@ -1,0 +1,101 @@
+{
+    "id": 50431924,
+    "name": "anatine/zod-plugins",
+    "isFork": false,
+    "commits": 485,
+    "branches": 12,
+    "releases": 64,
+    "forks": 82,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": null,
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 531,
+    "contributors": 40,
+    "size": 2651,
+    "createdAt": "2021-07-11T06:58:15",
+    "pushedAt": "2024-03-29T07:22:45",
+    "updatedAt": "2024-04-01T03:38:12",
+    "totalIssues": 83,
+    "openIssues": 36,
+    "totalPullRequests": 110,
+    "openPullRequests": 8,
+    "blankLines": 1273,
+    "codeLines": 39200,
+    "commentLines": 555,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 32364,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 498,
+            "codeLines": 5347,
+            "blankLines": 614
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 12,
+            "codeLines": 13,
+            "blankLines": 2
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 2
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1130,
+            "blankLines": 596
+        },
+        {
+            "language": "YAML",
+            "commentLines": 40,
+            "codeLines": 165,
+            "blankLines": 34
+        },
+        {
+            "language": "GraphQL",
+            "commentLines": 4,
+            "codeLines": 125,
+            "blankLines": 18
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 45,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2024-03-29T07:22:38",
+    "lastCommitSHA": "132e472c0e40122d05875326aa8563c6eb0f884d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 187515,
+        "Shell": 1479,
+        "JavaScript": 972
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

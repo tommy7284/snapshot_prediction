@@ -1,0 +1,111 @@
+{
+    "id": 4043528,
+    "name": "smeijer/unimported",
+    "isFork": false,
+    "commits": 221,
+    "branches": 5,
+    "releases": 24,
+    "forks": 74,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 9,
+    "stargazers": 1967,
+    "contributors": 37,
+    "size": 3433,
+    "createdAt": "2020-04-27T03:39:14",
+    "pushedAt": "2024-03-10T07:22:40",
+    "updatedAt": "2024-03-10T07:37:06",
+    "totalIssues": 109,
+    "openIssues": 0,
+    "totalPullRequests": 91,
+    "openPullRequests": 0,
+    "blankLines": 649,
+    "codeLines": 24655,
+    "commentLines": 220,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 138,
+            "blankLines": 25
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 20367,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 6,
+            "codeLines": 315,
+            "blankLines": 128
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 192,
+            "codeLines": 3722,
+            "blankLines": 488
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 44,
+            "blankLines": 0
+        },
+        {
+            "language": "Diff",
+            "commentLines": 16,
+            "codeLines": 58,
+            "blankLines": 5
+        }
+    ],
+    "lastCommit": "2024-03-10T07:22:40",
+    "lastCommitSHA": "2ebb7a40928ef58ffc406abe5a6adf73ac0376e4",
+    "hasWiki": false,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 127320,
+        "JavaScript": 1291,
+        "Shell": 59
+    },
+    "labels": [
+        "bug",
+        "critical",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "not-sure",
+        "os-windows",
+        "question",
+        "released",
+        "wontfix"
+    ],
+    "topics": [
+        "analysis",
+        "cli",
+        "hacktoberfest",
+        "nodejs"
+    ]
+}

@@ -1,0 +1,120 @@
+{
+    "id": 87868637,
+    "name": "inboxsdk/inboxsdk",
+    "isFork": false,
+    "commits": 6721,
+    "branches": 4,
+    "releases": 90,
+    "forks": 46,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 704,
+    "contributors": 23,
+    "size": 16890,
+    "createdAt": "2014-10-23T12:48:33",
+    "pushedAt": "2024-05-07T12:03:45",
+    "updatedAt": "2024-05-07T12:03:41",
+    "totalIssues": 121,
+    "openIssues": 23,
+    "totalPullRequests": 1017,
+    "openPullRequests": 3,
+    "blankLines": 8123,
+    "codeLines": 71647,
+    "commentLines": 2886,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 1
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 1145,
+            "blankLines": 3
+        },
+        {
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 157,
+            "blankLines": 8
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 7,
+            "codeLines": 235,
+            "blankLines": 76
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 15924,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2210,
+            "codeLines": 42234,
+            "blankLines": 5906
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 471,
+            "codeLines": 6266,
+            "blankLines": 1124
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 55,
+            "blankLines": 0
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 827,
+            "blankLines": 35
+        },
+        {
+            "language": "CSS",
+            "commentLines": 193,
+            "codeLines": 4794,
+            "blankLines": 967
+        }
+    ],
+    "lastCommit": "2024-05-07T12:03:38",
+    "lastCommitSHA": "7762a2c28977c1d66a12069bd26a40c1497889ad",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 1536152,
+        "HTML": 77337,
+        "CSS": 68021,
+        "JavaScript": 6170,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "status: unconfirmed",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,130 @@
+{
+    "id": 6814755,
+    "name": "neo4j/neo4j-javascript-driver",
+    "isFork": false,
+    "commits": 1741,
+    "branches": 27,
+    "releases": 120,
+    "forks": 145,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "5.0",
+    "license": "Apache License 2.0",
+    "homepage": "https://neo4j.com/docs/javascript-manual/current/",
+    "watchers": 79,
+    "stargazers": 831,
+    "contributors": 51,
+    "size": 32638,
+    "createdAt": "2015-07-23T02:46:34",
+    "pushedAt": "2024-04-25T11:32:25",
+    "updatedAt": "2024-04-25T11:32:29",
+    "totalIssues": 297,
+    "openIssues": 20,
+    "totalPullRequests": 889,
+    "openPullRequests": 19,
+    "blankLines": 14906,
+    "codeLines": 165378,
+    "commentLines": 21458,
+    "metrics": [
+        {
+            "blankLines": 9,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 30,
+            "language": "HTML",
+            "commentLines": 13,
+            "codeLines": 297
+        },
+        {
+            "blankLines": 0,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 45,
+            "language": "Python",
+            "commentLines": 17,
+            "codeLines": 133
+        },
+        {
+            "blankLines": 357,
+            "language": "Markdown",
+            "commentLines": 62,
+            "codeLines": 977
+        },
+        {
+            "blankLines": 5,
+            "language": "PowerShell",
+            "commentLines": 0,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 28,
+            "language": "Dockerfile",
+            "commentLines": 12,
+            "codeLines": 92
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 79566
+        },
+        {
+            "blankLines": 4502,
+            "language": "TypeScript",
+            "commentLines": 11360,
+            "codeLines": 25016
+        },
+        {
+            "blankLines": 9930,
+            "language": "JavaScript",
+            "commentLines": 9994,
+            "codeLines": 59220
+        }
+    ],
+    "lastCommit": "2024-04-25T11:32:25",
+    "lastCommitSHA": "839733b6b0f867629f710b2de4b73fdfef85e043",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 2416920,
+        "TypeScript": 1280599,
+        "HTML": 9632,
+        "Python": 5182,
+        "Dockerfile": 3371,
+        "PowerShell": 554,
+        "Shell": 515
+    },
+    "labels": [
+        "5.0",
+        "5.0 breaking change",
+        "bug",
+        "changelog",
+        "cherry-pick",
+        "dependencies",
+        "discussion",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": [
+        "bolt",
+        "database",
+        "driver",
+        "javascript",
+        "neo4j",
+        "neo4j-driver"
+    ]
+}

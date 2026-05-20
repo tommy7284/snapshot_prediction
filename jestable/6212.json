@@ -1,0 +1,108 @@
+{
+    "id": 6234717,
+    "name": "peggyrayzis/react-native-create-bridge",
+    "isFork": false,
+    "commits": 88,
+    "branches": 13,
+    "releases": 2,
+    "forks": 76,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 27,
+    "stargazers": 1014,
+    "contributors": 5,
+    "size": 606,
+    "createdAt": "2017-01-11T04:42:51",
+    "pushedAt": "2023-01-12T09:51:27",
+    "updatedAt": "2023-01-19T02:17:20",
+    "totalIssues": 56,
+    "openIssues": 34,
+    "totalPullRequests": 29,
+    "openPullRequests": 17,
+    "blankLines": 317,
+    "codeLines": 1395,
+    "commentLines": 157,
+    "metrics": [
+        {
+            "blankLines": 35,
+            "language": "Java",
+            "commentLines": 29,
+            "codeLines": 117
+        },
+        {
+            "blankLines": 17,
+            "language": "Swift",
+            "commentLines": 14,
+            "codeLines": 47
+        },
+        {
+            "blankLines": 41,
+            "language": "Kotlin",
+            "commentLines": 29,
+            "codeLines": 105
+        },
+        {
+            "blankLines": 54,
+            "language": "Objective-C",
+            "commentLines": 58,
+            "codeLines": 164
+        },
+        {
+            "blankLines": 103,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 655
+        },
+        {
+            "blankLines": 17,
+            "language": "C/C++ Header",
+            "commentLines": 23,
+            "codeLines": 68
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 50,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 160
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 75
+        }
+    ],
+    "lastCommit": "2020-09-27T01:31:06",
+    "lastCommitSHA": "63e1ce1624ca49fae77d3720cda2720d44dbf55c",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 21240,
+        "Objective-C": 12191,
+        "Java": 10072,
+        "Kotlin": 9612,
+        "Swift": 2026
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

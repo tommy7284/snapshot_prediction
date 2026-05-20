@@ -1,0 +1,3069 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1013,f6622f313a3e07f5f249deda2553c0f9827792f0,f6622f313a3e07f5f249deda2553c0f9827792f0,,"Added Cross Origin Auth support to the login method
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index b465d70..33c35c5 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -51,12 +51,20 @@ describe('Auth0APIClient', () => {
+       });
+     });
+     describe('with credentials', () => {
++      it('should fail when in popup mode', () => {
++        const client = getClient({
++          redirect: false
++        });
++        expect(() => client.logIn({ username: 'foo' }, {})).toThrowErrorMatchingSnapshot();
++      });
+       it('should call client.login', () => {
+-        const client = getClient();
++        const client = getClient({
++          redirect: true
++        });
+         const callback = jest.fn();
+         client.logIn({ username: 'foo' }, {}, callback);
+         const mock = getAuth0ClientMock();
+-        const loginMock = mock.WebAuth.mock.instances[0].client.login.mock;
++        const loginMock = mock.WebAuth.mock.instances[0].login.mock;
+         assertCallWithCallback(loginMock, callback);
+       });
+     });
+",0,,8,175,1,1,8,175
+1017,cc38f3430ca55b0e40b8a0d2c6dac068ab0b9443,01be4be81f0cf9e58c901c92bcf8daa70e83ad0a,"As part of https://github.com/auth0/lock/issues/878#issuecomment-286882027, successfully merged through https://github.com/auth0/lock/pull/928 you enabled html formatting in error/success messages.
+
+However this only work only through languageDictionary strings and not when the message is called through: `lock.show({flashMessage: {...})`
+ 
+This small change should fix that.","Added tests for GlobalMessage component
+","diff --git a/src/__tests__/ui/box/global_message.test.jsx b/src/__tests__/ui/box/global_message.test.jsx
+new file mode 100644
+index 0000000..ed112a6
+--- /dev/null
++++ b/src/__tests__/ui/box/global_message.test.jsx
+@@ -0,0 +1,22 @@
++import React from 'react';
++import { mount } from 'enzyme';
++
++import { expectComponent } from '../../testUtils';
++
++import GlobalMessage from 'ui/box/global_message';
++
++describe('GlobalMessage', () => {
++  it('renders correctly given a success type', () => {
++    expectComponent(<GlobalMessage type=""success"" message=""Success!"" />).toMatchSnapshot();
++  });
++  it('renders correctly given an error type', () => {
++    expectComponent(<GlobalMessage type=""error"" message=""An error occurred."" />).toMatchSnapshot();
++  });
++  it('should not strip out HTML tags', () => {
++    const wrapper = mount(<GlobalMessage type=""success"" message=""<b>Success!</b>"" />);
++    expect(wrapper.html()).toBe(
++      '<div class=""auth0-global-message auth0-global-message-success""><span class=""animated fadeInUp"">' +
++        '<b>Success!</b></span></div>'
++    );
++  });
++});
+",0,,2,53,1,3,4,68
+1022,e8e6287abadff5b40fab14b33642a87832f1bddc,e8e6287abadff5b40fab14b33642a87832f1bddc,,"adding allowAutoComplete ui option
+","diff --git a/src/__tests__/field/email_pane.test.jsx b/src/__tests__/field/email_pane.test.jsx
+index 32b8e9c..85110f3 100644
+--- a/src/__tests__/field/email_pane.test.jsx
++++ b/src/__tests__/field/email_pane.test.jsx
+@@ -38,7 +38,8 @@ describe('EmailPane', () => {
+     jest.mock('core/index', () => ({
+       id: () => 1,
+       ui: {
+-        avatar: () => false
++        avatar: () => false,
++        allowAutocomplete: () => false
+       }
+     }));
+ 
+@@ -75,6 +76,12 @@ describe('EmailPane', () => {
+ 
+     expectComponent(<EmailPane {...defaultProps} />).toMatchSnapshot();
+   });
++  it('sets autoComplete to true when `allowAutocomplete` is true', () => {
++    require('core/index').ui.allowAutocomplete = () => true;
++    let EmailPane = getComponent();
++
++    expectComponent(<EmailPane {...defaultProps} />).toMatchSnapshot();
++  });
+   it('fetches the avatar on componentDidMount if ui.avatar is true and there is a username', () => {
+     require('core/index').ui.avatar = () => true;
+     let EmailPane = getComponent();
+
+diff --git a/src/__tests__/field/username_pane.test.jsx b/src/__tests__/field/username_pane.test.jsx
+index 8395047..d0bd28a 100644
+--- a/src/__tests__/field/username_pane.test.jsx
++++ b/src/__tests__/field/username_pane.test.jsx
+@@ -40,7 +40,8 @@ describe('UsernamePane', () => {
+     jest.mock('core/index', () => ({
+       id: () => 1,
+       ui: {
+-        avatar: () => false
++        avatar: () => false,
++        allowAutocomplete: () => false
+       }
+     }));
+ 
+@@ -81,6 +82,12 @@ describe('UsernamePane', () => {
+ 
+     expectComponent(<UsernamePane {...defaultProps} />).toMatchSnapshot();
+   });
++  it('sets autoComplete to true when `allowAutocomplete` is true', () => {
++    require('core/index').ui.allowAutocomplete = () => true;
++    let UsernamePane = getComponent();
++
++    expectComponent(<UsernamePane {...defaultProps} />).toMatchSnapshot();
++  });
+   it('fetches the avatar on componentDidMount if ui.avatar is true and there is a username', () => {
+     require('core/index').ui.avatar = () => true;
+     let UsernamePane = getComponent();
+",0,,10,69,2,1,10,69
+1079,80a1fd21e30dc927436e7ff24b47f750066d3783,80a1fd21e30dc927436e7ff24b47f750066d3783,fix https://github.com/auth0/lock/issues/1072,"Changing username regex and adding tests
+","diff --git a/src/__tests__/field/username.test.js b/src/__tests__/field/username.test.js
+new file mode 100644
+index 0000000..aeb1533
+--- /dev/null
++++ b/src/__tests__/field/username.test.js
+@@ -0,0 +1,148 @@
++import Immutable from 'immutable';
++
++describe('field/username', () => {
++  let username;
++  let dbConnection;
++  beforeEach(() => {
++    jest.resetModules();
++
++    jest.mock('field/index', () => ({
++      setField: jest.fn()
++    }));
++
++    jest.mock('field/email', () => ({
++      validateEmail: s => s
++    }));
++
++    jest.mock('connection/database', () => ({
++      databaseConnection: m => m
++    }));
++
++    username = require('field/username');
++    dbConnection = Immutable.fromJS({
++      validation: null
++    });
++  });
++  describe('usernameLooksLikeEmail()', () => {
++    it('checks for @', () => {
++      expect(username.usernameLooksLikeEmail('t@t.com')).toBe(true);
++      expect(username.usernameLooksLikeEmail('tt.com')).toBe(false);
++    });
++  });
++  describe('getUsernameValidation()', () => {
++    it(`returns database connection's username validation`, () => {
++      expect(
++        username.getUsernameValidation(
++          Immutable.fromJS({
++            validation: {
++              username: { min: 1, max: 2 }
++            }
++          })
++        )
++      ).toMatchSnapshot();
++    });
++    it(`returns null there's no db connection username validation`, () => {
++      expect(username.getUsernameValidation(dbConnection)).toBe(null);
++    });
++  });
++  describe('setUsername()', () => {
++    it(`calls setField`, () => {
++      username.setUsername(dbConnection, 'a-username', 'username', true);
++      const { mock } = require('field/index').setField;
++      expect(mock.calls.length).toBe(1);
++      expect(mock.calls[0]).toMatchSnapshot();
++    });
++    describe('field validation', () => {
++      it('validates when usernameStyle is `email`', () => {
++        const email = 'a@a.com';
++        username.setUsername(dbConnection, email, 'email', true);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](email)).toBe(email);
++      });
++      it('validates when usernameStyle is `username`', () => {
++        const theUsername = 'the_user';
++        username.setUsername(dbConnection, theUsername, 'username', true);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](theUsername)).toBe(true);
++      });
++      it('validates when username looks like an email', () => {
++        const email = 'a@a.com';
++        username.setUsername(dbConnection, email, null, true);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](email)).toBe(email);
++      });
++      it('validates when username does not look like an email', () => {
++        const theUsername = 'the_user';
++        username.setUsername(dbConnection, theUsername, null, true);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](theUsername)).toBe(true);
++      });
++      it('defaults usernameStyle to `username`', () => {
++        const theUsername = 'the_user';
++        username.setUsername(dbConnection, theUsername, undefined, true);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](theUsername)).toBe(true);
++      });
++      it('defaults validateUsernameFormat to `true`', () => {
++        const theUsername = 'the_user';
++        username.setUsername(dbConnection, theUsername, 'username', undefined);
++        const { mock } = require('field/index').setField;
++        expect(mock.calls[0][3](theUsername)).toBe(true);
++      });
++      describe('when in username mode', () => {
++        const expectToFailWith = theUsername => {
++          username.setUsername(dbConnection, theUsername, 'username', true);
++          const { mock } = require('field/index').setField;
++          expect(mock.calls[0][3](theUsername)).toBe(false);
++        };
++        const expectToSuccedWith = theUsername => {
++          username.setUsername(dbConnection, theUsername, 'username', true);
++          const { mock } = require('field/index').setField;
++          expect(mock.calls[0][3](theUsername)).toBe(true);
++        };
++        describe('validates if the username is not empty', () => {
++          it('when `validateUsernameFormat` is true but there is no db connection validation', () => {
++            const theUsername = '';
++            username.setUsername(dbConnection, theUsername, 'username', true);
++            const { mock } = require('field/index').setField;
++            expect(mock.calls[0][3](theUsername)).toBe(false);
++          });
++          it('when `validateUsernameFormat` is false and there is db connection validation', () => {
++            const theUsername = '';
++            const customDbConnection = Immutable.fromJS({
++              validation: {
++                username: { min: 1, max: 2 }
++              }
++            });
++            username.setUsername(customDbConnection, theUsername, 'username', false);
++            const { mock } = require('field/index').setField;
++            expect(mock.calls[0][3](theUsername)).toBe(false);
++          });
++        });
++        describe('with a db connection validation', () => {
++          beforeEach(() => {
++            dbConnection = Immutable.fromJS({
++              validation: {
++                username: { min: 3, max: 5 }
++              }
++            });
++          });
++          it('validates min length', () => {
++            expectToFailWith('aa');
++          });
++          it('validates max length', () => {
++            expectToFailWith('aaaaaa');
++          });
++          it('validates invalid chars', () => {
++            const invalidChars = `{}[],;?/\\!@#$%¨&*()¹²³\`~^´ªº§£¢¬<>|""' `.split('');
++            invalidChars.forEach(i => expectToFailWith(`aa${i}`));
++          });
++          it('accepts letters, numbers, `_`, `-`, `+` and `.`', () => {
++            const validChars = `_-+.`.split('');
++            validChars.forEach(i => expectToSuccedWith(`aa${i}`));
++          });
++        });
++      });
++    });
++  });
++});
+",0,,4,173,1,2,33,676
+1083,0567b844e3050950f5ef9967d81cda51d64135d3,0567b844e3050950f5ef9967d81cda51d64135d3,"fix #1082 
+
+![screen shot 2017-08-11 at 16 40 49](https://user-images.githubusercontent.com/941075/29229408-913dec64-7eb4-11e7-9848-c0327dcb5d75.png)
+","Fix custom theme for custom connections
+","diff --git a/src/__tests__/core/sso/last_login_screen.test.jsx b/src/__tests__/core/sso/last_login_screen.test.jsx
+new file mode 100644
+index 0000000..87de9e6
+--- /dev/null
++++ b/src/__tests__/core/sso/last_login_screen.test.jsx
+@@ -0,0 +1,113 @@
++import React from 'react';
++import { mount } from 'enzyme';
++import Immutable from 'immutable';
++
++import { expectComponent, extractPropsFromWrapper, mockComponent } from 'testUtils';
++
++jest.mock('ui/pane/quick_auth_pane', () => mockComponent('quick_auth_pane'));
++
++//there's a circular dependency with this module, so we need to mock it
++jest.mock('engine/classic');
++
++const getComponent = () => {
++  const LastLoginScreen = require('core/sso/last_login_screen').default;
++  const screen = new LastLoginScreen();
++  return screen.render();
++};
++
++describe('LastLoginScreen', () => {
++  beforeEach(() => {
++    jest.resetModules();
++
++    jest.mock('quick-auth/actions', () => ({
++      logIn: jest.fn(),
++      skipQuickAuth: jest.fn()
++    }));
++
++    jest.mock('core/index', () => ({
++      id: () => 'id'
++    }));
++
++    jest.mock('core/sso/index', () => ({
++      lastUsedConnection: () => ({
++        get: () => 'lastUsedConnection'
++      }),
++      lastUsedUsername: () => 'lastUsedUsername'
++    }));
++
++    jest.mock('connection/social/index', () => ({
++      STRATEGIES: {},
++      authButtonsTheme: () => ({
++        get: () => undefined
++      })
++    }));
++  });
++  const defaultProps = {
++    i18n: {
++      str: (...keys) => keys.join(','),
++      group: (...keys) => keys.join(','),
++      html: (...keys) => keys.join(',')
++    },
++    model: 'model'
++  };
++  it('renders correctly', () => {
++    const Component = getComponent();
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++  it('renders with custom connection theme', () => {
++    require('connection/social/index').authButtonsTheme = () => ({
++      get: () =>
++        Immutable.fromJS({
++          primaryColor: 'primaryColor',
++          foregroundColor: 'foregroundColor',
++          icon: 'icon'
++        })
++    });
++    const Component = getComponent();
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++  describe('renders correct icon', () => {
++    const testStrategy = strategy => {
++      it(`when strategy is ${strategy}`, () => {
++        require('core/sso/index').lastUsedConnection = () =>
++          Immutable.fromJS({
++            strategy
++          });
++        const Component = getComponent();
++        expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++      });
++    };
++    const testStrategyName = 'this-strategy-exists';
++    require('connection/social/index').STRATEGIES = {
++      [testStrategyName]: 'Test Strategy'
++    };
++    const strategies = [
++      testStrategyName,
++      'google-apps',
++      'adfs',
++      'office365',
++      'waad',
++      'some-other-strategy'
++    ].forEach(testStrategy);
++  });
++  it('calls logIn in the buttonClickHandler', () => {
++    const Component = getComponent();
++    const wrapper = mount(<Component {...defaultProps} />);
++    const props = extractPropsFromWrapper(wrapper);
++    props.buttonClickHandler();
++    const { mock } = require('quick-auth/actions').logIn;
++    expect(mock.calls.length).toBe(1);
++    expect(mock.calls[0][0]).toBe('id');
++    expect(mock.calls[0][1].get()).toBe('lastUsedConnection');
++    expect(mock.calls[0][2]).toBe('lastUsedUsername');
++  });
++  it('calls skipQuickAuth in the alternativeClickHandler', () => {
++    const Component = getComponent();
++    const wrapper = mount(<Component {...defaultProps} />);
++    const props = extractPropsFromWrapper(wrapper);
++    props.alternativeClickHandler();
++    const { mock } = require('quick-auth/actions').skipQuickAuth;
++    expect(mock.calls.length).toBe(1);
++    expect(mock.calls[0][0]).toBe('id');
++  });
++});
+",0,,3,276,1,1,3,276
+1116,8fa8f526307d2c0135d0d2f1a24e224a0a141c3b,8fa8f526307d2c0135d0d2f1a24e224a0a141c3b,,"Fix resolved connection not being a Map object
+","diff --git a/src/__tests__/core/index.test.js b/src/__tests__/core/index.test.js
+new file mode 100644
+index 0000000..a828e72
+--- /dev/null
++++ b/src/__tests__/core/index.test.js
+@@ -0,0 +1,44 @@
++import Immutable from 'immutable';
++import { dataFns } from '../../utils/data_utils';
++
++const setResolvedConnection = (...params) => require('core/index').setResolvedConnection(...params);
++
++const mockLock = 'm';
++let mockSet;
++jest.mock('utils/data_utils', () => ({
++  dataFns: () => ({
++    set: mockSet
++  })
++}));
++
++describe('setResolvedConnection', () => {
++  beforeEach(() => {
++    mockSet = jest.fn();
++    jest.resetModules();
++  });
++  it('sets undefined when is called with undefined', () => {
++    setResolvedConnection(mockLock, undefined);
++    expect(mockSet.mock.calls.length).toBe(1);
++    expect(mockSet.mock.calls[0]).toMatchSnapshot();
++  });
++  it('validates format', () => {
++    expect(() => setResolvedConnection(mockLock, {})).toThrowErrorMatchingSnapshot();
++    expect(() => setResolvedConnection(mockLock, { type: 'foo' })).toThrowErrorMatchingSnapshot();
++    expect(() => setResolvedConnection(mockLock, { name: 'bar' })).toThrowErrorMatchingSnapshot();
++  });
++  it('accepts only database connections', () => {
++    expect(() =>
++      setResolvedConnection(mockLock, { type: 'foo', name: 'bar' })
++    ).toThrowErrorMatchingSnapshot();
++  });
++  it('sets the connection', () => {
++    setResolvedConnection(mockLock, { type: 'database', name: 'bar' });
++    expect(mockSet.mock.calls.length).toBe(1);
++    expect(mockSet.mock.calls[0]).toMatchSnapshot();
++  });
++  it('sets the connection as a Map instance', () => {
++    setResolvedConnection(mockLock, { type: 'database', name: 'bar' });
++    expect(mockSet.mock.calls.length).toBe(1);
++    expect(Immutable.Map.isMap(mockSet.mock.calls[0][2])).toBe(true);
++  });
++});
+",0,,4,84,1,1,4,84
+1124,432d34d26a91c0a134c4b8226d91505a2315f33b,432d34d26a91c0a134c4b8226d91505a2315f33b,,"Revert ""Adding a flag for cross-auth""
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 403d106..345caae 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -66,38 +66,20 @@ describe('Auth0APIClient', () => {
+       });
+     });
+     describe('with credentials', () => {
+-      describe('when `overrides._useCrossAuth` is true', () => {
+-        it('should fail when in popup mode', () => {
+-          const client = getClient({
+-            redirect: false,
+-            overrides: {
+-              __useCrossAuth: true
+-            }
+-          });
+-          expect(() => client.logIn({ username: 'foo' }, {})).toThrowErrorMatchingSnapshot();
+-        });
+-        it('should call client.login', () => {
+-          const client = getClient({
+-            redirect: true,
+-            overrides: {
+-              __useCrossAuth: true
+-            }
+-          });
+-          const callback = jest.fn();
+-          client.logIn({ username: 'foo' }, {}, callback);
+-          const mock = getAuth0ClientMock();
+-          const loginMock = mock.WebAuth.mock.instances[0].login.mock;
+-          assertCallWithCallback(loginMock, callback);
++      it('should fail when in popup mode', () => {
++        const client = getClient({
++          redirect: false
+         });
++        expect(() => client.logIn({ username: 'foo' }, {})).toThrowErrorMatchingSnapshot();
+       });
+-      it('should call client.client.login by default', () => {
++      it('should call client.login', () => {
+         const client = getClient({
+           redirect: true
+         });
+         const callback = jest.fn();
+         client.logIn({ username: 'foo' }, {}, callback);
+         const mock = getAuth0ClientMock();
+-        const loginMock = mock.WebAuth.mock.instances[0].client.login.mock;
++        const loginMock = mock.WebAuth.mock.instances[0].login.mock;
+         assertCallWithCallback(loginMock, callback);
+       });
+     });
+",0,,3,57,1,1,3,57
+1135,07334395854a75c7b49eff7761146d71dba28131,c36863bca41c01c53bd3e0e458ce268a3c162ddf,"fix #1096 #1134 #1127 
+
+# react
+
+https://github.com/facebook/react/releases/tag/v16.0.0
+https://reactjs.org/blog/2017/09/26/react-v16.0.html
+
+# react-transition-group:
+https://github.com/reactjs/react-transition-group/blob/master/Migration.md
+
+# enzyme
+https://github.com/airbnb/enzyme/blob/master/docs/guides/migration-from-2-to-3.md","upgrading packages + fixing tests and transitions
+",,0,,15,1883,2,7,16,1889
+1150,afad2d2293b192ef0b67083de66f3739d783b31b,afad2d2293b192ef0b67083de66f3739d783b31b,"This pull request removes everything related to the legacy endpoints and also upgrades the version of auth0-js.
+It also allows AD connections to hit the co/authenticate endpoint even though this endpoint is still not supporting ad strategies.","Removing legacy features and ugprading auth0-js
+","diff --git a/src/__tests__/core/sso/last_login_screen.test.jsx b/src/__tests__/core/sso/last_login_screen.test.jsx
+deleted file mode 100644
+index 87de9e6..0000000
+--- a/src/__tests__/core/sso/last_login_screen.test.jsx
++++ /dev/null
+@@ -1,113 +0,0 @@
+-import React from 'react';
+-import { mount } from 'enzyme';
+-import Immutable from 'immutable';
+-
+-import { expectComponent, extractPropsFromWrapper, mockComponent } from 'testUtils';
+-
+-jest.mock('ui/pane/quick_auth_pane', () => mockComponent('quick_auth_pane'));
+-
+-//there's a circular dependency with this module, so we need to mock it
+-jest.mock('engine/classic');
+-
+-const getComponent = () => {
+-  const LastLoginScreen = require('core/sso/last_login_screen').default;
+-  const screen = new LastLoginScreen();
+-  return screen.render();
+-};
+-
+-describe('LastLoginScreen', () => {
+-  beforeEach(() => {
+-    jest.resetModules();
+-
+-    jest.mock('quick-auth/actions', () => ({
+-      logIn: jest.fn(),
+-      skipQuickAuth: jest.fn()
+-    }));
+-
+-    jest.mock('core/index', () => ({
+-      id: () => 'id'
+-    }));
+-
+-    jest.mock('core/sso/index', () => ({
+-      lastUsedConnection: () => ({
+-        get: () => 'lastUsedConnection'
+-      }),
+-      lastUsedUsername: () => 'lastUsedUsername'
+-    }));
+-
+-    jest.mock('connection/social/index', () => ({
+-      STRATEGIES: {},
+-      authButtonsTheme: () => ({
+-        get: () => undefined
+-      })
+-    }));
+-  });
+-  const defaultProps = {
+-    i18n: {
+-      str: (...keys) => keys.join(','),
+-      group: (...keys) => keys.join(','),
+-      html: (...keys) => keys.join(',')
+-    },
+-    model: 'model'
+-  };
+-  it('renders correctly', () => {
+-    const Component = getComponent();
+-    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
+-  });
+-  it('renders with custom connection theme', () => {
+-    require('connection/social/index').authButtonsTheme = () => ({
+-      get: () =>
+-        Immutable.fromJS({
+-          primaryColor: 'primaryColor',
+-          foregroundColor: 'foregroundColor',
+-          icon: 'icon'
+-        })
+-    });
+-    const Component = getComponent();
+-    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
+-  });
+-  describe('renders correct icon', () => {
+-    const testStrategy = strategy => {
+-      it(`when strategy is ${strategy}`, () => {
+-        require('core/sso/index').lastUsedConnection = () =>
+-          Immutable.fromJS({
+-            strategy
+-          });
+-        const Component = getComponent();
+-        expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
+-      });
+-    };
+-    const testStrategyName = 'this-strategy-exists';
+-    require('connection/social/index').STRATEGIES = {
+-      [testStrategyName]: 'Test Strategy'
+-    };
+-    const strategies = [
+-      testStrategyName,
+-      'google-apps',
+-      'adfs',
+-      'office365',
+-      'waad',
+-      'some-other-strategy'
+-    ].forEach(testStrategy);
+-  });
+-  it('calls logIn in the buttonClickHandler', () => {
+-    const Component = getComponent();
+-    const wrapper = mount(<Component {...defaultProps} />);
+-    const props = extractPropsFromWrapper(wrapper);
+-    props.buttonClickHandler();
+-    const { mock } = require('quick-auth/actions').logIn;
+-    expect(mock.calls.length).toBe(1);
+-    expect(mock.calls[0][0]).toBe('id');
+-    expect(mock.calls[0][1].get()).toBe('lastUsedConnection');
+-    expect(mock.calls[0][2]).toBe('lastUsedUsername');
+-  });
+-  it('calls skipQuickAuth in the alternativeClickHandler', () => {
+-    const Component = getComponent();
+-    const wrapper = mount(<Component {...defaultProps} />);
+-    const props = extractPropsFromWrapper(wrapper);
+-    props.alternativeClickHandler();
+-    const { mock } = require('quick-auth/actions').skipQuickAuth;
+-    expect(mock.calls.length).toBe(1);
+-    expect(mock.calls[0][0]).toBe('id');
+-  });
+-});
+
+diff --git a/src/__tests__/core/web_api/legacy_api.test.js b/src/__tests__/core/web_api/legacy_api.test.js
+deleted file mode 100644
+index e3da951..0000000
+--- a/src/__tests__/core/web_api/legacy_api.test.js
++++ /dev/null
+@@ -1,202 +0,0 @@
+-jest.mock('auth0-js');
+-
+-const getClient = options => {
+-  const clientId = 'cid';
+-  const domain = 'domain';
+-  const Auth0LegacyAPIClient = require('core/web_api/legacy_api').default;
+-  const client = new Auth0LegacyAPIClient(clientId, domain, options);
+-  client.client.popup = {
+-    authorize: jest.fn(),
+-    loginWithCredentials: jest.fn()
+-  };
+-  client.client.client = {
+-    loginWithResourceOwner: jest.fn()
+-  };
+-  client.client.redirect = {
+-    loginWithCredentials: jest.fn()
+-  };
+-  client.client.transactionManager = {
+-    getStoredTransaction: jest.fn()
+-  };
+-  return client;
+-};
+-
+-const getAuth0ClientMock = () => require('auth0-js');
+-
+-describe('Auth0LegacyAPIClient', () => {
+-  beforeEach(() => {
+-    jest.resetModules();
+-  });
+-
+-  describe('with overwrites', () => {
+-    it('should configure WebAuth with the proper overrides', () => {
+-      const client = getClient({
+-        overrides: {
+-          __tenant: 'tenant1',
+-          __token_issuer: 'issuer1'
+-        }
+-      });
+-      const mock = getAuth0ClientMock();
+-      const { overrides } = mock.WebAuth.mock.calls[0][0];
+-      expect(overrides).toEqual({ __tenant: 'tenant1', __token_issuer: 'issuer1' });
+-    });
+-  });
+-
+-  describe('logIn', () => {
+-    const assertCallWithCallback = (mock, callbackFunction) => {
+-      expect(mock.calls.length).toBe(1);
+-      expect(mock.calls[0][0]).toMatchSnapshot();
+-      mock.calls[0][1]();
+-      expect(callbackFunction.mock.calls.length).toBe(1);
+-    };
+-
+-    const assertMethodCall = method => {
+-      expect(method.calls.length).toBe(1);
+-      expect(method.calls[0][0]).toMatchSnapshot();
+-    };
+-
+-    const assertCallbackIsCalledOnce = (callback, method) => {
+-      method.calls[0][1]();
+-      expect(callback.mock.calls.length).toBe(1);
+-    };
+-
+-    var callback;
+-
+-    beforeEach(() => {
+-      callback = jest.fn();
+-    });
+-
+-    describe('with social/enterprise (without username and email)', () => {
+-      const redirectAuthorize = () => {
+-        const mock = getAuth0ClientMock();
+-        return mock.WebAuth.mock.instances[0].authorize.mock;
+-      };
+-
+-      const popupAuthorize = () => {
+-        const mock = getAuth0ClientMock();
+-        return mock.WebAuth.mock.instances[0].popup.authorize.mock;
+-      };
+-
+-      it('should call authorize when redirect===true', () => {
+-        const client = getClient({
+-          redirect: true
+-        });
+-        client.logIn({}, {}, callback);
+-        assertMethodCall(redirectAuthorize());
+-        assertCallbackIsCalledOnce(callback, redirectAuthorize());
+-      });
+-
+-      it('should call popup.authorize when redirect===false', () => {
+-        const client = getClient({
+-          redirect: false
+-        });
+-        client.logIn({}, {}, callback);
+-        assertMethodCall(popupAuthorize());
+-        assertCallbackIsCalledOnce(callback, popupAuthorize());
+-      });
+-
+-      it('should call popup.authorize with additional authParams', () => {
+-        const client = getClient({
+-          redirect: false
+-        });
+-        client.logIn(
+-          {},
+-          { scope: 'openid offline_access read:users', audience: 'https://mysite.com/api' },
+-          callback
+-        );
+-        assertMethodCall(popupAuthorize());
+-        assertCallbackIsCalledOnce(callback, popupAuthorize());
+-      });
+-    });
+-
+-    describe('with sso and redirect === false', () => {
+-      it('should call loginWithResourceOwner', () => {
+-        const client = getClient({
+-          sso: false,
+-          redirect: false
+-        });
+-        client.logIn({ username: 'foo' }, {}, callback);
+-        const mock = getAuth0ClientMock();
+-        const loginWithResourceOwnerMock =
+-          mock.WebAuth.mock.instances[0].client.loginWithResourceOwner.mock;
+-        assertMethodCall(loginWithResourceOwnerMock);
+-        assertCallbackIsCalledOnce(callback, loginWithResourceOwnerMock);
+-      });
+-    });
+-
+-    describe('with credentials', () => {
+-      const redirectLoginWithCredentials = () => {
+-        const mock = getAuth0ClientMock();
+-        return mock.WebAuth.mock.instances[0].redirect.loginWithCredentials.mock;
+-      };
+-
+-      const popupLoginWithCredentials = () => {
+-        const mock = getAuth0ClientMock();
+-        return mock.WebAuth.mock.instances[0].popup.loginWithCredentials.mock;
+-      };
+-
+-      it('should call loginWithCredentials', () => {
+-        const client = getClient({
+-          redirect: true,
+-          sso: true
+-        });
+-        client.logIn({ username: 'foo' }, {}, callback);
+-        assertMethodCall(redirectLoginWithCredentials());
+-        assertCallbackIsCalledOnce(callback, redirectLoginWithCredentials());
+-      });
+-
+-      it('should call loginWithCredentials with auth params', () => {
+-        const client = getClient({
+-          redirect: true,
+-          sso: true
+-        });
+-        client.logIn(
+-          { username: 'foo' },
+-          { scope: 'openid offline_access write:users', audience: 'https://mysites.com/api' },
+-          callback
+-        );
+-        assertMethodCall(redirectLoginWithCredentials());
+-        assertCallbackIsCalledOnce(callback, redirectLoginWithCredentials());
+-      });
+-
+-      it('should call popup.authorize when redirect===false', () => {
+-        const client = getClient({
+-          redirect: false,
+-          sso: true
+-        });
+-        client.logIn({ username: 'foo' }, {}, callback);
+-        assertMethodCall(popupLoginWithCredentials());
+-        assertCallbackIsCalledOnce(callback, popupLoginWithCredentials());
+-      });
+-    });
+-  });
+-
+-  describe('parseHash', () => {
+-    it('should parse correct hash', () => {
+-      const jwt = require('jsonwebtoken');
+-      const client = getClient({
+-        redirect: false
+-      });
+-      const token = jwt.sign(
+-        { aud: client.clientID, iss: `https://${client.domain}/` },
+-        'someSecret',
+-        { expiresIn: '30m' }
+-      );
+-      const payload = jwt.decode(token);
+-      const callback = jest.fn();
+-
+-      client.parseHash(
+-        `#access_token=aToken&id_token=${token}&refresh_token=rToken&state=/path%3Fone%3Dtwo%26three%3D3%234`,
+-        callback
+-      );
+-      expect(callback).toHaveBeenCalled();
+-      expect(callback).toHaveBeenCalledWith(null, {
+-        accessToken: 'aToken',
+-        idToken: token,
+-        idTokenPayload: payload,
+-        refreshToken: 'rToken',
+-        state: '/path?one=two&three=3#4'
+-      });
+-    });
+-  });
+-});
+",0,,30,1323,2,1,30,1323
+1160,ecb699b1da9d7185051ea2462462ce7c09873a85,ecb699b1da9d7185051ea2462462ce7c09873a85,Reverts auth0/lock#1150,"Revert ""Removing legacy features and ugprading auth0-js (#1150)""
+
+This reverts commit 8c91fe0fab065981602a682851a558ff8900bd86.
+","diff --git a/src/__tests__/core/sso/last_login_screen.test.jsx b/src/__tests__/core/sso/last_login_screen.test.jsx
+new file mode 100644
+index 0000000..87de9e6
+--- /dev/null
++++ b/src/__tests__/core/sso/last_login_screen.test.jsx
+@@ -0,0 +1,113 @@
++import React from 'react';
++import { mount } from 'enzyme';
++import Immutable from 'immutable';
++
++import { expectComponent, extractPropsFromWrapper, mockComponent } from 'testUtils';
++
++jest.mock('ui/pane/quick_auth_pane', () => mockComponent('quick_auth_pane'));
++
++//there's a circular dependency with this module, so we need to mock it
++jest.mock('engine/classic');
++
++const getComponent = () => {
++  const LastLoginScreen = require('core/sso/last_login_screen').default;
++  const screen = new LastLoginScreen();
++  return screen.render();
++};
++
++describe('LastLoginScreen', () => {
++  beforeEach(() => {
++    jest.resetModules();
++
++    jest.mock('quick-auth/actions', () => ({
++      logIn: jest.fn(),
++      skipQuickAuth: jest.fn()
++    }));
++
++    jest.mock('core/index', () => ({
++      id: () => 'id'
++    }));
++
++    jest.mock('core/sso/index', () => ({
++      lastUsedConnection: () => ({
++        get: () => 'lastUsedConnection'
++      }),
++      lastUsedUsername: () => 'lastUsedUsername'
++    }));
++
++    jest.mock('connection/social/index', () => ({
++      STRATEGIES: {},
++      authButtonsTheme: () => ({
++        get: () => undefined
++      })
++    }));
++  });
++  const defaultProps = {
++    i18n: {
++      str: (...keys) => keys.join(','),
++      group: (...keys) => keys.join(','),
++      html: (...keys) => keys.join(',')
++    },
++    model: 'model'
++  };
++  it('renders correctly', () => {
++    const Component = getComponent();
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++  it('renders with custom connection theme', () => {
++    require('connection/social/index').authButtonsTheme = () => ({
++      get: () =>
++        Immutable.fromJS({
++          primaryColor: 'primaryColor',
++          foregroundColor: 'foregroundColor',
++          icon: 'icon'
++        })
++    });
++    const Component = getComponent();
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++  describe('renders correct icon', () => {
++    const testStrategy = strategy => {
++      it(`when strategy is ${strategy}`, () => {
++        require('core/sso/index').lastUsedConnection = () =>
++          Immutable.fromJS({
++            strategy
++          });
++        const Component = getComponent();
++        expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++      });
++    };
++    const testStrategyName = 'this-strategy-exists';
++    require('connection/social/index').STRATEGIES = {
++      [testStrategyName]: 'Test Strategy'
++    };
++    const strategies = [
++      testStrategyName,
++      'google-apps',
++      'adfs',
++      'office365',
++      'waad',
++      'some-other-strategy'
++    ].forEach(testStrategy);
++  });
++  it('calls logIn in the buttonClickHandler', () => {
++    const Component = getComponent();
++    const wrapper = mount(<Component {...defaultProps} />);
++    const props = extractPropsFromWrapper(wrapper);
++    props.buttonClickHandler();
++    const { mock } = require('quick-auth/actions').logIn;
++    expect(mock.calls.length).toBe(1);
++    expect(mock.calls[0][0]).toBe('id');
++    expect(mock.calls[0][1].get()).toBe('lastUsedConnection');
++    expect(mock.calls[0][2]).toBe('lastUsedUsername');
++  });
++  it('calls skipQuickAuth in the alternativeClickHandler', () => {
++    const Component = getComponent();
++    const wrapper = mount(<Component {...defaultProps} />);
++    const props = extractPropsFromWrapper(wrapper);
++    props.alternativeClickHandler();
++    const { mock } = require('quick-auth/actions').skipQuickAuth;
++    expect(mock.calls.length).toBe(1);
++    expect(mock.calls[0][0]).toBe('id');
++  });
++});
+
+diff --git a/src/__tests__/core/web_api/legacy_api.test.js b/src/__tests__/core/web_api/legacy_api.test.js
+new file mode 100644
+index 0000000..e3da951
+--- /dev/null
++++ b/src/__tests__/core/web_api/legacy_api.test.js
+@@ -0,0 +1,202 @@
++jest.mock('auth0-js');
++
++const getClient = options => {
++  const clientId = 'cid';
++  const domain = 'domain';
++  const Auth0LegacyAPIClient = require('core/web_api/legacy_api').default;
++  const client = new Auth0LegacyAPIClient(clientId, domain, options);
++  client.client.popup = {
++    authorize: jest.fn(),
++    loginWithCredentials: jest.fn()
++  };
++  client.client.client = {
++    loginWithResourceOwner: jest.fn()
++  };
++  client.client.redirect = {
++    loginWithCredentials: jest.fn()
++  };
++  client.client.transactionManager = {
++    getStoredTransaction: jest.fn()
++  };
++  return client;
++};
++
++const getAuth0ClientMock = () => require('auth0-js');
++
++describe('Auth0LegacyAPIClient', () => {
++  beforeEach(() => {
++    jest.resetModules();
++  });
++
++  describe('with overwrites', () => {
++    it('should configure WebAuth with the proper overrides', () => {
++      const client = getClient({
++        overrides: {
++          __tenant: 'tenant1',
++          __token_issuer: 'issuer1'
++        }
++      });
++      const mock = getAuth0ClientMock();
++      const { overrides } = mock.WebAuth.mock.calls[0][0];
++      expect(overrides).toEqual({ __tenant: 'tenant1', __token_issuer: 'issuer1' });
++    });
++  });
++
++  describe('logIn', () => {
++    const assertCallWithCallback = (mock, callbackFunction) => {
++      expect(mock.calls.length).toBe(1);
++      expect(mock.calls[0][0]).toMatchSnapshot();
++      mock.calls[0][1]();
++      expect(callbackFunction.mock.calls.length).toBe(1);
++    };
++
++    const assertMethodCall = method => {
++      expect(method.calls.length).toBe(1);
++      expect(method.calls[0][0]).toMatchSnapshot();
++    };
++
++    const assertCallbackIsCalledOnce = (callback, method) => {
++      method.calls[0][1]();
++      expect(callback.mock.calls.length).toBe(1);
++    };
++
++    var callback;
++
++    beforeEach(() => {
++      callback = jest.fn();
++    });
++
++    describe('with social/enterprise (without username and email)', () => {
++      const redirectAuthorize = () => {
++        const mock = getAuth0ClientMock();
++        return mock.WebAuth.mock.instances[0].authorize.mock;
++      };
++
++      const popupAuthorize = () => {
++        const mock = getAuth0ClientMock();
++        return mock.WebAuth.mock.instances[0].popup.authorize.mock;
++      };
++
++      it('should call authorize when redirect===true', () => {
++        const client = getClient({
++          redirect: true
++        });
++        client.logIn({}, {}, callback);
++        assertMethodCall(redirectAuthorize());
++        assertCallbackIsCalledOnce(callback, redirectAuthorize());
++      });
++
++      it('should call popup.authorize when redirect===false', () => {
++        const client = getClient({
++          redirect: false
++        });
++        client.logIn({}, {}, callback);
++        assertMethodCall(popupAuthorize());
++        assertCallbackIsCalledOnce(callback, popupAuthorize());
++      });
++
++      it('should call popup.authorize with additional authParams', () => {
++        const client = getClient({
++          redirect: false
++        });
++        client.logIn(
++          {},
++          { scope: 'openid offline_access read:users', audience: 'https://mysite.com/api' },
++          callback
++        );
++        assertMethodCall(popupAuthorize());
++        assertCallbackIsCalledOnce(callback, popupAuthorize());
++      });
++    });
++
++    describe('with sso and redirect === false', () => {
++      it('should call loginWithResourceOwner', () => {
++        const client = getClient({
++          sso: false,
++          redirect: false
++        });
++        client.logIn({ username: 'foo' }, {}, callback);
++        const mock = getAuth0ClientMock();
++        const loginWithResourceOwnerMock =
++          mock.WebAuth.mock.instances[0].client.loginWithResourceOwner.mock;
++        assertMethodCall(loginWithResourceOwnerMock);
++        assertCallbackIsCalledOnce(callback, loginWithResourceOwnerMock);
++      });
++    });
++
++    describe('with credentials', () => {
++      const redirectLoginWithCredentials = () => {
++        const mock = getAuth0ClientMock();
++        return mock.WebAuth.mock.instances[0].redirect.loginWithCredentials.mock;
++      };
++
++      const popupLoginWithCredentials = () => {
++        const mock = getAuth0ClientMock();
++        return mock.WebAuth.mock.instances[0].popup.loginWithCredentials.mock;
++      };
++
++      it('should call loginWithCredentials', () => {
++        const client = getClient({
++          redirect: true,
++          sso: true
++        });
++        client.logIn({ username: 'foo' }, {}, callback);
++        assertMethodCall(redirectLoginWithCredentials());
++        assertCallbackIsCalledOnce(callback, redirectLoginWithCredentials());
++      });
++
++      it('should call loginWithCredentials with auth params', () => {
++        const client = getClient({
++          redirect: true,
++          sso: true
++        });
++        client.logIn(
++          { username: 'foo' },
++          { scope: 'openid offline_access write:users', audience: 'https://mysites.com/api' },
++          callback
++        );
++        assertMethodCall(redirectLoginWithCredentials());
++        assertCallbackIsCalledOnce(callback, redirectLoginWithCredentials());
++      });
++
++      it('should call popup.authorize when redirect===false', () => {
++        const client = getClient({
++          redirect: false,
++          sso: true
++        });
++        client.logIn({ username: 'foo' }, {}, callback);
++        assertMethodCall(popupLoginWithCredentials());
++        assertCallbackIsCalledOnce(callback, popupLoginWithCredentials());
++      });
++    });
++  });
++
++  describe('parseHash', () => {
++    it('should parse correct hash', () => {
++      const jwt = require('jsonwebtoken');
++      const client = getClient({
++        redirect: false
++      });
++      const token = jwt.sign(
++        { aud: client.clientID, iss: `https://${client.domain}/` },
++        'someSecret',
++        { expiresIn: '30m' }
++      );
++      const payload = jwt.decode(token);
++      const callback = jest.fn();
++
++      client.parseHash(
++        `#access_token=aToken&id_token=${token}&refresh_token=rToken&state=/path%3Fone%3Dtwo%26three%3D3%234`,
++        callback
++      );
++      expect(callback).toHaveBeenCalled();
++      expect(callback).toHaveBeenCalledWith(null, {
++        accessToken: 'aToken',
++        idToken: token,
++        idTokenPayload: payload,
++        refreshToken: 'rToken',
++        state: '/path?one=two&three=3#4'
++      });
++    });
++  });
++});
+",0,,30,1323,2,3,30,1323
+1161,2acce9efa126ed3c07544efdf111fa7c35bbc9c0,7f77ae69f63af6195fb87e237949c71263f226a1,"- exposes `checkSession` method
+- removes `oidcConformant` flag
+- don't use legacy apis
+- make ""last time you login screen"" work with oidc flows
+","a0js beta3
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 345caae..5f30eab 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -7,10 +7,12 @@ const getClient = (options = {}) => {
+   const Auth0APIClient = require('core/web_api/p2_api').default;
+   const client = new Auth0APIClient(lockId, clientId, domain, options);
+   client.client.popup = {
+-    authorize: jest.fn()
++    authorize: jest.fn(),
++    loginWithCredentials: jest.fn()
+   };
+   client.client.client = {
+-    login: jest.fn()
++    login: jest.fn(),
++    loginWithResourceOwner: jest.fn()
+   };
+   return client;
+ };
+@@ -66,12 +68,6 @@ describe('Auth0APIClient', () => {
+       });
+     });
+     describe('with credentials', () => {
+-      it('should fail when in popup mode', () => {
+-        const client = getClient({
+-          redirect: false
+-        });
+-        expect(() => client.logIn({ username: 'foo' }, {})).toThrowErrorMatchingSnapshot();
+-      });
+       it('should call client.login', () => {
+         const client = getClient({
+           redirect: true
+@@ -82,6 +78,30 @@ describe('Auth0APIClient', () => {
+         const loginMock = mock.WebAuth.mock.instances[0].login.mock;
+         assertCallWithCallback(loginMock, callback);
+       });
++      it('should call client.loginWithResourceOwner when redirect is false and sso is false', () => {
++        const client = getClient({
++          redirect: false,
++          sso: false
++        });
++        const callback = jest.fn();
++        client.logIn({ username: 'foo' }, {}, callback);
++        const mock = getAuth0ClientMock();
++        const loginWithResourceOwnerMock =
++          mock.WebAuth.mock.instances[0].client.loginWithResourceOwner.mock;
++        assertCallWithCallback(loginWithResourceOwnerMock, callback);
++      });
++      it('should call popup.loginWithCredentials when redirect is false and sso is true', () => {
++        const client = getClient({
++          redirect: false,
++          sso: true
++        });
++        const callback = jest.fn();
++        client.logIn({ username: 'foo' }, {}, callback);
++        const mock = getAuth0ClientMock();
++        const loginWithCredentialsMock =
++          mock.WebAuth.mock.instances[0].popup.loginWithCredentials.mock;
++        assertCallWithCallback(loginWithCredentialsMock, callback);
++      });
+     });
+   });
+ });
+",0,,14,194,1,5,23,311
+1164,7044bf4960e33881ab51db3362688ec4f4664f0f,7044bf4960e33881ab51db3362688ec4f4664f0f,,"Adding test for popup+id_token
+","diff --git a/src/__tests__/core/index.test.js b/src/__tests__/core/index.test.js
+index 1988d38..a8cf3c6 100644
+--- a/src/__tests__/core/index.test.js
++++ b/src/__tests__/core/index.test.js
+@@ -37,6 +37,19 @@ describe('setup', () => {
+     const model = mock.calls[0][1].toJS();
+     expect(model.auth.redirectUrl).toBe('https://test.com/path/');
+   });
++  it('should work with redirect:false and responseType:id_token', () => {
++    const options = {
++      auth: {
++        redirect: false,
++        responseType: 'id_token'
++      }
++    };
++    setup('id', 'clientID', 'domain', options, 'hookRunner', 'emitEventFn');
++    const { mock } = mockInit;
++    expect(mock.calls.length).toBe(1);
++    const model = mock.calls[0][1].toJS();
++    expect(model).toMatchSnapshot();
++  });
+ });
+ 
+ describe('setResolvedConnection', () => {
+",0,,2,72,1,2,6,83
+1178,81d87df08cb31c9a998a2af79ae8f6d98c562892,34114b2eb5c11a1b5f95109f0a9add04d21dd13c,,"Upgrading a0js to use latest getSSOData
+","diff --git a/src/__tests__/core/sso/last_login_screen.test.jsx b/src/__tests__/core/sso/last_login_screen.test.jsx
+index 839da85..e5eb541 100644
+--- a/src/__tests__/core/sso/last_login_screen.test.jsx
++++ b/src/__tests__/core/sso/last_login_screen.test.jsx
+@@ -37,7 +37,9 @@ describe('LastLoginScreen', () => {
+     }));
+ 
+     jest.mock('connection/social/index', () => ({
+-      STRATEGIES: {},
++      STRATEGIES: {
++        twitter: 'Twitter'
++      },
+       authButtonsTheme: () => ({
+         get: () => undefined
+       })
+@@ -100,6 +102,21 @@ describe('LastLoginScreen', () => {
+       expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
+     });
+   });
++  describe('renders correct buttonLabel', () => {
++    it('uses SOCIAL_STRATEGY mapping when there is not a lastUsedUsername', () => {
++      require('core/sso/index').lastUsedConnection = () => ({
++        get: () => 'twitter'
++      });
++      require('core/sso/index').lastUsedUsername = () => undefined;
++      const Component = getComponent();
++      expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++    });
++    it('uses lastUsedConnectionName when there is not a lastUsedUsername and no SOCIAL_STRATEGY mapping', () => {
++      require('core/sso/index').lastUsedUsername = () => undefined;
++      const Component = getComponent();
++      expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++    });
++  });
+   it('calls logIn in the buttonClickHandler', () => {
+     const Component = getComponent();
+     const wrapper = mount(<Component {...defaultProps} />);
+",0,,5,73,1,2,5,73
+1195,2d5fe153183bfec49a103bb102a61c70f94d9250,2d5fe153183bfec49a103bb102a61c70f94d9250,,"removing snapshot file
+",,0,,1,68,1,4,9,486
+1224,7314a6253ec6c997c15eb36640b661486dfb0bac,8d712d633c25d5832a64d687cc265401b8daef11,"To be able to set plugins during embeded Lock creation. For example:
+
+```
+const lock = new Auth0Lock(clientId, domain, {
+    plugins: [new CustomPlugin()],
+});
+
+lock.show();
+```","`plugins` option added. Forwarded to WebAuth.
+
+To be able to set plugins during Lock creation.
+
++ Tests
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index eedf37c..b3c8d49 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -35,6 +35,19 @@ describe('Auth0APIClient', () => {
+         const { overrides } = mock.WebAuth.mock.calls[0][0];
+         expect(overrides).toEqual({ __tenant: 'tenant1', __token_issuer: 'issuer1' });
+       });
++      it('forwards options to WebAuth', () => {
++        const options = {
++          audience: 'foo',
++          redirectUrl: '//localhost:8080/login/callback',
++          responseMode: 'query',
++          responseType: 'code',
++          leeway: 60,
++          plugins: [{ name: 'ExamplePlugin' }]
++        };
++        const client = getClient(options);
++        const mock = getAuth0ClientMock();
++        expect(mock.WebAuth.mock.calls[0][0]).toMatchSnapshot();
++      });
+     });
+   });
+   describe('logIn', () => {
+",0,,3,39,1,2,3,47
+1225,73e3291c915a67c4dedd8e6ce55bf36045f89db8,73e3291c915a67c4dedd8e6ce55bf36045f89db8,"Updating auth0.js with updated versions of idtoken-verifier and superagent and also https://github.com/auth0/auth0.js/pull/615
+superagent was moved to a devDependency as well because it's not used anymore inside lock itself.","fixing _telemetryInfo test
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 1375cfe..c039a8d 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -23,7 +23,7 @@ describe('Auth0APIClient', () => {
+     jest.resetModules();
+   });
+   describe('init', () => {
+-    describe('with overwrites', () => {
++    describe('with overrides', () => {
+       it('forwards options to WebAuth', () => {
+         const options = {
+           audience: 'foo',
+@@ -35,7 +35,8 @@ describe('Auth0APIClient', () => {
+             __tenant: 'tenant1',
+             __token_issuer: 'issuer1'
+           },
+-          plugins: [{ name: 'ExamplePlugin' }]
++          plugins: [{ name: 'ExamplePlugin' }],
++          _telemetryInfo: {}
+         };
+         const client = getClient(options);
+         const mock = getAuth0ClientMock();
+",0,,2,13,1,2,4,72
+1245,6df0c77fc66d3b8311a40c9828214fa58246f4cd,6df0c77fc66d3b8311a40c9828214fa58246f4cd,,"Handling embedded and hosted scenarios in quick-auth
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 59f1ddf..104a060 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -1,9 +1,11 @@
++import { setURL } from 'testUtils';
++
+ jest.mock('auth0-js');
+ 
+ const getClient = (options = {}) => {
+   const lockId = 'lockId';
+   const clientId = 'cid';
+-  const domain = 'domain';
++  const domain = 'me.auth0.com';
+   const Auth0APIClient = require('core/web_api/p2_api').default;
+   const client = new Auth0APIClient(lockId, clientId, domain, options);
+   client.client.popup = {
+@@ -44,6 +46,31 @@ describe('Auth0APIClient', () => {
+         expect(mock.WebAuth.mock.calls[0][0]).toMatchSnapshot();
+       });
+     });
++
++    describe('should set authOpt according options', () => {
++      it('should set sso:true when inside the universal login page', () => {
++        setURL('https://me.auth0.com/');
++        const options = {
++          sso: true
++        };
++        const client = getClient(options);
++        expect(client.authOpt.sso).toBe(true);
++      });
++      it('should set sso:false when inside the universal login page', () => {
++        setURL('https://me.auth0.com/');
++        const options = {
++          sso: false
++        };
++        const client = getClient(options);
++        expect(client.authOpt.sso).toBe(false);
++      });
++      it('should set sso:undefined when outside the universal login page', () => {
++        setURL('https://other-url.auth0.com/');
++        const options = {};
++        const client = getClient(options);
++        expect(client.authOpt.sso).toBe(undefined);
++      });
++    });
+   });
+   describe('logIn', () => {
+     const assertCallWithCallback = (mock, callbackFunction) => {
+",0,,6,83,1,2,7,101
+1251,007cb3c2b77fb3352cefab6d28d5ee6197c813f7,007cb3c2b77fb3352cefab6d28d5ee6197c813f7,,"Upgrade a0js to fix popup mode with passwordless
+","diff --git a/src/__tests__/connection/passwordless/passwordless.actions.test.js b/src/__tests__/connection/passwordless/passwordless.actions.test.js
+index 2049add..65dabaa 100644
+--- a/src/__tests__/connection/passwordless/passwordless.actions.test.js
++++ b/src/__tests__/connection/passwordless/passwordless.actions.test.js
+@@ -32,7 +32,8 @@ describe('passwordless actions', () => {
+     jest.mock('core/actions', () => ({
+       closeLock: jest.fn(),
+       logIn: jest.fn(),
+-      validateAndSubmit: jest.fn()
++      validateAndSubmit: jest.fn(),
++      logInSuccess: jest.fn()
+     }));
+     jest.mock('i18n', () => ({ html: (_, keys) => keys.join(',') }));
+     jest.mock('core/index', () => ({
+@@ -213,12 +214,11 @@ describe('passwordless actions', () => {
+         const { swap } = require('store/index');
+         expectMockToMatch(swap, 2);
+       });
+-      it('sets setSubmitting to false', () => {
++      it('calls logInSuccess on success', () => {
+         actions.logIn('id');
+-        require('core/web_api').passwordlessVerify.mock.calls[0][2](null);
++        require('core/web_api').passwordlessVerify.mock.calls[0][2](null, { result: true });
+ 
+-        const { swap } = require('store/index');
+-        expectMockToMatch(swap, 2);
++        expectMockToMatch(require('core/actions').logInSuccess, 1);
+       });
+     });
+   });
+
+diff --git a/src/__tests__/connection/passwordless/passwordless.test.js b/src/__tests__/connection/passwordless/passwordless.test.js
+index cdd88bb..7601606 100644
+--- a/src/__tests__/connection/passwordless/passwordless.test.js
++++ b/src/__tests__/connection/passwordless/passwordless.test.js
+@@ -34,15 +34,6 @@ describe('passwordless connection', () => {
+     beforeEach(() => {
+       initPasswordless = require('connection/passwordless/index').initPasswordless;
+     });
+-    it('should throw an error when `auth.redirect` is false', () => {
+-      expect(() =>
+-        initPasswordless(null, {
+-          auth: {
+-            redirect: false
+-          }
+-        })
+-      ).toThrowErrorMatchingSnapshot();
+-    });
+     describe('calls initNS ', () => {
+       it('with send:code when opts.passwordlessMethod is undefined', () => {
+         initPasswordless(null, {});
+",0,,10,70,3,1,10,70
+1290,5c3fd59868f1724c8c9e7b8c0bc9a709d0bc469a,05a28b21a179b795090a302b8f63e0c4294f07be,,"adding flag for impersonation
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 104a060..175133c 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -159,4 +159,22 @@ describe('Auth0APIClient', () => {
+     expect(mock.calls.length).toBe(1);
+     expect(mock.calls[0]).toMatchSnapshot();
+   });
++  describe('parseHash', () => {
++    it('should pass __enableImpersonation:false when options._enableImpersonation is not present', () => {
++      const client = getClient({});
++      client.parseHash('hash', 'cb');
++      const mock = getAuth0ClientMock();
++      const parseHashMock = mock.WebAuth.mock.instances[0].parseHash.mock;
++      expect(parseHashMock.calls.length).toBe(1);
++      expect(parseHashMock.calls[0]).toMatchSnapshot();
++    });
++    it('should pass __enableImpersonation when options._enableImpersonation===true', () => {
++      const client = getClient({ _enableImpersonation: true });
++      client.parseHash('hash', 'cb');
++      const mock = getAuth0ClientMock();
++      const parseHashMock = mock.WebAuth.mock.instances[0].parseHash.mock;
++      expect(parseHashMock.calls.length).toBe(1);
++      expect(parseHashMock.calls[0]).toMatchSnapshot();
++    });
++  });
+ });
+",0,,3,44,1,3,5,108
+1382,3f46992e2c0b94f7504a57733c66d7056bd642b4,d31cc77ce7d1fb2f1812df11d13548f99909ce16,"fix https://github.com/auth0/lock/issues/1381
+
+pre:
+![image](https://user-images.githubusercontent.com/941075/40628214-1238e372-629a-11e8-94c2-eb686ec24e9e.png)
+
+
+post:
+![image](https://user-images.githubusercontent.com/941075/40628206-fe1fc3b0-6299-11e8-962e-6ee498524851.png)
+","Hide password strength message when the password is valid
+","diff --git a/src/__tests__/field/password_pane.test.jsx b/src/__tests__/field/password_pane.test.jsx
+index 0326146..76b671e 100644
+--- a/src/__tests__/field/password_pane.test.jsx
++++ b/src/__tests__/field/password_pane.test.jsx
+@@ -23,6 +23,7 @@ describe('PasswordPane', () => {
+     jest.resetModules();
+ 
+     jest.mock('field/index', () => ({
++      isFieldValid: () => true,
+       getFieldValue: (m, field) => field,
+       isFieldVisiblyInvalid: () => true
+     }));
+@@ -60,6 +61,12 @@ describe('PasswordPane', () => {
+ 
+     expectComponent(<PasswordPane {...defaultProps} />).toMatchSnapshot();
+   });
++  it('sets showPasswordStrenghtMessage as true when `isFieldValid` is false', () => {
++    require('field/index').isFieldValid = () => false;
++    let PasswordPane = getComponent();
++
++    expectComponent(<PasswordPane {...defaultProps} />).toMatchSnapshot();
++  });
+   it('sets isValid as true when `isFieldVisiblyInvalid` is false', () => {
+     require('field/index').isFieldVisiblyInvalid = () => false;
+     let PasswordPane = getComponent();
+",0,,4,36,1,2,4,62
+1384,12441fb42a6f40c0f606a574f6604c571221075a,8b7a10547787985bbd6f6c2092b4118cd8394897,,"Display error for all enterprise connections in the reset password screen
+","diff --git a/src/__tests__/connection/database/reset_password.test.jsx b/src/__tests__/connection/database/reset_password.test.jsx
+new file mode 100644
+index 0000000..eea4b9f
+--- /dev/null
++++ b/src/__tests__/connection/database/reset_password.test.jsx
+@@ -0,0 +1,45 @@
++import React from 'react';
++import { mount } from 'enzyme';
++
++const getScreen = () => {
++  const ResetPasswordScreen = require('connection/database/reset_password').default;
++  return new ResetPasswordScreen();
++};
++
++describe('ResetPasswordScreen', () => {
++  beforeEach(() => {
++    jest.resetModules();
++
++    jest.mock('connection/database/index', () => ({
++      databaseUsernameValue: () => 'foo@test.com'
++    }));
++
++    jest.mock('connection/enterprise', () => ({
++      isEnterpriseDomain: () => true
++    }));
++
++    jest.mock('i18n', () => ({ str: (_, keys) => keys.join(',') }));
++
++    jest.mock('core/index', () => ({
++      id: () => 'id',
++      setGlobalError: 'setGlobalError',
++      clearGlobalError: 'clearGlobalError'
++    }));
++
++    jest.mock('store/index', () => ({
++      swap: jest.fn(),
++      updateEntity: 'updateEntity'
++    }));
++  });
++  it('isSubmitDisabled returns true when `isEnterpriseDomain` is true', () => {
++    const screen = getScreen();
++    expect(screen.isSubmitDisabled()).toBe(true);
++    expect(require('store/index').swap.mock.calls[0]).toMatchSnapshot();
++  });
++  it('isSubmitDisabled returns false when `isEnterpriseDomain` is false', () => {
++    require('connection/enterprise').isEnterpriseDomain = () => false;
++    const screen = getScreen();
++    expect(screen.isSubmitDisabled()).toBe(false);
++    expect(require('store/index').swap.mock.calls[0]).toMatchSnapshot();
++  });
++});
+",0,,3,69,1,3,3,77
+1441,bf073ccdfdcccadb459e402d774f239542618c22,bf073ccdfdcccadb459e402d774f239542618c22,"Fix issue with incorrect error message mapping in case of session timeout. The returned payload is:
+
+```
+{
+  ""statusCode"": 403,
+  ""description"": ""Invalid state"",
+  ""name"": ""AnomalyDetected"",
+  ""code"": ""access_denied""
+}
+```
+
+Currently this kind of error is mapped to `invalid_user_password` which causes UX regression to one of our customers. 
+
+@luisrudge suggested we could fix this issue by preventing the mapping in Hosted Login Pages environment.","prevent access_denied to invalid_user_password error or code mapping if in HLP env
+","diff --git a/src/__tests__/core/web_api/helper.test.js b/src/__tests__/core/web_api/helper.test.js
+index 7dade9b..40a39ad 100644
+--- a/src/__tests__/core/web_api/helper.test.js
++++ b/src/__tests__/core/web_api/helper.test.js
+@@ -32,30 +32,63 @@ describe('normalizeError', () => {
+     const normalized = normalizeError(undefined);
+     expect(normalized).toBe(undefined);
+   });
+-  it('should map access_denied error to invalid_user_password when error.error === access_denied', () => {
+-    const error = {
++
++  describe('access_denied to invalid_user_password mapping', function() {
++    const domainMock = 'domainMock';
++    const errorObjWithError = {
+       error: 'access_denied',
+       description: 'foobar'
+     };
+-    const expectedError = {
+-      code: 'invalid_user_password',
+-      error: 'invalid_user_password',
+-      description: 'foobar'
+-    };
+-    const actualError = normalizeError(error);
+-    expect(actualError).toMatchSnapshot();
+-  });
+-  it('should map access_denied error to invalid_user_password when error.code === access_denied', () => {
+-    const error = {
++    const errorObjWithCode = {
+       code: 'access_denied',
+       description: 'foobar'
+     };
+-    const expectedError = {
+-      code: 'invalid_user_password',
+-      error: 'invalid_user_password',
+-      description: 'foobar'
+-    };
+-    const actualError = normalizeError(error);
+-    expect(actualError).toMatchSnapshot();
++    let currentWindowObj;
++
++    beforeAll(function() {
++      currentWindowObj = global.window;
++      global.window = {
++        locaction: {
++          host: domainMock
++        }
++      };
++    });
++
++    afterAll(function() {
++      global.window = currentWindowObj;
++    });
++
++    describe('domain is undefined', function() {
++      it('should map access_denied error to invalid_user_password when error.error === access_denied', () => {
++        const actualError = normalizeError(errorObjWithError);
++        expect(actualError).toMatchSnapshot();
++      });
++      it('should map access_denied error to invalid_user_password when error.code === access_denied', () => {
++        const actualError = normalizeError(errorObjWithCode);
++        expect(actualError).toMatchSnapshot();
++      });
++    });
++
++    describe(""domain doesn't match current host"", function() {
++      it('should map access_denied error to invalid_user_password when error.error === access_denied', () => {
++        const actualError = normalizeError(errorObjWithError, 'loremIpsum');
++        expect(actualError).toMatchSnapshot();
++      });
++      it('should map access_denied error to invalid_user_password when error.code === access_denied', () => {
++        const actualError = normalizeError(errorObjWithCode, 'loremIpsum');
++        expect(actualError).toMatchSnapshot();
++      });
++    });
++
++    describe('domain match current host', function() {
++      it('should not map access_denied error to invalid_user_password when error.error === access_denied', () => {
++        const actualError = normalizeError(errorObjWithError, domainMock);
++        expect(actualError).toMatchSnapshot();
++      });
++      it('should not map access_denied error to invalid_user_password when error.code === access_denied', () => {
++        const actualError = normalizeError(errorObjWithCode, domainMock);
++        expect(actualError).toMatchSnapshot();
++      });
++    });
+   });
+ });
+",0,,4,122,1,1,4,122
+1486,b0286f5e415d2405863827916cedd2a3753a8de5,67f121142b19b78154bd859eef9003c2b6786810,fix https://github.com/auth0/lock/issues/1484,"Fix different scope in checkSession
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index f6c959b..63e759c 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -126,6 +126,14 @@ describe('Auth0APIClient', () => {
+         });
+         expect(client.authOpt.nonce).toBe('foo');
+       });
++      it('should set scope from options.params.scope', () => {
++        const client = getClient({
++          params: {
++            scope: 'foo'
++          }
++        });
++        expect(client.authOpt.scope).toBe('foo');
++      });
+     });
+   });
+   describe('logIn', () => {
+",0,,3,24,1,2,3,27
+1557,74f3fa7e99ef5783027a2210361c02bc7feacaa8,74f3fa7e99ef5783027a2210361c02bc7feacaa8,"fix https://github.com/auth0/lock/issues/1556
+
+### Changes
+
+Passing the lock instance as props so the confirmation pane (only shown when redirect:false) doesn't throw an error.
+
+### References
+
+https://github.com/auth0/lock/issues/1556","Add tests
+","diff --git a/src/__tests__/connection/database/password_reset_confirmation.test.jsx b/src/__tests__/connection/database/password_reset_confirmation.test.jsx
+new file mode 100644
+index 0000000..44f9b79
+--- /dev/null
++++ b/src/__tests__/connection/database/password_reset_confirmation.test.jsx
+@@ -0,0 +1,14 @@
++import React from 'react';
++import I from 'immutable';
++
++import { expectComponent } from 'testUtils';
++
++import PasswordResetConfirmation from '../../../connection/database/password_reset_confirmation';
++
++const lock = I.fromJS({ id: '__lock-id__' });
++
++describe('PasswordResetConfirmation', () => {
++  it('renders correctly', async () => {
++    expectComponent(<PasswordResetConfirmation lock={lock} />).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/__tests__/connection/database/signed_up_confirmation.test.jsx b/src/__tests__/connection/database/signed_up_confirmation.test.jsx
+new file mode 100644
+index 0000000..0d15754
+--- /dev/null
++++ b/src/__tests__/connection/database/signed_up_confirmation.test.jsx
+@@ -0,0 +1,14 @@
++import React from 'react';
++import I from 'immutable';
++
++import { expectComponent } from 'testUtils';
++
++import SignedUpConfirmation from '../../../connection/database/signed_up_confirmation';
++
++const lock = I.fromJS({ id: '__lock-id__' });
++
++describe('SignedUpConfirmation', () => {
++  it('renders correctly', async () => {
++    expectComponent(<SignedUpConfirmation lock={lock} />).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/__tests__/connection/passwordless/email_sent_confirmation.test.jsx b/src/__tests__/connection/passwordless/email_sent_confirmation.test.jsx
+new file mode 100644
+index 0000000..69bd507
+--- /dev/null
++++ b/src/__tests__/connection/passwordless/email_sent_confirmation.test.jsx
+@@ -0,0 +1,14 @@
++import React from 'react';
++import I from 'immutable';
++
++import { expectComponent } from 'testUtils';
++
++import EmailSentConfirmation from '../../../connection/passwordless/email_sent_confirmation';
++
++const lock = I.fromJS({ id: '__lock-id__' });
++
++describe('EmailSentConfirmation', () => {
++  it('renders correctly', async () => {
++    expectComponent(<EmailSentConfirmation lock={lock} />).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/__tests__/core/signed_in_confirmation.test.jsx b/src/__tests__/core/signed_in_confirmation.test.jsx
+new file mode 100644
+index 0000000..0a2feae
+--- /dev/null
++++ b/src/__tests__/core/signed_in_confirmation.test.jsx
+@@ -0,0 +1,14 @@
++import React from 'react';
++import I from 'immutable';
++
++import { expectComponent } from 'testUtils';
++
++import SignedInConfirmation from '../../core/signed_in_confirmation';
++
++const lock = I.fromJS({ id: '__lock-id__' });
++
++describe('SignedInConfirmation', () => {
++  it('renders correctly', async () => {
++    expectComponent(<SignedInConfirmation lock={lock} />).toMatchSnapshot();
++  });
++});
+
+diff --git a/src/__tests__/ui/box/confirmation_pane.test.jsx b/src/__tests__/ui/box/confirmation_pane.test.jsx
+new file mode 100644
+index 0000000..f8d9f65
+--- /dev/null
++++ b/src/__tests__/ui/box/confirmation_pane.test.jsx
+@@ -0,0 +1,20 @@
++import React from 'react';
++import I from 'immutable';
++
++import { expectComponent } from 'testUtils';
++
++import ConfirmationPane from '../../../ui/box/confirmation_pane';
++
++const defaultProps = {
++  lock: I.fromJS({ id: '__lock-id__' }),
++  backHandler: () => {},
++  closeHandler: () => {},
++  children: <span>test</span>,
++  svg: <svg>svg</svg>
++};
++
++describe('ConfirmationPane', () => {
++  it('renders correctly', async () => {
++    expectComponent(<ConfirmationPane {...defaultProps} />).toMatchSnapshot();
++  });
++});
+",0,,10,247,5,2,15,257
+1770,393d6cdac9481c6d1f256c2013d0be2722fb7e46,393d6cdac9481c6d1f256c2013d0be2722fb7e46,"### Changes
+
+This PR bumps Auth0.js to 9.12.1 to take advantage of a new default leeway. It also changes the default leeway specified by Lock to align with Auth0.js to 60 seconds.
+
+### References
+
+Aligns with this change: https://github.com/auth0/auth0.js/pull/1062
+
+### Testing
+
+Unit test coverage added. It's not immediately obvious from the way the diff has worked out, but the change is verified in the form of an additional snapshot. Existing tests used a leeway of 60 seconds; these were changed to 30 seconds to distinguish these tests from the new test that sends the default of 60.
+
+* [X] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [x] All existing and new tests complete without errors
+* [x] All code quality tools/guidelines have been run/followed
+* [x] All relevant assets have been compiled
+* [x] All active GitHub checks have passed
+","Update default leeway to 60 sec
+","diff --git a/src/__tests__/core/web_api/p2_api.test.js b/src/__tests__/core/web_api/p2_api.test.js
+index 0dc3ee2..84e9af9 100644
+--- a/src/__tests__/core/web_api/p2_api.test.js
++++ b/src/__tests__/core/web_api/p2_api.test.js
+@@ -47,7 +47,7 @@ describe('Auth0APIClient', () => {
+           redirectUrl: '//localhost:8080/login/callback',
+           responseMode: 'query',
+           responseType: 'code',
+-          leeway: 60,
++          leeway: 30,
+           _telemetryInfo: { ignored: true }
+         };
+         getClient(options);
+@@ -61,7 +61,7 @@ describe('Auth0APIClient', () => {
+           redirectUrl: '//localhost:8080/login/callback',
+           responseMode: 'query',
+           responseType: 'code',
+-          leeway: 60,
++          leeway: 30,
+           _telemetryInfo: { name: 'test-sdk', version: '1.0.0', env: { envOverride: true } }
+         };
+         getClient(options);
+@@ -82,7 +82,7 @@ describe('Auth0APIClient', () => {
+           redirectUrl: '//localhost:8080/login/callback',
+           responseMode: 'query',
+           responseType: 'code',
+-          leeway: 60,
++          leeway: 30,
+           _telemetryInfo: {
+             name: 'test-sdk',
+             version: '1.0.0',
+@@ -109,7 +109,35 @@ describe('Auth0APIClient', () => {
+           redirectUrl: '//localhost:8080/login/callback',
+           responseMode: 'query',
+           responseType: 'code',
+-          leeway: 60,
++          leeway: 30,
++          overrides: {
++            __tenant: 'tenant1',
++            __token_issuer: 'issuer1',
++            __jwks_uri: 'https://jwks.com'
++          },
++          plugins: [
++            {
++              name: 'ExamplePlugin'
++            }
++          ],
++          params: {
++            nonce: 'nonce',
++            state: 'state',
++            scope: 'custom_scope'
++          }
++        };
++        const client = getClient(options);
++        const mock = getAuth0ClientMock();
++        expect(mock.WebAuth.mock.calls[0][0]).toMatchSnapshot();
++      });
++
++      it('forwards options to WebAuth with a default leeway', () => {
++        setURL(`https://auth.myapp.com/authorize`);
++        const options = {
++          audience: 'foo',
++          redirectUrl: '//localhost:8080/login/callback',
++          responseMode: 'query',
++          responseType: 'code',
+           overrides: {
+             __tenant: 'tenant1',
+             __token_issuer: 'issuer1',
+",0,,3,71,1,2,5,146
+1784,3f2856e64afada21016441ec8a3696c744a3e730,b1075aeb864548803289a98fbfe28a5ebe9173c4,"### Changes
+
+With this PR, the `authorization_error` event is now emitted when an error occurs while submitting a code in the passwordless flow.
+
+### References
+
+Originated from an internal service desk ticket.1
+
+### Testing
+
+* [x] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [x] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [x] All existing and new tests complete without errors
+* [x] All code quality tools/guidelines have been run/followed
+* [x] All relevant assets have been compiled
+* [x] All active GitHub checks have passed
+","Emit authorization_error event on passwordless error
+","diff --git a/src/__tests__/connection/passwordless/passwordless.actions.test.js b/src/__tests__/connection/passwordless/passwordless.actions.test.js
+index 68b9a58..b8f5649 100644
+--- a/src/__tests__/connection/passwordless/passwordless.actions.test.js
++++ b/src/__tests__/connection/passwordless/passwordless.actions.test.js
+@@ -1,5 +1,6 @@
+ import passwordless from 'connection/passwordless/actions';
+ import { expectMockToMatch } from 'testUtils';
++import { emitAuthorizationErrorEvent } from '../../../core';
+ 
+ jest.useFakeTimers();
+ 
+@@ -46,7 +47,8 @@ describe('passwordless actions', () => {
+             auth: 'params'
+           })
+         })
+-      }
++      },
++      emitAuthorizationErrorEvent: jest.fn()
+     }));
+     jest.mock('store/index', () => ({
+       read: jest.fn(() => 'model'),
+@@ -195,26 +197,42 @@ describe('passwordless actions', () => {
+       expectMockToMatch(read, 1);
+       expectMockToMatch(swap, 1);
+     });
++
+     it('calls webApi.passwordlessVerify() with sms options', () => {
+       actions.logIn('id');
+       expectMockToMatch(require('core/web_api').passwordlessVerify, 1);
+     });
++
+     it('calls webApi.passwordlessVerify() with email options', () => {
+       require('connection/passwordless/index').isEmail = () => true;
+       actions.logIn('id');
+       expectMockToMatch(require('core/web_api').passwordlessVerify, 1);
+     });
++
+     describe('on webApi.passwordlessVerify() callback', () => {
+-      it('formats error when there is an error ', () => {
+-        actions.logIn('id');
++      describe('when there is an eror', () => {
++        it('formats the error', () => {
++          actions.logIn('id');
+ 
+-        const error = new Error('foobar');
+-        error.error = 'some_error_code';
+-        require('core/web_api').passwordlessVerify.mock.calls[0][2](error);
++          const error = new Error('foobar');
++          error.error = 'some_error_code';
++          require('core/web_api').passwordlessVerify.mock.calls[0][2](error);
++
++          const { swap } = require('store/index');
++          expectMockToMatch(swap, 2);
++        });
++
++        it('emits the ""authorization_error"" event', () => {
++          actions.logIn('id');
+ 
+-        const { swap } = require('store/index');
+-        expectMockToMatch(swap, 2);
++          const error = new Error('foobar');
++          error.error = 'some_error_code';
++          require('core/web_api').passwordlessVerify.mock.calls[0][2](error);
++
++          expectMockToMatch(require('core/index').emitAuthorizationErrorEvent, 1);
++        });
+       });
++
+       it('calls logInSuccess on success', () => {
+         actions.logIn('id');
+         require('core/web_api').passwordlessVerify.mock.calls[0][2](null, { result: true });
+",0,,3,46,1,4,4,47
+1867,10eea2e145968dc2f10ab04909e2587668024d61,ce5fd40691fdc6c4d2de576fd8975fd320df6838,"### Changes
+
+This change effectively reverts #1859 and reimplements the header height calculation in a way that doesn't use a CSS variable (this was breaking in IE11). All of this is designed to handle the case where the title is too large to be contained on one line.
+
+To do this, this PR implements the ability for Lock to handle its own emitted events, and handles the `signin ready` and `signup ready` events to responds to tab changes and recalculate the header size.
+
+**IE11 render**
+
+![image](https://user-images.githubusercontent.com/766403/82051931-b1d39500-96b2-11ea-84a6-5a3324645c88.png)
+
+### References
+
+This was raised via an internal service desk ticket, from customers who were seeing header size issues in IE11 thanks to the lack of CSS variable support.
+
+### Testing
+
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+
+* [X] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [x] All existing and new tests complete without errors
+* [x] All code quality tools/guidelines have been run/followed
+* [x] All relevant assets have been compiled
+* [x] All active GitHub checks have passed
+","Fixed header height when tabs change
+","diff --git a/src/__tests__/core/index.test.js b/src/__tests__/core/index.test.js
+index 042d9f8..35225ed 100644
+--- a/src/__tests__/core/index.test.js
++++ b/src/__tests__/core/index.test.js
+@@ -54,7 +54,7 @@ describe('setup', () => {
+         responseType: 'id_token'
+       }
+     };
+-    setup('id', 'clientID', 'domain', options, 'hookRunner', 'emitEventFn');
++    setup('id', 'clientID', 'domain', options, 'hookRunner', 'emitEventFn', 'handleEventFn');
+     const { mock } = mockInit;
+     expect(mock.calls.length).toBe(1);
+     const model = mock.calls[0][1].toJS();
+
+diff --git a/src/__tests__/ui/box/chrome.test.jsx b/src/__tests__/ui/box/chrome.test.jsx
+index 2512523..14a1413 100644
+--- a/src/__tests__/ui/box/chrome.test.jsx
++++ b/src/__tests__/ui/box/chrome.test.jsx
+@@ -1,18 +1,38 @@
+ import React from 'react';
+-import I from 'immutable';
++import immutable from 'immutable';
++import { create } from 'react-test-renderer';
+ 
+ import { expectComponent, mockComponent } from 'testUtils';
+ const getComponent = () => require('ui/box/chrome').default;
+ 
+ jest.mock('ui/box/header', () => mockComponent('header'));
+-
+ jest.mock('ui/box/multisize_slide', () => mockComponent('div'));
+ jest.mock('ui/box/global_message', () => mockComponent('div'));
+ 
++let mockEventRegister = {};
++
++const triggerEvent = name => {
++  if (name in mockEventRegister) {
++    return mockEventRegister[name]();
++  }
++
++  throw new Error(`Unknown event '${name}'`);
++};
++
++jest.mock('core/index', () => ({
++  handleEvent: jest.fn((_, event, fn) => {
++    mockEventRegister[event] = fn;
++  })
++}));
++
+ const defaultProps = {
+   contentComponent: mockComponent('content'),
++  contentProps: {
++    model: immutable.fromJS({
++      id: '__lock_id__'
++    })
++  },
+   avatar: 'avatar',
+-  contentProps: {},
+   isSubmitting: false,
+   logo: 'logo',
+   primaryColor: 'white',
+@@ -26,12 +46,41 @@ describe('Chrome', () => {
+ 
+   beforeEach(() => {
+     Chrome = getComponent();
++    Chrome.prototype.getHeaderSize = jest.fn(() => 200);
++
++    mockEventRegister = {};
+   });
+ 
+   it('renders correctly with basic props', () => {
+     expectComponent(<Chrome {...defaultProps} />).toMatchSnapshot();
+   });
+ 
++  it('correctly sets the header size when the ""signin ready"" event is triggered', () => {
++    const component = create(<Chrome {...defaultProps} />);
++    const instance = component.getInstance();
++
++    expect(instance.state.headerHeight).toBe(0);
++    expect(component).toMatchSnapshot();
++
++    triggerEvent('signin ready');
++
++    expect(instance.state.headerHeight).toBe(200);
++    expect(component).toMatchSnapshot();
++  });
++
++  it('correctly sets the header size when the ""signup ready"" event is triggered', () => {
++    const component = create(<Chrome {...defaultProps} />);
++    const instance = component.getInstance();
++
++    expect(instance.state.headerHeight).toBe(0);
++    expect(component).toMatchSnapshot();
++
++    triggerEvent('signup ready');
++
++    expect(instance.state.headerHeight).toBe(200);
++    expect(component).toMatchSnapshot();
++  });
++
+   it('renders correctly when there is a global message', () => {
+     const props = {
+       ...defaultProps,
+
+diff --git a/src/__tests__/ui/box/header.test.jsx b/src/__tests__/ui/box/header.test.jsx
+deleted file mode 100644
+index 2f9bd84..0000000
+--- a/src/__tests__/ui/box/header.test.jsx
++++ /dev/null
+@@ -1,66 +0,0 @@
+-import React from 'react';
+-import { expectComponent } from 'testUtils';
+-
+-const getComponent = () => require('ui/box/header').default;
+-
+-describe('Header', () => {
+-  let Header;
+-
+-  beforeEach(() => {
+-    Header = getComponent();
+-  });
+-
+-  it('renders correctly with basic props', () => {
+-    const props = {
+-      title: 'This is the header',
+-      name: 'Header',
+-      logoUrl: 'some-logo.png',
+-      backgroundUrl: 'some-image.png',
+-      backgroundColor: 'red'
+-    };
+-
+-    expectComponent(<Header {...props} />).toMatchSnapshot();
+-  });
+-
+-  it('shows the back button when there is a handler', () => {
+-    const props = {
+-      title: 'This is the header',
+-      name: 'Header',
+-      logoUrl: 'some-logo.png',
+-      backgroundUrl: 'some-image.png',
+-      backgroundColor: 'red',
+-      backHandler: () => jest.fn()
+-    };
+-
+-    expectComponent(<Header {...props} />).toMatchSnapshot();
+-  });
+-
+-  it('shows the logoUrl when there is no name', () => {
+-    const props = {
+-      title: 'This is the header',
+-      backgroundUrl: 'some-image.png',
+-      logoUrl: 'some-logo.png',
+-      backgroundColor: 'red'
+-    };
+-
+-    expectComponent(<Header {...props} />).toMatchSnapshot();
+-  });
+-
+-  it('sets the header size property on the document element', () => {
+-    const spy = jest.spyOn(document.documentElement.style, 'setProperty');
+-
+-    const props = {
+-      title: 'This is the header',
+-      name: 'Header',
+-      logoUrl: 'some-logo.png',
+-      backgroundUrl: 'some-image.png',
+-      backgroundColor: 'red'
+-    };
+-
+-    expectComponent(<Header {...props} />, {
+-      createNodeMock: () => ({ clientHeight: 100 })
+-    }).toMatchSnapshot();
+-
+-    expect(spy).toHaveBeenCalledWith('--header-height', '100px');
+-  });
+-});
+",0,,13,867,3,2,12,866
+1879,e965dc8ea8919359efff7236b55539e51e74a384,e965dc8ea8919359efff7236b55539e51e74a384,,"Refactor failing snapshot test to a property test
+","diff --git a/src/__tests__/core/web_api.test.js b/src/__tests__/core/web_api.test.js
+index 267c8d2..c08449a 100644
+--- a/src/__tests__/core/web_api.test.js
++++ b/src/__tests__/core/web_api.test.js
+@@ -18,8 +18,19 @@ describe('Auth0WebApi', () => {
+ 
+   describe('setupClient', () => {
+     it('sets the correct options when is on the hosted login page', () => {
++      delete global.window.location;
++      window.location = { ...originalWindow.location, host: DEFAULT_DOMAIN, search: '' };
+       Auth0WebApi.setupClient(LOCK_ID, CLIENT_ID, DEFAULT_DOMAIN, { redirect: true });
+-      expect(Auth0WebApi).toMatchSnapshot();
++
++      expect(client()).toEqual(
++        expect.objectContaining({
++          isUniversalLogin: true,
++          domain: DEFAULT_DOMAIN,
++          authOpt: {
++            popup: false
++          }
++        })
++      );
+     });
+ 
+     it('sets redirect: true when on the same origin as the specified domain', () => {
+",0,,2,913,1,2,6,930
+1896,0d347980f66152f46c78663e7bf050f2093a10d9,a6e59f283d6a55ebd2ca40b7ecab8a7c710821e2,"### Changes
+
+- a new property added to Lock configuration to allow the use of the
+  `display_name` field that is returned from the client configuration file
+- if `display_name` has not been configured or is not available, the previous
+  logic of using the name or the domain is used
+
+Usage:
+
+```js
+var lock = new Auth0Lock('clientId', 'domain', {
+  preferConnectionDisplayName: true
+});
+```
+
+### References
+
+Raised through internal service desk ticket
+
+### Testing
+
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+
+* [X] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [X] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [X] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [X] All existing and new tests complete without errors
+* [X] All code quality tools/guidelines have been run/followed
+* [X] All relevant assets have been compiled
+* [X] All active GitHub checks have passed
+","Add tests for pulling connection display name wrt config prop
+","diff --git a/src/__tests__/connection/enterprise/quick_auth_screen.test.jsx b/src/__tests__/connection/enterprise/quick_auth_screen.test.jsx
+new file mode 100644
+index 0000000..d291f53
+--- /dev/null
++++ b/src/__tests__/connection/enterprise/quick_auth_screen.test.jsx
+@@ -0,0 +1,100 @@
++import React from 'react';
++import I from 'immutable';
++import { expectComponent } from 'testUtils';
++
++jest.mock('engine/classic');
++
++const getComponent = () => {
++  const MFALoginScreen = require('connection/enterprise/quick_auth_screen').default;
++  const screen = new MFALoginScreen();
++  return screen.render();
++};
++
++describe('The quick auth screen', () => {
++  const defaultProps = {
++    i18n: {
++      str: (...keys) => keys.join(','),
++      html: jest.fn()
++    }
++  };
++
++  beforeEach(() => {
++    jest.resetModules();
++
++    const mockConnection = I.fromJS({
++      name: 'Test',
++      domains: ['test.com']
++    });
++
++    jest.mock('connection/social/index', () => ({
++      hasScreen: false,
++      authButtonsTheme: jest.fn(() => ({
++        get: jest.fn()
++      }))
++    }));
++
++    jest.mock('connection/enterprise', () => ({
++      quickAuthConnection: jest.fn(() => mockConnection)
++    }));
++
++    jest.mock('core/index', () => ({
++      ui: {
++        preferConnectionDisplayName: jest.fn(() => false)
++      }
++    }));
++  });
++
++  it('renders the connection using the domain', async () => {
++    const Component = getComponent();
++
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++
++  it('renders the connection using the display name when preferConnectionDisplayName is true', () => {
++    const mockConnection = I.fromJS({
++      name: 'Test',
++      domains: ['test.com'],
++      displayName: 'My Connection'
++    });
++
++    const { quickAuthConnection } = require('connection/enterprise');
++    quickAuthConnection.mockReturnValue(mockConnection);
++
++    const l = require('core/index');
++    l.ui.preferConnectionDisplayName.mockReturnValue(true);
++
++    const Component = getComponent();
++
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++
++  it('renders the connection using the connection domain when preferConnectionDisplayName is true, but no display name available', () => {
++    const mockConnection = I.fromJS({
++      name: 'Test',
++      domains: ['test.com']
++    });
++
++    const { quickAuthConnection } = require('connection/enterprise');
++    quickAuthConnection.mockReturnValue(mockConnection);
++
++    const l = require('core/index');
++    l.ui.preferConnectionDisplayName.mockReturnValue(true);
++
++    const Component = getComponent();
++
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++
++  it('renders the connection using the connection name when there is no domain available', () => {
++    const mockConnection = I.fromJS({
++      name: 'Test'
++    });
++
++    const { quickAuthConnection } = require('connection/enterprise');
++    quickAuthConnection.mockReturnValue(mockConnection);
++
++    const Component = getComponent();
++
++    expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
++  });
++});
+",0,,3,231,1,3,7,248
+2048,2c44911f4aab07e3c68174f4c21873a93c11006a,2c44911f4aab07e3c68174f4c21873a93c11006a,"### Changes
+
+<!--
+Please describe both what is changing and why this is important. Include:
+- Classes and methods added, deleted, deprecated, or changed
+- Screenshots of new or changed UI, if applicable
+- A summary of usage if this is a new feature or change to a public API (this should also be added to relevant documentation once released)
+-->
+
+This PR addresses an issue where, if using the password reset feature and also using a custom connection resolver, the email address is not auto-populated. This _does_ happen if _not_ using a custom resolver, so this PR aligns those scenarios.
+
+It does this by copying the value from the `username` field into `email`, if the value validates as an email address (using non-strict validation).
+
+**Notes**
+
+- When using a custom resolver, `usernameStyle` is always `username`
+- Password Reset _always_ requires an email address. If the value doesn't validate as an email address (because you can enter either on the login screen) then the value is blanked out on the password reset screen.
+
+### References
+
+<!--
+Please include relevant links supporting this change such as a:
+
+- support ticket
+- community post
+- StackOverflow post
+- support forum thread
+
+Please note any links that are not publicly accessible.
+-->
+
+Fixes #2038
+
+### Testing
+
+<!--
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+-->
+
+- [x] This change adds unit test coverage
+- [x] This change adds integration test coverage
+- [x] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+- [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+- [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+- [x] All code quality tools/guidelines have been run/followed
+- [x] All relevant assets have been compiled
+","Copy username to email field for password reset if using custom connection resolver
+","diff --git a/src/__tests__/connection/database/reset_password.test.jsx b/src/__tests__/connection/database/reset_password.test.jsx
+index f46ad03..a473dac 100644
+--- a/src/__tests__/connection/database/reset_password.test.jsx
++++ b/src/__tests__/connection/database/reset_password.test.jsx
+@@ -1,11 +1,20 @@
+ import React from 'react';
+-import { mount } from 'enzyme';
++import { expectComponent, mockComponent } from 'testUtils';
++import I from 'immutable';
++import { setField } from '../../../field';
++
++jest.mock('connection/database/reset_password_pane', () => mockComponent('reset_password_pane'));
+ 
+ const getScreen = () => {
+   const ResetPasswordScreen = require('connection/database/reset_password').default;
+   return new ResetPasswordScreen();
+ };
+ 
++const getComponent = () => {
++  const screen = getScreen();
++  return screen.render();
++};
++
+ describe('ResetPasswordScreen', () => {
+   beforeEach(() => {
+     jest.resetModules();
+@@ -21,12 +30,19 @@ describe('ResetPasswordScreen', () => {
+       isEnterpriseDomain: () => true
+     }));
+ 
+-    jest.mock('i18n', () => ({ str: (_, keys) => keys.join(',') }));
++    jest.mock('i18n', () => ({
++      str: (_, keys) => keys.join(',')
++    }));
+ 
+     jest.mock('core/index', () => ({
+       id: () => 'id',
+       setGlobalError: 'setGlobalError',
+-      clearGlobalError: 'clearGlobalError'
++      clearGlobalError: 'clearGlobalError',
++      connectionResolver: jest.fn().mockReturnValue(undefined),
++      ui: {
++        allowAutocomplete: () => false
++      },
++      submitting: () => false
+     }));
+ 
+     jest.mock('store/index', () => ({
+@@ -34,6 +50,7 @@ describe('ResetPasswordScreen', () => {
+       updateEntity: 'updateEntity'
+     }));
+   });
++
+   it('isSubmitDisabled returns true when `isEnterpriseDomain` is true', () => {
+     jest.useFakeTimers();
+     require('connection/enterprise').isEnterpriseDomain = () => true;
+@@ -42,10 +59,67 @@ describe('ResetPasswordScreen', () => {
+     jest.runTimersToTime(50);
+     expect(require('store/index').swap.mock.calls[0]).toMatchSnapshot();
+   });
++
+   it('isSubmitDisabled returns false when `isEnterpriseDomain` is false', () => {
+     require('connection/enterprise').isEnterpriseDomain = () => false;
+     const screen = getScreen();
+     expect(screen.isSubmitDisabled()).toBe(false);
+     expect(require('store/index').swap.mock.calls[0]).toMatchSnapshot();
+   });
++
++  describe('a custom connection resolver is being used', () => {
++    let lock;
++    let i18n;
++
++    beforeEach(() => {
++      lock = I.fromJS({
++        id: '__lock-id__'
++      });
++
++      i18n = {
++        html: jest.fn(),
++        str: jest.fn()
++      };
++    });
++
++    it('copies the username to the email field if an email address was entered', () => {
++      require('core/index').connectionResolver.mockReturnValue(() => () => true);
++      const store = require('store/index');
++      const Component = getComponent();
++
++      // Set a field on Lock to set the username field, then check it was set as the email
++      const l = setField(lock, 'username', 'test@test.com');
++
++      expectComponent(<Component i18n={i18n} model={l} />).toMatchSnapshot();
++
++      expect(store.swap).toHaveBeenCalledWith(
++        'updateEntity',
++        'lock',
++        'id',
++        expect.anything(),
++        'test@test.com',
++        false
++      );
++    });
++
++    it('sets the email field to a blank value if username is not an email address', () => {
++      require('core/index').connectionResolver.mockReturnValue(() => () => true);
++      const store = require('store/index');
++      const Component = getComponent();
++
++      // Set a field on Lock to set the username field, then check it was set as the email
++      const l = setField(lock, 'username', 'some-username');
++
++      expectComponent(<Component i18n={i18n} model={l} />).toMatchSnapshot();
++
++      expect(store.swap).toHaveBeenCalledWith(
++        'updateEntity',
++        'lock',
++        'id',
++        expect.anything(),
++        '',
++        false
++      );
++    });
++  });
+ });
+",0,,4,179,1,3,52,48726
+2050,d212b4b346ad7a00c164d2ecdb6c042b30e4e64d,8d538208ddd399a757637e167bc39c0eb4d69304,"### Changes
+
+<!--
+Please describe both what is changing and why this is important. Include:
+- Classes and methods added, deleted, deprecated, or changed
+- Screenshots of new or changed UI, if applicable
+- A summary of usage if this is a new feature or change to a public API (this should also be added to relevant documentation once released)
+-->
+
+This PR adds a new UI property `forceAutoHeight` that enables the `auto-height` class and `height: auto!important` style on the wrapper div. This helps scenarios that don't want to use the [default calculated height](https://github.com/auth0/lock/blob/9b88692223d7f0298936e8d7b35ad126fa8c44bf/css/_mixins%26keyframes.styl#L83-L85).
+
+```js
+new Auth0Lock(clientId, domain, {
+  forceAutoHeight: true
+});
+```
+
+### References
+
+<!--
+Please include relevant links supporting this change such as a:
+
+- support ticket
+- community post
+- StackOverflow post
+- support forum thread
+
+Please note any links that are not publicly accessible.
+-->
+
+Fixes #1963 
+
+### Testing
+
+<!--
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+-->
+
+* [X] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [X] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [X] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [X] All code quality tools/guidelines have been run/followed
+* [X] All relevant assets have been compiled
+","Revert the revert of the forceAutoHeight property
+
+This reverts commit 9b88692223d7f0298936e8d7b35ad126fa8c44bf.
+","diff --git a/src/__tests__/ui/box/chrome.test.jsx b/src/__tests__/ui/box/chrome.test.jsx
+index a5e14c9..277a895 100644
+--- a/src/__tests__/ui/box/chrome.test.jsx
++++ b/src/__tests__/ui/box/chrome.test.jsx
+@@ -1,6 +1,5 @@
+ import React from 'react';
+ import immutable from 'immutable';
+-import { create } from 'react-test-renderer';
+ 
+ import { expectComponent, mockComponent } from 'testUtils';
+ const getComponent = () => require('ui/box/chrome').default;
+@@ -22,7 +21,10 @@ const triggerEvent = name => {
+ jest.mock('core/index', () => ({
+   handleEvent: jest.fn((_, event, fn) => {
+     mockEventRegister[event] = fn;
+-  })
++  }),
++  ui: {
++    forceAutoHeight: jest.fn().mockReturnValue(false)
++  }
+ }));
+ 
+ const defaultProps = {
+@@ -92,4 +94,17 @@ describe('Chrome', () => {
+ 
+     expectComponent(<Chrome {...props} />).toMatchSnapshot();
+   });
++
++  it('adds the auto-height class when forceAutoHeight UI prop is true', () => {
++    require('core/index').ui.forceAutoHeight.mockReturnValue(true);
++
++    const props = {
++      ...defaultProps,
++      info: 'This is an information message',
++      success: 'This is a success message',
++      error: 'There is an error'
++    };
++
++    expectComponent(<Chrome {...props} />).toMatchSnapshot();
++  });
+ });
+",0,,8,265,2,2,9,266
+2072,9af0f73397160e25ffbafcbc2a459964ed90e376,9af0f73397160e25ffbafcbc2a459964ed90e376,"### Changes
+
+<!--
+Please describe both what is changing and why this is important. Include:
+- Classes and methods added, deleted, deprecated, or changed
+- Screenshots of new or changed UI, if applicable
+- A summary of usage if this is a new feature or change to a public API (this should also be added to relevant documentation once released)
+-->
+
+This PR adds `id` attributes to the password input and submit button
+components. Other fields had ID attributes to them in #1517, so makes sense to
+add them here.
+
+### References
+
+<!--
+Please include relevant links supporting this change such as a:
+
+- support ticket
+- community post
+- StackOverflow post
+- support forum thread
+
+Please note any links that are not publicly accessible.
+-->
+
+Fixes #2067
+
+### Testing
+
+<!--
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+-->
+
+* [ ] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [X] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [X] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [X] All code quality tools/guidelines have been run/followed
+* [X] All relevant assets have been compiled
+","Submit button now has an ID
+","diff --git a/src/__tests__/ui/box/chrome.test.jsx b/src/__tests__/ui/box/chrome.test.jsx
+index 277a895..f80390a 100644
+--- a/src/__tests__/ui/box/chrome.test.jsx
++++ b/src/__tests__/ui/box/chrome.test.jsx
+@@ -24,7 +24,8 @@ jest.mock('core/index', () => ({
+   }),
+   ui: {
+     forceAutoHeight: jest.fn().mockReturnValue(false)
+-  }
++  },
++  id: jest.fn(() => 'lock')
+ }));
+ 
+ const defaultProps = {
+",0,,3,14,1,2,5,18
+2096,4bf7bb703251bd4c10ddcf1548e199cf0224d40d,d95c7d5756f4ec01b543ec71b3fdbb4d777703f9,"### Changes
+
+<!--
+Please describe both what is changing and why this is important. Include:
+- Classes and methods added, deleted, deprecated, or changed
+- Screenshots of new or changed UI, if applicable
+- A summary of usage if this is a new feature or change to a public API (this should also be added to relevant documentation once released)
+-->
+
+This change adds in support for Bot Protection Captcha challenges for connections where there is only one connection, and that connection is an enterprise AD/ADLDAP connection.
+
+### References
+
+<!--
+Please include relevant links supporting this change such as a:
+
+- support ticket
+- community post
+- StackOverflow post
+- support forum thread
+
+Please note any links that are not publicly accessible.
+-->
+
+Internal tickets: `SDK-3087`, `ESD-17783`
+#2071 
+
+### Testing
+
+<!--
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+-->
+
+- [x] This change adds unit test coverage
+- [x] This change adds integration test coverage
+- [x] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+- [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+- [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+- [x] All code quality tools/guidelines have been run/followed
+- [x] All relevant assets have been compiled
+","Add component test for HRDPane
+","diff --git a/src/__tests__/connection/enterprise/hrd_pane.test.js b/src/__tests__/connection/enterprise/hrd_pane.test.js
+new file mode 100644
+index 0000000..28713d7
+--- /dev/null
++++ b/src/__tests__/connection/enterprise/hrd_pane.test.js
+@@ -0,0 +1,37 @@
++import React from 'react';
++import { expectShallowComponent } from 'testUtils';
++import I from 'immutable';
++import * as i18n from '../../../i18n';
++import HRDPane from '../../../connection/enterprise/hrd_pane';
++
++const lock = I.fromJS({ id: '__lock-id__' });
++
++jest.mock('core/index');
++
++describe('HRDPane', () => {
++  const defaultProps = {
++    model: lock,
++    header: <header></header>,
++    i18n,
++    passwordInputPlaceholder: 'password',
++    usernameInputPlaceholder: 'username'
++  };
++
++  beforeEach(() => {
++    jest.resetAllMocks();
++  });
++
++  it('renders correctly', () => {
++    expectShallowComponent(<HRDPane {...defaultProps} />).toMatchSnapshot();
++  });
++
++  it('renders the captcha if required', () => {
++    require('core/index').captcha.mockReturnValue({
++      get() {
++        return true;
++      }
++    });
++
++    expectShallowComponent(<HRDPane {...defaultProps} />).toMatchSnapshot();
++  });
++});
+",0,,2,137,1,5,9,528
+2209,20ca3fd027f59e53c0507a3d32e9f7c715c257a8,34653b9fdc5e2b33c05b93630126b5ac98963cc2,"### Changes
+
+<!--
+Please describe both what is changing and why this is important. Include:
+- Classes and methods added, deleted, deprecated, or changed
+- Screenshots of new or changed UI, if applicable
+- A summary of usage if this is a new feature or change to a public API (this should also be added to relevant documentation once released)
+-->
+
+This PR updates Lock to use React 18 and ReactDOM 18, as well as:
+
+* Using `ReactDOM.createRoot` instead of `ReactDOM.render`
+* Fixing up failing unit and E2E tests (mostly around asynchronisity)
+* Running `yarn upgrade`
+
+### Testing
+
+<!--
+Please describe how this can be tested by reviewers. Be specific about anything not tested and reasons why. If this library has unit and/or integration testing, tests should be added for new functionality and existing tests should complete without errors.
+-->
+
+No coverage added but fixes lots of existing tests thanks to the upgrade to React 18.
+
+* [ ] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [X] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [X] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [X] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [X] All code quality tools/guidelines have been run/followed
+* [X] All relevant assets have been compiled
+","use @cfaester/enzyme-adapter-react-18 and update snapshots
+",,0,,10,228,5,9,22,3836
+2222,c1e47eba0224829ce65e64266d61156fc8c11187,b4438032a7b891b609b4b3ff5e2b4e01635aa8e2,"### Changes
+
+This adds support for captcha in Passwordless flows (Classic Universal Login).
+
+For context, to allow this, the Authentication API has [some changes](https://github.com/auth0/auth0-server/pull/10632):
+
+- `POST /passwordless/challenge` can be hit to know if a captcha should be shown for Passwordless flows.
+- `POST /passwordless/start` will now verify the `captcha` field if one is required.
+
+Here are a few demo recordings of the behavior:
+
+![passwordless-email-auth0](https://user-images.githubusercontent.com/2503108/207718153-5b34ce17-fe93-4ec4-8260-af806c2a72c7.gif)
+
+![passwordless-email-recap](https://user-images.githubusercontent.com/2503108/207718687-4b45072c-e4bf-479b-bcbd-f6947ef93e6b.gif)
+
+![passwordless-sms-auth0](https://user-images.githubusercontent.com/2503108/207720219-87ddc8db-b01e-407f-a8d5-2ff5c4e5f158.gif)
+☝️ This recording shows the one clunky UX issue I found. When using `restart()` to go back to the first pane, I can't figure out how to clear out the `captcha` field from the model. (I tried several implementations of `('../../field/index').clearFields(m, ['captcha']);` combined with `swap()` but I am think I'm somewhat foggy on how the model binding works here.)
+
+![passwordless-sms-recap](https://user-images.githubusercontent.com/2503108/207720241-94f39d41-8bba-43b3-bcc4-766a75127718.gif)
+
+
+### References
+
+https://auth0team.atlassian.net/browse/IAMRISK-1790
+
+### Testing
+
+* [x] This change adds unit test coverage
+* [ ] This change adds integration test coverage
+* [x] This change has been tested on the latest version of the platform/language
+
+### Checklist
+
+* [x] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [x] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [ ] All code quality tools/guidelines have been run/followed
+* [ ] All relevant assets have been compiled
+","Fix test for passwordless/social_or_email_login_screen
+
+Fixes for a couple of issues:
+
+**Circular dependency error**
+
+Thanks to the email field, it was trying to use a function `isHRDEmailValid` from 'connection/enterprise', which isn't necessary for this test (I don't *think* you can have enterprise passwordless connections, you would just use the non-passwordless version of Lock). Mocking out this module and just returning `false` for `isHRDEmailValid` makes things simpler.
+
+**m.getIn is not a function**
+
+This is down to `social_or_email_login_screen` calling `hasSomeConnections` from 'core/index', this can simply be mocked to return `true` for this test. This function just verifies that there is a passwordless or email connection available.
+
+I also had to mock out i18n.html, as this function is called when the component renders.
+","diff --git a/src/__tests__/engine/passwordless/social_or_email_login_screen.test.js b/src/__tests__/engine/passwordless/social_or_email_login_screen.test.js
+index 5719a28..dcafaca 100644
+--- a/src/__tests__/engine/passwordless/social_or_email_login_screen.test.js
++++ b/src/__tests__/engine/passwordless/social_or_email_login_screen.test.js
+@@ -1,10 +1,12 @@
++import { keyDefinitions } from 'puppeteer';
+ import React from 'react';
+-import { mount } from 'enzyme';
+ 
+ import { expectComponent, extractPropsFromWrapper, mockComponent } from 'testUtils';
+ 
+ //there's a circular dependency with this module, so we need to mock it
+-jest.mock('engine/classic');
++// jest.mock('engine/classic');
++jest.mock('connection/enterprise');
++jest.mock('core/index');
+ 
+ jest.mock('field/social/social_buttons_pane', () => mockComponent('social_buttons_pane'));
+ // jest.mock('core/error_screen', () => mockComponent('error_screen'));
+@@ -17,7 +19,6 @@ jest.mock('connection/passwordless/index', () => ({
+   isEmail: jest.fn()
+ }));
+ 
+-
+ const getComponent = () => {
+   const SocialOrEmailScreen = require('engine/passwordless/social_or_email_login_screen').default;
+   const screen = new SocialOrEmailScreen();
+@@ -40,16 +41,27 @@ describe('email passwordless', () => {
+     jest.mock('core/signed_in_confirmation', () => ({
+       renderSignedInConfirmation: jest.fn()
+     }));
++
++    jest.mock('connection/enterprise', () => ({
++      isHRDEmailValid: jest.fn(() => false)
++    }));
++
++    jest.mock('core/index', () => ({
++      hasSomeConnections: jest.fn(() => true)
++    }));
+   });
++
+   const defaultProps = {
+     i18n: {
+-      str: (...keys) => keys.join(',')
++      str: (...keys) => keys.join(','),
++      html: (...keys) => keys.join(',')
+     },
+     model: 'model'
+   };
++
+   it('renders correctly', () => {
+     const Component = getComponent();
+ 
+     expectComponent(<Component {...defaultProps} />).toMatchSnapshot();
+   });
+-});
+\ No newline at end of file
++});
+",0,,2,53,1,19,65,630
+2693,260c67da7168f1748cac3b4c8940077064c7c5e8,d00a6e74de722e052bfe92f9d4359224efd8ad48,"### Changes
+
+ This PR completes the migration from the deprecated jest-environment-jsdom-global package to the
+  standard jest-environment-jsdom, fixing all test failures and resolving security vulnerabilities.
+
+### Package Updates
+
+  - Removed deprecated `jest-environment-jsdom-global` dependency
+  - Using `jest-environment-jsdom@30.2.0` (already at target version)
+  - Updated `validator` from `^13.6.0` to `^13.15.22` (security fix)
+  - Keeping `auth0-js@9.29.0` (latest v9.x)
+  - Keeping `@auth0/component-cdn-uploader@2.4.2`
+
+### Test Infrastructure Changes
+
+  - Created custom Jest environment to expose `jsdom` instance
+  - Enhanced `setURL()` utility with dual-approach `window.location` mocking
+  - Updated 2 snapshot files
+  - Cleaned up unnecessary code in setup-tests.js
+
+### Testing
+
+- No functional changes in production code.
+- All test suites continue to pass with the updated setup.
+- Minor snapshot changes due to rendering differences in updated jsdom and Jest versions.
+
+### Checklist
+
+* [ ] I have read the [Auth0 general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
+* [ ] I have read the [Auth0 Code of Conduct](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
+* [ ] All code quality tools/guidelines have been run/followed
+* [ ] All relevant assets have been compiled
+","fix: test case fix
+",,1,OID=OID,6,85,2,3,7,1622
+949,758fcc0299d17de26022b809bb4627b2c47691ac,758fcc0299d17de26022b809bb4627b2c47691ac,"fix #919 
+
+![disable-social](https://cloud.githubusercontent.com/assets/941075/24311931/0b321fea-10b5-11e7-9c71-5d56596691cd.gif)
+","disable social buttons when terms were not accepted on sign up
+","diff --git a/src/__tests__/engine/classic/sign_up_screen.test.jsx b/src/__tests__/engine/classic/sign_up_screen.test.jsx
+index beac4b2..9f676c8 100644
+--- a/src/__tests__/engine/classic/sign_up_screen.test.jsx
++++ b/src/__tests__/engine/classic/sign_up_screen.test.jsx
+@@ -21,7 +21,7 @@ describe('SignUpScreen', () => {
+     jest.resetModules();
+ 
+     jest.mock('connection/database/index', () => ({
+-      termsAccepted: () => false,
++      termsAccepted: () => true,
+       hasScreen: () => false,
+       mustAcceptTerms: () => false
+     }));
+@@ -80,6 +80,15 @@ describe('SignUpScreen', () => {
+       <Component {...defaultProps} />
+     ).toMatchSnapshot();
+   });
++  it('disables SocialButtonsPane when terms were not accepted', () => {
++    require('core/index').hasSomeConnections = (m, connection) => connection === 'social';
++    require('connection/database/index').termsAccepted = () => false;
++    const Component = getComponent();
++
++    expectComponent(
++      <Component {...defaultProps} />
++    ).toMatchSnapshot();
++  });
+   it('renders SingleSignOnNotice when SSO is enabled and has screen login', () => {
+     require('engine/classic').isSSOEnabled = () => true;
+     require('connection/database/index').hasScreen = (m, screenName) => screenName === 'login';
+
+diff --git a/src/__tests__/field/social_buttons_pane.test.jsx b/src/__tests__/field/social_buttons_pane.test.jsx
+index 41260ef..50b9458 100644
+--- a/src/__tests__/field/social_buttons_pane.test.jsx
++++ b/src/__tests__/field/social_buttons_pane.test.jsx
+@@ -13,7 +13,8 @@ describe('SocialButtonsPane', () => {
+     bigButtons: false,
+     labelFn: (...keys) => keys.join(','),
+     showLoading: false,
+-    signUp: false
++    signUp: false,
++    disabled: false
+   };
+   beforeEach(() => {
+     jest.resetModules();
+@@ -57,6 +58,15 @@ describe('SocialButtonsPane', () => {
+         />
+     ).toMatchSnapshot();
+   });
++  it('disables social buttons when disabled === true', () => {
++    const SocialButtonsPane = getComponent();
++    expectComponent(
++      <SocialButtonsPane
++        {...defaultProps}
++        disabled
++        />
++    ).toMatchSnapshot();
++  });
+   it('shows loading when showLoading === true', () => {
+     const SocialButtonsPane = getComponent();
+     expectComponent(
+",0,,7,97,2,1,7,97

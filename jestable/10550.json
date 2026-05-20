@@ -1,0 +1,96 @@
+{
+    "id": 6939852,
+    "name": "keajs/kea",
+    "isFork": false,
+    "commits": 1103,
+    "branches": 12,
+    "releases": 0,
+    "forks": 67,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://keajs.org/",
+    "watchers": 31,
+    "stargazers": 1915,
+    "contributors": 15,
+    "size": 7613,
+    "createdAt": "2016-03-29T08:30:54",
+    "pushedAt": "2024-01-24T09:03:09",
+    "updatedAt": "2024-01-24T02:58:04",
+    "totalIssues": 124,
+    "openIssues": 9,
+    "totalPullRequests": 35,
+    "openPullRequests": 0,
+    "blankLines": 2902,
+    "codeLines": 16657,
+    "commentLines": 326,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 154
+        },
+        {
+            "blankLines": 485,
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 1099
+        },
+        {
+            "blankLines": 771,
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 5711
+        },
+        {
+            "blankLines": 455,
+            "language": "TypeScript",
+            "commentLines": 255,
+            "codeLines": 3589
+        },
+        {
+            "blankLines": 1191,
+            "language": "JavaScript",
+            "commentLines": 62,
+            "codeLines": 6093
+        }
+    ],
+    "lastCommit": "2024-01-24T09:03:05",
+    "lastCommitSHA": "ac61f84093b54f249cb77b05672b0dcadbc55cd3",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 201781,
+        "TypeScript": 136312
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "website",
+        "wontfix"
+    ],
+    "topics": [
+        "data",
+        "framework",
+        "kea",
+        "react",
+        "react-component",
+        "redux",
+        "redux-saga",
+        "redux-thunk",
+        "sagas"
+    ]
+}

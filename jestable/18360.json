@@ -1,0 +1,92 @@
+{
+    "id": 82704067,
+    "name": "xiphe/cachified",
+    "isFork": false,
+    "commits": 126,
+    "branches": 1,
+    "releases": 23,
+    "forks": 17,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 2,
+    "stargazers": 577,
+    "contributors": 7,
+    "size": 571,
+    "createdAt": "2022-07-08T07:56:56",
+    "pushedAt": "2023-11-12T03:27:33",
+    "updatedAt": "2023-11-15T03:01:07",
+    "totalIssues": 18,
+    "openIssues": 4,
+    "totalPullRequests": 55,
+    "openPullRequests": 2,
+    "blankLines": 557,
+    "codeLines": 11082,
+    "commentLines": 214,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7266,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 193,
+            "codeLines": 3020,
+            "blankLines": 381
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 2,
+            "codeLines": 66,
+            "blankLines": 8
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 75,
+            "blankLines": 12
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 19,
+            "codeLines": 655,
+            "blankLines": 156
+        }
+    ],
+    "lastCommit": "2023-09-06T08:54:00",
+    "lastCommitSHA": "5d55cd5d28b325b235c9f1ab415a0bdc76de843f",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 91295,
+        "JavaScript": 1897
+    },
+    "labels": [
+        "awaiting feedback",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "github_actions",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "question",
+        "released",
+        "wontfix"
+    ],
+    "topics": [
+        "cache",
+        "stale-while-revalidate",
+        "throttling",
+        "ttl-cache",
+        "typesafe"
+    ]
+}

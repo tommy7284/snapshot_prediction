@@ -1,0 +1,123 @@
+{
+    "id": 48453996,
+    "name": "tj-actions/changed-files",
+    "isFork": false,
+    "commits": 3109,
+    "branches": 1,
+    "releases": 328,
+    "forks": 172,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 1531,
+    "contributors": 35,
+    "size": 34356,
+    "createdAt": "2021-03-05T02:35:53",
+    "pushedAt": "2024-05-09T01:54:32",
+    "updatedAt": "2024-05-09T08:33:28",
+    "totalIssues": 301,
+    "openIssues": 1,
+    "totalPullRequests": 1743,
+    "openPullRequests": 0,
+    "blankLines": 13679,
+    "codeLines": 62050,
+    "commentLines": 20390,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 229,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 224,
+            "codeLines": 4016,
+            "blankLines": 445
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 20106,
+            "codeLines": 42845,
+            "blankLines": 8489
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 5039,
+            "blankLines": 1043
+        },
+        {
+            "language": "YAML",
+            "commentLines": 47,
+            "codeLines": 2945,
+            "blankLines": 232
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 13,
+            "codeLines": 6976,
+            "blankLines": 3470
+        }
+    ],
+    "lastCommit": "2024-05-08T01:08:12",
+    "lastCommitSHA": "a29e8b565651ce417abb5db7164b4a2ad8b6155c",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 130105,
+        "Shell": 43191,
+        "JavaScript": 471
+    },
+    "labels": [
+        "automerge",
+        "bug",
+        "configuration error",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "major version",
+        "merge when passing",
+        "minor version",
+        "not-reproducible",
+        "patch version",
+        "pr: needs rebase",
+        "question",
+        "replicated",
+        "requires-feedback",
+        "requires-testing",
+        "security fix",
+        "security vulnerability",
+        "wontfix"
+    ],
+    "topics": [
+        "actions",
+        "change-detection",
+        "change-detetion",
+        "changed-file",
+        "changed-files",
+        "ci",
+        "ci-cd",
+        "conditional-execution",
+        "continuous-delivery",
+        "continuous-integration",
+        "github",
+        "github-actions",
+        "modified",
+        "modified-files",
+        "monorepo",
+        "restore-files",
+        "submodules",
+        "workflows",
+        "yaml-files"
+    ]
+}

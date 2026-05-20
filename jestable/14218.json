@@ -1,0 +1,82 @@
+{
+    "id": 4047191,
+    "name": "maxchehab/phelia",
+    "isFork": false,
+    "commits": 158,
+    "branches": 14,
+    "releases": 0,
+    "forks": 46,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://npmjs.com/phelia",
+    "watchers": 14,
+    "stargazers": 1916,
+    "contributors": 7,
+    "size": 27159,
+    "createdAt": "2020-04-06T05:09:59",
+    "pushedAt": "2023-01-06T02:53:01",
+    "updatedAt": "2023-01-11T07:56:34",
+    "totalIssues": 15,
+    "openIssues": 6,
+    "totalPullRequests": 38,
+    "openPullRequests": 17,
+    "blankLines": 1098,
+    "codeLines": 6007,
+    "commentLines": 566,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 25,
+            "blankLines": 7
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 953,
+            "blankLines": 298
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 566,
+            "codeLines": 4947,
+            "blankLines": 793
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 74,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2020-08-18T09:34:05",
+    "lastCommitSHA": "60218b0c9e4af33b0916af6d1e7a1d496ff909e5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 169421,
+        "JavaScript": 240
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

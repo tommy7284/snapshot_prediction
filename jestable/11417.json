@@ -1,0 +1,100 @@
+{
+    "id": 7823083,
+    "name": "pactinteractive/image-downloader",
+    "isFork": false,
+    "commits": 150,
+    "branches": 3,
+    "releases": 0,
+    "forks": 292,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://chrome.google.com/webstore/detail/image-downloader/cnpniohnfphhjihaiiggeabnkjhpaldj",
+    "watchers": 56,
+    "stargazers": 761,
+    "contributors": 4,
+    "size": 1598,
+    "createdAt": "2012-05-23T11:00:57",
+    "pushedAt": "2023-11-25T01:07:25",
+    "updatedAt": "2023-12-30T04:06:54",
+    "totalIssues": 86,
+    "openIssues": 41,
+    "totalPullRequests": 30,
+    "openPullRequests": 1,
+    "blankLines": 449,
+    "codeLines": 18007,
+    "commentLines": 205,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 35
+        },
+        {
+            "blankLines": 72,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 330
+        },
+        {
+            "blankLines": 51,
+            "language": "CSS",
+            "commentLines": 22,
+            "codeLines": 284
+        },
+        {
+            "blankLines": 58,
+            "language": "TypeScript",
+            "commentLines": 4,
+            "codeLines": 468
+        },
+        {
+            "blankLines": 249,
+            "language": "JavaScript",
+            "commentLines": 179,
+            "codeLines": 1862
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 14939
+        },
+        {
+            "blankLines": 19,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 89
+        }
+    ],
+    "lastCommit": "2023-11-25T01:07:21",
+    "lastCommitSHA": "db809608b9e5243e9e0fffff060183dd4aa110fe",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 58899,
+        "TypeScript": 14640,
+        "HTML": 9177,
+        "CSS": 6882
+    },
+    "labels": [
+        "dependencies",
+        "status: duplicate",
+        "status: invalid",
+        "status: wontfix",
+        "type: bug",
+        "type: enhancement",
+        "type: feature request",
+        "type: question",
+        "type: refactoring",
+        "type: tests"
+    ],
+    "topics": [
+        "brave-extension",
+        "google-chrome-extension",
+        "microsoft-edge-extension"
+    ]
+}

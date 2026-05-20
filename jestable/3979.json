@@ -1,0 +1,80 @@
+{
+    "id": 5478090,
+    "name": "seek-oss/html-sketchapp-cli",
+    "isFork": false,
+    "commits": 44,
+    "branches": 3,
+    "releases": 21,
+    "forks": 37,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 632,
+    "contributors": 9,
+    "size": 97,
+    "createdAt": "2017-12-19T05:38:16",
+    "pushedAt": "2022-03-07T02:54:06",
+    "updatedAt": "2022-03-07T06:26:28",
+    "totalIssues": 22,
+    "openIssues": 8,
+    "totalPullRequests": 59,
+    "openPullRequests": 5,
+    "blankLines": 262,
+    "codeLines": 1017,
+    "commentLines": 4,
+    "metrics": [
+        {
+            "blankLines": 133,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 269
+        },
+        {
+            "blankLines": 11,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 119
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 84
+        },
+        {
+            "blankLines": 118,
+            "language": "JavaScript",
+            "commentLines": 3,
+            "codeLines": 525
+        }
+    ],
+    "lastCommit": "2019-01-10T12:32:51",
+    "lastCommitSHA": "c829ee2ea623702e131033d357827b92efa8ce77",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 22683,
+        "HTML": 12246
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

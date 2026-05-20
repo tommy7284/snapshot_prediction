@@ -1,0 +1,107 @@
+{
+    "id": 6654913,
+    "name": "webpack/enhanced-resolve",
+    "isFork": false,
+    "commits": 827,
+    "branches": 7,
+    "releases": 51,
+    "forks": 183,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 19,
+    "stargazers": 897,
+    "contributors": 60,
+    "size": 1443,
+    "createdAt": "2012-08-13T02:45:48",
+    "pushedAt": "2024-03-11T12:53:35",
+    "updatedAt": "2024-03-10T06:01:15",
+    "totalIssues": 162,
+    "openIssues": 22,
+    "totalPullRequests": 248,
+    "openPullRequests": 5,
+    "blankLines": 1043,
+    "codeLines": 10714,
+    "commentLines": 4880,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 21,
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 166
+        },
+        {
+            "blankLines": 40,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 143
+        },
+        {
+            "blankLines": 3,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 375
+        },
+        {
+            "blankLines": 37,
+            "language": "TypeScript",
+            "commentLines": 114,
+            "codeLines": 985
+        },
+        {
+            "blankLines": 941,
+            "language": "JavaScript",
+            "commentLines": 4758,
+            "codeLines": 9028
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2024-03-11T12:53:17",
+    "lastCommitSHA": "a1976054344a85da8e0e1b2e1611694630e8f97b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 362027,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "invalid",
+        "pr: ci-not-ok",
+        "pr: ci-ok",
+        "pr: conflict",
+        "pr: non-main",
+        "pr: non-master",
+        "pr: review-outdated",
+        "pr: reviewed-approved",
+        "pr: reviewed-changes-requested",
+        "pr: small",
+        "pr: unreviewed",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

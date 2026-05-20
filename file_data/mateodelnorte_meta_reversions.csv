@@ -1,0 +1,91 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+74,2f34e7aea96bfdf8ddd5703092cf3a5099fa333b,36e23d929f6e1a9f6a0df5fa7d2cbd7a8499a390,lib/__tests__/__snapshots__/findPlugins.js.snap,lib/__tests__/findPlugins.js,"This moves the `isImportable` function into `registerPlugin` where it belongs. This lets us warn users (via `debug` log) when a plugin is missing its main module.
+
+Also, the `lib/isPlugin.js` module is no longer necessary.
+
+Lastly, add a test for the undefined `$NODE_PATH` edge case.","fix: add debug logs for unresolvable plugins
+
+and remove the need for ""lib/isPlugin.js""
+
+also, add test for undefined $NODE_PATH edge case
+","diff --git a/lib/__tests__/findPlugins.js b/lib/__tests__/findPlugins.js
+index 15e2194..994bfc0 100644
+--- a/lib/__tests__/findPlugins.js
++++ b/lib/__tests__/findPlugins.js
+@@ -1,10 +1,7 @@
+ jest.mock('fs');
+-jest.mock('../isPlugin', () => {
+-  const path = require('path');
+-  return filePath => /^meta-/.test(path.basename(filePath));
+-});
+ 
+ const findPlugins = require('../findPlugins');
++const cp = require('child_process');
+ const fs = require('fs');
+ 
+ describe('findPlugins', () => {
+@@ -52,6 +49,18 @@ describe('findPlugins', () => {
+     expect(findPlugins('/dev')).toMatchSnapshot();
+   });
+ 
++  it('falls back to (npm root -g) when $NODE_PATH is empty', () => {
++    fs.write('/npm/root/foo/index.js', '');
++    fs.write('/npm/root/meta-1/index.js', '');
++    fs.write('/npm/root/@foo/meta-2/index.js', '');
++
++    delete process.env.NODE_PATH;
++    cp.execSync = jest.fn(() => '/npm/root');
++
++    expect(findPlugins('/')).toMatchSnapshot();
++    expect(cp.execSync.mock.calls).toEqual([['npm root -g']]);
++  });
++
+   it('tolerates missing ""node_modules"" when searching parent directories', () => {
+     fs.write('/1/node_modules/meta-1/index.js', '');
+     fs.write('/1/2/3/node_modules/meta-3/index.js', '');
+",0,
+74,2f34e7aea96bfdf8ddd5703092cf3a5099fa333b,36e23d929f6e1a9f6a0df5fa7d2cbd7a8499a390,lib/__tests__/__snapshots__/findPlugins.js.snap,lib/__tests__/findPlugins.js,"This moves the `isImportable` function into `registerPlugin` where it belongs. This lets us warn users (via `debug` log) when a plugin is missing its main module.
+
+Also, the `lib/isPlugin.js` module is no longer necessary.
+
+Lastly, add a test for the undefined `$NODE_PATH` edge case.","fix: add debug logs for unresolvable plugins
+
+and remove the need for ""lib/isPlugin.js""
+
+also, add test for undefined $NODE_PATH edge case
+","diff --git a/lib/__tests__/findPlugins.js b/lib/__tests__/findPlugins.js
+index 15e2194..994bfc0 100644
+--- a/lib/__tests__/findPlugins.js
++++ b/lib/__tests__/findPlugins.js
+@@ -1,10 +1,7 @@
+ jest.mock('fs');
+-jest.mock('../isPlugin', () => {
+-  const path = require('path');
+-  return filePath => /^meta-/.test(path.basename(filePath));
+-});
+ 
+ const findPlugins = require('../findPlugins');
++const cp = require('child_process');
+ const fs = require('fs');
+ 
+ describe('findPlugins', () => {
+@@ -52,6 +49,18 @@ describe('findPlugins', () => {
+     expect(findPlugins('/dev')).toMatchSnapshot();
+   });
+ 
++  it('falls back to (npm root -g) when $NODE_PATH is empty', () => {
++    fs.write('/npm/root/foo/index.js', '');
++    fs.write('/npm/root/meta-1/index.js', '');
++    fs.write('/npm/root/@foo/meta-2/index.js', '');
++
++    delete process.env.NODE_PATH;
++    cp.execSync = jest.fn(() => '/npm/root');
++
++    expect(findPlugins('/')).toMatchSnapshot();
++    expect(cp.execSync.mock.calls).toEqual([['npm root -g']]);
++  });
++
+   it('tolerates missing ""node_modules"" when searching parent directories', () => {
+     fs.write('/1/node_modules/meta-1/index.js', '');
+     fs.write('/1/2/3/node_modules/meta-3/index.js', '');
+",0,

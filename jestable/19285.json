@@ -1,0 +1,99 @@
+{
+    "id": 94689578,
+    "name": "quantizor/markdown-to-jsx",
+    "isFork": false,
+    "commits": 595,
+    "branches": 5,
+    "releases": 100,
+    "forks": 161,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://markdown-to-jsx.quantizor.dev/",
+    "watchers": 10,
+    "stargazers": 1807,
+    "contributors": 50,
+    "size": 192223,
+    "createdAt": "2015-12-06T06:42:02",
+    "pushedAt": "2024-04-13T06:44:20",
+    "updatedAt": "2024-04-12T04:00:42",
+    "totalIssues": 303,
+    "openIssues": 113,
+    "totalPullRequests": 269,
+    "openPullRequests": 2,
+    "blankLines": 1510,
+    "codeLines": 8261,
+    "commentLines": 680,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 31,
+            "codeLines": 89,
+            "blankLines": 27
+        },
+        {
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 67,
+            "blankLines": 13
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 436,
+            "codeLines": 6180,
+            "blankLines": 847
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 210,
+            "codeLines": 626,
+            "blankLines": 100
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 165,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 1133,
+            "blankLines": 523
+        }
+    ],
+    "lastCommit": "2024-04-13T06:43:29",
+    "lastCommitSHA": "acd970dc7be8f2390ed916fe1b1cf0874a8534f6",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 177207,
+        "JavaScript": 1244
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "gfm",
+        "jsx",
+        "markdown",
+        "react",
+        "remark"
+    ]
+}

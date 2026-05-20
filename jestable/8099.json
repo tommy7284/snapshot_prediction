@@ -1,0 +1,87 @@
+{
+    "id": 6714192,
+    "name": "jsdf/react-native-htmlview",
+    "isFork": false,
+    "commits": 233,
+    "branches": 17,
+    "releases": 0,
+    "forks": 510,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "ISC License",
+    "homepage": null,
+    "watchers": 46,
+    "stargazers": 2663,
+    "contributors": 25,
+    "size": 836,
+    "createdAt": "2015-04-01T03:20:10",
+    "pushedAt": "2023-11-28T04:59:48",
+    "updatedAt": "2023-12-31T06:56:19",
+    "totalIssues": 235,
+    "openIssues": 116,
+    "totalPullRequests": 124,
+    "openPullRequests": 27,
+    "blankLines": 131,
+    "codeLines": 13017,
+    "commentLines": 8,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "Bourne Shell",
+            "commentLines": 1,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 90,
+            "language": "JavaScript",
+            "commentLines": 3,
+            "codeLines": 579
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 37,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 212
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12187
+        }
+    ],
+    "lastCommit": "2023-11-02T01:13:59",
+    "lastCommitSHA": "8d95b7378f5373347831ffd20267c096110f5001",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 18817,
+        "Shell": 504
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "html",
+        "html-parser",
+        "html-renderer",
+        "react",
+        "react-component",
+        "react-native"
+    ]
+}

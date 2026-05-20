@@ -1,0 +1,79 @@
+{
+    "id": 6295745,
+    "name": "nitin42/react-imgpro",
+    "isFork": false,
+    "commits": 183,
+    "branches": 2,
+    "releases": 14,
+    "forks": 105,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 2157,
+    "contributors": 4,
+    "size": 12325,
+    "createdAt": "2017-09-02T10:01:40",
+    "pushedAt": "2020-12-14T05:08:24",
+    "updatedAt": "2021-02-12T06:53:35",
+    "totalIssues": 21,
+    "openIssues": 7,
+    "totalPullRequests": 14,
+    "openPullRequests": 0,
+    "blankLines": 357,
+    "codeLines": 1339,
+    "commentLines": 29,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 80
+        },
+        {
+            "blankLines": 126,
+            "language": "JavaScript",
+            "commentLines": 29,
+            "codeLines": 796
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 231,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 441
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 14
+        }
+    ],
+    "lastCommit": "2020-12-14T05:08:23",
+    "lastCommitSHA": "bf525f42c8ff4fa2b64fe043a1f92f05ed125a1b",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 22945,
+        "HTML": 427
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

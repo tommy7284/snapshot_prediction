@@ -1,0 +1,83 @@
+{
+    "id": 6575120,
+    "name": "diegohaz/schm",
+    "isFork": false,
+    "commits": 87,
+    "branches": 23,
+    "releases": 10,
+    "forks": 27,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://git.io/schm",
+    "watchers": 4,
+    "stargazers": 510,
+    "contributors": 5,
+    "size": 1391,
+    "createdAt": "2017-06-08T09:49:44",
+    "pushedAt": "2022-12-08T06:52:21",
+    "updatedAt": "2022-12-26T01:37:52",
+    "totalIssues": 30,
+    "openIssues": 14,
+    "totalPullRequests": 63,
+    "openPullRequests": 25,
+    "blankLines": 633,
+    "codeLines": 4007,
+    "commentLines": 398,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 425
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 347,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 855
+        },
+        {
+            "blankLines": 286,
+            "language": "JavaScript",
+            "commentLines": 398,
+            "codeLines": 2697
+        }
+    ],
+    "lastCommit": "2019-12-28T06:25:22",
+    "lastCommitSHA": "a49b2ba5a56bb566cb4a83f68250209441c235dd",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 83271
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "new package",
+        "pr welcome",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

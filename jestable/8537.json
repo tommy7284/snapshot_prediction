@@ -1,0 +1,97 @@
+{
+    "id": 6756497,
+    "name": "gaearon/react-hot-loader",
+    "isFork": false,
+    "commits": 1890,
+    "branches": 387,
+    "releases": 158,
+    "forks": 837,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://gaearon.github.io/react-hot-loader/",
+    "watchers": 174,
+    "stargazers": 12240,
+    "contributors": 216,
+    "size": 9389,
+    "createdAt": "2014-07-12T11:49:43",
+    "pushedAt": "2023-02-10T02:42:07",
+    "updatedAt": "2023-02-17T10:28:19",
+    "totalIssues": 961,
+    "openIssues": 118,
+    "totalPullRequests": 955,
+    "openPullRequests": 347,
+    "blankLines": 3334,
+    "codeLines": 14436,
+    "commentLines": 742,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 1015,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1704
+        },
+        {
+            "blankLines": 2,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 44
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 728
+        },
+        {
+            "blankLines": 51,
+            "language": "TypeScript",
+            "commentLines": 84,
+            "codeLines": 136
+        },
+        {
+            "blankLines": 2243,
+            "language": "JavaScript",
+            "commentLines": 658,
+            "codeLines": 11758
+        },
+        {
+            "blankLines": 18,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 50
+        }
+    ],
+    "lastCommit": "2022-11-13T04:20:12",
+    "lastCommitSHA": "07d1f4e080f18dd83273be5bd02863ce1caf892e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 348345,
+        "Shell": 1468
+    },
+    "labels": [
+        "bug",
+        "cra",
+        "dependencies",
+        "discussion",
+        "docs",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "integration",
+        "principle",
+        "question",
+        "regression",
+        "wip"
+    ],
+    "topics": []
+}

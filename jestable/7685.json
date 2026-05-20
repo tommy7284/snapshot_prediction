@@ -1,0 +1,101 @@
+{
+    "id": 6662327,
+    "name": "arqex/react-datetime",
+    "isFork": false,
+    "commits": 614,
+    "branches": 11,
+    "releases": 44,
+    "forks": 898,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1977,
+    "contributors": 61,
+    "size": 5387,
+    "createdAt": "2015-06-19T09:53:28",
+    "pushedAt": "2023-06-19T01:07:39",
+    "updatedAt": "2023-07-02T07:28:38",
+    "totalIssues": 531,
+    "openIssues": 145,
+    "totalPullRequests": 331,
+    "openPullRequests": 29,
+    "blankLines": 915,
+    "codeLines": 5019,
+    "commentLines": 937,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 208
+        },
+        {
+            "blankLines": 46,
+            "language": "TypeScript",
+            "commentLines": 329,
+            "codeLines": 239
+        },
+        {
+            "blankLines": 678,
+            "language": "JavaScript",
+            "commentLines": 585,
+            "codeLines": 3711
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 20,
+            "language": "CSS",
+            "commentLines": 3,
+            "codeLines": 195
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 168,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 632
+        }
+    ],
+    "lastCommit": "2022-10-27T09:32:40",
+    "lastCommitSHA": "e3bd53376f14fa509b448ed1bc3eba41a63c470a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 157929,
+        "TypeScript": 3912,
+        "CSS": 3820,
+        "HTML": 1721
+    },
+    "labels": [
+        "action needed",
+        "bug",
+        "dependencies",
+        "documentation",
+        "don't merge",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "invalid",
+        "needs info",
+        "new navigation",
+        "question",
+        "v3.0 candidate",
+        "wontfix"
+    ],
+    "topics": []
+}

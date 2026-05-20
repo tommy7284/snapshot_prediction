@@ -1,0 +1,110 @@
+{
+    "id": 4095301,
+    "name": "onderceylan/pwa-asset-generator",
+    "isFork": false,
+    "commits": 861,
+    "branches": 12,
+    "releases": 63,
+    "forks": 107,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 16,
+    "stargazers": 2102,
+    "contributors": 12,
+    "size": 32822,
+    "createdAt": "2019-08-09T08:26:44",
+    "pushedAt": "2022-08-16T04:24:25",
+    "updatedAt": "2022-08-19T01:06:53",
+    "totalIssues": 140,
+    "openIssues": 23,
+    "totalPullRequests": 754,
+    "openPullRequests": 11,
+    "blankLines": 824,
+    "codeLines": 29231,
+    "commentLines": 260,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 258,
+            "codeLines": 2485,
+            "blankLines": 404
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25940,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 27,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 151,
+            "blankLines": 10
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 602,
+            "blankLines": 405
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 2
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2022-07-06T01:02:28",
+    "lastCommitSHA": "7e434f06bed4ef2efff83845b0555af90ca9d6da",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 84136,
+        "JavaScript": 2045,
+        "HTML": 522,
+        "Shell": 151
+    },
+    "labels": [
+        "bug",
+        "dep-upgrade",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "esm",
+        "external-dependency",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs verification",
+        "node-upgrade",
+        "question",
+        "released",
+        "security",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": []
+}

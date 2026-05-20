@@ -1,0 +1,79 @@
+{
+    "id": 6168985,
+    "name": "kefranabg/readme-md-generator",
+    "isFork": false,
+    "commits": 180,
+    "branches": 47,
+    "releases": 13,
+    "forks": 1175,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/readme-md-generator",
+    "watchers": 73,
+    "stargazers": 9821,
+    "contributors": 24,
+    "size": 2627,
+    "createdAt": "2019-06-03T04:05:25",
+    "pushedAt": "2022-09-20T10:09:51",
+    "updatedAt": "2022-09-23T02:54:40",
+    "totalIssues": 98,
+    "openIssues": 19,
+    "totalPullRequests": 126,
+    "openPullRequests": 11,
+    "blankLines": 594,
+    "codeLines": 9490,
+    "commentLines": 181,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 40
+        },
+        {
+            "blankLines": 210,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 631
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6568
+        },
+        {
+            "blankLines": 379,
+            "language": "JavaScript",
+            "commentLines": 180,
+            "codeLines": 2251
+        }
+    ],
+    "lastCommit": "2019-12-05T03:35:39",
+    "lastCommitSHA": "f0370c8efe602bfc1e1334ea556214de4c1b0f04",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 70548
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "good first issue",
+        "greenkeeper",
+        "hacktoberfest",
+        "has pr",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,201 @@
+{
+    "id": 4054965,
+    "name": "infinitered/ignite",
+    "isFork": false,
+    "commits": 2556,
+    "branches": 26,
+    "releases": 224,
+    "forks": 1336,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 243,
+    "stargazers": 16701,
+    "contributors": 196,
+    "size": 59684,
+    "createdAt": "2016-02-10T04:06:07",
+    "pushedAt": "2024-05-10T03:21:34",
+    "updatedAt": "2024-05-10T04:18:45",
+    "totalIssues": 1335,
+    "openIssues": 28,
+    "totalPullRequests": 1140,
+    "openPullRequests": 7,
+    "blankLines": 3427,
+    "codeLines": 16537,
+    "commentLines": 2616,
+    "metrics": [
+        {
+            "language": "Java",
+            "commentLines": 45,
+            "codeLines": 166,
+            "blankLines": 30
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 66,
+            "blankLines": 21
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3604,
+            "blankLines": 1604
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 3,
+            "codeLines": 5,
+            "blankLines": 3
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 19,
+            "codeLines": 70,
+            "blankLines": 7
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 108,
+            "codeLines": 99,
+            "blankLines": 27
+        },
+        {
+            "language": "YAML",
+            "commentLines": 20,
+            "codeLines": 203,
+            "blankLines": 16
+        },
+        {
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 129,
+            "blankLines": 15
+        },
+        {
+            "language": "Swift",
+            "commentLines": 4,
+            "codeLines": 0,
+            "blankLines": 0
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 37,
+            "blankLines": 0
+        },
+        {
+            "language": "Objective-C++",
+            "commentLines": 13,
+            "codeLines": 46,
+            "blankLines": 15
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 61,
+            "blankLines": 15
+        },
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 40,
+            "codeLines": 55,
+            "blankLines": 20
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 82,
+            "codeLines": 132,
+            "blankLines": 33
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 705,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2250,
+            "codeLines": 10858,
+            "blankLines": 1605
+        },
+        {
+            "language": "XML",
+            "commentLines": 21,
+            "codeLines": 301,
+            "blankLines": 15
+        }
+    ],
+    "lastCommit": "2024-05-06T06:31:22",
+    "lastCommitSHA": "b4fc452ef2aad3d34728b2716c3a3652f558b6ca",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 514190,
+        "Java": 9106,
+        "C++": 7297,
+        "EJS": 5251,
+        "Ruby": 4062,
+        "Shell": 3811,
+        "JavaScript": 3787,
+        "Objective-C++": 3254,
+        "Objective-C": 2321,
+        "Starlark": 1314,
+        "CMake": 270,
+        "Swift": 113,
+        "C": 104
+    },
+    "labels": [
+        "abandoned",
+        "blocked",
+        "bug",
+        "cli",
+        "cookbook :cook:",
+        "crash",
+        "critical",
+        "dependencies",
+        "design",
+        "discussion",
+        "docs",
+        "enhancement",
+        "environment setup",
+        "expo",
+        "faq",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "in progress",
+        "invalid",
+        "linux",
+        "maintenance",
+        "maverick",
+        "more info needed",
+        "not-to-merge",
+        "on hold",
+        "pending",
+        "plugin-idea",
+        "question",
+        "react-native-web",
+        "released",
+        "windows"
+    ],
+    "topics": [
+        "boilerplate",
+        "cli",
+        "expo",
+        "generator",
+        "mst",
+        "react-native",
+        "react-native-generator"
+    ]
+}

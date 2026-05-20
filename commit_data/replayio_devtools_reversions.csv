@@ -1,0 +1,2702 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+1439,ad048e866f1dfb94de099557553041697d82d175,ad048e866f1dfb94de099557553041697d82d175,,"Remove devtools-components
+","diff --git a/src/devtools/client/debugger/packages/devtools-components/src/tests/tree.js b/src/devtools/client/debugger/packages/devtools-components/src/tests/tree.js
+deleted file mode 100644
+index c07def2..0000000
+--- a/src/devtools/client/debugger/packages/devtools-components/src/tests/tree.js
++++ /dev/null
+@@ -1,814 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-/* global jest */
+-
+-import React from ""react"";
+-import { mount } from ""enzyme"";
+-import Components from ""../../index"";
+-import dom from ""react-dom-factories"";
+-
+-const { Component, createFactory } = React;
+-const Tree = createFactory(Components.Tree);
+-
+-function mountTree(overrides = {}) {
+-  return mount(
+-    createFactory(
+-      class container extends Component {
+-        constructor(props) {
+-          super(props);
+-          const state = {
+-            expanded: overrides.expanded || new Set(),
+-            focused: overrides.focused,
+-            active: overrides.active,
+-          };
+-          delete overrides.focused;
+-          delete overrides.active;
+-          this.state = state;
+-        }
+-
+-        render() {
+-          return Tree(
+-            Object.assign(
+-              {
+-                getParent: x => TEST_TREE.parent[x],
+-                getChildren: x => TEST_TREE.children[x],
+-                renderItem: (x, depth, focused, arrow) => {
+-                  return dom.div({}, arrow, focused ? ""["" : null, x, focused ? ""]"" : null);
+-                },
+-                getRoots: () => [""A"", ""M""],
+-                getKey: x => `key-${x}`,
+-                itemHeight: 1,
+-                onFocus: x => {
+-                  this.setState(previousState => {
+-                    return { focused: x };
+-                  });
+-                },
+-                onActivate: x => {
+-                  this.setState(previousState => {
+-                    return { active: x };
+-                  });
+-                },
+-                onExpand: x => {
+-                  this.setState(previousState => {
+-                    const expanded = new Set(previousState.expanded);
+-                    expanded.add(x);
+-                    return { expanded };
+-                  });
+-                },
+-                onCollapse: x => {
+-                  this.setState(previousState => {
+-                    const expanded = new Set(previousState.expanded);
+-                    expanded.delete(x);
+-                    return { expanded };
+-                  });
+-                },
+-                isExpanded: x => this.state && this.state.expanded.has(x),
+-                focused: this.state.focused,
+-                active: this.state.active,
+-              },
+-              overrides
+-            )
+-          );
+-        }
+-      }
+-    )()
+-  );
+-}
+-
+-describe(""Tree"", () => {
+-  it(""does not throw"", () => {
+-    expect(mountTree()).toBeTruthy();
+-  });
+-
+-  it(""Don't auto expand root with very large number of children"", () => {
+-    const children = Array.from({ length: 51 }, (_, i) => `should-not-be-visible-${i + 1}`);
+-    // N has a lot of children, so it won't be automatically expanded
+-    const wrapper = mountTree({
+-      autoExpandDepth: 2,
+-      autoExpandNodeChildrenLimit: 50,
+-      getChildren: item => {
+-        if (item === ""N"") {
+-          return children;
+-        }
+-
+-        return TEST_TREE.children[item] || [];
+-      },
+-    });
+-    const ids = getTreeNodes(wrapper).map(node => node.prop(""id""));
+-    expect(ids).toMatchSnapshot();
+-  });
+-
+-  it(""is accessible"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJMN"".split("""")),
+-    });
+-    expect(wrapper.getDOMNode().getAttribute(""role"")).toBe(""tree"");
+-    expect(wrapper.getDOMNode().getAttribute(""tabIndex"")).toBe(""0"");
+-
+-    const expected = {
+-      A: { id: ""key-A"", level: 1, expanded: true },
+-      B: { id: ""key-B"", level: 2, expanded: true },
+-      C: { id: ""key-C"", level: 2, expanded: true },
+-      D: { id: ""key-D"", level: 2, expanded: true },
+-      E: { id: ""key-E"", level: 3, expanded: true },
+-      F: { id: ""key-F"", level: 3, expanded: true },
+-      G: { id: ""key-G"", level: 3, expanded: true },
+-      H: { id: ""key-H"", level: 3, expanded: true },
+-      I: { id: ""key-I"", level: 3, expanded: true },
+-      J: { id: ""key-J"", level: 3, expanded: true },
+-      K: { id: ""key-K"", level: 4, expanded: undefined },
+-      L: { id: ""key-L"", level: 4, expanded: undefined },
+-      M: { id: ""key-M"", level: 1, expanded: true },
+-      N: { id: ""key-N"", level: 2, expanded: true },
+-      O: { id: ""key-O"", level: 3, expanded: undefined },
+-    };
+-
+-    getTreeNodes(wrapper).forEach(node => {
+-      const key = node.prop(""id"").replace(""key-"", """");
+-      const item = expected[key];
+-
+-      expect(node.prop(""id"")).toBe(item.id);
+-      expect(node.prop(""role"")).toBe(""treeitem"");
+-      expect(node.prop(""aria-level"")).toBe(item.level);
+-      expect(node.prop(""aria-expanded"")).toBe(item.expanded);
+-    });
+-  });
+-
+-  it(""renders as expected"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-    });
+-
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-  });
+-
+-  it(""renders as expected when passed a className"", () => {
+-    const wrapper = mountTree({
+-      className: ""testClassName"",
+-    });
+-
+-    expect(wrapper.find("".tree"").hasClass(""testClassName"")).toBe(true);
+-  });
+-
+-  it(""renders as expected when passed a style"", () => {
+-    const wrapper = mountTree({
+-      style: {
+-        color: ""red"",
+-      },
+-    });
+-
+-    expect(wrapper.getDOMNode().style.color).toBe(""red"");
+-  });
+-
+-  it(""renders as expected when passed a label"", () => {
+-    const wrapper = mountTree({
+-      label: ""testAriaLabel"",
+-    });
+-    expect(wrapper.getDOMNode().getAttribute(""aria-label"")).toBe(""testAriaLabel"");
+-  });
+-
+-  it(""renders as expected when passed an aria-labelledby"", () => {
+-    const wrapper = mountTree({
+-      labelledby: ""testAriaLabelBy"",
+-    });
+-    expect(wrapper.getDOMNode().getAttribute(""aria-labelledby"")).toBe(""testAriaLabelBy"");
+-  });
+-
+-  it(""renders as expected with collapsed nodes"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""MNO"".split("""")),
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-  });
+-
+-  it(""renders as expected when passed autoDepth:1"", () => {
+-    const wrapper = mountTree({
+-      autoExpandDepth: 1,
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-  });
+-
+-  it(""calls shouldItemUpdate when provided"", () => {
+-    const shouldItemUpdate = jest.fn((prev, next) => true);
+-    const wrapper = mountTree({
+-      shouldItemUpdate,
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(shouldItemUpdate.mock.calls).toHaveLength(0);
+-
+-    wrapper.find(""Tree"").first().instance().forceUpdate();
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(shouldItemUpdate.mock.calls).toHaveLength(2);
+-
+-    expect(shouldItemUpdate.mock.calls[0][0]).toBe(""A"");
+-    expect(shouldItemUpdate.mock.calls[0][1]).toBe(""A"");
+-    expect(shouldItemUpdate.mock.results[0].value).toBe(true);
+-    expect(shouldItemUpdate.mock.calls[1][0]).toBe(""M"");
+-    expect(shouldItemUpdate.mock.calls[1][1]).toBe(""M"");
+-    expect(shouldItemUpdate.mock.results[1].value).toBe(true);
+-  });
+-
+-  it(""active item - renders as expected when clicking away"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""G"",
+-      active: ""G"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-G"");
+-
+-    getTreeNodes(wrapper).first().simulate(""click"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-  });
+-
+-  it(""active item - renders as expected when tree blurs"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""G"",
+-      active: ""G"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-G"");
+-
+-    wrapper.simulate(""blur"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-  });
+-
+-  it(""active item - renders as expected when moving away with keyboard"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-      active: ""L"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-  });
+-
+-  it(""active item - renders as expected when using keyboard and Enter"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-    });
+-    wrapper.getDOMNode().focus();
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-
+-    simulateKeyDown(wrapper, ""Enter"");
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(wrapper.getDOMNode());
+-
+-    simulateKeyDown(wrapper, ""Escape"");
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(wrapper.getDOMNode());
+-  });
+-
+-  it(""active item - renders as expected when using keyboard and Space"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-    });
+-    wrapper.getDOMNode().focus();
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-
+-    simulateKeyDown(wrapper, "" "");
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-
+-    simulateKeyDown(wrapper, ""Escape"");
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-  });
+-
+-  it(""active item - focus is inside the tree node when possible"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-      renderItem: renderItemWithFocusableContent,
+-    });
+-    wrapper.getDOMNode().focus();
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(wrapper.getDOMNode());
+-
+-    simulateKeyDown(wrapper, ""Enter"");
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.find(""#active-anchor"").getDOMNode()
+-    );
+-  });
+-
+-  it(""active item - navigate inside the tree node"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-      renderItem: renderItemWithFocusableContent,
+-    });
+-    wrapper.getDOMNode().focus();
+-    simulateKeyDown(wrapper, ""Enter"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.find(""#active-anchor"").getDOMNode()
+-    );
+-
+-    simulateKeyDown(wrapper, ""Tab"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.find(""#active-anchor"").getDOMNode()
+-    );
+-
+-    simulateKeyDown(wrapper, ""Tab"", { shiftKey: true });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.find(""#active-anchor"").getDOMNode()
+-    );
+-  });
+-
+-  it(""active item - focus is inside the tree node and then blur"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-      renderItem: renderItemWithFocusableContent,
+-    });
+-    wrapper.getDOMNode().focus();
+-    simulateKeyDown(wrapper, ""Enter"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.find("".active"").prop(""id"")).toBe(""key-L"");
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.find(""#active-anchor"").getDOMNode()
+-    );
+-
+-    wrapper.find(""#active-anchor"").simulate(""blur"");
+-    expect(wrapper.find("".active"").exists()).toBe(false);
+-    expect(wrapper.getDOMNode().ownerDocument.activeElement).toBe(
+-      wrapper.getDOMNode().ownerDocument.body
+-    );
+-  });
+-
+-  it(""renders as expected when given a focused item"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""G"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-G"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-G"");
+-
+-    getTreeNodes(wrapper).first().simulate(""click"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    getTreeNodes(wrapper).first().simulate(""click"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    wrapper.simulate(""blur"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().hasAttribute(""aria-activedescendant"")).toBe(false);
+-    expect(wrapper.find("".focused"").exists()).toBe(false);
+-  });
+-
+-  it(""renders as expected when navigating up with the keyboard"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-L"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-L"");
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-K"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-K"");
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-E"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-E"");
+-  });
+-
+-  it(""renders as expected navigating up with the keyboard on a root"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""A"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-  });
+-
+-  it(""renders as expected when navigating down with the keyboard"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""K"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-K"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-K"");
+-
+-    simulateKeyDown(wrapper, ""ArrowDown"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-L"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-L"");
+-
+-    simulateKeyDown(wrapper, ""ArrowDown"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-F"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-F"");
+-  });
+-
+-  it(""renders as expected navigating down with keyboard on last node"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""O"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-O"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-O"");
+-
+-    simulateKeyDown(wrapper, ""ArrowDown"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-O"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-O"");
+-  });
+-
+-  it(""renders as expected when navigating with right/left arrows"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-L"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-L"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-E"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-E"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-E"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-E"");
+-
+-    simulateKeyDown(wrapper, ""ArrowRight"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-E"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-E"");
+-
+-    simulateKeyDown(wrapper, ""ArrowRight"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-K"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-K"");
+-  });
+-
+-  it(""renders as expected when navigating with left arrows on roots"", () => {
+-    const wrapper = mountTree({
+-      focused: ""M"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-  });
+-
+-  it(""renders as expected when navigating with home/end"", () => {
+-    const wrapper = mountTree({
+-      focused: ""M"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""Home"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    simulateKeyDown(wrapper, ""Home"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-
+-    simulateKeyDown(wrapper, ""End"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""End"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""ArrowRight"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""End"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-N"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-N"");
+-
+-    simulateKeyDown(wrapper, ""End"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-N"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-N"");
+-
+-    simulateKeyDown(wrapper, ""Home"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-A"");
+-  });
+-
+-  it(""renders as expected navigating with arrows on unexpandable roots"", () => {
+-    const wrapper = mountTree({
+-      focused: ""A"",
+-      isExpandable: item => false,
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-
+-    simulateKeyDown(wrapper, ""ArrowRight"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-M"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-A"");
+-  });
+-
+-  it(""calls onFocus when expected"", () => {
+-    const onFocus = jest.fn(x => {
+-      wrapper &&
+-        wrapper.setState(() => {
+-          return { focused: x };
+-        });
+-    });
+-
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""I"",
+-      onFocus,
+-    });
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(onFocus.mock.calls[0][0]).toBe(""H"");
+-
+-    simulateKeyDown(wrapper, ""ArrowUp"");
+-    expect(onFocus.mock.calls[1][0]).toBe(""C"");
+-
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    simulateKeyDown(wrapper, ""ArrowLeft"");
+-    expect(onFocus.mock.calls[2][0]).toBe(""A"");
+-
+-    simulateKeyDown(wrapper, ""ArrowRight"");
+-    expect(onFocus.mock.calls[3][0]).toBe(""B"");
+-
+-    simulateKeyDown(wrapper, ""ArrowDown"");
+-    expect(onFocus.mock.calls[4][0]).toBe(""E"");
+-  });
+-
+-  it(""focus treeRef when a node is clicked"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-    });
+-    const treeRef = wrapper.find(""Tree"").first().instance().treeRef.current;
+-    treeRef.focus = jest.fn();
+-
+-    getTreeNodes(wrapper).first().simulate(""click"");
+-    expect(treeRef.focus.mock.calls).toHaveLength(1);
+-  });
+-
+-  it(""doesn't focus treeRef when focused is null"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""A"",
+-    });
+-    const treeRef = wrapper.find(""Tree"").first().instance().treeRef.current;
+-    treeRef.focus = jest.fn();
+-    wrapper.simulate(""blur"");
+-    expect(treeRef.focus.mock.calls).toHaveLength(0);
+-  });
+-
+-  it(""ignores key strokes when pressing modifiers"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-      focused: ""L"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-    expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-L"");
+-    expect(wrapper.find("".focused"").prop(""id"")).toBe(""key-L"");
+-
+-    const testKeys = [
+-      { key: ""ArrowDown"" },
+-      { key: ""ArrowUp"" },
+-      { key: ""ArrowLeft"" },
+-      { key: ""ArrowRight"" },
+-    ];
+-    const modifiers = [{ altKey: true }, { ctrlKey: true }, { metaKey: true }, { shiftKey: true }];
+-
+-    for (const key of testKeys) {
+-      for (const modifier of modifiers) {
+-        wrapper.simulate(""keydown"", Object.assign({}, key, modifier));
+-        expect(formatTree(wrapper)).toMatchSnapshot();
+-        expect(wrapper.getDOMNode().getAttribute(""aria-activedescendant"")).toBe(""key-L"");
+-      }
+-    }
+-  });
+-
+-  it(""renders arrows as expected when nodes are expanded"", () => {
+-    const wrapper = mountTree({
+-      expanded: new Set(""ABCDEFGHIJKLMNO"".split("""")),
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-
+-    getTreeNodes(wrapper).forEach(n => {
+-      if (""ABECDMN"".split("""").includes(getSanitizedNodeText(n))) {
+-        expect(n.find("".arrow.expanded"").exists()).toBe(true);
+-      } else {
+-        expect(n.find("".arrow"").exists()).toBe(false);
+-      }
+-    });
+-  });
+-
+-  it(""renders arrows as expected when nodes are collapsed"", () => {
+-    const wrapper = mountTree();
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-
+-    getTreeNodes(wrapper).forEach(n => {
+-      const arrow = n.find("".arrow"");
+-      expect(arrow.exists()).toBe(true);
+-      expect(arrow.hasClass(""expanded"")).toBe(false);
+-    });
+-  });
+-
+-  it(""uses isExpandable prop if it exists to render tree nodes"", () => {
+-    const wrapper = mountTree({
+-      isExpandable: item => item === ""A"",
+-    });
+-    expect(formatTree(wrapper)).toMatchSnapshot();
+-  });
+-
+-  it(""adds the expected data-expandable attribute"", () => {
+-    const wrapper = mountTree({
+-      isExpandable: item => item === ""A"",
+-    });
+-    const nodes = getTreeNodes(wrapper);
+-    expect(nodes.at(0).prop(""data-expandable"")).toBe(true);
+-    expect(nodes.at(1).prop(""data-expandable"")).toBe(false);
+-  });
+-});
+-
+-function getTreeNodes(wrapper) {
+-  return wrapper.find("".tree-node"");
+-}
+-
+-function simulateKeyDown(wrapper, key, options) {
+-  wrapper.simulate(""keydown"", {
+-    key,
+-    preventDefault: () => {},
+-    stopPropagation: () => {},
+-    ...options,
+-  });
+-}
+-
+-function renderItemWithFocusableContent(x, depth, focused, arrow) {
+-  const children = [arrow, focused ? ""["" : null, x];
+-  if (x === ""L"") {
+-    children.push(dom.a({ id: ""active-anchor"", href: ""#"" }, "" anchor""));
+-  }
+-
+-  if (focused) {
+-    children.push(""]"");
+-  }
+-
+-  return dom.div({}, ...children);
+-}
+-
+-/*
+- * Takes an Enzyme wrapper (obtained with mount/mount/…) and
+- * returns a stringified version of the Tree, e.g.
+- *
+- *   ▼ A
+- *   |   ▼ B
+- *   |   |   ▼ E
+- *   |   |   |   K
+- *   |   |   |   L
+- *   |   |   F
+- *   |   |   G
+- *   |   ▼ C
+- *   |   |   H
+- *   |   |   I
+- *   |   ▼ D
+- *   |   |   J
+- *   ▼ M
+- *   |   ▼ N
+- *   |   |   O
+- *
+- */
+-function formatTree(wrapper) {
+-  const textTree = getTreeNodes(wrapper)
+-    .map(node => {
+-      const level = (node.prop(""aria-level"") || 1) - 1;
+-      const indentStr = ""|  "".repeat(level);
+-      const arrow = node.find("".arrow"");
+-      let arrowStr = ""  "";
+-      if (arrow.exists()) {
+-        arrowStr = arrow.hasClass(""expanded"") ? ""▼ "" : ""▶︎ "";
+-      }
+-
+-      return `${indentStr}${arrowStr}${getSanitizedNodeText(node)}`;
+-    })
+-    .join(""\n"");
+-
+-  // Wrap in new lines so tree nodes are aligned as expected.
+-  return `\n${textTree}\n`;
+-}
+-
+-function getSanitizedNodeText(node) {
+-  // Stripping off the invisible space used in the indent.
+-  return node.text().replace(/^\u200B+/, """");
+-}
+-
+-// Encoding of the following tree/forest:
+-//
+-// A
+-// |-- B
+-// |   |-- E
+-// |   |   |-- K
+-// |   |   `-- L
+-// |   |-- F
+-// |   `-- G
+-// |-- C
+-// |   |-- H
+-// |   `-- I
+-// `-- D
+-//     `-- J
+-// M
+-// `-- N
+-//     `-- O
+-
+-var TEST_TREE = {
+-  children: {
+-    A: [""B"", ""C"", ""D""],
+-    B: [""E"", ""F"", ""G""],
+-    C: [""H"", ""I""],
+-    D: [""J""],
+-    E: [""K"", ""L""],
+-    F: [],
+-    G: [],
+-    H: [],
+-    I: [],
+-    J: [],
+-    K: [],
+-    L: [],
+-    M: [""N""],
+-    N: [""O""],
+-    O: [],
+-  },
+-  parent: {
+-    A: null,
+-    B: ""A"",
+-    C: ""A"",
+-    D: ""A"",
+-    E: ""B"",
+-    F: ""B"",
+-    G: ""B"",
+-    H: ""C"",
+-    I: ""C"",
+-    J: ""D"",
+-    K: ""E"",
+-    L: ""E"",
+-    M: null,
+-    N: ""M"",
+-    O: ""N"",
+-  },
+-};
+",0,,22,4958,1,1,20,2730
+4946,99abfd1daa294a06bcc748f65931310b0a07fbc6,99abfd1daa294a06bcc748f65931310b0a07fbc6,"These jest tests have never been run. They are also using some of the redux helpers we'd like to modernize, so it is safer to remove them and then use the firefox test helpers as a reference when we want to re-create a unit test suite","Remove unused debugger jest tests
+","diff --git a/src/devtools/client/debugger/src/selectors/test/visibleColumnBreakpoints.spec.js b/src/devtools/client/debugger/src/selectors/test/visibleColumnBreakpoints.spec.js
+deleted file mode 100644
+index 0ba0551..0000000
+--- a/src/devtools/client/debugger/src/selectors/test/visibleColumnBreakpoints.spec.js
++++ /dev/null
+@@ -1,114 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-import { actions, selectors, createStore, makeSource } from ""../../utils/test-head"";
+-
+-import { getColumnBreakpoints, getFirstBreakpointPosition } from ""../visibleColumnBreakpoints"";
+-import {
+-  makeMockSource,
+-  makeMockSourceWithContent,
+-  makeMockBreakpoint,
+-} from ""../../utils/test-mockup"";
+-
+-function pp(line, column) {
+-  return {
+-    location: { sourceId: ""foo"", line, column },
+-    generatedLocation: { sourceId: ""foo"", line, column },
+-  };
+-}
+-
+-function defaultSource() {
+-  return makeMockSource(undefined, ""foo"");
+-}
+-
+-function bp(line, column) {
+-  return makeMockBreakpoint(defaultSource(), line, column);
+-}
+-
+-const source = makeMockSourceWithContent(
+-  undefined,
+-  ""foo.js"",
+-  undefined,
+-  `function foo() {
+-  console.log(""hello"");
+-}
+-console.log('bye');
+-`
+-);
+-
+-describe(""visible column breakpoints"", () => {
+-  it(""simple"", () => {
+-    const viewport = {
+-      start: { line: 1, column: 0 },
+-      end: { line: 10, column: 10 },
+-    };
+-    const pausePoints = [pp(1, 1), pp(1, 5), pp(3, 1)];
+-    const breakpoints = [bp(1, 1), bp(4, 0), bp(4, 3)];
+-
+-    const columnBps = getColumnBreakpoints(pausePoints, breakpoints, viewport, source);
+-    expect(columnBps).toMatchSnapshot();
+-  });
+-
+-  it(""ignores single breakpoints"", () => {
+-    const viewport = {
+-      start: { line: 1, column: 0 },
+-      end: { line: 10, column: 10 },
+-    };
+-    const pausePoints = [pp(1, 1), pp(1, 3), pp(2, 1)];
+-    const breakpoints = [bp(1, 1)];
+-    const columnBps = getColumnBreakpoints(pausePoints, breakpoints, viewport, source);
+-    expect(columnBps).toMatchSnapshot();
+-  });
+-
+-  it(""only shows visible breakpoints"", () => {
+-    const viewport = {
+-      start: { line: 1, column: 0 },
+-      end: { line: 10, column: 10 },
+-    };
+-    const pausePoints = [pp(1, 1), pp(1, 3), pp(20, 1)];
+-    const breakpoints = [bp(1, 1)];
+-
+-    const columnBps = getColumnBreakpoints(pausePoints, breakpoints, viewport, source);
+-    expect(columnBps).toMatchSnapshot();
+-  });
+-
+-  it(""doesnt show breakpoints to the right"", () => {
+-    const viewport = {
+-      start: { line: 1, column: 0 },
+-      end: { line: 10, column: 10 },
+-    };
+-    const pausePoints = [pp(1, 1), pp(1, 15), pp(20, 1)];
+-    const breakpoints = [bp(1, 1), bp(1, 15)];
+-
+-    const columnBps = getColumnBreakpoints(pausePoints, breakpoints, viewport, source);
+-    expect(columnBps).toMatchSnapshot();
+-  });
+-});
+-
+-describe(""getFirstBreakpointPosition"", () => {
+-  it(""sorts the positions by column"", async () => {
+-    const store = createStore();
+-    const { dispatch, getState } = store;
+-
+-    await dispatch(actions.newGeneratedSource(makeSource(""foo1"")));
+-
+-    const fooSource = selectors.getSourceFromId(getState(), ""foo1"");
+-    dispatch({
+-      type: ""ADD_BREAKPOINT_POSITIONS"",
+-      positions: [pp(1, 5), pp(1, 3)],
+-      source: fooSource,
+-    });
+-
+-    const position = getFirstBreakpointPosition(getState(), {
+-      line: 1,
+-      sourceId: fooSource.id,
+-    });
+-
+-    if (!position) {
+-      throw new Error(""There should be a position"");
+-    }
+-    expect(position.location.column).toEqual(3);
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/breakpoint/tests/astBreakpointLocation.spec.js b/src/devtools/client/debugger/src/utils/breakpoint/tests/astBreakpointLocation.spec.js
+deleted file mode 100644
+index d051276..0000000
+--- a/src/devtools/client/debugger/src/utils/breakpoint/tests/astBreakpointLocation.spec.js
++++ /dev/null
+@@ -1,65 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { getASTLocation } from ""../astBreakpointLocation.js"";
+-import { populateSource, populateOriginalSource } from ""../../../workers/parser/tests/helpers"";
+-import { getSymbols } from ""../../../workers/parser/getSymbols"";
+-import cases from ""jest-in-case"";
+-
+-async function setup({ file, location, functionName, original }) {
+-  const source = original ? populateOriginalSource(file) : populateSource(file);
+-
+-  const symbols = getSymbols(source.id);
+-
+-  const astLocation = getASTLocation(source, symbols, location);
+-  expect(astLocation.name).toBe(functionName);
+-  expect(astLocation).toMatchSnapshot();
+-}
+-
+-describe(""ast"", () => {
+-  cases(""valid location"", setup, [
+-    {
+-      name: ""returns the scope and offset"",
+-      file: ""math"",
+-      location: { line: 6, column: 0 },
+-      functionName: ""math"",
+-    },
+-    {
+-      name: ""returns name for a nested anon fn as the parent func"",
+-      file: ""outOfScope"",
+-      location: { line: 25, column: 0 },
+-      functionName: ""outer"",
+-    },
+-    {
+-      name: ""returns name for a nested named fn"",
+-      file: ""outOfScope"",
+-      location: { line: 5, column: 0 },
+-      functionName: ""inner"",
+-    },
+-    {
+-      name: ""returns name for an anon fn with a named variable"",
+-      file: ""outOfScope"",
+-      location: { line: 40, column: 0 },
+-      functionName: ""globalDeclaration"",
+-    },
+-  ]);
+-
+-  cases(""invalid location"", setup, [
+-    {
+-      name: ""returns the scope name for global scope as undefined"",
+-      file: ""class"",
+-      original: true,
+-      location: { line: 10, column: 0 },
+-      functionName: undefined,
+-    },
+-    {
+-      name: ""returns name for an anon fn in global scope as undefined"",
+-      file: ""outOfScope"",
+-      location: { line: 44, column: 0 },
+-      functionName: undefined,
+-    },
+-  ]);
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/addToTree.spec.js b/src/devtools/client/debugger/src/utils/sources-tree/tests/addToTree.spec.js
+deleted file mode 100644
+index 8768b97..0000000
+--- a/src/devtools/client/debugger/src/utils/sources-tree/tests/addToTree.spec.js
++++ /dev/null
+@@ -1,338 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-/* eslint max-nested-callbacks: [""error"", 4]*/
+-
+-import { makeMockSource } from ""../../../utils/test-mockup"";
+-
+-import {
+-  addToTree,
+-  createDirectoryNode,
+-  createSourceNode,
+-  createTree,
+-  formatTree,
+-  nodeHasChildren,
+-} from ""../index"";
+-
+-function createSourcesMap(sources) {
+-  const sourcesMap = sources.reduce((map, source) => {
+-    map[source.id] = makeMockSource(source.url, source.id);
+-    return map;
+-  }, {});
+-
+-  return sourcesMap;
+-}
+-
+-function createSourcesList(sources) {
+-  return sources.map((s, i) => makeMockSource(s.url, s.id));
+-}
+-
+-function getChildNode(tree, ...path) {
+-  return path.reduce((child, index) => child.contents[index], tree);
+-}
+-
+-describe(""sources-tree"", () => {
+-  describe(""addToTree"", () => {
+-    it(""should provide node API"", () => {
+-      const source = makeMockSource(""http://example.com/a/b/c.js"", ""actor1"");
+-
+-      const root = createDirectoryNode(""root"", """", [createSourceNode(""foo"", ""/foo"", source)]);
+-
+-      expect(root.name).toBe(""root"");
+-      expect(nodeHasChildren(root)).toBe(true);
+-      expect(root.contents).toHaveLength(1);
+-
+-      const child = root.contents[0];
+-      expect(child.name).toBe(""foo"");
+-      expect(child.path).toBe(""/foo"");
+-      expect(child.contents).toBe(source);
+-      expect(nodeHasChildren(child)).toBe(false);
+-    });
+-
+-    it(""builds a path-based tree"", () => {
+-      const source1 = makeMockSource(""http://example.com/foo/source1.js"", ""actor1"");
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", ""FakeThread"");
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const base = tree.contents[0].contents[0];
+-      expect(base.name).toBe(""example.com"");
+-      expect(base.contents).toHaveLength(1);
+-
+-      const fooNode = base.contents[0];
+-      expect(fooNode.name).toBe(""foo"");
+-      expect(fooNode.contents).toHaveLength(1);
+-
+-      const source1Node = fooNode.contents[0];
+-      expect(source1Node.name).toBe(""source1.js"");
+-    });
+-
+-    it(""builds a path-based tree for webpack URLs"", () => {
+-      const source1 = makeMockSource(""webpack:///foo/source1.js"", ""actor1"");
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", """");
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const base = tree.contents[0];
+-      expect(base.name).toBe(""webpack://"");
+-      expect(base.contents).toHaveLength(1);
+-
+-      const fooNode = base.contents[0];
+-      expect(fooNode.name).toBe(""foo"");
+-      expect(fooNode.contents).toHaveLength(1);
+-
+-      const source1Node = fooNode.contents[0];
+-      expect(source1Node.name).toBe(""source1.js"");
+-    });
+-
+-    it(""builds a path-based tree for webpack URLs with absolute path"", () => {
+-      const source1 = makeMockSource(""webpack:////Users/foo/source1.js"", ""actor1"");
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", """");
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const base = tree.contents[0];
+-      expect(base.name).toBe(""webpack://"");
+-      expect(base.contents).toHaveLength(1);
+-
+-      const emptyNode = base.contents[0];
+-      expect(emptyNode.name).toBe("""");
+-      expect(emptyNode.contents).toHaveLength(1);
+-
+-      const userNode = emptyNode.contents[0];
+-      expect(userNode.name).toBe(""Users"");
+-      expect(userNode.contents).toHaveLength(1);
+-
+-      const fooNode = userNode.contents[0];
+-      expect(fooNode.name).toBe(""foo"");
+-      expect(fooNode.contents).toHaveLength(1);
+-
+-      const source1Node = fooNode.contents[0];
+-      expect(source1Node.name).toBe(""source1.js"");
+-    });
+-
+-    it(""handles url with no filename"", function () {
+-      const source1 = makeMockSource(""http://example.com/"", ""actor1"");
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", """");
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const base = tree.contents[0];
+-      expect(base.name).toBe(""example.com"");
+-      expect(base.contents).toHaveLength(1);
+-
+-      const indexNode = base.contents[0];
+-      expect(indexNode.name).toBe(""(index)"");
+-    });
+-
+-    it(""does not mangle encoded URLs"", () => {
+-      const sourceName = // eslint-disable-next-line max-len
+-        ""B9724220.131821496;dc_ver=42.111;sz=468x60;u_sd=2;dc_adk=2020465299;ord=a53rpc;dc_rfl=1,https%3A%2F%2Fdavidwalsh.name%2F$0;xdt=1"";
+-
+-      const source1 = makeMockSource(`https://example.com/foo/${sourceName}`, ""actor1"");
+-
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", ""FakeThread"");
+-      const childNode = getChildNode(tree, 0, 0, 0, 0);
+-      expect(childNode.name).toEqual(sourceName);
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""name does not include query params"", () => {
+-      const sourceName = ""name.js?bar=3"";
+-
+-      const source1 = makeMockSource(`https://example.com/foo/${sourceName}`, ""actor1"");
+-
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", ""FakeThread"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""does not attempt to add two of the same directory"", () => {
+-      const sources = [
+-        {
+-          id: ""server1.conn13.child1/39"",
+-          url: ""https://davidwalsh.name/wp-content/prism.js"",
+-        },
+-        {
+-          id: ""server1.conn13.child1/37"",
+-          url: ""https://davidwalsh.name/"",
+-        },
+-      ];
+-
+-      const sourceMap = { FakeThread: createSourcesMap(sources) };
+-      const tree = createTree({
+-        sources: sourceMap,
+-        debuggeeUrl: """",
+-        threads: [
+-          {
+-            actor: ""FakeThread"",
+-            name: ""FakeThread"",
+-            url: ""https://davidwalsh.name"",
+-            type: ""worker"",
+-          },
+-        ],
+-      }).sourceTree;
+-
+-      expect(tree.contents[0].contents).toHaveLength(1);
+-      const subtree = tree.contents[0].contents[0];
+-      expect(subtree.contents).toHaveLength(2);
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""supports data URLs"", () => {
+-      const sources = [
+-        {
+-          id: ""server1.conn13.child1/39"",
+-          url: ""data:text/html,<script>console.log(123)</script>"",
+-        },
+-      ];
+-
+-      const sourceMap = { FakeThread: createSourcesMap(sources) };
+-      const tree = createTree({
+-        sources: sourceMap,
+-        debuggeeUrl: """",
+-        threads: [
+-          {
+-            actor: ""FakeThread"",
+-            url: ""https://davidwalsh.name"",
+-            type: ""worker"",
+-            name: ""FakeThread"",
+-          },
+-        ],
+-      }).sourceTree;
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""does not attempt to add two of the same file"", () => {
+-      const sources = [
+-        {
+-          id: ""server1.conn13.child1/39"",
+-          url: ""https://davidwalsh.name/"",
+-        },
+-        {
+-          id: ""server1.conn13.child1/37"",
+-          url: ""https://davidwalsh.name/util.js"",
+-        },
+-      ];
+-
+-      const sourceMap = {
+-        FakeThread: createSourcesMap(sources),
+-        FakeThread2: createSourcesMap([sources[1]]),
+-      };
+-
+-      const tree = createTree({
+-        sources: sourceMap,
+-        debuggeeUrl: ""https://davidwalsh.name"",
+-        threads: [
+-          {
+-            actor: ""FakeThread"",
+-            name: ""FakeThread"",
+-            url: ""https://davidwalsh.name"",
+-            type: ""worker"",
+-          },
+-          {
+-            actor: ""FakeThread2"",
+-            name: ""FakeThread2"",
+-            url: ""https://davidwalsh.name/WorkerA.js"",
+-            type: ""worker"",
+-          },
+-        ],
+-      }).sourceTree;
+-
+-      expect(tree.contents[0].contents).toHaveLength(1);
+-      const subtree = tree.contents[0].contents[0];
+-      expect(subtree.contents).toHaveLength(2);
+-      const subtree2 = tree.contents[1].contents[0];
+-      expect(subtree2.contents).toHaveLength(1);
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""excludes javascript: URLs from the tree"", () => {
+-      const source1 = makeMockSource(""javascript:alert('Hello World')"", ""actor1"");
+-      const source2 = makeMockSource(""http://example.com/source1.js"", ""actor2"");
+-      const source3 = makeMockSource(
+-        ""javascript:let i = 10; while (i > 0) i--; console.log(i);"",
+-        ""actor3""
+-      );
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source1, ""http://example.com/"", ""FakeThread"");
+-      addToTree(tree, source2, ""http://example.com/"", ""FakeThread"");
+-      addToTree(tree, source3, ""http://example.com/"", ""FakeThread"");
+-
+-      const base = tree.contents[0].contents[0];
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const source1Node = base.contents[0];
+-      expect(source1Node.name).toBe(""source1.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""correctly parses file sources"", () => {
+-      const source = makeMockSource(""file:///a/b.js"", ""actor1"");
+-      const tree = createDirectoryNode(""root"", """", []);
+-
+-      addToTree(tree, source, ""file:///a/index.html"", ""FakeThread"");
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const base = tree.contents[0].contents[0];
+-      expect(base.name).toBe(""file://"");
+-      expect(base.contents).toHaveLength(1);
+-
+-      const aNode = base.contents[0];
+-      expect(aNode.name).toBe(""a"");
+-      expect(aNode.contents).toHaveLength(1);
+-
+-      const bNode = aNode.contents[0];
+-      expect(bNode.name).toBe(""b.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""can add a file to an intermediate directory"", () => {
+-      const testData = [
+-        {
+-          id: ""server1.conn13.child1/39"",
+-          url: ""https://unpkg.com/codemirror@5.1/mode/xml/xml.js"",
+-        },
+-        {
+-          id: ""server1.conn13.child1/37"",
+-          url: ""https://unpkg.com/codemirror@5.1"",
+-        },
+-      ];
+-
+-      const sources = createSourcesList(testData);
+-      const tree = createDirectoryNode(""root"", """", []);
+-      sources.forEach(source => addToTree(tree, source, ""https://unpkg.com/"", ""FakeThread""));
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""replaces a file with a directory"", () => {
+-      const testData = [
+-        {
+-          id: ""server1.conn13.child1/37"",
+-          url: ""https://unpkg.com/codemirror@5.1"",
+-        },
+-
+-        {
+-          id: ""server1.conn13.child1/39"",
+-          url: ""https://unpkg.com/codemirror@5.1/mode/xml/xml.js"",
+-        },
+-      ];
+-
+-      const sources = createSourcesList(testData);
+-      const tree = createDirectoryNode(""root"", """", []);
+-      sources.forEach(source => addToTree(tree, source, ""https://unpkg.com/"", ""FakeThread""));
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/collapseTree.spec.js b/src/devtools/client/debugger/src/utils/sources-tree/tests/collapseTree.spec.js
+deleted file mode 100644
+index 02390ca..0000000
+--- a/src/devtools/client/debugger/src/utils/sources-tree/tests/collapseTree.spec.js
++++ /dev/null
+@@ -1,113 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { makeMockSource } from ""../../../utils/test-mockup"";
+-
+-import { collapseTree, formatTree, addToTree, createDirectoryNode } from ""../index"";
+-
+-const abcSource = makeMockSource(""http://example.com/a/b/c.js"", ""actor1"");
+-const abcdeSource = makeMockSource(""http://example.com/a/b/c/d/e.js"", ""actor2"");
+-const abxSource = makeMockSource(""http://example.com/a/b/x.js"", ""actor3"");
+-
+-describe(""sources tree"", () => {
+-  describe(""collapseTree"", () => {
+-    it(""can collapse a single source"", () => {
+-      const fullTree = createDirectoryNode(""root"", """", []);
+-      addToTree(fullTree, abcSource, ""http://example.com/"", ""Main Thread"");
+-      expect(fullTree.contents).toHaveLength(1);
+-      const tree = collapseTree(fullTree);
+-
+-      const host = tree.contents[0].contents[0];
+-      expect(host.name).toBe(""example.com"");
+-      expect(host.contents).toHaveLength(1);
+-
+-      const abFolder = host.contents[0];
+-      expect(abFolder.name).toBe(""a/b"");
+-      expect(abFolder.contents).toHaveLength(1);
+-
+-      const abcNode = abFolder.contents[0];
+-      expect(abcNode.name).toBe(""c.js"");
+-      expect(abcNode.path).toBe(""Main Thread/example.com/a/b/c.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""correctly merges in a collapsed source with a deeper level"", () => {
+-      const fullTree = createDirectoryNode(""root"", """", []);
+-      addToTree(fullTree, abcSource, ""http://example.com/"", ""Main Thread"");
+-      addToTree(fullTree, abcdeSource, ""http://example.com/"", ""Main Thread"");
+-      const tree = collapseTree(fullTree);
+-
+-      const host = tree.contents[0].contents[0];
+-      expect(host.name).toBe(""example.com"");
+-      expect(host.contents).toHaveLength(1);
+-
+-      const abFolder = host.contents[0];
+-      expect(abFolder.name).toBe(""a/b"");
+-      expect(abFolder.contents).toHaveLength(2);
+-
+-      const [cdFolder, abcNode] = abFolder.contents;
+-      expect(abcNode.name).toBe(""c.js"");
+-      expect(abcNode.path).toBe(""Main Thread/example.com/a/b/c.js"");
+-      expect(cdFolder.name).toBe(""c/d"");
+-
+-      const [abcdeNode] = cdFolder.contents;
+-      expect(abcdeNode.name).toBe(""e.js"");
+-      expect(abcdeNode.path).toBe(""Main Thread/example.com/a/b/c/d/e.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""correctly merges in a collapsed source with a shallower level"", () => {
+-      const fullTree = createDirectoryNode(""root"", """", []);
+-      addToTree(fullTree, abcSource, ""http://example.com/"", ""Main Thread"");
+-      addToTree(fullTree, abxSource, ""http://example.com/"", ""Main Thread"");
+-      const tree = collapseTree(fullTree);
+-
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const host = tree.contents[0].contents[0];
+-      expect(host.name).toBe(""example.com"");
+-      expect(host.contents).toHaveLength(1);
+-
+-      const abFolder = host.contents[0];
+-      expect(abFolder.name).toBe(""a/b"");
+-      expect(abFolder.contents).toHaveLength(2);
+-
+-      const [abcNode, abxNode] = abFolder.contents;
+-      expect(abcNode.name).toBe(""c.js"");
+-      expect(abcNode.path).toBe(""Main Thread/example.com/a/b/c.js"");
+-      expect(abxNode.name).toBe(""x.js"");
+-      expect(abxNode.path).toBe(""Main Thread/example.com/a/b/x.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-
+-    it(""correctly merges in a collapsed source with the same level"", () => {
+-      const fullTree = createDirectoryNode(""root"", """", []);
+-      addToTree(fullTree, abcdeSource, ""http://example.com/"", ""Main Thread"");
+-      addToTree(fullTree, abcSource, ""http://example.com/"", ""Main Thread"");
+-      const tree = collapseTree(fullTree);
+-
+-      expect(tree.contents).toHaveLength(1);
+-
+-      const host = tree.contents[0].contents[0];
+-      expect(host.name).toBe(""example.com"");
+-      expect(host.contents).toHaveLength(1);
+-
+-      const abFolder = host.contents[0];
+-      expect(abFolder.name).toBe(""a/b"");
+-      expect(abFolder.contents).toHaveLength(2);
+-
+-      const [cdFolder, abcNode] = abFolder.contents;
+-      expect(abcNode.name).toBe(""c.js"");
+-      expect(abcNode.path).toBe(""Main Thread/example.com/a/b/c.js"");
+-      expect(cdFolder.name).toBe(""c/d"");
+-
+-      const [abcdeNode] = cdFolder.contents;
+-      expect(abcdeNode.name).toBe(""e.js"");
+-      expect(abcdeNode.path).toBe(""Main Thread/example.com/a/b/c/d/e.js"");
+-      expect(formatTree(tree)).toMatchSnapshot();
+-    });
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.spec.js b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.spec.js
+deleted file mode 100644
+index a643245..0000000
+--- a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.spec.js
++++ /dev/null
+@@ -1,114 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { makeMockSource } from ""../../../utils/test-mockup"";
+-import { updateTree, createTree } from ""../index"";
+-
+-function createSourcesMap(sources) {
+-  const sourcesMap = sources.reduce((map, source) => {
+-    map[source.id] = makeMockSource(source.url, source.id);
+-    return map;
+-  }, {});
+-
+-  return { FakeThread: sourcesMap };
+-}
+-
+-function formatTree(tree) {
+-  return JSON.stringify(tree.uncollapsedTree, null, 2);
+-}
+-
+-const sources = [
+-  {
+-    id: ""server1.conn13.child1/39"",
+-    url: ""https://davidwalsh.name/"",
+-  },
+-  {
+-    id: ""server1.conn13.child1/37"",
+-    url: ""https://davidwalsh.name/source1.js"",
+-  },
+-  {
+-    id: ""server1.conn13.child1/40"",
+-    url: ""https://davidwalsh.name/source2.js"",
+-  },
+-];
+-
+-const threads = [
+-  {
+-    actor: ""FakeThread"",
+-    url: ""https://davidwalsh.name"",
+-    type: ""worker"",
+-    name: ""FakeThread"",
+-  },
+-];
+-
+-const debuggeeUrl = ""blah"";
+-
+-describe(""calls updateTree.js"", () => {
+-  it(""adds one source"", () => {
+-    const prevSources = createSourcesMap([sources[0]]);
+-    const { sourceTree, uncollapsedTree } = createTree({
+-      debuggeeUrl,
+-      sources: prevSources,
+-      threads,
+-    });
+-    const newTree = updateTree({
+-      debuggeeUrl,
+-      prevSources,
+-      newSources: createSourcesMap([sources[0], sources[1]]),
+-      uncollapsedTree,
+-      sourceTree,
+-      threads,
+-    });
+-
+-    expect(formatTree(newTree)).toMatchSnapshot();
+-  });
+-
+-  it(""adds two sources"", () => {
+-    const prevSources = createSourcesMap([sources[0]]);
+-
+-    const { sourceTree, uncollapsedTree } = createTree({
+-      debuggeeUrl,
+-      sources: prevSources,
+-      threads,
+-    });
+-
+-    const newTree = updateTree({
+-      debuggeeUrl,
+-      prevSources,
+-      newSources: createSourcesMap([sources[0], sources[1], sources[2]]),
+-      uncollapsedTree,
+-      sourceTree,
+-      projectRoot: """",
+-      threads,
+-    });
+-
+-    expect(formatTree(newTree)).toMatchSnapshot();
+-  });
+-
+-  // NOTE: we currently only add sources to the tree and clear the tree
+-  // on navigate.
+-  it(""shows all the sources"", () => {
+-    const prevSources = createSourcesMap([sources[0]]);
+-
+-    const { sourceTree, uncollapsedTree } = createTree({
+-      debuggeeUrl,
+-      sources: prevSources,
+-      threads,
+-    });
+-
+-    const newTree = updateTree({
+-      debuggeeUrl,
+-      prevSources,
+-      newSources: createSourcesMap([sources[1]]),
+-      uncollapsedTree,
+-      sourceTree,
+-      projectRoot: """",
+-      threads,
+-    });
+-
+-    expect(formatTree(newTree)).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/tests/function.spec.js b/src/devtools/client/debugger/src/utils/tests/function.spec.js
+deleted file mode 100644
+index 5a984d9..0000000
+--- a/src/devtools/client/debugger/src/utils/tests/function.spec.js
++++ /dev/null
+@@ -1,63 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { findFunctionText } from ""../function"";
+-
+-import { getSymbols } from ""../../workers/parser/getSymbols"";
+-import { populateOriginalSource } from ""../../workers/parser/tests/helpers"";
+-
+-describe(""function"", () => {
+-  describe(""findFunctionText"", () => {
+-    it(""finds function"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-      const text = findFunctionText(14, source, symbols);
+-      expect(text).toMatchSnapshot();
+-    });
+-
+-    it(""finds function signature"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-
+-      const text = findFunctionText(13, source, symbols);
+-      expect(text).toMatchSnapshot();
+-    });
+-
+-    it(""misses function closing brace"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-
+-      const text = findFunctionText(15, source, symbols);
+-
+-      // TODO: we should try and match the closing bracket.
+-      expect(text).toEqual(null);
+-    });
+-
+-    it(""finds property function"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-
+-      const text = findFunctionText(29, source, symbols);
+-      expect(text).toMatchSnapshot();
+-    });
+-
+-    it(""finds class function"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-
+-      const text = findFunctionText(33, source, symbols);
+-      expect(text).toMatchSnapshot();
+-    });
+-
+-    it(""cant find function"", () => {
+-      const source = populateOriginalSource(""func"");
+-      const symbols = getSymbols(source.id);
+-
+-      const text = findFunctionText(20, source, symbols);
+-      expect(text).toEqual(null);
+-    });
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/tests/indentation.spec.js b/src/devtools/client/debugger/src/utils/tests/indentation.spec.js
+deleted file mode 100644
+index f264589..0000000
+--- a/src/devtools/client/debugger/src/utils/tests/indentation.spec.js
++++ /dev/null
+@@ -1,63 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { correctIndentation, getIndentation } from ""../indentation"";
+-
+-describe(""indentation"", () => {
+-  it(""simple"", () => {
+-    expect(
+-      correctIndentation(`
+-      foo
+-    `)
+-    ).toMatchSnapshot();
+-  });
+-
+-  it(""one line"", () => {
+-    expect(correctIndentation(""foo"")).toMatchSnapshot();
+-  });
+-
+-  it(""one function"", () => {
+-    const text = `
+-      function foo() {
+-        console.log(""yo"")
+-      }
+-    `;
+-
+-    expect(correctIndentation(text)).toMatchSnapshot();
+-  });
+-
+-  it(""try catch"", () => {
+-    const text = `
+-      try {
+-        console.log(""yo"")
+-      } catch (e) {
+-        console.log(""yo"")
+-      }
+-    `;
+-
+-    expect(correctIndentation(text)).toMatchSnapshot();
+-  });
+-
+-  it(""mad indentation"", () => {
+-    const text = `
+-      try {
+-        console.log(""yo"")
+-      } catch (e) {
+-        console.log(""yo"")
+-          }
+-    `;
+-
+-    expect(correctIndentation(text)).toMatchSnapshot();
+-  });
+-});
+-
+-describe(""indentation length"", () => {
+-  it(""leading spaces"", () => {
+-    const line = ""                console.log('Hello World');"";
+-
+-    expect(getIndentation(line)).toEqual(16);
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/utils/tests/project-search.spec.js b/src/devtools/client/debugger/src/utils/tests/project-search.spec.js
+deleted file mode 100644
+index 994cec2..0000000
+--- a/src/devtools/client/debugger/src/utils/tests/project-search.spec.js
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { highlightMatches } from ""../project-search"";
+-
+-describe(""project search - highlightMatches"", () => {
+-  it(""simple"", () => {
+-    const lineMatch = {
+-      type: ""MATCH"",
+-      value: ""This is a sample sentence"",
+-      line: 1,
+-      column: 17,
+-      matchIndex: 17,
+-      match: ""sentence"",
+-      sourceId: ""source"",
+-      text: ""text"",
+-    };
+-
+-    expect(highlightMatches(lineMatch)).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/workers/parser/tests/getSymbols.spec.js b/src/devtools/client/debugger/src/workers/parser/tests/getSymbols.spec.js
+deleted file mode 100644
+index 0679e51..0000000
+--- a/src/devtools/client/debugger/src/workers/parser/tests/getSymbols.spec.js
++++ /dev/null
+@@ -1,47 +0,0 @@
+-/* eslint max-nested-callbacks: [""error"", 4]*/
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { formatSymbols } from ""../utils/formatSymbols"";
+-import { populateSource, populateOriginalSource } from ""./helpers"";
+-import cases from ""jest-in-case"";
+-
+-cases(
+-  ""Parser.getSymbols"",
+-  ({ name, file, original, type }) => {
+-    const source = original ? populateOriginalSource(file, type) : populateSource(file, type);
+-
+-    expect(formatSymbols(source.id)).toMatchSnapshot();
+-  },
+-  [
+-    { name: ""es6"", file: ""es6"", original: true },
+-    { name: ""func"", file: ""func"", original: true },
+-    { name: ""function names"", file: ""functionNames"", original: true },
+-    { name: ""math"", file: ""math"" },
+-    { name: ""proto"", file: ""proto"" },
+-    { name: ""class"", file: ""class"", original: true },
+-    { name: ""var"", file: ""var"" },
+-    { name: ""expression"", file: ""expression"" },
+-    { name: ""allSymbols"", file: ""allSymbols"" },
+-    { name: ""call sites"", file: ""call-sites"" },
+-    { name: ""call expression"", file: ""callExpressions"" },
+-    { name: ""object expressions"", file: ""object-expressions"" },
+-    {
+-      name: ""finds symbols in an html file"",
+-      file: ""parseScriptTags"",
+-      type: ""html"",
+-    },
+-    { name: ""component"", file: ""component"", original: true },
+-    {
+-      name: ""react component"",
+-      file: ""frameworks/reactComponent"",
+-      original: true,
+-    },
+-    { name: ""flow"", file: ""flow"", original: true },
+-    { name: ""jsx"", file: ""jsx"", original: true },
+-    { name: ""destruct"", file: ""destructuring"" },
+-  ]
+-);
+
+diff --git a/src/devtools/client/debugger/src/workers/parser/tests/validate.spec.js b/src/devtools/client/debugger/src/workers/parser/tests/validate.spec.js
+deleted file mode 100644
+index a004d14..0000000
+--- a/src/devtools/client/debugger/src/workers/parser/tests/validate.spec.js
++++ /dev/null
+@@ -1,17 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { hasSyntaxError } from ""../validate"";
+-
+-describe(""has syntax error"", () => {
+-  it(""should return false"", () => {
+-    expect(hasSyntaxError(""foo"")).toEqual(false);
+-  });
+-
+-  it(""should return the error object for the invalid expression"", () => {
+-    expect(hasSyntaxError(""foo)("")).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/debugger/src/workers/search/tests/project-search.spec.js b/src/devtools/client/debugger/src/workers/search/tests/project-search.spec.js
+deleted file mode 100644
+index 64ba9b3..0000000
+--- a/src/devtools/client/debugger/src/workers/search/tests/project-search.spec.js
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { findSourceMatches } from ""../project-search"";
+-
+-const text = `
+-  function foo() {
+-    foo();
+-  }
+-`;
+-
+-describe(""project search"", () => {
+-  const emptyResults = [];
+-
+-  it(""finds matches"", () => {
+-    const needle = ""foo"";
+-    const content = {
+-      type: ""text"",
+-      value: text,
+-      contentType: undefined,
+-    };
+-
+-    const matches = findSourceMatches(""bar.js"", content, needle);
+-    expect(matches).toMatchSnapshot();
+-  });
+-
+-  it(""finds no matches in source"", () => {
+-    const needle = ""test"";
+-    const content = {
+-      type: ""text"",
+-      value: text,
+-      contentType: undefined,
+-    };
+-    const matches = findSourceMatches(""bar.js"", content, needle);
+-    expect(matches).toEqual(emptyResults);
+-  });
+-});
+",0,,74,8142,11,1,74,8142
+508,aa4d923f0e83a826737cb87dc78cf881b13978d5,c9f5a3bf169d2872349ef4798ecbaa811acf6abd,Cleaning up some of the unused components in the Inspector. We can always undo some of these changes when the time comes.,"Remove the Compatibility Panel
+","diff --git a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-CompatibilityApp.test.js b/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-CompatibilityApp.test.js
+deleted file mode 100644
+index 953b9e4..0000000
+--- a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-CompatibilityApp.test.js
++++ /dev/null
+@@ -1,30 +0,0 @@
+-/* Any copyright is dedicated to the Public Domain.
+-   http://creativecommons.org/publicdomain/zero/1.0/ */
+-
+-""use strict"";
+-
+-/**
+- * Unit tests for the CompatibilityApp component.
+- */
+-
+-const { shallow } = require(""enzyme"");
+-const { createFactory } = require(""react"");
+-const { thunk } = require(""devtools/client/shared/redux/middleware/thunk.js"");
+-const configureStore = require(""redux-mock-store"").default;
+-
+-const CompatibilityApp = createFactory(
+-  require(""devtools/client/inspector/compatibility/components/CompatibilityApp"")
+-);
+-
+-describe(""CompatibilityApp component"", () => {
+-  it(""renders zero issues"", () => {
+-    const mockStore = configureStore([thunk]);
+-    const store = mockStore({
+-      compatibility: {
+-        selectedNodeIssues: [],
+-      },
+-    });
+-    const wrapper = shallow(CompatibilityApp({ store })).dive();
+-    expect(wrapper).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueItem.test.js b/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueItem.test.js
+deleted file mode 100644
+index 18670b6..0000000
+--- a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueItem.test.js
++++ /dev/null
+@@ -1,74 +0,0 @@
+-/* Any copyright is dedicated to the Public Domain.
+-   http://creativecommons.org/publicdomain/zero/1.0/ */
+-
+-""use strict"";
+-
+-/**
+- * Unit tests for the IssueItem component.
+- */
+-
+-const { shallow } = require(""enzyme"");
+-const React = require(""react"");
+-
+-const MDNCompatibility = require(""devtools/client/inspector/compatibility/lib/MDNCompatibility"");
+-const IssueItem = React.createFactory(
+-  require(""devtools/client/inspector/compatibility/components/IssueItem"")
+-);
+-
+-describe(""IssueItem component"", () => {
+-  it(""renders an unsupported issue of CSS property"", () => {
+-    const item = shallow(
+-      IssueItem({
+-        type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY,
+-        property: ""test-property"",
+-        url: ""test-url"",
+-        deprecated: false,
+-        experimental: false,
+-        unsupportedBrowsers: [{ id: ""firefox"", name: ""Firefox"", version: ""70"", status: ""nightly"" }],
+-      })
+-    );
+-    expect(item).toMatchSnapshot();
+-  });
+-
+-  it(""renders a deprecated issue of CSS property"", () => {
+-    const item = shallow(
+-      IssueItem({
+-        type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY,
+-        property: ""test-property"",
+-        url: ""test-url"",
+-        deprecated: true,
+-        experimental: false,
+-        unsupportedBrowsers: [],
+-      })
+-    );
+-    expect(item).toMatchSnapshot();
+-  });
+-
+-  it(""renders an experimental issue of CSS property"", () => {
+-    const item = shallow(
+-      IssueItem({
+-        type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY,
+-        property: ""test-property"",
+-        url: ""test-url"",
+-        deprecated: false,
+-        experimental: true,
+-        unsupportedBrowsers: [],
+-      })
+-    );
+-    expect(item).toMatchSnapshot();
+-  });
+-
+-  it(""renders an issue which has both deprecated and experimental"", () => {
+-    const item = shallow(
+-      IssueItem({
+-        type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY,
+-        property: ""test-property"",
+-        url: ""test-url"",
+-        deprecated: true,
+-        experimental: true,
+-        unsupportedBrowsers: [],
+-      })
+-    );
+-    expect(item).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueList.test.js b/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueList.test.js
+deleted file mode 100644
+index a2bffb8..0000000
+--- a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-IssueList.test.js
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/* Any copyright is dedicated to the Public Domain.
+-   http://creativecommons.org/publicdomain/zero/1.0/ */
+-
+-""use strict"";
+-
+-/**
+- * Unit tests for the IssueList component.
+- */
+-
+-const { shallow } = require(""enzyme"");
+-const React = require(""react"");
+-
+-const MDNCompatibility = require(""devtools/client/inspector/compatibility/lib/MDNCompatibility"");
+-const IssueList = React.createFactory(
+-  require(""devtools/client/inspector/compatibility/components/IssueList"")
+-);
+-
+-describe(""IssueList component"", () => {
+-  it(""renders some issues"", () => {
+-    const list = shallow(
+-      IssueList({
+-        issues: [
+-          {
+-            type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY,
+-            property: ""border-block-color"",
+-            url: ""https://developer.mozilla.org/docs/Web/CSS/border-block-color"",
+-            deprecated: false,
+-            experimental: true,
+-            unsupportedBrowsers: [],
+-          },
+-          {
+-            type: MDNCompatibility.ISSUE_TYPE.CSS_PROPERTY_ALIASES,
+-            property: ""user-modify"",
+-            url: ""https://developer.mozilla.org/docs/Web/CSS/user-modify"",
+-            aliases: [""user-modify""],
+-            deprecated: true,
+-            experimental: false,
+-            unsupportedBrowsers: [],
+-          },
+-        ],
+-      })
+-    );
+-    expect(list).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserItem.test.js b/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserItem.test.js
+deleted file mode 100644
+index 30e2363..0000000
+--- a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserItem.test.js
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/* Any copyright is dedicated to the Public Domain.
+-   http://creativecommons.org/publicdomain/zero/1.0/ */
+-
+-""use strict"";
+-
+-/**
+- * Unit tests for the UnsupportedBrowserItem component.
+- */
+-
+-const { shallow } = require(""enzyme"");
+-const React = require(""react"");
+-
+-const BrowserItem = React.createFactory(
+-  require(""devtools/client/inspector/compatibility/components/UnsupportedBrowserItem"")
+-);
+-
+-describe(""UnsupportedBrowserItem component"", () => {
+-  it(""renders the browser"", () => {
+-    const item = shallow(
+-      BrowserItem({
+-        id: ""firefox"",
+-        name: ""Firefox"",
+-        versions: [
+-          {
+-            version: ""1"",
+-          },
+-          {
+-            alias: ""beta"",
+-            version: ""69"",
+-          },
+-          {
+-            alias: ""nightly"",
+-            version: ""70"",
+-          },
+-        ],
+-      })
+-    );
+-    expect(item).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserList.test.js b/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserList.test.js
+deleted file mode 100644
+index 19d59c4..0000000
+--- a/src/devtools/client/inspector/compatibility/test/node/components/components-compatibility-UnsupportedBrowserList.test.js
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* Any copyright is dedicated to the Public Domain.
+-   http://creativecommons.org/publicdomain/zero/1.0/ */
+-
+-""use strict"";
+-
+-/**
+- * Unit tests for the BrowserList component.
+- */
+-
+-const { shallow } = require(""enzyme"");
+-const React = require(""react"");
+-
+-const UnsupportedBrowserList = React.createFactory(
+-  require(""devtools/client/inspector/compatibility/components/UnsupportedBrowserList"")
+-);
+-
+-describe(""UnsupportedBrowserList component"", () => {
+-  it(""renders the browsers"", () => {
+-    const list = shallow(
+-      UnsupportedBrowserList({
+-        browsers: [
+-          { id: ""firefox"", name: ""Firefox"", version: ""69"", status: ""beta"" },
+-          { id: ""firefox"", name: ""Firefox"", version: ""70"", status: ""nightly"" },
+-          { id: ""test-browser"", name: ""Test Browser"", version: ""1"" },
+-          { id: ""test-browser"", name: ""Test Browser"", version: ""2"" },
+-          { id: ""sample-browser"", name: ""Sample Browser"", version: ""100"" },
+-        ],
+-      })
+-    );
+-    expect(list).toMatchSnapshot();
+-  });
+-});
+",0,,36,5875,5,8,168,21897
+6215,20a1e77536f16d3f6e0ec67f8b396d8f286258e4,20a1e77536f16d3f6e0ec67f8b396d8f286258e4,"This adds some unit tests that were helpful in the Firefox Debugger days. 
+
+- The `getExpressionFromCoords` were failing so i skipped them.
+- `getLibraryFromUrl` had some cases which no longer passed which I skipped as well","Port some unit tests from Firefox DevTools
+","diff --git a/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js b/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js
+new file mode 100644
+index 0000000..da6456b
+--- /dev/null
++++ b/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js
+@@ -0,0 +1,68 @@
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
++
++import { getASTLocation } from ""./astBreakpointLocation.js"";
++import {
++  populateSource,
++  populateOriginalSource,
++} from ""devtools/client/debugger/src/workers/parser/tests/helpers"";
++
++import { getSymbols } from ""devtools/client/debugger/src/workers/parser/getSymbols"";
++
++import cases from ""jest-in-case"";
++
++async function setup({ file, location, functionName, original }) {
++  const source = original ? populateOriginalSource(file) : populateSource(file);
++
++  const symbols = getSymbols(source.id);
++
++  const astLocation = getASTLocation(source, symbols, location);
++  expect(astLocation.name).toBe(functionName);
++  expect(astLocation).toMatchSnapshot();
++}
++
++describe(""ast"", () => {
++  cases(""valid location"", setup, [
++    {
++      name: ""returns the scope and offset"",
++      file: ""math"",
++      location: { line: 6, column: 0 },
++      functionName: ""math"",
++    },
++    {
++      name: ""returns name for a nested anon fn as the parent func"",
++      file: ""outOfScope"",
++      location: { line: 25, column: 0 },
++      functionName: ""outer"",
++    },
++    {
++      name: ""returns name for a nested named fn"",
++      file: ""outOfScope"",
++      location: { line: 5, column: 0 },
++      functionName: ""inner"",
++    },
++    {
++      name: ""returns name for an anon fn with a named variable"",
++      file: ""outOfScope"",
++      location: { line: 40, column: 0 },
++      functionName: ""globalDeclaration"",
++    },
++  ]);
++
++  cases(""invalid location"", setup, [
++    {
++      name: ""returns the scope name for global scope as undefined"",
++      file: ""class"",
++      original: true,
++      location: { line: 10, column: 0 },
++      functionName: undefined,
++    },
++    {
++      name: ""returns name for an anon fn in global scope as undefined"",
++      file: ""outOfScope"",
++      location: { line: 44, column: 0 },
++      functionName: undefined,
++    },
++  ]);
++});
+",0,,17,2383,1,1,17,2383
+7679,3d44add8c786e29fbda10a36a09d4c07174dd488,3d44add8c786e29fbda10a36a09d4c07174dd488,,"Stop using the astLocation
+","diff --git a/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js b/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js
+deleted file mode 100644
+index 962dd8a..0000000
+--- a/src/devtools/client/debugger/src/utils/breakpoint/astBreakpointLocation.test.js
++++ /dev/null
+@@ -1,68 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-import { getASTLocation } from ""./astBreakpointLocation"";
+-import {
+-  populateSource,
+-  populateOriginalSource,
+-} from ""devtools/client/debugger/src/workers/parser/tests/helpers"";
+-
+-import { getSymbols } from ""devtools/client/debugger/src/workers/parser/getSymbols"";
+-
+-import cases from ""jest-in-case"";
+-
+-async function setup({ file, location, functionName, original }) {
+-  const source = original ? populateOriginalSource(file) : populateSource(file);
+-
+-  const symbols = getSymbols(source.id);
+-
+-  const astLocation = getASTLocation({ status: ""loaded"", symbols }, location);
+-  expect(astLocation.name).toBe(functionName);
+-  expect(astLocation).toMatchSnapshot();
+-}
+-
+-describe(""ast"", () => {
+-  cases(""valid location"", setup, [
+-    {
+-      name: ""returns the scope and offset"",
+-      file: ""math"",
+-      location: { line: 6, column: 0 },
+-      functionName: ""math"",
+-    },
+-    {
+-      name: ""returns name for a nested anon fn as the parent func"",
+-      file: ""outOfScope"",
+-      location: { line: 25, column: 0 },
+-      functionName: ""outer"",
+-    },
+-    {
+-      name: ""returns name for a nested named fn"",
+-      file: ""outOfScope"",
+-      location: { line: 5, column: 0 },
+-      functionName: ""inner"",
+-    },
+-    {
+-      name: ""returns name for an anon fn with a named variable"",
+-      file: ""outOfScope"",
+-      location: { line: 40, column: 0 },
+-      functionName: ""globalDeclaration"",
+-    },
+-  ]);
+-
+-  cases(""invalid location"", setup, [
+-    {
+-      name: ""returns the scope name for global scope as undefined"",
+-      file: ""class"",
+-      original: true,
+-      location: { line: 10, column: 0 },
+-      functionName: undefined,
+-    },
+-    {
+-      name: ""returns name for an anon fn in global scope as undefined"",
+-      file: ""outOfScope"",
+-      location: { line: 44, column: 0 },
+-      functionName: undefined,
+-    },
+-  ]);
+-});
+",0,,7,232,1,1,7,232
+8197,785e31577d98e9fa94ace06c75748eba86ced062,785e31577d98e9fa94ace06c75748eba86ced062,"- Fixed a React key warning for the invisible indents in source tree items
+- Added some JSDocs for the tree construction logic
+- Added a snapshot-based unit test for the tree construction logic, with some real-ish source file URLs based on a CodeSandbox example","Add snapshot test for source tree construction logic
+","diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+new file mode 100644
+index 0000000..41cd38b
+--- /dev/null
++++ b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+@@ -0,0 +1,68 @@
++import type { SourceDetails } from ""ui/reducers/sources"";
++
++import { createTree, updateTree } from ""../updateTree"";
++
++describe(""updateTree"", () => {
++  /*
++  URLs taken from a Redux CodeSandbox recording:
++  https://app.replay.io/recording/reduxts-csb-2--be1a4568-6c84-474c-a9eb-3a0491a792d8
++  
++  These demonstrate some key aspects of the sources tree behavior:
++  - Multiple top-level folders
++  - An ""(index)"" entry that is _not_ in a folder
++  - Some nested folders that will be ""collapsed"" together
++  - Sorting folders before files in the tree
++  - Sorting files and folders alphabetically
++  - Handling unusual ""protocols"" like ""webpack://"" and ""replay-content://""
++  - Current behavior when there's a name collision with different query params
++
++  This array is intentionally written with these items
++  out of order, to show that the sorting works correctly.
++  */
++  const partialPaths = [
++    ""src/index.tsx"",
++    ""src/App.tsx"",
++    ""src/app/store.ts"",
++    ""src/app/hooks.ts"",
++    ""webpack://BrowserFS/webpack/bootstrap"",
++    ""(index)"",
++    ""node_modules/redux/es/redux.js"",
++    ""https://codesandbox.io/static/js/sandbox.js"",
++    ""src/features/counter/Counter.tsx"",
++    ""src/features/counter/counterAPI.ts"",
++    ""src/features2/todos/todos.ts?1"",
++    ""src/features2/todos/todos.ts?2"",
++    ""replay-content:///react-devtools-hook-script"",
++    ""https://codesandbox.io/static/js/vendors.js"",
++    ""src/features/counter/counterSlice.ts"",
++    ""webpack:////home/circleci/codesandbox-client/node_modules/core-js/fn/array/includes.js"",
++    ""node_modules/react-redux/es/index.js"",
++    ""node_modules/react-redux/es/types.js"",
++  ];
++
++  // Anything that starts with ""webpack"", ""https"", or ""replay-content"" is a full URL
++  const reIsFullURL = /^(webpack|https|replay-content)/;
++
++  // Fake a set of SourceDetails objects based on these URLs
++  const sources: SourceDetails[] = partialPaths.map(path => {
++    // We don't care about most of the SourceDetails object
++    // fields, but TS wants us to fill them in anyway.
++    // Cast to skip them.
++    return {
++      id: path,
++      url: reIsFullURL.test(path) ? path : `https://something.com/${path}`,
++    } as SourceDetails;
++  });
++  // Turn them into a record keyed by URLs, as used in the real app
++  const sourcesRecord = Object.fromEntries(sources.map(source => [source.url, source] as const));
++
++  test(""Generates a correctly sorted nested tree of sources and folders"", () => {
++    // This also calls `updateTree` and `collapseTree` internally
++    const tree = createTree({ sources: sourcesRecord });
++
++    // Use snapshots just to verify that nothing has changed.
++    // This does exercise all the tree manipulation logic.
++    expect(tree.uncollapsedTree).toMatchSnapshot();
++    expect(tree.sourceTree).toMatchSnapshot();
++  });
++});
+",0,,2,689,1,4,7,741
+8199,3940f71edd95f3ff69e57fd694d606ad623be291,3940f71edd95f3ff69e57fd694d606ad623be291,"- Fixed a broken lookup for sources that caused file tree nodes to not have icons (the record is keyed by URL, not source ID)
+- Cleaned up some `$FixTypeLater` types and used the proper `TreeNode` types
+- Rewrote source tree construction logic to better handle multiple versions of the same file:
+  - added a new `""multiSource""` tree node type that acts as an expandable parent to the actual source entries
+  - Rewrote checks for node types to handle this case
+  - Improved React key selection for tree node components to use URLs+IDs for source entries instead of path
+  - Added checks for existing files by content hash to prevent showing full duplicates
+  - Multiple-version tree nodes are prefixed with a number to distinguish them, like `(1) App.tsx`
+  - Ensured ""find file node"" logic works for these duplicates, allowing ""Reveal in Tree"" and highlighting based on selected source tab to work right
+- Tweaked tree node CSS to shrink whitespace between icon and text from 10px to 3px per Jon's direction
+
+Note that the source tabs do not show the same `(N) ` prefix, because that's internal to the source tree construction logic for now.
+
+To see an example of this behavior, open up https://devtools-git-feature-fe-162-source-tree-duplicates-recordreplay.vercel.app/recording/vite-hmr-multi-file-test-with-duplicates--3ed2de41-1d87-4b53-8c7f-e1016d48547f on the preview branch.  I edited both `src/App.tsx` and `src/main.tsx` several times, including flipping back and forth between identical contents.  There should be 8 total versions of each file, but only 4 will show up in the tree because of the duplication.  (Currently, the ""Quick Open"" dialog will still show all 8 versions of each file.)
+
+Visual:
+
+![image](https://user-images.githubusercontent.com/1128784/203658105-034762c7-2c38-48d0-a27e-4a6fedf235e0.png)
+","Handle content hash collisions by not showing duplicate tree nodes
+","diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+index 41cd38b..c2be046 100644
+--- a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
++++ b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+@@ -40,19 +40,64 @@ describe(""updateTree"", () => {
+     ""node_modules/react-redux/es/types.js"",
+   ];
+ 
++  // Case where two duplicated sources with the same content hash result in
++  // a single ""source"" treenode
++  const duplicatedSourcePaths1 = [
++    ""src/features3/todos/todos.ts?3"",
++    ""src/features3/todos/todos.ts?4"",
++  ];
++
++  // Case where there are multiple different source versions, but at least one
++  // duplicate content hash, resulting in a ""multiSource"" node with <N items
++  const duplicatedSourcePaths2 = [
++    ""src/features4/todos/todos.ts?number=5&duplicate=true"",
++    ""src/features4/todos/todos.ts?number=6&duplicate=false"",
++    ""src/features4/todos/todos.ts?number=7&duplicate=true"",
++  ];
++
+   // Anything that starts with ""webpack"", ""https"", or ""replay-content"" is a full URL
+   const reIsFullURL = /^(webpack|https|replay-content)/;
+ 
+   // Fake a set of SourceDetails objects based on these URLs
+-  const sources: SourceDetails[] = partialPaths.map(path => {
++  const mainSources: SourceDetails[] = partialPaths.map(path => {
+     // We don't care about most of the SourceDetails object
+     // fields, but TS wants us to fill them in anyway.
+     // Cast to skip them.
+     return {
+       id: path,
+       url: reIsFullURL.test(path) ? path : `https://something.com/${path}`,
++      contentHash: path,
++    } as SourceDetails;
++  });
++
++  const duplicatedSources1: SourceDetails[] = duplicatedSourcePaths1.map(path => {
++    const url = `https://something.com/${path}`;
++    const urlObj = new URL(url);
++    urlObj.search = """";
++    return {
++      id: path,
++      url,
++      // Fake a content hash by using the URL minus the query params,
++      // which will fake a content hash collision
++      contentHash: urlObj.href,
++    } as SourceDetails;
++  });
++
++  const duplicatedSources2: SourceDetails[] = duplicatedSourcePaths2.map(path => {
++    const url = `https://something.com/${path}`;
++    const urlObj = new URL(url);
++    urlObj.search = """";
++    return {
++      id: path,
++      url,
++      // Fake a content hash by using the URL minus the query params,
++      // which will fake a content hash collision
++      contentHash: path.includes(""duplicate=true"") ? urlObj.href : path,
+     } as SourceDetails;
+   });
++
++  const sources = mainSources.concat(duplicatedSources1, duplicatedSources2);
++
+   // Turn them into a record keyed by URLs, as used in the real app
+   const sourcesRecord = Object.fromEntries(sources.map(source => [source.url, source] as const));
+ 
+",0,,4,137,1,4,14,697
+837,0fdee402d96b6031dc5ce1cf59a7395ec962a1b3,7714da21fef0fbb8e6eda45f5be7455cbddc01a5,some cleanups targeted at the debugger dierectory... mostly getting rid of the firefox namespace,"Refactor debugger client
+","diff --git a/src/devtools/client/debugger/src/client/firefox/tests/commands.spec.js b/src/devtools/client/debugger/src/client/firefox/tests/commands.spec.js
+deleted file mode 100644
+index 5e8506e..0000000
+--- a/src/devtools/client/debugger/src/client/firefox/tests/commands.spec.js
++++ /dev/null
+@@ -1,110 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { setupCommands, clientCommands } from ""../commands"";
+-
+-function makeThreadCLient(resp) {
+-  // Coerce this to any to avoid supplying the additional members needed in a
+-  // thread front.
+-  return {
+-    pauseGrip: () => ({
+-      getPrototypeAndProperties: async () => resp,
+-    }),
+-  };
+-}
+-
+-function makeDependencies() {
+-  return {
+-    devToolsClient: null,
+-    supportsWasm: true,
+-    currentTarget: null,
+-  };
+-}
+-
+-function makeGrip(actor = """") {
+-  return {
+-    actor,
+-    class: """",
+-    displayClass: """",
+-    name: """",
+-    extensible: true,
+-    location: {
+-      url: """",
+-      line: 2,
+-      column: 34,
+-    },
+-    frozen: false,
+-    ownPropertyLength: 1,
+-    preview: {},
+-    sealed: false,
+-    optimizedOut: false,
+-    type: """",
+-  };
+-}
+-
+-describe(""firefox commands"", () => {
+-  describe(""getProperties"", () => {
+-    it(""empty response"", async () => {
+-      const { getProperties } = clientCommands;
+-      const threadFront = makeThreadCLient({
+-        ownProperties: {},
+-        safeGetterValues: {},
+-      });
+-
+-      setupCommands({ ...makeDependencies(), threadFront });
+-      const props = await getProperties("""", makeGrip());
+-      expect(props).toMatchSnapshot();
+-    });
+-
+-    it(""simple properties"", async () => {
+-      const { getProperties } = clientCommands;
+-      const threadFront = makeThreadCLient({
+-        ownProperties: {
+-          obj: { value: ""obj"" },
+-          foo: { value: ""foo"" },
+-        },
+-        safeGetterValues: {},
+-      });
+-
+-      setupCommands({ ...makeDependencies(), threadFront });
+-      const props = await getProperties("""", makeGrip());
+-      expect(props).toMatchSnapshot();
+-    });
+-
+-    it(""getter values"", async () => {
+-      const { getProperties } = clientCommands;
+-      const threadFront = makeThreadCLient({
+-        ownProperties: {
+-          obj: { value: ""obj"" },
+-          foo: { value: ""foo"" },
+-        },
+-        safeGetterValues: {
+-          obj: { getterValue: ""getter"", enumerable: true, writable: false },
+-        },
+-      });
+-
+-      setupCommands({ ...makeDependencies(), threadFront });
+-      const props = await getProperties("""", makeGrip());
+-      expect(props).toMatchSnapshot();
+-    });
+-
+-    it(""new getter values"", async () => {
+-      const { getProperties } = clientCommands;
+-      const threadFront = makeThreadCLient({
+-        ownProperties: {
+-          foo: { value: ""foo"" },
+-        },
+-        safeGetterValues: {
+-          obj: { getterValue: ""getter"", enumerable: true, writable: false },
+-        },
+-      });
+-
+-      setupCommands({ ...makeDependencies(), threadFront });
+-      const props = await getProperties("""", makeGrip());
+-      expect(props).toMatchSnapshot();
+-    });
+-  });
+-});
+",0,,13,1531,1,2,11,417
+886,cb67db3e6d2f9c2f93593e7f18538168189bb7cc,e73228397d147c43d9d039dda711327225af492e,Fix #877.,"Remove watch expressions
+","diff --git a/src/devtools/client/debugger/src/utils/tests/expressions.spec.js b/src/devtools/client/debugger/src/utils/tests/expressions.spec.js
+deleted file mode 100644
+index 25d5fe9..0000000
+--- a/src/devtools/client/debugger/src/utils/tests/expressions.spec.js
++++ /dev/null
+@@ -1,60 +0,0 @@
+-/* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
+- * file, You can obtain one at <http://mozilla.org/MPL/2.0/>. */
+-
+-//
+-
+-import { wrapExpression, getValue } from ""../expressions"";
+-import { makeMockExpression } from ""../test-mockup"";
+-
+-function createError(preview) {
+-  return makeMockExpression({
+-    result: { getGrip: () => ({ class: ""Error"", preview }) },
+-  });
+-}
+-
+-describe(""expressions"", () => {
+-  describe(""wrap exxpression"", () => {
+-    it(""should wrap an expression"", () => {
+-      expect(wrapExpression(""foo"")).toMatchSnapshot();
+-    });
+-
+-    it(""should wrap expression with a comment"", () => {
+-      expect(wrapExpression(""foo // yo yo"")).toMatchSnapshot();
+-    });
+-
+-    it(""should wrap quotes"", () => {
+-      expect(wrapExpression('""2""')).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe(""sanitize input"", () => {
+-    it(""sanitizes quotes"", () => {
+-      expect('foo""').toEqual('foo""');
+-    });
+-
+-    it(""sanitizes 2 quotes"", () => {
+-      expect('""3""').toEqual('""3""');
+-    });
+-
+-    it(""evaluates \\u{61} as a"", () => {
+-      expect(""\u{61}"").toEqual(""a"");
+-    });
+-
+-    it(""evaluates N\\u{61}N as NaN"", () => {
+-      expect(""N\u{61}N"").toEqual(""NaN"");
+-    });
+-  });
+-
+-  describe(""getValue"", () => {
+-    it(""Reference Errors should be shown as (unavailable)"", () => {
+-      expect(getValue(createError({ name: ""ReferenceError"" }))).toEqual({
+-        unavailable: true,
+-      });
+-    });
+-
+-    it(""Errors messages should be shown"", () => {
+-      expect(getValue(createError({ name: ""Foo"", message: ""YO"" }))).toEqual(""Foo: YO"");
+-    });
+-  });
+-});
+",0,,25,1042,1,2,27,1061
+9204,22bf3dea591260169f728c78a3375977189719a4,22bf3dea591260169f728c78a3375977189719a4,"- unify the Source type used in `SourcesCache` and redux state: both added some properties to the sources received from the protocol
+- remove the injection of source-related methods into `ReplayClient` and `ThreadFront`
+- remove `ThreadFront.listenForLoadChanges()`
+- remove the injected `ThreadFront` reference from `ReplayClient`
+","Remove some hacks left over from refactoring (FE-1488)
+","diff --git a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+index c2be046..8af9f52 100644
+--- a/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
++++ b/src/devtools/client/debugger/src/utils/sources-tree/tests/updateTree.test.ts
+@@ -66,7 +66,7 @@ describe(""updateTree"", () => {
+     return {
+       id: path,
+       url: reIsFullURL.test(path) ? path : `https://something.com/${path}`,
+-      contentHash: path,
++      contentId: path,
+     } as SourceDetails;
+   });
+ 
+@@ -79,7 +79,7 @@ describe(""updateTree"", () => {
+       url,
+       // Fake a content hash by using the URL minus the query params,
+       // which will fake a content hash collision
+-      contentHash: urlObj.href,
++      contentId: urlObj.href,
+     } as SourceDetails;
+   });
+ 
+@@ -92,7 +92,7 @@ describe(""updateTree"", () => {
+       url,
+       // Fake a content hash by using the URL minus the query params,
+       // which will fake a content hash collision
+-      contentHash: path.includes(""duplicate=true"") ? urlObj.href : path,
++      contentId: path.includes(""duplicate=true"") ? urlObj.href : path,
+     } as SourceDetails;
+   });
+ 
+",0,,58,1523,1,1,58,1523

@@ -1,0 +1,84 @@
+{
+    "id": 4053214,
+    "name": "joarwilk/flowgen",
+    "isFork": false,
+    "commits": 570,
+    "branches": 11,
+    "releases": 0,
+    "forks": 87,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 658,
+    "contributors": 34,
+    "size": 1736,
+    "createdAt": "2017-01-03T10:16:01",
+    "pushedAt": "2023-11-06T04:47:54",
+    "updatedAt": "2023-10-20T07:15:47",
+    "totalIssues": 79,
+    "openIssues": 41,
+    "totalPullRequests": 124,
+    "openPullRequests": 15,
+    "blankLines": 748,
+    "codeLines": 5672,
+    "commentLines": 868,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 161,
+            "blankLines": 45
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 868,
+            "codeLines": 5352,
+            "blankLines": 696
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 153,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2022-12-18T11:19:32",
+    "lastCommitSHA": "61b5de89b4093e51db7280462799517c88997409",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 177790,
+        "JavaScript": 1616
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "new ts feature",
+        "question",
+        "wontfix",
+        "you can do this"
+    ],
+    "topics": [
+        "cli",
+        "converter",
+        "definition",
+        "flow",
+        "flowtype",
+        "typescript"
+    ]
+}

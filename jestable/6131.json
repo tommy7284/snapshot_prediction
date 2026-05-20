@@ -1,0 +1,88 @@
+{
+    "id": 6228205,
+    "name": "zoltantothcom/design-patterns-javascript",
+    "isFork": false,
+    "commits": 500,
+    "branches": 198,
+    "releases": 0,
+    "forks": 31,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "The Unlicense",
+    "homepage": "https://designpatternsgame.com",
+    "watchers": 9,
+    "stargazers": 552,
+    "contributors": 8,
+    "size": 2959,
+    "createdAt": "2019-01-17T08:59:10",
+    "pushedAt": "2022-07-20T03:41:37",
+    "updatedAt": "2022-07-23T11:41:09",
+    "totalIssues": 16,
+    "openIssues": 2,
+    "totalPullRequests": 183,
+    "openPullRequests": 44,
+    "blankLines": 846,
+    "codeLines": 5019,
+    "commentLines": 37,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 163,
+            "language": "JSX",
+            "commentLines": 6,
+            "codeLines": 963
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 101
+        },
+        {
+            "blankLines": 642,
+            "language": "JavaScript",
+            "commentLines": 30,
+            "codeLines": 3838
+        },
+        {
+            "blankLines": 35,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 20
+        }
+    ],
+    "lastCommit": "2020-01-05T12:59:41",
+    "lastCommitSHA": "2c7ef902dbefb8a7a2ecea407ac7e8e6682f5b0a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 136249,
+        "HTML": 2275
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,156 @@
+{
+    "id": 85885296,
+    "name": "sofn-xyz/mailing",
+    "isFork": false,
+    "commits": 1389,
+    "branches": 82,
+    "releases": 0,
+    "forks": 73,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://www.mailing.run",
+    "watchers": 7,
+    "stargazers": 3553,
+    "contributors": 18,
+    "size": 28120,
+    "createdAt": "2022-04-10T05:54:52",
+    "pushedAt": "2023-12-04T10:03:53",
+    "updatedAt": "2024-01-05T03:23:04",
+    "totalIssues": 193,
+    "openIssues": 51,
+    "totalPullRequests": 277,
+    "openPullRequests": 1,
+    "blankLines": 3260,
+    "codeLines": 19627,
+    "commentLines": 706,
+    "metrics": [
+        {
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 16,
+            "blankLines": 5
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 92,
+            "blankLines": 0
+        },
+        {
+            "language": "TOML",
+            "commentLines": 2,
+            "codeLines": 8,
+            "blankLines": 2
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 45,
+            "codeLines": 425,
+            "blankLines": 26
+        },
+        {
+            "language": "JSX",
+            "commentLines": 4,
+            "codeLines": 1024,
+            "blankLines": 32
+        },
+        {
+            "language": "SQL",
+            "commentLines": 49,
+            "codeLines": 100,
+            "blankLines": 39
+        },
+        {
+            "language": "YAML",
+            "commentLines": 15,
+            "codeLines": 218,
+            "blankLines": 11
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 538,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1796,
+            "blankLines": 1030
+        },
+        {
+            "language": "Ruby",
+            "commentLines": 72,
+            "codeLines": 661,
+            "blankLines": 176
+        },
+        {
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 486,
+            "codeLines": 14382,
+            "blankLines": 1871
+        },
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 19,
+            "codeLines": 39,
+            "blankLines": 19
+        },
+        {
+            "language": "CSS",
+            "commentLines": 14,
+            "codeLines": 316,
+            "blankLines": 48
+        }
+    ],
+    "lastCommit": "2023-12-04T10:03:52",
+    "lastCommitSHA": "a8b3fbe35d3c521a1a05862e122766d8b6a696ff",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 487600,
+        "JavaScript": 46321,
+        "MDX": 45246,
+        "Ruby": 24078,
+        "CSS": 5897,
+        "Shell": 3001,
+        "EJS": 619
+    },
+    "labels": [
+        "0.8.0",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "e2e",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "legendary pull request",
+        "needs design",
+        "p1",
+        "p2",
+        "p3",
+        "platform",
+        "question",
+        "verifying",
+        "wontfix"
+    ],
+    "topics": []
+}

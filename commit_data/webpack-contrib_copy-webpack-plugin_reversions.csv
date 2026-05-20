@@ -1,0 +1,2455 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+450,0065623866c7cc14a411cf09d57e747cb036caf7,0065623866c7cc14a411cf09d57e747cb036caf7,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Avoid misleading configuration
+
+### Breaking Changes
+
+Yes, 
+
+BREAKING CHANGE: the 'from' option now can only be a string, if you use `{ from: { glob: 'directory/**', dot: false } }` changed it to `{ from: 'directory/**', globOptions: { dot: false } }`
+
+### Additional Info
+
+No","refactor: 'from' option
+
+BREAKING CHANGE: the 'from' option now can only be a string, if you use `{ from: { glob: 'directory/**', dot: false } }` changed it to `{ from: 'directory/**', globOptions: { dot: false } }`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 3353450..6a86753 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -72,19 +72,6 @@ describe('validate options', () => {
+         ],
+         [
+           {
+-            from: {
+-              glob: '**/*',
+-              dot: false,
+-            },
+-            to: 'dir',
+-            context: 'context',
+-            globOptions: {
+-              dot: false,
+-            },
+-          },
+-        ],
+-        [
+-          {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+@@ -235,6 +222,16 @@ describe('validate options', () => {
+             transformPath: true,
+           },
+         ],
++        [
++          {
++            from: {
++              glob: '**/*',
++              dot: false,
++            },
++            to: 'dir',
++            context: 'context',
++          },
++        ],
+       ],
+     },
+   };
+",0,,6,166,1,1,6,166
+451,53641f0cf13ff6520dbd628c0638ab048cae0a00,53641f0cf13ff6520dbd628c0638ab048cae0a00,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Unify plugin options
+
+### Breaking Changes
+
+Yes
+
+BREAKING CHANGE: the plugin now accepts an object as options, you should change `new CopyPlugin(patterns, options)` to `new CopyPlugin( { patterns, options })`
+
+### Additional Info
+
+No","refactor: plugin options
+
+BREAKING CHANGE: the plugin now accepts an object as options, you should change `new CopyPlugin(patterns, options)` to `new CopyPlugin( { patterns, options })`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 6a86753..fde45c0 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -20,7 +20,6 @@ describe('validate options', () => {
+   const tests = {
+     patterns: {
+       success: [
+-        [],
+         ['test.txt'],
+         ['test.txt', 'test-other.txt'],
+         [
+@@ -112,6 +111,7 @@ describe('validate options', () => {
+         'true',
+         '',
+         {},
++        [],
+         [''],
+         [{}],
+         [
+@@ -234,6 +234,14 @@ describe('validate options', () => {
+         ],
+       ],
+     },
++    options: {
++      success: [{ context: 'context' }, { ignore: ['test'] }],
++      failure: [{ context: true }, { ignore: true }],
++    },
++    unknown: {
++      success: [],
++      failure: [1, true, false, 'test', /test/, [], {}, { foo: 'bar' }],
++    },
+   };
+ 
+   function stringifyValue(value) {
+@@ -255,7 +263,7 @@ describe('validate options', () => {
+ 
+       try {
+         // eslint-disable-next-line no-new
+-        new CopyPlugin(key === 'patterns' ? value : { [key]: value });
++        new CopyPlugin({ [key]: value });
+       } catch (errorFromPlugin) {
+         if (errorFromPlugin.name !== 'ValidationError') {
+           throw errorFromPlugin;
+",0,,6,450,1,1,6,450
+452,9edb09f7874f57be90d678d72577c945c4effab1,9edb09f7874f57be90d678d72577c945c4effab1,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Rename option to clarify
+
+### Breaking Changes
+
+Yes
+
+BREAKING CHANGE: the `cache` option was renamed to `cacheTransform`
+
+### Additional Info
+
+No","refactor: rename the `cache` option to `cacheTransform`
+
+BREAKING CHANGE: the `cache` option was renamed to `cacheTransform`
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index fde45c0..13ada82 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -64,8 +64,8 @@ describe('validate options', () => {
+               },
+             ],
+             flatten: true,
+-            cache: true,
+             transform: () => {},
++            cacheTransform: true,
+             transformPath: () => {},
+           },
+         ],
+@@ -100,7 +100,7 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+-            cache: {
++            cacheTransform: {
+               foo: 'bar',
+             },
+           },
+@@ -203,7 +203,7 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+-            cache: () => {},
++            cacheTransform: () => {},
+           },
+         ],
+         [
+",0,,7,654,1,1,6,164
+453,7d039d47c701304aad296cdd5b48abc20d6bdaa2,7d039d47c701304aad296cdd5b48abc20d6bdaa2,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+No need extra option (less options), you already have `context` option on pattern level
+
+### Breaking Changes
+
+BREAKING CHANGE: the global `context` option was removed in favor the `patten.context` option
+
+### Additional Info
+
+No","refactor: remove the global `context` option
+
+BREAKING CHANGE: the global `context` option was removed in favor the `patten.context` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 13ada82..cf779cc 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -235,8 +235,8 @@ describe('validate options', () => {
+       ],
+     },
+     options: {
+-      success: [{ context: 'context' }, { ignore: ['test'] }],
+-      failure: [{ context: true }, { ignore: true }],
++      success: [{ ignore: ['test'] }],
++      failure: [{ unknown: true }, { ignore: true }],
+     },
+     unknown: {
+       success: [],
+",0,,9,222,1,1,9,222
+459,d43e1ec2f3d1dbde0a430797b5a09d6f56cbcdb1,ce080318c0f58cafa58c47a16a11a1428a996d44,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+Refactor logger
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","chore: refactor logger
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index d07e5cd..7fd1517 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -539,3 +539,32 @@ describe('apply function', () => {
+     });
+   });
+ });
++
++describe('logging', () => {
++  it('should logging', (done) => {
++    const expectedAssetKeys = ['file.txt'];
++
++    run({
++      patterns: [
++        {
++          from: 'file.txt',
++        },
++      ],
++    })
++      .then(({ compiler, stats }) => {
++        const root = path.resolve(__dirname).replace(/\\/g, '/');
++        const logs = stats.compilation.logging
++          .get('copy-webpack-plugin')
++          .map((entry) =>
++            entry.args[0].replace(/\\/g, '/').split(root).join('.')
++          );
++
++        expect(
++          Array.from(Object.keys(readAssets(compiler, stats))).sort()
++        ).toEqual(expectedAssetKeys);
++        expect(logs).toMatchSnapshot(logs);
++      })
++      .then(done)
++      .catch(done);
++  });
++});
+",0,,4,181,1,2,6,216
+463,8f1a0e7ecbb75d95a22e0f6dbfee634bed1ef85c,f8a5932dbf8cf1179c3ca68244d742fbd2321b82,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+remove ignore option in favor globOptions.ignore
+#449 
+
+### Breaking Changes
+
+Yes.
+
+### Additional Info
+
+Drop minimatch syntax for `ignore` in favor [fast-glob syntax](https://github.com/mrmlnc/fast-glob#pattern-syntax)
+
+","feat: remove ignore option in favor globOptions.ignore
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index cf779cc..bd87b48 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -55,14 +55,6 @@ describe('validate options', () => {
+             toType: 'file',
+             test: /test/,
+             force: true,
+-            ignore: [
+-              'ignore-1',
+-              'ignore-2',
+-              {
+-                dot: false,
+-                glob: '**/*',
+-              },
+-            ],
+             flatten: true,
+             transform: () => {},
+             cacheTransform: true,
+@@ -171,30 +163,6 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+-            ignore: true,
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+-            ignore: [true],
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+-            ignore: ['test.txt', true],
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+             flatten: 'true',
+           },
+         ],
+@@ -235,8 +203,8 @@ describe('validate options', () => {
+       ],
+     },
+     options: {
+-      success: [{ ignore: ['test'] }],
+-      failure: [{ unknown: true }, { ignore: true }],
++      success: [{}],
++      failure: [{ unknown: true }],
+     },
+     unknown: {
+       success: [],
+",0,,14,444,2,3,15,771
+466,d429f6f3865d8fe2090972c8bb69aa696b6dc588,2a9d307cf346c24ec06230ac9df791978836ae03,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Limits the number of simultaneous requests to fs
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","feat: concurrency
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index bd87b48..69dd911 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -203,8 +203,8 @@ describe('validate options', () => {
+       ],
+     },
+     options: {
+-      success: [{}],
+-      failure: [{ unknown: true }],
++      success: [{ concurrency: 50 }],
++      failure: [{ unknown: true }, { concurrency: true }],
+     },
+     unknown: {
+       success: [],
+",0,,6,121,1,2,6,157
+472,91fd525d23ad24339fe66f71534e4611f0c6aad8,91fd525d23ad24339fe66f71534e4611f0c6aad8,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Drop `test` option in favor `transformPath` option
+
+### Breaking Changes
+
+Yes
+
+### Additional Info
+
+No
+","feat: drop test option in favor transformPath
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 69dd911..ab5500e 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -53,7 +53,6 @@ describe('validate options', () => {
+             to: 'dir',
+             context: 'context',
+             toType: 'file',
+-            test: /test/,
+             force: true,
+             flatten: true,
+             transform: () => {},
+@@ -76,22 +75,6 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+-            test: 'test',
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+-            test: /test/,
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+             cacheTransform: {
+               foo: 'bar',
+             },
+@@ -147,14 +130,6 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
+-            test: true,
+-          },
+-        ],
+-        [
+-          {
+-            from: 'test.txt',
+-            to: 'dir',
+-            context: 'context',
+             force: 'true',
+           },
+         ],
+",0,,8,242,1,1,8,242
+475,d7302e852bd858d172f5c60f5423bd3f3efd437c,d7302e852bd858d172f5c60f5423bd3f3efd437c,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+implement new options `noErrorOnMissing` + improve schema
+
+### Breaking Changes
+
+Yes, for schema
+
+### Additional Info
+
+fixes #431 fixes #433","feat: implement the `noErrorOnMissing` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index ab5500e..1f9ddcb 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -58,6 +58,7 @@ describe('validate options', () => {
+             transform: () => {},
+             cacheTransform: true,
+             transformPath: () => {},
++            noErrorOnMissing: true,
+           },
+         ],
+         [
+@@ -175,6 +176,14 @@ describe('validate options', () => {
+             context: 'context',
+           },
+         ],
++        [
++          {
++            from: '',
++            to: 'dir',
++            context: 'context',
++            noErrorOnMissing: 'true',
++          },
++        ],
+       ],
+     },
+     options: {
+",0,,9,150,1,1,9,150
+476,4e73009d41f760f1f8c4b00f6a950a97e6fbdb85,ea58aa87f00fda1bc1968ad712e6a57368c1505c,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor code base
+
+### Breaking Changes
+
+Yes, missing file is not an error
+
+### Additional Info
+
+No","refactor: code
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index bb6eded..107ae61 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -6,7 +6,7 @@ import { readAssets } from './helpers';
+ 
+ const FIXTURES_DIR = path.join(__dirname, 'fixtures');
+ 
+-describe('apply function', () => {
++describe('CopyPlugin', () => {
+   describe('basic', () => {
+     it('should copy a file', (done) => {
+       runEmit({
+@@ -221,9 +221,7 @@ describe('apply function', () => {
+         .then(done)
+         .catch(done);
+     });
+-  });
+ 
+-  describe('difference path segment separation', () => {
+     it('should work with linux path segment separation path when ""from"" is glob', (done) => {
+       runEmit({
+         expectedAssetKeys: ['directory/nested/nestedfile.txt'],
+@@ -237,34 +235,6 @@ describe('apply function', () => {
+         .catch(done);
+     });
+ 
+-    // Windows path segment (\\) can not use as path segment in glob, but can use as dirname at linux
+-    it.skip('should work with windows path segment separation path when ""from"" is glob', (done) => {
+-      runEmit({
+-        expectedAssetKeys: ['directory/nested/nestedfile.txt'],
+-        patterns: [
+-          {
+-            from: 'directory\\nested\\*',
+-          },
+-        ],
+-      })
+-        .then(done)
+-        .catch(done);
+-    });
+-
+-    // Windows path segment (\\) can not use as path segment in glob, but can use as dirname at linux
+-    it.skip('should work with mixed path segment separation path when ""from"" is glob', (done) => {
+-      runEmit({
+-        expectedAssetKeys: ['directory/nested/nestedfile.txt'],
+-        patterns: [
+-          {
+-            from: 'directory/nested\\*',
+-          },
+-        ],
+-      })
+-        .then(done)
+-        .catch(done);
+-    });
+-
+     it('should exclude path with linux path segment separators', (done) => {
+       runEmit({
+         expectedAssetKeys: [
+@@ -285,28 +255,6 @@ describe('apply function', () => {
+         .then(done)
+         .catch(done);
+     });
+-
+-    // Windows path segment (\\) can not use as path segment in glob, but can use as dirname at linux
+-    it.skip('should exclude path with windows path segment separators', (done) => {
+-      runEmit({
+-        expectedAssetKeys: [
+-          '[!]/hello.txt',
+-          '[special?directory]/(special-*file).txt',
+-          '[special?directory]/directoryfile.txt',
+-          '[special?directory]/nested/nestedfile.txt',
+-          'dir (86)/file.txt',
+-          'dir (86)/nesteddir/deepnesteddir/deepnesteddir.txt',
+-          'dir (86)/nesteddir/nestedfile.txt',
+-        ],
+-        patterns: [
+-          {
+-            from: '!(directory)\\**\\*.txt',
+-          },
+-        ],
+-      })
+-        .then(done)
+-        .catch(done);
+-    });
+   });
+ 
+   describe('watch mode', () => {
+@@ -538,33 +486,33 @@ describe('apply function', () => {
+         .catch(done);
+     });
+   });
+-});
+ 
+-describe('logging', () => {
+-  it('should logging', (done) => {
+-    const expectedAssetKeys = ['file.txt'];
+-
+-    run({
+-      patterns: [
+-        {
+-          from: 'file.txt',
+-        },
+-      ],
+-    })
+-      .then(({ compiler, stats }) => {
+-        const root = path.resolve(__dirname).replace(/\\/g, '/');
+-        const logs = stats.compilation.logging
+-          .get('copy-webpack-plugin')
+-          .map((entry) =>
+-            entry.args[0].replace(/\\/g, '/').split(root).join('.')
+-          );
++  describe('logging', () => {
++    it('should logging', (done) => {
++      const expectedAssetKeys = ['file.txt'];
+ 
+-        expect(
+-          Array.from(Object.keys(readAssets(compiler, stats))).sort()
+-        ).toEqual(expectedAssetKeys);
+-        expect({ result: logs }).toMatchSnapshot({ result: logs });
++      run({
++        patterns: [
++          {
++            from: 'file.txt',
++          },
++        ],
+       })
+-      .then(done)
+-      .catch(done);
++        .then(({ compiler, stats }) => {
++          const root = path.resolve(__dirname).replace(/\\/g, '/');
++          const logs = stats.compilation.logging
++            .get('copy-webpack-plugin')
++            .map((entry) =>
++              entry.args[0].replace(/\\/g, '/').split(root).join('.')
++            );
++
++          expect(
++            Array.from(Object.keys(readAssets(compiler, stats))).sort()
++          ).toEqual(expectedAssetKeys);
++          expect({ result: logs }).toMatchSnapshot({ result: logs });
++        })
++        .then(done)
++        .catch(done);
++    });
+   });
+ });
+",0,,10,192,1,3,10,236
+477,10ce6b2e981cf6725be108eecf3e1669906b2b71,8d41a957017bfec6d4ab3842fdac0375709ffa9e,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #370 fixes #432
+
+### Breaking Changes
+
+Yes, for the `cacheTransfrom` option
+
+### Additional Info
+
+No","feat: implement the `directory` option for the `cacheTransform`
+
+BREAKING CHANGE: the `cacheTransform` option should have only `directory` and `keys` properties when it is a object
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 1f9ddcb..0883af1 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -1,20 +1,8 @@
+-import CopyPlugin from '../src/index';
+-
+-// Todo remove after dorp node@6 support
+-if (!Object.entries) {
+-  Object.entries = function entries(obj) {
+-    const ownProps = Object.keys(obj);
+-    let i = ownProps.length;
+-    const resArray = new Array(i);
++import os from 'os';
+ 
+-    // eslint-disable-next-line no-plusplus
+-    while (i--) {
+-      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+-    }
++import findCacheDir from 'find-cache-dir';
+ 
+-    return resArray;
+-  };
+-}
++import CopyPlugin from '../src/index';
+ 
+ describe('validate options', () => {
+   const tests = {
+@@ -76,8 +64,71 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
++            cacheTransform:
++              findCacheDir({ name: 'copy-webpack-plugin-a' }) || os.tmpdir(),
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
+             cacheTransform: {
+-              foo: 'bar',
++              keys: {
++                foo: 'bar',
++              },
++            },
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
++            cacheTransform: {
++              keys: () => ({
++                foo: 'bar',
++              }),
++            },
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
++            cacheTransform: {
++              keys: async () => ({
++                foo: 'bar',
++              }),
++            },
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
++            cacheTransform: {
++              directory:
++                findCacheDir({ name: 'copy-webpack-plugin-b' }) || os.tmpdir(),
++              keys: {
++                foo: 'bar',
++              },
++            },
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
++            cacheTransform: {
++              directory:
++                findCacheDir({ name: 'copy-webpack-plugin-c' }) || os.tmpdir(),
++              keys: () => ({
++                foo: 'bar',
++              }),
+             },
+           },
+         ],
+@@ -155,6 +206,16 @@ describe('validate options', () => {
+             from: 'test.txt',
+             to: 'dir',
+             context: 'context',
++            cacheTransform: {
++              foo: 'bar',
++            },
++          },
++        ],
++        [
++          {
++            from: 'test.txt',
++            to: 'dir',
++            context: 'context',
+             transform: true,
+           },
+         ],
+",0,,7,690,1,2,8,699
+478,2fcf8a031cb504d73ba710d323e7e64f1a639e46,f9d05703ac44b9865886c5c1050ce87221f42ae4,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+refactor code
+
+### Breaking Changes
+
+No, because we don't respect cwd before
+
+### Additional Info
+
+No","test: coverage
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 0883af1..34b653e 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -134,6 +134,8 @@ describe('validate options', () => {
+         ],
+       ],
+       failure: [
++        // eslint-disable-next-line no-undefined
++        undefined,
+         true,
+         'true',
+         '',
+@@ -276,7 +278,11 @@ describe('validate options', () => {
+ 
+       try {
+         // eslint-disable-next-line no-new
+-        new CopyPlugin({ [key]: value });
++        new CopyPlugin(
++          key === 'options'
++            ? { patterns: [{ from: 'file.txt' }], [key]: value }
++            : { [key]: value }
++        );
+       } catch (errorFromPlugin) {
+         if (errorFromPlugin.name !== 'ValidationError') {
+           throw errorFromPlugin;
+",0,,3,49,1,6,10,421
+524,7ed18672b4a6d55ed5b7280e749cde1657f20904,7ed18672b4a6d55ed5b7280e749cde1657f20904,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #440
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: added `filter` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 34b653e..13f2e34 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -132,6 +132,12 @@ describe('validate options', () => {
+             },
+           },
+         ],
++        [
++          {
++            from: 'test.txt',
++            filter: () => true,
++          },
++        ],
+       ],
+       failure: [
+         // eslint-disable-next-line no-undefined
+@@ -247,6 +253,12 @@ describe('validate options', () => {
+             noErrorOnMissing: 'true',
+           },
+         ],
++        [
++          {
++            from: 'test.txt',
++            filter: 'test',
++          },
++        ],
+       ],
+     },
+     options: {
+",0,,6,202,1,1,6,202
+529,97cc1a5c6f6faa71561e4338a0ee590002fef51b,97cc1a5c6f6faa71561e4338a0ee590002fef51b,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+test for future cache between builds
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+Need refactor before start","test: cache
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index a83b73b..f7273a7 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -6,7 +6,7 @@ import CopyPlugin from '../src';
+ 
+ import { run, runEmit, runChange } from './helpers/run';
+ 
+-import { readAssets } from './helpers';
++import { readAssets, getCompiler, compile } from './helpers';
+ 
+ const FIXTURES_DIR = path.join(__dirname, 'fixtures');
+ 
+@@ -633,6 +633,54 @@ describe('CopyPlugin', () => {
+         .then(done)
+         .catch(done);
+     });
++
++    it('should work and do not emit unchanged assets', async () => {
++      const compiler = getCompiler();
++
++      new CopyPlugin({
++        patterns: [
++          {
++            from: path.resolve(__dirname, './fixtures/directory'),
++          },
++        ],
++      }).apply(compiler);
++
++      const { stats } = await compile(compiler);
++
++      if (webpack.version[0] === '4') {
++        expect(
++          Object.keys(stats.compilation.assets).filter(
++            (assetName) => stats.compilation.assets[assetName].emitted
++          ).length
++        ).toBe(5);
++      } else {
++        expect(stats.compilation.emittedAssets.size).toBe(5);
++      }
++
++      expect(readAssets(compiler, stats)).toMatchSnapshot('assets');
++      expect(stats.compilation.errors).toMatchSnapshot('errors');
++      expect(stats.compilation.warnings).toMatchSnapshot('warnings');
++
++      await new Promise(async (resolve) => {
++        const { stats: newStats } = await compile(compiler);
++
++        if (webpack.version[0] === '4') {
++          expect(
++            Object.keys(newStats.compilation.assets).filter(
++              (assetName) => newStats.compilation.assets[assetName].emitted
++            ).length
++          ).toBe(4);
++        } else {
++          expect(newStats.compilation.emittedAssets.size).toBe(4);
++        }
++
++        expect(readAssets(compiler, newStats)).toMatchSnapshot('assets');
++        expect(newStats.compilation.errors).toMatchSnapshot('errors');
++        expect(newStats.compilation.warnings).toMatchSnapshot('warnings');
++
++        resolve();
++      });
++    });
+   });
+ 
+   describe('logging', () => {
+",0,,2,78,1,1,2,78
+541,4b294474b18eaf223e7d56ca0b83172f584f8c0b,3139c04a38351324bb277613266e29fe6612bb41,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #504 
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+only webpack@5","feat: persistent cache between runs (webpack@5 only)
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index f7273a7..3544865 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -634,8 +634,12 @@ describe('CopyPlugin', () => {
+         .catch(done);
+     });
+ 
+-    it('should work and do not emit unchanged assets', async () => {
+-      const compiler = getCompiler();
++    it.only('should work and do not emit unchanged assets', async () => {
++      const compiler = getCompiler({
++        cache: {
++          type: 'memory',
++        },
++      });
+ 
+       new CopyPlugin({
+         patterns: [
+@@ -671,7 +675,7 @@ describe('CopyPlugin', () => {
+             ).length
+           ).toBe(4);
+         } else {
+-          expect(newStats.compilation.emittedAssets.size).toBe(4);
++          expect(newStats.compilation.emittedAssets.size).toBe(0);
+         }
+ 
+         expect(readAssets(compiler, newStats)).toMatchSnapshot('assets');
+",0,,3,283,1,6,4,363
+542,0deba94ce76dfe438e991dee3e6524239a3c11fe,a5b54cd09edcd125c1cf5d7145adcf166346d919,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fixes #538
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+- `sourceFilename` - the original filename relative to compilation context","feat: added `sourceFilename` with original file to asset info
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index 898f060..cb025ec 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -2,6 +2,7 @@ import path from 'path';
+ 
+ import webpack from 'webpack';
+ import del from 'del';
++import { createFsFromVolume, Volume } from 'memfs';
+ 
+ import CopyPlugin from '../src';
+ 
+@@ -380,6 +381,70 @@ describe('CopyPlugin', () => {
+         .then(done)
+         .catch(done);
+     });
++
++    it('should work with multi compiler mode', async () => {
++      const compiler = webpack([
++        {
++          mode: 'development',
++          context: path.resolve(__dirname, './fixtures'),
++          entry: path.resolve(__dirname, './helpers/enter.js'),
++          output: {
++            path: path.resolve(__dirname, './outputs/multi-compiler/dist/a'),
++          },
++          stats: {
++            source: true,
++          },
++          plugins: [
++            new CopyPlugin({
++              patterns: [
++                {
++                  from: path.resolve(__dirname, './fixtures/directory'),
++                },
++              ],
++            }),
++          ],
++        },
++        {
++          mode: 'development',
++          entry: path.resolve(__dirname, './helpers/enter.js'),
++          output: {
++            path: path.resolve(__dirname, './outputs/multi-compiler/dist/b'),
++          },
++          stats: {
++            source: true,
++          },
++          plugins: [
++            new CopyPlugin({
++              patterns: [
++                {
++                  context: path.resolve(__dirname, './fixtures'),
++                  from: path.resolve(__dirname, './fixtures/directory'),
++                },
++              ],
++            }),
++          ],
++        },
++      ]);
++
++      compiler.compilers.forEach((item) => {
++        const outputFileSystem = createFsFromVolume(new Volume());
++        // Todo remove when we drop webpack@4 support
++        outputFileSystem.join = path.join.bind(path);
++
++        // eslint-disable-next-line no-param-reassign
++        item.outputFileSystem = outputFileSystem;
++      });
++
++      const { stats } = await compile(compiler);
++
++      stats.stats.forEach((item, index) => {
++        expect(item.compilation.errors).toMatchSnapshot('errors');
++        expect(item.compilation.warnings).toMatchSnapshot('warnings');
++        expect(readAssets(compiler.compilers[index], item)).toMatchSnapshot(
++          'assets'
++        );
++      });
++    });
+   });
+ 
+   describe('watch mode', () => {
+@@ -747,6 +812,41 @@ describe('CopyPlugin', () => {
+     });
+   });
+ 
++  describe('stats', () => {
++    it('should work have assets info', async () => {
++      const compiler = getCompiler();
++
++      new CopyPlugin({
++        patterns: [
++          {
++            from: path.resolve(__dirname, './fixtures/directory'),
++          },
++        ],
++      }).apply(compiler);
++
++      const { stats } = await compile(compiler);
++
++      expect(stats.compilation.warnings).toMatchSnapshot('warnings');
++      expect(stats.compilation.errors).toMatchSnapshot('errors');
++      expect(readAssets(compiler, stats)).toMatchSnapshot('assets');
++
++      const assetsInfo = [];
++
++      for (const [name, info] of stats.compilation.assetsInfo.entries()) {
++        assetsInfo.push({
++          name,
++          info: {
++            immutable: info.immutable,
++            copied: info.copied,
++            sourceFilename: info.sourceFilename,
++          },
++        });
++      }
++
++      expect(assetsInfo).toMatchSnapshot('assets info');
++    });
++  });
++
+   describe('logging', () => {
+     it('should logging when ""from"" is a file', (done) => {
+       const expectedAssetKeys = ['file.txt'];
+",0,,3,204,1,10,8,269
+543,d815a4f3dea9e6a961b2531c73f71d0ed199386d,a360c6734d8e09dac02082d853f8addf2f64f194,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fix caching in multi compiler mode + refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","refactor: code
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index 3e6d2e3..2a5d85d 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -755,7 +755,7 @@ describe('CopyPlugin', () => {
+     });
+ 
+     it('should work with the ""filesystem"" cache', async () => {
+-      const cacheDirectory = path.resolve(__dirname, './outputs/.cache');
++      const cacheDirectory = path.resolve(__dirname, './outputs/.cache/simple');
+ 
+       await del(cacheDirectory);
+ 
+@@ -810,6 +810,123 @@ describe('CopyPlugin', () => {
+         resolve();
+       });
+     });
++
++    it('should work with the ""filesystem"" cache and multi compiler mode', async () => {
++      const cacheDirectoryA = path.resolve(
++        __dirname,
++        './outputs/.cache/multi-compiler/a'
++      );
++      const cacheDirectoryB = path.resolve(
++        __dirname,
++        './outputs/.cache/multi-compiler/b'
++      );
++
++      await del([cacheDirectoryA, cacheDirectoryB]);
++
++      const compiler = webpack([
++        {
++          mode: 'development',
++          context: path.resolve(__dirname, './fixtures'),
++          entry: path.resolve(__dirname, './helpers/enter.js'),
++          output: {
++            path: path.resolve(__dirname, './outputs/multi-compiler/dist/a'),
++          },
++          stats: {
++            source: true,
++          },
++          cache: {
++            type: 'filesystem',
++            cacheDirectory: cacheDirectoryA,
++          },
++          plugins: [
++            new CopyPlugin({
++              patterns: [
++                {
++                  from: path.resolve(__dirname, './fixtures/directory'),
++                },
++              ],
++            }),
++          ],
++        },
++        {
++          mode: 'development',
++          entry: path.resolve(__dirname, './helpers/enter.js'),
++          output: {
++            path: path.resolve(__dirname, './outputs/multi-compiler/dist/b'),
++          },
++          stats: {
++            source: true,
++          },
++          cache: {
++            type: 'filesystem',
++            cacheDirectory: cacheDirectoryB,
++          },
++          plugins: [
++            new CopyPlugin({
++              patterns: [
++                {
++                  context: path.resolve(__dirname, './fixtures'),
++                  from: path.resolve(__dirname, './fixtures/directory'),
++                },
++              ],
++            }),
++          ],
++        },
++      ]);
++
++      compiler.compilers.forEach((item) => {
++        const outputFileSystem = createFsFromVolume(new Volume());
++        // Todo remove when we drop webpack@4 support
++        outputFileSystem.join = path.join.bind(path);
++
++        // eslint-disable-next-line no-param-reassign
++        item.outputFileSystem = outputFileSystem;
++      });
++
++      const { stats } = await compile(compiler);
++
++      stats.stats.forEach((item, index) => {
++        if (webpack.version[0] === '4') {
++          expect(
++            Object.keys(item.compilation.assets).filter(
++              (assetName) => item.compilation.assets[assetName].emitted
++            ).length
++          ).toBe(5);
++        } else {
++          expect(item.compilation.emittedAssets.size).toBe(5);
++        }
++
++        expect(item.compilation.errors).toMatchSnapshot('errors');
++        expect(item.compilation.warnings).toMatchSnapshot('warnings');
++        expect(readAssets(compiler.compilers[index], item)).toMatchSnapshot(
++          'assets'
++        );
++      });
++
++      await new Promise(async (resolve) => {
++        const { stats: newStats } = await compile(compiler);
++
++        newStats.stats.forEach((item, index) => {
++          if (webpack.version[0] === '4') {
++            expect(
++              Object.keys(item.compilation.assets).filter(
++                (assetName) => item.compilation.assets[assetName].emitted
++              ).length
++            ).toBe(5);
++          } else {
++            expect(item.compilation.emittedAssets.size).toBe(0);
++          }
++
++          expect(item.compilation.errors).toMatchSnapshot('errors');
++          expect(item.compilation.warnings).toMatchSnapshot('warnings');
++          expect(readAssets(compiler.compilers[index], item)).toMatchSnapshot(
++            'assets'
++          );
++        });
++
++        resolve();
++      });
++    });
+   });
+ 
+   describe('stats', () => {
+",0,,3,266,1,2,3,266
+545,b8a91ce5ef9fefd7be267378c3f6b4ada086cf2f,bce068fb87d5472be844f62055d7f7d179505815,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+prepare logger for refactoring
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","test: logger
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index c487695..182b2b9 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -754,7 +754,7 @@ describe('CopyPlugin', () => {
+       });
+     });
+ 
+-    it('should work with the ""filesystem"" cache', async () => {
++    it.only('should work with the ""filesystem"" cache', async () => {
+       const cacheDirectory = path.resolve(__dirname, './outputs/.cache/simple');
+ 
+       await del(cacheDirectory);
+@@ -764,6 +764,9 @@ describe('CopyPlugin', () => {
+           type: 'filesystem',
+           cacheDirectory,
+         },
++        infrastructureLogging: {
++          level: 'verbose',
++        },
+       });
+ 
+       new CopyPlugin({
+@@ -776,6 +779,8 @@ describe('CopyPlugin', () => {
+ 
+       const { stats } = await compile(compiler);
+ 
++      expect(stats.compilation.logging).toMatchSnapshot('logs');
++
+       if (webpack.version[0] === '4') {
+         expect(
+           Object.keys(stats.compilation.assets).filter(
+",0,,3,1029,1,12,8,661
+547,5f918aee1c862c94be20357ca1ccba340be462d5,5f918aee1c862c94be20357ca1ccba340be462d5,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+update deps and fix TODO with file-loader
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","chore(deps): update
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index d23f2da..54abf1f 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -955,12 +955,9 @@ describe('CopyPlugin', () => {
+         assetsInfo.push({
+           name,
+           info: {
+-            // TODO Workaround for `file-loader`, remove after update
+-            // eslint-disable-next-line no-undefined
+-            immutable: info.immutable === false ? undefined : info.immutable,
++            immutable: info.immutable,
+             copied: info.copied,
+-            // TODO Workaround for `file-loader`, remove after update
+-            // sourceFilename: info.sourceFilename,
++            sourceFilename: info.sourceFilename,
+           },
+         });
+       }
+",0,,4,25,1,1,4,697
+549,6a2188a941f92d9f91ac9e87d7a89edf22af87e4,52085f2fa24ebe3fedc431357b0dca9cc51f0a0d,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [x] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [ ] **metadata update**
+
+### Motivation / Use-Case
+
+fix cache for webpack@4/webpack@5 too + refactor
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+Still WIP","refactor: fix cache
+","diff --git a/test/CopyPlugin.test.js b/test/CopyPlugin.test.js
+index 54abf1f..bca7d2f 100644
+--- a/test/CopyPlugin.test.js
++++ b/test/CopyPlugin.test.js
+@@ -927,6 +927,137 @@ describe('CopyPlugin', () => {
+         resolve();
+       });
+     });
++
++    it('should work with the ""transform"" option', async () => {
++      const cacheDirectory = path.resolve(__dirname, './outputs/.cache/simple');
++
++      await del([
++        cacheDirectory,
++        path.resolve(__dirname, '../node_modules/.cache/copy-webpack-plugin'),
++      ]);
++
++      const compiler = getCompiler({
++        cache: {
++          type: 'filesystem',
++          cacheDirectory,
++        },
++      });
++
++      const getMyVar = () => {
++        return 'baz';
++      };
++
++      new CopyPlugin({
++        patterns: [
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new0.txt',
++          },
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new1.txt',
++            transform: (content) => {
++              return `${content.toString()}added1`;
++            },
++            cacheTransform: true,
++          },
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new2.txt',
++            transform: (content) => {
++              return `${content.toString()}added2`;
++            },
++            cacheTransform: false,
++          },
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new3.txt',
++            transform: (content) => {
++              return `${content.toString()}added3`;
++            },
++            cacheTransform: true,
++          },
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new4.txt',
++            transform: (content) => {
++              return `${content.toString()}${getMyVar()}`;
++            },
++            cacheTransform: {
++              keys: {
++                foo: 'bar',
++              },
++            },
++          },
++          {
++            from: path.resolve(
++              __dirname,
++              './fixtures/directory/directoryfile.txt'
++            ),
++            to: 'new5.txt',
++            transform: (content) => {
++              return `${content.toString()}${getMyVar()}`;
++            },
++            cacheTransform: {
++              keys: {
++                foo: 'baz',
++              },
++            },
++          },
++        ],
++      }).apply(compiler);
++
++      const { stats } = await compile(compiler);
++
++      if (webpack.version[0] === '4') {
++        expect(
++          Object.keys(stats.compilation.assets).filter(
++            (assetName) => stats.compilation.assets[assetName].emitted
++          ).length
++        ).toBe(7);
++      } else {
++        expect(stats.compilation.emittedAssets.size).toBe(7);
++      }
++
++      expect(readAssets(compiler, stats)).toMatchSnapshot('assets');
++      expect(stats.compilation.errors).toMatchSnapshot('errors');
++      expect(stats.compilation.warnings).toMatchSnapshot('warnings');
++
++      await new Promise(async (resolve) => {
++        const { stats: newStats } = await compile(compiler);
++
++        if (webpack.version[0] === '4') {
++          expect(
++            Object.keys(newStats.compilation.assets).filter(
++              (assetName) => newStats.compilation.assets[assetName].emitted
++            ).length
++          ).toBe(7);
++        } else {
++          expect(newStats.compilation.emittedAssets.size).toBe(6);
++        }
++
++        expect(readAssets(compiler, newStats)).toMatchSnapshot('assets');
++        expect(newStats.compilation.errors).toMatchSnapshot('errors');
++        expect(newStats.compilation.warnings).toMatchSnapshot('warnings');
++
++        resolve();
++      });
++    });
+   });
+ 
+   describe('stats', () => {
+",0,,3,296,1,5,6,1259
+563,d7e5ae9462751ead23f508e2c1de3c70ddcb72dc,faf5f51c99e28f0cfebafd56f8041a766a169108,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Added type `function` for `to` option
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+
+","feat: added type `function` for `to` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index a2c3881..9686377 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -32,6 +32,12 @@ describe(""validate options"", () => {
+         [
+           {
+             from: ""test.txt"",
++            to: () => {},
++          },
++        ],
++        [
++          {
++            from: ""test.txt"",
+             context: ""context"",
+           },
+         ],
+",0,,6,446,1,4,8,530
+564,5c33c799e4374fc61427a0b068c80bf37347531f,81bf209c06247d4c7503d4fb0cc26c0863ccd2e9,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Added `info` option. 
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","feat: added `info` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 9686377..7c6b787 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -144,6 +144,16 @@ describe(""validate options"", () => {
+             filter: () => true,
+           },
+         ],
++        [
++          {
++            from: ""test.txt"",
++            info: { custom: true },
++          },
++          {
++            from: ""test.txt"",
++            info: () => ({ custom: true }),
++          },
++        ],
+       ],
+       failure: [
+         // eslint-disable-next-line no-undefined
+@@ -157,6 +167,18 @@ describe(""validate options"", () => {
+         [{}],
+         [
+           {
++            from: ""dir"",
++            info: ""string"",
++          },
++        ],
++        [
++          {
++            from: ""dir"",
++            info: true,
++          },
++        ],
++        [
++          {
+             from: """",
+             to: ""dir"",
+             context: ""context"",
+",0,,6,249,1,5,6,266
+565,4eabb7073a97949e2c9cdda2d60d9247e55fbfb3,467d08b1bff216c8e86b50fcbc4103bf4b6c3f2e,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Droped webpack@4 support
+Droped `flatten` option favor `to` option
+Droped `transformPath` option favor `to` option
+Combines `transform` option and `cacheTransform` option. Now `transform` option can be an object with `transformer` and `cache` keys.
+
+### Breaking Changes
+
+Droped webpack@4 support
+Droped `flatten` option favor `to` option
+Droped `transformPath` option favor `to` option
+Combines `transform` option and `cacheTransform` option
+
+### Additional Info
+
+How to use `to` option  instead of `flatten` option see the readme examples section
+
+","refactor: drop `flatten` option in favor `to` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 7c6b787..44b0240 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -48,7 +48,6 @@ describe(""validate options"", () => {
+             context: ""context"",
+             toType: ""file"",
+             force: true,
+-            flatten: true,
+             transform: () => {},
+             cacheTransform: true,
+             transformPath: () => {},
+@@ -226,14 +225,6 @@ describe(""validate options"", () => {
+             from: ""test.txt"",
+             to: ""dir"",
+             context: ""context"",
+-            flatten: ""true"",
+-          },
+-        ],
+-        [
+-          {
+-            from: ""test.txt"",
+-            to: ""dir"",
+-            context: ""context"",
+             cacheTransform: () => {},
+           },
+         ],
+",0,,8,435,1,6,18,3527
+590,d9f0a8a6e2a483ec12ac5e6fa310000e6c1cfd28,d9f0a8a6e2a483ec12ac5e6fa310000e6c1cfd28,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [ ] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Fixed #318 
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No
+","feat: added `priority` option
+","diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 7b85e15..26ffbdc 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -133,6 +133,13 @@ describe(""validate options"", () => {
+             },
+           },
+         ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            priority: 5,
++          },
++        ],
+       ],
+       failure: [
+         // eslint-disable-next-line no-undefined
+@@ -242,6 +249,27 @@ describe(""validate options"", () => {
+             filter: ""test"",
+           },
+         ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            priority: ""5"",
++          },
++        ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            priority: () => {},
++          },
++        ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            priority: true,
++          },
++        ],
+       ],
+     },
+     options: {
+",0,,6,205,1,1,6,205
+596,0beceeb12ea6f980a85175999b3e3c977ade8d67,776aa898e4e9b56810aaa38ecf3bb8b34f969a5a,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [x] new **feature**
+- [x] **code refactor**
+- [x] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+
+Added `transformAll` option.
+`transformAll` allows to modify the contents of multiple files and save the result to one file.
+
+### Breaking Changes
+
+No
+
+### Additional Info
+
+No","feat: added transformAll option
+","diff --git a/test/transformAll-option.test.js b/test/transformAll-option.test.js
+new file mode 100644
+index 0000000..aa0faed
+--- /dev/null
++++ b/test/transformAll-option.test.js
+@@ -0,0 +1,201 @@
++import CopyPlugin from ""../src"";
++
++import { runEmit } from ""./helpers/run"";
++import { compile, getCompiler, readAssets } from ""./helpers"";
++
++describe(""transformAll option"", () => {
++  it('should be defined ""assets""', (done) => {
++    runEmit({
++      expectedAssetKeys: [""file.txt""],
++      patterns: [
++        {
++          from: ""file.txt"",
++          transformAll(assets) {
++            expect(assets).toBeDefined();
++
++            return """";
++          },
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++
++  it(""should transform files"", (done) => {
++    runEmit({
++      expectedAssetKeys: [""file.txt""],
++      expectedAssetContent: {
++        ""file.txt"":
++          ""new::directory/nested/deep-nested/deepnested.txt::directory/nested/nestedfile.txt::"",
++      },
++      patterns: [
++        {
++          from: ""directory/**/*.txt"",
++          to: ""file.txt"",
++          transformAll(assets) {
++            const result = assets.reduce((accumulator, asset) => {
++              const content =
++                asset.source.source().toString() || asset.sourceFilename;
++              // eslint-disable-next-line no-param-reassign
++              accumulator = `${accumulator}${content}::`;
++              return accumulator;
++            }, """");
++
++            return result;
++          },
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++
++  it(""should transform files when async function used"", (done) => {
++    runEmit({
++      expectedAssetKeys: [""file.txt""],
++      expectedAssetContent: {
++        ""file.txt"":
++          ""directory/directoryfile.txt::directory/nested/deep-nested/deepnested.txt::directory/nested/nestedfile.txt::"",
++      },
++      patterns: [
++        {
++          from: ""directory/**/*.txt"",
++          to: ""file.txt"",
++          async transformAll(assets) {
++            const result = assets.reduce((accumulator, asset) => {
++              // eslint-disable-next-line no-param-reassign
++              accumulator = `${accumulator}${asset.sourceFilename}::`;
++              return accumulator;
++            }, """");
++
++            return result;
++          },
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++
++  it(""should transform files with force option enabled"", (done) => {
++    runEmit({
++      expectedAssetKeys: [""file.txt""],
++      expectedAssetContent: {
++        ""file.txt"":
++          ""directory/directoryfile.txt::directory/nested/deep-nested/deepnested.txt::directory/nested/nestedfile.txt::"",
++      },
++      patterns: [
++        {
++          from: ""file.txt"",
++        },
++        {
++          from: ""directory/**/*.txt"",
++          to: ""file.txt"",
++          transformAll(assets) {
++            const result = assets.reduce((accumulator, asset) => {
++              // eslint-disable-next-line no-param-reassign
++              accumulator = `${accumulator}${asset.sourceFilename}::`;
++              return accumulator;
++            }, """");
++
++            return result;
++          },
++          force: true,
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++
++  it(""should warn when function throw error"", (done) => {
++    runEmit({
++      expectedAssetKeys: [],
++      expectedErrors: [new Error(""a failure happened"")],
++      patterns: [
++        {
++          from: ""directory/**/*.txt"",
++          to: ""file.txt"",
++          transformAll() {
++            // eslint-disable-next-line no-throw-literal
++            throw new Error(""a failure happened"");
++          },
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++
++  it(""should interpolate [fullhash] and [contenthash]"", (done) => {
++    runEmit({
++      expectedAssetKeys: [""4333a40fa67dfaaaefc9-ac7f6fcb65ddfcc43b2c-file.txt""],
++      expectedAssetContent: {
++        ""4333a40fa67dfaaaefc9-ac7f6fcb65ddfcc43b2c-file.txt"":
++          ""::special::new::::::::::new::::::new::"",
++      },
++      patterns: [
++        {
++          from: ""**/*.txt"",
++          to: ""[contenthash]-[fullhash]-file.txt"",
++          transformAll(assets) {
++            const result = assets.reduce((accumulator, asset) => {
++              // eslint-disable-next-line no-param-reassign
++              accumulator = `${accumulator}${asset.source.source()}::`;
++              return accumulator;
++            }, """");
++
++            return result;
++          },
++        },
++      ],
++    })
++      .then(done)
++      .catch(done);
++  });
++});
++
++describe(""cache"", () => {
++  it('should work with the ""memory"" cache', async () => {
++    const compiler = getCompiler({});
++
++    new CopyPlugin({
++      patterns: [
++        {
++          from: ""directory/**/*.txt"",
++          to: ""file.txt"",
++          transformAll(assets) {
++            const result = assets.reduce((accumulator, asset) => {
++              const content =
++                asset.source.source().toString() || asset.sourceFilename;
++              // eslint-disable-next-line no-param-reassign
++              accumulator = `${accumulator}${content}::`;
++              return accumulator;
++            }, """");
++
++            return result;
++          },
++        },
++      ],
++    }).apply(compiler);
++
++    const { stats } = await compile(compiler);
++
++    expect(stats.compilation.emittedAssets.size).toBe(2);
++    expect(readAssets(compiler, stats)).toMatchSnapshot(""assets"");
++    expect(stats.compilation.errors).toMatchSnapshot(""errors"");
++    expect(stats.compilation.warnings).toMatchSnapshot(""warnings"");
++
++    await new Promise(async (resolve) => {
++      const { stats: newStats } = await compile(compiler);
++
++      expect(newStats.compilation.emittedAssets.size).toBe(0);
++      expect(readAssets(compiler, newStats)).toMatchSnapshot(""assets"");
++      expect(newStats.compilation.errors).toMatchSnapshot(""errors"");
++      expect(newStats.compilation.warnings).toMatchSnapshot(""warnings"");
++
++      resolve();
++    });
++  });
++});
+
+diff --git a/test/validate-options.test.js b/test/validate-options.test.js
+index 26ffbdc..607a869 100644
+--- a/test/validate-options.test.js
++++ b/test/validate-options.test.js
+@@ -140,6 +140,14 @@ describe(""validate options"", () => {
+             priority: 5,
+           },
+         ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            context: ""context"",
++            transformAll: ({ existingAsset }) => existingAsset.source.source(),
++          },
++        ],
+       ],
+       failure: [
+         // eslint-disable-next-line no-undefined
+@@ -270,6 +278,14 @@ describe(""validate options"", () => {
+             priority: true,
+           },
+         ],
++        [
++          {
++            from: ""test.txt"",
++            to: ""dir"",
++            context: ""context"",
++            transformAll: true,
++          },
++        ],
+       ],
+     },
+     options: {
+",0,,7,444,2,3,7,488
+804,7ac8533db520651cc2f5890574cca08b5cb3931f,30a000805a2e4ec90c67b720903118131286ade2,"<!--
+  HOLY CRAP a Pull Request. We ❤️ those!
+
+  If you remove or skip this template, you'll make the 🐼 sad and the mighty god
+  of Github will appear and pile-drive the close button from a great height
+  while making animal noises.
+
+  Please place an x (no spaces!) in all [ ] that apply
+-->
+
+This PR contains a:
+
+- [ ] **bugfix**
+- [ ] new **feature**
+- [ ] **code refactor**
+- [ ] **test update** <!-- if bug or feature is checked, this should be too -->
+- [ ] **typo fix**
+- [x] **metadata update**
+
+### Motivation / Use-Case
+upgrade eslint from v8 to v9
+<!--
+  Please explain the motivation or use-case for your change.
+  What existing problem does the PR solve?
+  If this PR addresses an issue, please link to the issue.
+-->
+
+### Breaking Changes
+No
+<!--
+  If this PR introduces a breaking change, please describe the impact and a
+  migration path for existing applications.
+-->
+
+### Additional Info
+No","chore: update snapshots
+","diff --git a/test/transformAll-option.test.js b/test/transformAll-option.test.js
+index 9ae44f3..6cdfa8a 100644
+--- a/test/transformAll-option.test.js
++++ b/test/transformAll-option.test.js
+@@ -19,7 +19,10 @@ describe(""transformAll option"", () => {
+         },
+       ],
+     })
+-      .then(done)
++      .then(() => {
++        // runEmit performs assertions internally, no need to check result
++        done();
++      })
+       .catch(done);
+   });
+ 
+@@ -47,11 +50,8 @@ describe(""transformAll option"", () => {
+         },
+       ],
+     })
+-      .then((result) => {
+-        // Assertion to check if the transformed content is correct
+-        expect(result.assets[""file.txt""]).toBe(
+-          ""new::directory/nested/deep-nested/deepnested.txt::directory/nested/nestedfile.txt::"",
+-        );
++      .then(() => {
++        // runEmit performs assertions internally, no need to check result
+         done();
+       })
+       .catch(done);
+@@ -77,11 +77,6 @@ describe(""transformAll option"", () => {
+           },
+         },
+       ],
+-    }).then((result) => {
+-      // Assert that ""file.txt"" was transformed as expected
+-      expect(result.assets[""file.txt""]).toBe(
+-        ""directory/directoryfile.txt::directory/nested/deep-nested/deepnested.txt::directory/nested/nestedfile.txt::"",
+-      );
+     }));
+ 
+   it(""should transform files with force option enabled"", (done) => {
+",0,,15,98,2,10,42,6719

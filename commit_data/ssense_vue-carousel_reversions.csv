@@ -1,0 +1,1416 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+13,1fb6237bc04897ffa7012071e3f9d5d96c87059c,23bb1a447a85f50d40f1d807f000840bda25a4a3,,"feat(carousel): add autoplay
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 170848a..a176f9b 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -186,6 +186,19 @@ describe('Carousel', () => {
+     });
+   });
+ 
++  it('should begin autoplaying when option specified', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, { props: { perPage: 1, autoplay: true } }, [h(Slide), h(Slide)]),
++    });
++
++    const carouselInstance = vm.$children[0];
++    expect(carouselInstance.autoplayInterval).toBeDefined();
++    carouselInstance.pauseAutoplay();
++    expect(carouselInstance.autoplayInterval).toBe(undefined);
++    return utils.expectToMatchSnapshot(vm);
++  });
++
+   // it('should apply dirty checking when carousel is initialized in a hidden state', () => {
+   //   const vm = new Vue({
+   //     el: document.createElement('div'),
+",0,,9,91,1,4,10,139
+16,9f1826494736af5063df88eaf2875c3899e0eca2,9f1826494736af5063df88eaf2875c3899e0eca2,,"feat(carousel): rebuild with mutation observer
+",,0,,4,12,1,2,7,94
+161,b855a9838a276cfccdc573806f1d37f6b2d0445b,8c568fcfd9e590815ed7844b6356ffb9519de2c3,"Set scrollPerPage default to true. 
+When false, all system move by slides and not by pages. From navigation to pagination including navigateTo.
+","Fix scrollPerPage
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index dd14021..7d85035 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -140,7 +140,7 @@ describe('Carousel', () => {
+     return utils.expectToMatchSnapshot(vm);
+   });
+ 
+-  it('should decrease current slide number by 1 when advance page backward is called', () => {
++  it('should decrease current page number by 1 when advance page backward is called', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+       render: (h) => h(Carousel, { props: { perPage: 1 } }, [h(Slide), h(Slide)]),
+@@ -157,7 +157,7 @@ describe('Carousel', () => {
+     });
+   });
+ 
+-  it('should increase current slide number by 1 when advance page is called', () => {
++  it('should increase current page number by 1 when advance page is called', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+       render: (h) => h(Carousel, { props: { perPage: 1 } }, [h(Slide), h(Slide)]),
+@@ -173,7 +173,7 @@ describe('Carousel', () => {
+     });
+   });
+ 
+-  it('should increase current slide number by 1 when advance page is called with a non ""backward"" argument', () => {
++  it('should increase current page number by 1 when advance page is called with a non ""backward"" argument', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+       render: (h) => h(Carousel, { props: { perPage: 1 } }, [h(Slide), h(Slide)]),
+@@ -188,7 +188,22 @@ describe('Carousel', () => {
+       return utils.expectToMatchSnapshot(vm);
+     });
+   });
++  it('should decrease current slide number by 1 when advance slide backward is called', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, { props: { perPage: 1, scrollPerPage: false } }, [h(Slide), h(Slide)]),
++    });
+ 
++    const carouselInstance = vm.$children[0];
++
++    return carouselInstance.$nextTick().then(() => {
++      carouselInstance.goToPage(2);
++      carouselInstance.advancePage('backward');
++      expect(carouselInstance.currentPage).toBe(1);
++
++      return utils.expectToMatchSnapshot(vm);
++    });
++  });
+   it('should loop back to the start when loop is true and advance page non ""backward"" is called from the last page', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+",0,,7,1599,2,2,6,186
+19,5ea47b1dd282e13816a881d25d5065f8e3f0fa18,7884a269533d661bc03559a194452fb018c3aae6,,"feat(carousel): complete example for dynamic slides
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 5c0a303..a27a628 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -105,12 +105,15 @@ describe('Carousel', () => {
+     });
+     const carouselInstance = vm.$children[0];
+ 
+-    carouselInstance.$el.clientWidth = 200;
+-    carouselInstance.computeCarouselWidth();
++    carouselInstance.$el.style.width = ""200px"";
+ 
+-    expect(carouselInstance.carouselWidth).toBe(200);
++    setTimeout(() => {
++      carouselInstance.computeCarouselWidth();
+ 
+-    return utils.expectToMatchSnapshot(vm);
++      expect(carouselInstance.carouselWidth).toBe(200);
++
++      return utils.expectToMatchSnapshot(vm);
++    }, 2000)
+   });
+ 
+   it('should register 0 slides when 0 slides are added to the slots', () => {
+",0,,8,6307,3,6,11,6460
+216,b8c14a77d3a84c0f95e402a623529be9d33871d3,b8c14a77d3a84c0f95e402a623529be9d33871d3,"References #184.
+
+By resetting the autoplay interval when `goToPage`  is being called, we can accomplish this functionality. Because hovering over the element will reset the autoplay interval, it should only be run when `autoplayHoverPause` is false.
+
+I also added changes to the properties passed to the *Autoplay* example in the vue-play demos. Because `autoplayHoverPause` has a default value of `true`, it rendered the component with the same properties as in *Autoplay, pause on hover*.","feat(carousel): added tests confirming that the autoplay interval is reset according to options
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 319be1f..e4ee7e5 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -249,4 +249,31 @@ describe('Carousel', () => {
+     expect(carouselInstance.autoplayInterval).toBe(undefined);
+     return utils.expectToMatchSnapshot(vm);
+   });
++
++  it('should reset autoplay when switching slide without autoplayHoverPause', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, { props: { perPage: 1, autoplay: true, autoplayHoverPause: false } }, [h(Slide), h(Slide)]),
++    });
++
++    const carouselInstance = vm.$children[0];
++    const spy = spyOn(carouselInstance, 'restartAutoplay');
++    carouselInstance.goToPage(2);
++    expect(carouselInstance.restartAutoplay).toHaveBeenCalled();
++    return utils.expectToMatchSnapshot(vm);
++  });
++
++  it('should not reset autoplay when switching slide with autoplayHoverPause', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, { props: { perPage: 1, autoplay: true, autoplayHoverPause: true } }, [h(Slide), h(Slide)]),
++    });
++
++    const carouselInstance = vm.$children[0];
++    const spy = spyOn(carouselInstance, 'restartAutoplay');
++    carouselInstance.goToPage(2);
++    expect(carouselInstance.restartAutoplay).not.toHaveBeenCalled();
++    return utils.expectToMatchSnapshot(vm);
++  });
++
+ });
+",0,,2,59,1,3,5,71
+22,046c9549bf77c081d0def6fe383ce335e72276a3,ab1fa1bd4dd3dffa696171e7887e815dc1918164,,"feat(carousel): update navigation
+","diff --git a/tests/client/components/navigation.spec.js b/tests/client/components/navigation.spec.js
+index 302431e..fccda0e 100644
+--- a/tests/client/components/navigation.spec.js
++++ b/tests/client/components/navigation.spec.js
+@@ -25,19 +25,19 @@ describe('Navigation', () => {
+   });
+ 
+   it('should render a next button', () => {
+-    expect(vm.$el.querySelector('.next')).toBeDefined();
++    expect(vm.$el.querySelector('.VueCarousel-navigation-next')).toBeDefined();
+ 
+     return utils.expectToMatchSnapshot(vm);
+   });
+ 
+   it('should render a prev button', () => {
+-    expect(vm.$el.querySelector('.prev')).toBeDefined();
++    expect(vm.$el.querySelector('.VueCarousel-navigation-prev')).toBeDefined();
+ 
+     return utils.expectToMatchSnapshot(vm);
+   });
+ 
+   it('should trigger page advance when next is clicked', () => {
+-    vm.$el.querySelector('.next').click();
++    vm.$el.querySelector('.VueCarousel-navigation-next').click();
+ 
+     return carouselInstance.$nextTick().then(() => {
+       expect(carouselInstance.currentPage).toBe(1);
+@@ -48,7 +48,7 @@ describe('Navigation', () => {
+ 
+   it('should trigger page advance backward when prev is clicked', () => {
+     carouselInstance.goToPage(2);
+-    vm.$el.querySelector('.prev').click();
++    vm.$el.querySelector('.VueCarousel-navigation-prev').click();
+ 
+     return carouselInstance.$nextTick().then(() => {
+       expect(carouselInstance.currentPage).toBe(1);
+",0,,8,429,3,3,15,2510
+292,56e8e2b2bc992156c876592f9d1fde8dc9cb8c1d,9916e73042728d079ad2874e5312cf1315b1d4c6,"Allow the height of the carousel to change based on its current content.
+It adds 2 new additional props:
+ * `adjustableHeight`
+ * `adjustableHeightEasing`
+
+## Description
+This feature changes the height of the carousel based on its currently displayed content.
+
+## Motivation and Context
+Issue #97, similar feature exists ""slick"".
+It can be useful to display carousel slides that have different heights.
+
+## How Has This Been Tested?
+Unit test
+Browser tests using `vue-play`; Chrome, Firefox, Safari
+
+## Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [x ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [x ] My code follows the code style of this project.
+- [x ] My change requires a change to the documentation.
+  - [x ] I have updated the documentation accordingly.
+- [ x] I have included a vue-play example (if this is a new feature)
+
+I have added code comments to the new prop, is that all that needs to be done to have the documentation generated correctly?
+","#97 feat(props): add `adjustableHeight` prop
+
+Allow the height of the carousel to change based on its current content.
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 3faa34c..21f59c2 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -298,4 +298,25 @@ describe('Carousel', () => {
+     return utils.expectToMatchSnapshot(vm);
+   });
+ 
++  it('should set carousel height to slide height', done => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, { props: { adjustableHeight: true, perPage: 1, speed: 1 } },
++        [h(Slide), h(Slide), h(Slide)]
++      ),
++    });
++
++    const carouselInstance = vm.$children[0];
++
++    // Force the slide to return a specific height
++    Object.defineProperty(carouselInstance.$children[2].$el, 'clientHeight', { value: 200 });
++
++    carouselInstance.$nextTick()
++      .then(() => {
++        carouselInstance.computeCarouselHeight();
++        expect(carouselInstance.currentHeight).toBe('200px');
++        utils.expectToMatchSnapshot(vm);
++        done();
++      })
++  });
+ });
+",0,,7,265,3,6,7,276
+341,8ac1174bfcf9436a415d11b12797d57562b2d704,03bd2003cff268e81f4b2773c22913037111619a,"<!--- Provide a general summary of your changes in the Title above -->
+**Please merge either this or #343. (Only one of the two)**
+
+## Description
+<!--- Describe your changes in detail -->
+Replacing the custom jade snapshot in [`tests/client/utils.js`](https://github.com/SSENSE/vue-carousel/blob/master/tests/client/utils.js) with [jest-serializer-vue](https://github.com/eddyerburgh/jest-serializer-vue) as discussed in #339.
+
+- Add jest-serializer-vue to package.json
+- Remove html2jade from package.json
+- Delete tests/client/utils.js
+- Replace all snapshot assertion to use jest snapshot assertion
+- Some sync tests were converted to async tests in order to `$nextTick` for the dom changes to take place when Slide are loaded to the slots.
+
+## Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
+Hoping to lower the barrier for entry in using snapshots for unit tests.
+Also making it easier to review pull requests with snapshot changes.
+
+## How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, tests ran to see how -->
+<!--- your change affects other areas of the code, etc. -->
+Reviewed all snapshot changes are of the same structure as previous snapshots in jade.
+Tests pass successfully.
+
+## Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] ~Bug fix (non-breaking change which fixes an issue)~
+- [x] New feature (non-breaking change which adds functionality)
+- [ ] ~Breaking change (fix or feature that would cause existing functionality to not work as expected)~
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [x] My code follows the code style of this project.
+- [ ] ~My change requires a change to the documentation.~
+  - [ ] ~I have updated the documentation accordingly.~
+- [ ] ~I have included a vue-play example (if this is a new feature)~
+","feat(jest-serializer-vue): add jest snapshot serializer
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 6da1b54..c2a1f44 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -1,7 +1,6 @@
+ /* eslint-disable */
+ 
+ import { mount } from '@vue/test-utils';
+-const utils = require('../utils');
+ 
+ const Carousel = require('../../../src/Carousel.vue');
+ const Slide = require('../../../src/Slide.vue');
+@@ -12,7 +11,7 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm._isMounted).toBeTruthy();
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+   it('should unmount successfully', () => {
+@@ -22,7 +21,7 @@ describe('Carousel', () => {
+     carouselInstance.$destroy();
+     expect(carouselInstance._isDestroyed).toBeTruthy();
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+   it('should be unable to advance backward by default', () => {
+@@ -30,7 +29,7 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.canAdvanceBackward).toBeFalsy();
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+   it('should be unable to advance forward by default (no slides added)', () => {
+@@ -38,7 +37,7 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.canAdvanceForward).toBeFalsy();
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+   it('should apply custom slides per page when responsive param provided', () => {
+@@ -50,10 +49,10 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.currentPerPage).toBe(20);
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+-  it('should fall back to default slides per page when no responsive param provided', () => {
++  it('should fall back to default slides per page when no responsive param provided', done => {
+     const wrapper = mount(Carousel, {
+       propsData: {
+         scrollPerPage: true,
+@@ -67,7 +66,10 @@ describe('Carousel', () => {
+     expect(wrapper.vm.currentPerPage).toBe(2);
+     expect(wrapper.vm.pageCount).toBe(2);
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+   it('should apply default carousel width when element has 0 width', () => {
+@@ -75,7 +77,7 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.carouselWidth).toBe(0);
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+   it('should go to second slide when we have odd number of slides and recompute carousel width', done => {
+@@ -105,10 +107,10 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.slideCount).toBe(0);
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+-  it('should register 3 slides when 3 slides are added to the slots', () => {
++  it('should register 3 slides when 3 slides are added to the slots', done => {
+     const wrapper = mount(Carousel, {
+       slots: {
+         default: [Slide, Slide, Slide]
+@@ -117,7 +119,10 @@ describe('Carousel', () => {
+ 
+     expect(wrapper.vm.slideCount).toBe(3);
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+   it('should decrease current page number by 1 when advance page backward is called', done => {
+@@ -134,7 +139,7 @@ describe('Carousel', () => {
+       wrapper.vm.goToPage(2);
+       wrapper.vm.advancePage('backward');
+       expect(wrapper.vm.currentPage).toBe(1);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+@@ -153,7 +158,7 @@ describe('Carousel', () => {
+       wrapper.vm.goToPage(1);
+       wrapper.vm.advancePage();
+       expect(wrapper.vm.currentPage).toBe(1);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+@@ -172,7 +177,7 @@ describe('Carousel', () => {
+       wrapper.vm.goToPage(1);
+       wrapper.vm.advancePage('something');
+       expect(wrapper.vm.currentPage).toBe(1);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+@@ -192,7 +197,7 @@ describe('Carousel', () => {
+       wrapper.vm.goToPage(2);
+       wrapper.vm.advancePage('backward');
+       expect(wrapper.vm.currentPage).toBe(1);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+@@ -212,7 +217,7 @@ describe('Carousel', () => {
+       wrapper.vm.goToPage(1);
+       wrapper.vm.advancePage();
+       expect(wrapper.vm.currentPage).toBe(0);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+@@ -231,12 +236,12 @@ describe('Carousel', () => {
+     wrapper.vm.$nextTick(() => {
+       wrapper.vm.advancePage('backward');
+       expect(wrapper.vm.currentPage).toBe(1);
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+ 
+-  it('should begin autoplaying when option specified', () => {
++  it('should begin autoplaying when option specified', done => {
+     const wrapper = mount(Carousel, {
+       propsData: {
+         perPage: 1,
+@@ -251,10 +256,13 @@ describe('Carousel', () => {
+     expect(wrapper.vm.autoplayInterval).toBeDefined();
+     wrapper.vm.pauseAutoplay();
+     expect(wrapper.vm.autoplayInterval).toBe(undefined);
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+-  it('should reset autoplay when switching slide without autoplayHoverPause', () => {
++  it('should reset autoplay when switching slide without autoplayHoverPause', done => {
+     const wrapper = mount(Carousel, {
+       propsData: {
+         perPage: 1,
+@@ -270,10 +278,13 @@ describe('Carousel', () => {
+     wrapper.vm.goToPage(2);
+     expect(wrapper.vm.restartAutoplay).toHaveBeenCalled();
+     spy.mockRestore();
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+-  it('should not reset autoplay when switching slide with autoplayHoverPause', () => {
++  it('should not reset autoplay when switching slide with autoplayHoverPause', done => {
+     const wrapper = mount(Carousel, {
+       propsData: {
+         perPage: 1,
+@@ -289,7 +300,10 @@ describe('Carousel', () => {
+     wrapper.vm.goToPage(2);
+     expect(wrapper.vm.restartAutoplay).not.toHaveBeenCalled();
+     spy.mockRestore();
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+   it('should only count slides matching tagName', () => {
+@@ -329,7 +343,7 @@ describe('Carousel', () => {
+     wrapper.vm.$nextTick(() => {
+       wrapper.vm.computeCarouselHeight();
+       expect(wrapper.vm.currentHeight).toBe('200px');
+-      utils.expectToMatchSnapshot(wrapper.vm);
++      expect(wrapper).toMatchSnapshot();
+       done();
+     });
+   });
+
+diff --git a/tests/client/components/navigation.spec.js b/tests/client/components/navigation.spec.js
+index 0b6f29b..4cc8612 100644
+--- a/tests/client/components/navigation.spec.js
++++ b/tests/client/components/navigation.spec.js
+@@ -1,5 +1,4 @@
+ import { mount } from '@vue/test-utils';
+-const utils = require('../utils');
+ 
+ const Carousel = require('../../../src/Carousel.vue');
+ const Slide = require('../../../src/Slide.vue');
+@@ -23,29 +22,38 @@ describe('Navigation', () => {
+     $navigation = wrapper.find('.navigation');
+   });
+ 
+-  it('should mount successfully', () => {
++  it('should mount successfully', done => {
+     expect($navigation).toBeDefined();
+ 
+-    return utils.expectToMatchSnapshot(vm);
++    vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+-  it('should render a next button', () => {
++  it('should render a next button', done => {
+     expect(wrapper.find('.VueCarousel-navigation-next')).toBeDefined();
+ 
+-    return utils.expectToMatchSnapshot(vm);
++    vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+-  it('should render a prev button', () => {
++  it('should render a prev button', done => {
+     expect(wrapper.find('.VueCarousel-navigation-prev')).toBeDefined();
+ 
+-    return utils.expectToMatchSnapshot(vm);
++    vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ 
+   it('should trigger page advance when next is clicked', done => {
+     vm.$nextTick(() => {
+       expect(vm.currentPage).toBe(1);
+ 
+-      utils.expectToMatchSnapshot(vm);
++      expect(wrapper).toMatchSnapshot();
+ 
+       done();
+     });
+@@ -58,7 +66,7 @@ describe('Navigation', () => {
+     vm.$nextTick(() => {
+       expect(vm.currentPage).toBe(1);
+ 
+-      utils.expectToMatchSnapshot(vm);
++      expect(wrapper).toMatchSnapshot();
+ 
+       done();
+     });
+
+diff --git a/tests/client/components/slide.spec.js b/tests/client/components/slide.spec.js
+index 83da23f..75104b5 100644
+--- a/tests/client/components/slide.spec.js
++++ b/tests/client/components/slide.spec.js
+@@ -1,11 +1,10 @@
+ import { mount } from '@vue/test-utils';
+-const utils = require('../utils');
+ 
+ const Carousel = require('../../../src/Carousel.vue');
+ const Slide = require('../../../src/Slide.vue');
+ 
+ describe('Slide', () => {
+-  it('should mount successfully', () => {
++  it('should mount successfully', done => {
+     const wrapper = mount(Carousel, {
+       slots: {
+         default: [Slide]
+@@ -13,6 +12,9 @@ describe('Slide', () => {
+     });
+     expect(wrapper.vm.$children[0]._isMounted).toBeTruthy();
+ 
+-    return utils.expectToMatchSnapshot(wrapper.vm);
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
+   });
+ });
+",0,,10,900,3,2,10,857
+354,d0a06c1b43072b1f13519a49adec4e83007d1043,9916440a919c5fa8b1f8a3aaaf067b38f1fecb02,"<!--- Provide a general summary of your changes in the Title above -->
+
+## Description
+<!--- Describe your changes in detail -->
+`v.0.17.0` release
+","feat(carousel): Count slides by custom tag name (#322)
+
+* feat(carousel): Count slides by custom tag name
+
+* fix(carousel): flush the slides left when they don't fill the width (#323)
+
+* fix(carousel): Flush the slides left when they don't fill the width (#323)
+
+When there are too few slides to fill the row, with scrollPerPage, the slides were flushed right instead of left.
+By bounding maxOffest to a minimum of 0, the slides are aligned on the left-hand-side
+
+Fix #323
+
+* style(play): Use capitals in tests for consistency
+
+* v0.16.1
+
+* chore: build
+
+* Rebuild
+
+* Use Vue Test Utils, rebuild
+
+* Discard change to package version
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index cd3fb11..6da1b54 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -292,6 +292,24 @@ describe('Carousel', () => {
+     return utils.expectToMatchSnapshot(wrapper.vm);
+   });
+ 
++  it('should only count slides matching tagName', () => {
++    const CustomSlide = {
++      extends: Slide,
++      name: 'CustomSlide',
++    };
++    const wrapper = mount(Carousel, {
++      propsData: {
++        tagName: 'CustomSlide'
++      },
++      slots: {
++        default: [CustomSlide, CustomSlide, Slide]
++      }
++    });
++    expect(wrapper.vm.tagName).toBe('CustomSlide');
++    expect(wrapper.vm.slideCount).toBe(2);
++    return utils.expectToMatchSnapshot(wrapper.vm);
++  });
++
+   it('should set carousel height to slide height', done => {
+     const wrapper = mount(Carousel, {
+       propsData: {
+",0,,4,50,1,12,20,2064
+355,e887755856572286c33387f258c07a9b32301c98,e887755856572286c33387f258c07a9b32301c98,"<!--- Provide a general summary of your changes in the Title above -->
+
+## Description
+Explanation of my approach in writing these test cases can be found [here](https://github.com/SSENSE/vue-carousel/issues/143#issuecomment-450297594).
+
+Since master branch is latest now, I'm basing my work here off of master branch until a dev branch is created for upcoming release.
+
+## Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
+First attempt to increase code coverage (albeit to no success).
+Would appreciate guidance and help by reviewing this.
+
+## How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, tests ran to see how -->
+<!--- your change affects other areas of the code, etc. -->
+Main test here I think is checking for the computed value of `transitionStyle`.
+
+I've also included the snapshot but I don't think this is effective here since `transition` css style is not included for some reason. Same applies to every other snapshots. Transition style just don't seem to get included in the snapshot.
+
+Same applies to the snapshot before switching to jest-serializer.
+
+```javascript
+exports[`Carousel should apply custom slides per page when responsive param provided 1`] = `
+"".VueCarousel-wrapper
+  .VueCarousel-inner(role='listbox', style='transform: translate(0px, 0); visibility: hidden; height: auto;')
+|  
+.VueCarousel-pagination(style='display: none;')
+  ul.VueCarousel-dot-container(role='tablist')
+// 
+""
+`;
+```
+[carousel.spec.js.snap @ v0.16.2](https://github.com/SSENSE/vue-carousel/blob/v0.16.2/tests/client/components/__snapshots__/carousel.spec.js.snap)
+
+## Screenshots (if appropriate):
+
+## Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] ~Bug fix (non-breaking change which fixes an issue)~
+- [ ] ~New feature (non-breaking change which adds functionality)~
+- [ ] ~Breaking change (fix or feature that would cause existing functionality to not work as expected)~
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [x] My code follows the code style of this project.
+- [ ] ~My change requires a change to the documentation.~
+  - [ ] ~I have updated the documentation accordingly.~
+- [ ] ~I have included a vue-play example (if this is a new feature)~
+","test(props): adjustableHeight & adjustableHeightEasing
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index cb6bc7b..a02b62d 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -350,4 +350,38 @@ describe('Carousel', () => {
+       done();
+     });
+   });
++
++  it('should not set adjustable height transition easing', done => {
++    const wrapper = mount(Carousel, {
++      propsData: {
++        adjustableHeight: false,
++        adjustableHeightEasing: 'linear',
++        speed: 0
++      }
++    });
++
++    expect(wrapper.vm.transitionStyle).toBe('0s ease transform');
++
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
++  });
++
++  it('should set adjustable height transition easing', done => {
++    const wrapper = mount(Carousel, {
++      propsData: {
++        adjustableHeight: true,
++        adjustableHeightEasing: 'linear',
++        speed: 0
++      }
++    });
++
++    expect(wrapper.vm.transitionStyle).toBe('0s ease transform, height 0s linear');
++
++    wrapper.vm.$nextTick(() => {
++      expect(wrapper).toMatchSnapshot();
++      done();
++    });
++  });
+ });
+",0,,3,72,1,1,3,72
+387,53f549d09e70640669f06cc62706833f8ebb5ece,eab1f3b67f4b490edd6be612419f3b61ccd3efda,"This PR simply adds new tests and refactors some of the Carousel implementation.
+There was some work done previously to add a new testing structure and this PR implements the skipped tests introduced in that PR.
+
+## Description
+
+Added new tests.
+Fixed up some redundant conditionals.
+Added a validator for the easing prop.
+
+## Motivation and Context
+
+Adding better testing for the future stability of the project.
+
+## How Has This Been Tested?
+
+This is only tests :wink: 
+
+## Types of changes
+
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+
+- [x] My code follows the code style of this project.
+- [ ] My change requires a change to the documentation.
+  - [ ] I have updated the documentation accordingly.
+- [ ] I have included a vue-play example (if this is a new feature)
+","chore: add part of the navigation tests
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index 01a7ec3..d248e63 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -345,14 +345,39 @@ describe('Carousel component', () => {
+   });
+ 
+   describe('Carousel navigation', () => {
+-    it.skip('should render the navigation component when navigation is enabled', () => {});
++    it('should render the navigation component when navigation is enabled and navigation is required', async () => {
++      const wrapper = shallowMount(Carousel, {
++        propsData: {
++          navigationEnabled: true
++        },
++        slots: {
++          default: [Slide, Slide, Slide]
++        }
++      });
++
++      await wrapper.vm.$nextTick();
++
++      expect(wrapper.find('navigation-stub').exists()).toBe(true);
++      expect(wrapper).toMatchSnapshot();
++    });
+ 
+-    it.skip('should not render the navigation component when navigation is disabled', () => {});
++    it('should not render the navigation component when navigation is disabled', async () => {
++      const wrapper = shallowMount(Carousel, {
++        slots: {
++          default: [Slide, Slide, Slide]
++        }
++      });
++
++      await wrapper.vm.$nextTick();
++
++      expect(wrapper.find('navigation-stub').exists()).toBe(false);
++      expect(wrapper).toMatchSnapshot();
++    });
+ 
+     it.skip('should navigate to slide 2', () => {});
+ 
+     // TODO: Is this desired functionality?
+-    it.skip('should navigate to slide to even when navigation is not enabled', () => {});
++    it.skip('should navigate to slide 2 even when navigation is not enabled', () => {});
+   });
+ 
+   describe('Carousel pagination', () => {
+@@ -363,7 +388,7 @@ describe('Carousel component', () => {
+     });
+ 
+     it('should not render the pagination component when pagination is disabled', () => {
+-      const wrapper = mount(Carousel, { props: { paginationEnabled: false } });
++      const wrapper = mount(Carousel, { propsData: { paginationEnabled: false } });
+ 
+       expect(wrapper.find({ name: 'pagination' }).exists()).toBe(false);
+     });
+",0,,2,61,1,16,3,513
+395,1c3682ef17b355cef370a71186251c91ad2106fa,2de991cb4108167915e4e5269803ea865695ce97,"Added tests for the pagination component
+
+## Description
+
+Added all the required tests for the component
+
+## Motivation and Context
+
+Currently missing tests on the pagination component
+
+## How Has This Been Tested?
+
+These are only tests
+
+## Types of changes
+
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+
+- [x] My code follows the code style of this project.
+- [ ] My change requires a change to the documentation.
+  - [ ] I have updated the documentation accordingly.
+- [ ] I have included a vue-play example (if this is a new feature)
+","chore: add pagination test boilerplate
+","diff --git a/tests/client/components/pagination.spec.js b/tests/client/components/pagination.spec.js
+new file mode 100644
+index 0000000..30dfd82
+--- /dev/null
++++ b/tests/client/components/pagination.spec.js
+@@ -0,0 +1,31 @@
++import { shallowMount } from '@vue/test-utils';
++import Pagination from '../../../src/Pagination';
++
++describe('Pagination Component', () => {
++  let carousel;
++
++  beforeEach(() => {
++    carousel = {
++      pageCount: 1,
++      paginationPadding: 1,
++      paginationSize: 1,
++      paginationActiveColor: 'red',
++      paginationColor: 'blue',
++      paginationPosition: ['top'],
++      slideCount: 2,
++      currentPerPage: 2,
++      currentPage: 0,
++      $children: [
++        {
++          title: 'title'
++        }
++      ]
++    };
++  });
++
++  it('should match the stored snapshot', () => {
++    const wrapper = shallowMount(Pagination, { provide: { carousel } });
++
++    expect(wrapper).toMatchSnapshot();
++  })
++});
+",0,,2,38,1,2,2,190
+399,3bcd11f59154261421b58a378f00c87e59186d8f,6877253a85e4364c3e0d1c59f6c8ba17a7044b1b,"Adding tests for navigation and slide components
+
+## Description
+
+Refactored the older tests and added missing tests
+
+## Motivation and Context
+
+Trying to increase code coverage of the tests
+
+## Types of changes
+
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+
+- [x] My code follows the code style of this project.
+- [ ] My change requires a change to the documentation.
+  - [ ] I have updated the documentation accordingly.
+- [ ] I have included a vue-play example (if this is a new feature)
+","chore: fix/implement navigation tests
+","diff --git a/tests/client/components/navigation.spec.js b/tests/client/components/navigation.spec.js
+index 4cc8612..6aad3c8 100644
+--- a/tests/client/components/navigation.spec.js
++++ b/tests/client/components/navigation.spec.js
+@@ -1,74 +1,102 @@
+-import { mount } from '@vue/test-utils';
++import { shallowMount } from '@vue/test-utils';
+ 
+-const Carousel = require('../../../src/Carousel.vue');
+-const Slide = require('../../../src/Slide.vue');
++const Navigation = require('../../../src/Navigation');
+ 
+ describe('Navigation', () => {
+-  let wrapper;
+-  let vm;
+-  let $navigation;
++  let carousel;
+ 
+   beforeEach(() => {
+-    wrapper = mount(Carousel, {
+-      propsData: {
+-        navigationEnabled: true,
+-        perPage: 1
+-      },
+-      slots: {
+-        default: [Slide, Slide]
+-      }
++    carousel = {
++      canAdvanceForward: true,
++      canAdvanceBackward: true
++    };
++  });
++
++  it('should match the stored snapshot', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
+     });
+-    vm = wrapper.vm;
+-    $navigation = wrapper.find('.navigation');
++
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+-  it('should mount successfully', done => {
+-    expect($navigation).toBeDefined();
++  it('should render a next button', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
++    });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++    expect(wrapper.find('.VueCarousel-navigation-next').exists()).toBeTruthy();
++  });
++
++  it('should render a prev button', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
+     });
++
++    expect(wrapper.find('.VueCarousel-navigation-prev').exists()).toBeTruthy();
+   });
+ 
+-  it('should render a next button', done => {
+-    expect(wrapper.find('.VueCarousel-navigation-next')).toBeDefined();
++  describe('navigationclick events', () => {
++    it('should emit page advance when next is clicked', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++      wrapper.find('.VueCarousel-navigation-next').trigger('click');
++
++      expect(wrapper.emitted().navigationclick[0][0]).toBeUndefined()
+     });
+-  });
+ 
+-  it('should render a prev button', done => {
+-    expect(wrapper.find('.VueCarousel-navigation-prev')).toBeDefined();
++    it('should emit page advance backward when prev is clicked', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++      wrapper.find('.VueCarousel-navigation-prev').trigger('click');
++
++      expect(wrapper.emitted().navigationclick[0][0]).toBe('backward')
+     });
+   });
+ 
+-  it('should trigger page advance when next is clicked', done => {
+-    vm.$nextTick(() => {
+-      expect(vm.currentPage).toBe(1);
++  describe('canAdvanceForward', () => {
++    it('should be able to advance forwards', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-      expect(wrapper).toMatchSnapshot();
++      expect(wrapper.vm.canAdvanceForward).toBeTruthy()
++    });
++
++    it('should not be able to advance forwards', () => {
++      carousel.canAdvanceForward = false;
++
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-      done();
++      expect(wrapper.vm.canAdvanceForward).toBeFalsy();
++      expect(wrapper).toMatchSnapshot();
+     });
+   });
+ 
+-  it('should trigger page advance backward when prev is clicked', done => {
+-    vm.goToPage(2);
+-    wrapper.find('.VueCarousel-navigation-prev').trigger('click');
++  describe('canAdvanceBackward', () => {
++    it('should be able to advanced backwards', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(vm.currentPage).toBe(1);
++      expect(wrapper.vm.canAdvanceBackward).toBeTruthy()
++    });
+ 
+-      expect(wrapper).toMatchSnapshot();
++    it('should not be able to advanced backwards', () => {
++      carousel.canAdvanceBackward = false;
+ 
+-      done();
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
++
++      expect(wrapper.vm.canAdvanceBackward).toBeFalsy();
++      expect(wrapper).toMatchSnapshot();
+     });
+   });
+ });
+",0,,2,191,1,2,4,341
+4,3243c8880ab5eeb5f12abac023e4162f884c72dc,3243c8880ab5eeb5f12abac023e4162f884c72dc,,"feat(carousel): improve server env checking and coverage
+","diff --git a/tests/client/components/carousel.spec.js b/tests/client/components/carousel.spec.js
+index d78703d..fad230e 100644
+--- a/tests/client/components/carousel.spec.js
++++ b/tests/client/components/carousel.spec.js
+@@ -71,11 +71,12 @@ describe('Carousel', () => {
+   it('should fall back to default slides per page when no responsive param provided', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+-      render: (h) => h(Carousel, { props: { perPageCustom: [[9999, 20]] } }),
++      render: (h) => h(Carousel, { props: { scrollPerPage: true, perPageCustom: [[9999, 20]] } }, [h(Slide), h(Slide), h(Slide)]),
+     });
+     const carouselInstance = vm.$children[0];
+ 
+     expect(carouselInstance.currentPerPage).toBe(2);
++    expect(carouselInstance.pageCount).toBe(2);
+ 
+     return utils.expectToMatchSnapshot(vm);
+   });
+@@ -92,6 +93,47 @@ describe('Carousel', () => {
+     return utils.expectToMatchSnapshot(vm);
+   });
+ 
++  it('should apply 200px carousel width when element has 200px width', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, {},
++      [h(Slide), h(Slide), h(Slide)]
++      ),
++    });
++    const carouselInstance = vm.$children[0];
++
++    carouselInstance.$el.clientWidth = 200;
++    carouselInstance.getCarouselWidth();
++
++    expect(carouselInstance.carouselWidth).toBe(200);
++
++    return utils.expectToMatchSnapshot(vm);
++  });
++
++  it('should register 0 slides when 0 slides are added to the slots', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel),
++    });
++    const carouselInstance = vm.$children[0];
++
++    expect(carouselInstance.getSlideCount()).toBe(0);
++
++    return utils.expectToMatchSnapshot(vm);
++  });
++
++  it('should register 3 slides when 3 slides are added to the slots', () => {
++    const vm = new Vue({
++      el: document.createElement('div'),
++      render: (h) => h(Carousel, {}, [h(Slide), h(Slide), h(Slide)]),
++    });
++    const carouselInstance = vm.$children[0];
++
++    expect(carouselInstance.getSlideCount()).toBe(3);
++
++    return utils.expectToMatchSnapshot(vm);
++  });
++
+   it('should decrease current slide number by 1 when advance page backward is called', () => {
+     const vm = new Vue({
+       el: document.createElement('div'),
+@@ -140,4 +182,21 @@ describe('Carousel', () => {
+       return utils.expectToMatchSnapshot(vm);
+     });
+   });
++
++  // it('should apply dirty checking when carousel is initialized in a hidden state', () => {
++  //   const vm = new Vue({
++  //     el: document.createElement('div'),
++  //     render: (h) => h(Carousel, {}, [h(Slide), h(Slide)]),
++  //   });
++
++  //   const carouselInstance = vm.$children[0];
++
++  //   expect(carouselInstance.pollInterval).toBeDefined();
++
++  //   return carouselInstance.$nextTick().then(() => {
++  //     expect(carouselInstance.getCarouselWidth()).toBe(200);
++
++  //     return utils.expectToMatchSnapshot(vm);
++  //   });
++  // });
+ });
+\ No newline at end of file
+",0,,6,191,1,1,5,141
+400,444ac653a51d8ab2e649db2c32aa325540b9ed4d,c16e6ac5439cba645f5b44e929c2df611f93583a,"<!--- Provide a general summary of your changes in the Title above -->
+
+## Description
+<!--- Describe your changes in detail -->
+
+## Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
+
+## How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, tests ran to see how -->
+<!--- your change affects other areas of the code, etc. -->
+
+## Screenshots (if appropriate):
+
+## Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [ ] My code follows the code style of this project.
+- [ ] My change requires a change to the documentation.
+  - [ ] I have updated the documentation accordingly.
+- [ ] I have included a vue-play example (if this is a new feature)
+","chore: fix/implement navigation tests
+","diff --git a/tests/client/components/navigation.spec.js b/tests/client/components/navigation.spec.js
+index ec98caa..a076fb5 100644
+--- a/tests/client/components/navigation.spec.js
++++ b/tests/client/components/navigation.spec.js
+@@ -44,7 +44,11 @@ describe('Navigation', () => {
+ 
+       wrapper.find('.VueCarousel-navigation-next').trigger('click');
+ 
++<<<<<<< HEAD
+       expect(wrapper.emitted().navigationclick[0][0]).toBe('forward')
++=======
++      expect(wrapper.emitted().navigationclick[0][0]).toBeUndefined()
++>>>>>>> chore: fix/implement navigation tests
+     });
+ 
+     it('should emit page advance backward when prev is clicked', () => {
+",0,,2,17,1,5,2,112
+402,7de513b78e681ed261a5eefe9c78f5464f61b9d4,803831260d29b15c12377a8b2219b7a6cff60cfd,"<!--- Provide a general summary of your changes in the Title above -->
+
+## Description
+<!--- Describe your changes in detail -->
+
+## Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
+
+## How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, tests ran to see how -->
+<!--- your change affects other areas of the code, etc. -->
+
+## Screenshots (if appropriate):
+
+## Types of changes
+<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [ ] My code follows the code style of this project.
+- [ ] My change requires a change to the documentation.
+  - [ ] I have updated the documentation accordingly.
+- [ ] I have included a vue-play example (if this is a new feature)
+","chore: fix/implement navigation tests
+","diff --git a/tests/client/components/navigation.spec.js b/tests/client/components/navigation.spec.js
+index 4cc8612..6aad3c8 100644
+--- a/tests/client/components/navigation.spec.js
++++ b/tests/client/components/navigation.spec.js
+@@ -1,74 +1,102 @@
+-import { mount } from '@vue/test-utils';
++import { shallowMount } from '@vue/test-utils';
+ 
+-const Carousel = require('../../../src/Carousel.vue');
+-const Slide = require('../../../src/Slide.vue');
++const Navigation = require('../../../src/Navigation');
+ 
+ describe('Navigation', () => {
+-  let wrapper;
+-  let vm;
+-  let $navigation;
++  let carousel;
+ 
+   beforeEach(() => {
+-    wrapper = mount(Carousel, {
+-      propsData: {
+-        navigationEnabled: true,
+-        perPage: 1
+-      },
+-      slots: {
+-        default: [Slide, Slide]
+-      }
++    carousel = {
++      canAdvanceForward: true,
++      canAdvanceBackward: true
++    };
++  });
++
++  it('should match the stored snapshot', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
+     });
+-    vm = wrapper.vm;
+-    $navigation = wrapper.find('.navigation');
++
++    expect(wrapper).toMatchSnapshot();
+   });
+ 
+-  it('should mount successfully', done => {
+-    expect($navigation).toBeDefined();
++  it('should render a next button', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
++    });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++    expect(wrapper.find('.VueCarousel-navigation-next').exists()).toBeTruthy();
++  });
++
++  it('should render a prev button', () => {
++    const wrapper = shallowMount(Navigation, {
++      provide: { carousel },
+     });
++
++    expect(wrapper.find('.VueCarousel-navigation-prev').exists()).toBeTruthy();
+   });
+ 
+-  it('should render a next button', done => {
+-    expect(wrapper.find('.VueCarousel-navigation-next')).toBeDefined();
++  describe('navigationclick events', () => {
++    it('should emit page advance when next is clicked', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++      wrapper.find('.VueCarousel-navigation-next').trigger('click');
++
++      expect(wrapper.emitted().navigationclick[0][0]).toBeUndefined()
+     });
+-  });
+ 
+-  it('should render a prev button', done => {
+-    expect(wrapper.find('.VueCarousel-navigation-prev')).toBeDefined();
++    it('should emit page advance backward when prev is clicked', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(wrapper).toMatchSnapshot();
+-      done();
++      wrapper.find('.VueCarousel-navigation-prev').trigger('click');
++
++      expect(wrapper.emitted().navigationclick[0][0]).toBe('backward')
+     });
+   });
+ 
+-  it('should trigger page advance when next is clicked', done => {
+-    vm.$nextTick(() => {
+-      expect(vm.currentPage).toBe(1);
++  describe('canAdvanceForward', () => {
++    it('should be able to advance forwards', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-      expect(wrapper).toMatchSnapshot();
++      expect(wrapper.vm.canAdvanceForward).toBeTruthy()
++    });
++
++    it('should not be able to advance forwards', () => {
++      carousel.canAdvanceForward = false;
++
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-      done();
++      expect(wrapper.vm.canAdvanceForward).toBeFalsy();
++      expect(wrapper).toMatchSnapshot();
+     });
+   });
+ 
+-  it('should trigger page advance backward when prev is clicked', done => {
+-    vm.goToPage(2);
+-    wrapper.find('.VueCarousel-navigation-prev').trigger('click');
++  describe('canAdvanceBackward', () => {
++    it('should be able to advanced backwards', () => {
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
+ 
+-    vm.$nextTick(() => {
+-      expect(vm.currentPage).toBe(1);
++      expect(wrapper.vm.canAdvanceBackward).toBeTruthy()
++    });
+ 
+-      expect(wrapper).toMatchSnapshot();
++    it('should not be able to advanced backwards', () => {
++      carousel.canAdvanceBackward = false;
+ 
+-      done();
++      const wrapper = shallowMount(Navigation, {
++        provide: { carousel },
++      });
++
++      expect(wrapper.vm.canAdvanceBackward).toBeFalsy();
++      expect(wrapper).toMatchSnapshot();
+     });
+   });
+ });
+",0,,2,191,1,23,21,1062

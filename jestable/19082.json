@@ -1,0 +1,137 @@
+{
+    "id": 94578593,
+    "name": "data-client/data-client",
+    "isFork": false,
+    "commits": 3460,
+    "branches": 41,
+    "releases": 1000,
+    "forks": 110,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://dataclient.io",
+    "watchers": 19,
+    "stargazers": 1833,
+    "contributors": 35,
+    "size": 295201,
+    "createdAt": "2019-02-15T03:37:05",
+    "pushedAt": "2023-09-06T04:53:38",
+    "updatedAt": "2023-09-05T08:06:18",
+    "totalIssues": 222,
+    "openIssues": 3,
+    "totalPullRequests": 2567,
+    "openPullRequests": 1,
+    "blankLines": 10802,
+    "codeLines": 145425,
+    "commentLines": 8809,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 6,
+            "codeLines": 377,
+            "blankLines": 0
+        },
+        {
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 70950,
+            "blankLines": 10
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 7679,
+            "codeLines": 45783,
+            "blankLines": 4496
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 939,
+            "codeLines": 7758,
+            "blankLines": 750
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 14,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 54,
+            "codeLines": 482,
+            "blankLines": 38
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 0,
+            "codeLines": 31,
+            "blankLines": 4
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 86,
+            "codeLines": 18819,
+            "blankLines": 5348
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 45,
+            "codeLines": 1196,
+            "blankLines": 156
+        }
+    ],
+    "lastCommit": "2023-09-06T04:50:36",
+    "lastCommitSHA": "c9ca31f3f4f2f6e3174c74172ebc194edbe56bb2",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 1123917,
+        "JavaScript": 161608,
+        "CSS": 24377,
+        "Shell": 1392
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "docs",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "package",
+        "question",
+        "revisit",
+        "wontfix"
+    ],
+    "topics": [
+        "data",
+        "fetch",
+        "normalized",
+        "normalizr",
+        "react",
+        "react-native",
+        "reactive-programming",
+        "rest-client",
+        "sse-client",
+        "state-management",
+        "suspense",
+        "typescript"
+    ]
+}

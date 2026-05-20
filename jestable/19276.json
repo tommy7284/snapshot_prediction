@@ -1,0 +1,98 @@
+{
+    "id": 94689114,
+    "name": "epicweb-dev/cachified",
+    "isFork": false,
+    "commits": 157,
+    "branches": 3,
+    "releases": 31,
+    "forks": 24,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 4,
+    "stargazers": 851,
+    "contributors": 12,
+    "size": 850,
+    "createdAt": "2022-07-08T07:56:56",
+    "pushedAt": "2024-05-08T04:27:44",
+    "updatedAt": "2024-05-08T04:26:38",
+    "totalIssues": 21,
+    "openIssues": 1,
+    "totalPullRequests": 82,
+    "openPullRequests": 0,
+    "blankLines": 469,
+    "codeLines": 10354,
+    "commentLines": 211,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 75,
+            "blankLines": 12
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 194,
+            "codeLines": 2630,
+            "blankLines": 321
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 7,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 16,
+            "codeLines": 581,
+            "blankLines": 134
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7051,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-08T04:26:34",
+    "lastCommitSHA": "1e994d15858cc672244e715b4fa090ec6bff6b00",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 85101,
+        "JavaScript": 248
+    },
+    "labels": [
+        "awaiting feedback",
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "github_actions",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "question",
+        "released",
+        "wontfix"
+    ],
+    "topics": [
+        "cache",
+        "stale-while-revalidate",
+        "throttling",
+        "ttl-cache",
+        "typesafe"
+    ]
+}

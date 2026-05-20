@@ -1,0 +1,225 @@
+{
+    "id": 69783762,
+    "name": "kirillzyusko/react-native-keyboard-controller",
+    "isFork": false,
+    "commits": 354,
+    "branches": 25,
+    "releases": 49,
+    "forks": 48,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://kirillzyusko.github.io/react-native-keyboard-controller/",
+    "watchers": 11,
+    "stargazers": 1265,
+    "contributors": 13,
+    "size": 68737,
+    "createdAt": "2022-04-17T06:00:04",
+    "pushedAt": "2024-05-10T05:04:35",
+    "updatedAt": "2024-05-10T02:19:40",
+    "totalIssues": 116,
+    "openIssues": 18,
+    "totalPullRequests": 304,
+    "openPullRequests": 3,
+    "blankLines": 3548,
+    "codeLines": 18773,
+    "commentLines": 1714,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 79,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 41,
+            "codeLines": 591,
+            "blankLines": 16
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 58,
+            "codeLines": 554,
+            "blankLines": 36
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 4
+        },
+        {
+            "language": "Kotlin",
+            "commentLines": 366,
+            "codeLines": 2135,
+            "blankLines": 468
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 4,
+            "codeLines": 135,
+            "blankLines": 42
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0,
+            "blankLines": 1
+        },
+        {
+            "language": "Properties",
+            "commentLines": 50,
+            "codeLines": 29,
+            "blankLines": 18
+        },
+        {
+            "language": "Diff",
+            "commentLines": 14,
+            "codeLines": 25,
+            "blankLines": 6
+        },
+        {
+            "language": "Ruby",
+            "commentLines": 10,
+            "codeLines": 41,
+            "blankLines": 10
+        },
+        {
+            "language": "Java",
+            "commentLines": 0,
+            "codeLines": 23,
+            "blankLines": 6
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 314,
+            "codeLines": 6092,
+            "blankLines": 754
+        },
+        {
+            "language": "YAML",
+            "commentLines": 26,
+            "codeLines": 1146,
+            "blankLines": 72
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 63,
+            "codeLines": 59,
+            "blankLines": 37
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 786,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 29,
+            "codeLines": 4326,
+            "blankLines": 1481
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 50,
+            "codeLines": 320,
+            "blankLines": 90
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 161,
+            "codeLines": 385,
+            "blankLines": 75
+        },
+        {
+            "language": "Objective-C++",
+            "commentLines": 43,
+            "codeLines": 474,
+            "blankLines": 66
+        },
+        {
+            "language": "CSS",
+            "commentLines": 32,
+            "codeLines": 227,
+            "blankLines": 38
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 224,
+            "codeLines": 210,
+            "blankLines": 57
+        },
+        {
+            "language": "Swift",
+            "commentLines": 219,
+            "codeLines": 1125,
+            "blankLines": 270
+        }
+    ],
+    "lastCommit": "2024-05-10T05:28:54",
+    "lastCommitSHA": "427c26c8edeba805137cbcffcee12ea1844908dd",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 258671,
+        "Kotlin": 100703,
+        "Swift": 45888,
+        "Objective-C++": 20899,
+        "C++": 14670,
+        "Objective-C": 13431,
+        "JavaScript": 11836,
+        "Ruby": 5338,
+        "Makefile": 1537,
+        "Java": 902,
+        "Starlark": 602,
+        "CMake": 582,
+        "Shell": 149,
+        "C": 103
+    },
+    "labels": [
+        "ci",
+        "deps update",
+        "documentation",
+        "duplicate",
+        "e2e",
+        "enhancement",
+        "example",
+        "feature request \ud83c\udf1f",
+        "focused input \ud83d\udcdd",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "refactor",
+        "release",
+        "sponsor \ud83d\udc96",
+        "tests",
+        "wontfix",
+        "\ud83c\udf0f web",
+        "\ud83c\udf81 components",
+        "\ud83c\udf84 modal",
+        "\ud83c\udfed fabric",
+        "\ud83d\udc46 interactive keyboard",
+        "\ud83d\udca5 crash",
+        "\ud83d\udcdd paper",
+        "\ud83d\udcf1 ios",
+        "\ud83d\ude80 optimization",
+        "\ud83d\udea8 requires api changes \ud83d\udea8",
+        "\ud83e\udd16 android",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": [
+        "android",
+        "animation",
+        "avoiding-view",
+        "focused-input",
+        "ios",
+        "keyboard",
+        "keyboard-toolbar",
+        "react-native"
+    ]
+}

@@ -1,0 +1,3477 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+207,2886531306c5d8cd735d44db84891be3d459203a,935bd76e92b368a2b8dbe84b6796475e185285b1,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+  - Add `esm` modules to adapt to tree-shaking.
+  - Rename some modules to  make sure tree-shaking works.
+  - Change the export paths for some modules.
+
+After PR merged, I will add some examples for tree-shaking.
+
+**Before:**
+
+<img width=""705"" alt=""esm-1"" src=""https://user-images.githubusercontent.com/11304944/82067556-77deaf00-9703-11ea-966f-220d74812b9b.png"">
+
+**After:**
+
+<img width=""431"" alt=""esm-2"" src=""https://user-images.githubusercontent.com/11304944/82067574-7dd49000-9703-11ea-8f25-56f26ba97b0c.png"">
+
+","refactor: export all hooks functions directly from main module
+
+refactor: rename the modules to make sure tree-shaking works
+","diff --git a/components/file-tree/__tests__/index.test.tsx b/components/file-tree/__tests__/index.test.tsx
+deleted file mode 100644
+index f213c64..0000000
+--- a/components/file-tree/__tests__/index.test.tsx
++++ /dev/null
+@@ -1,87 +0,0 @@
+-import React from 'react'
+-import { mount } from 'enzyme'
+-import { Tree } from 'components'
+-import { nativeEvent } from 'tests/utils'
+-import { FileTreeValue } from 'components/file-tree/tree'
+-
+-const mockFiles: Array<FileTreeValue> = [
+-  {
+-    type: 'file',
+-    name: 'cs.js',
+-  },
+-  {
+-    type: 'directory',
+-    name: 'bin',
+-    files: [
+-      {
+-        type: 'file',
+-        name: 'cs.js',
+-      },
+-    ],
+-  },
+-  {
+-    type: 'directory',
+-    name: 'docs',
+-    files: [
+-      {
+-        type: 'file',
+-        name: 'controllers.md',
+-      },
+-      {
+-        type: 'file',
+-        name: 'es6.md',
+-      },
+-      {
+-        type: 'file',
+-        name: 'production.md',
+-      },
+-      {
+-        type: 'file',
+-        name: 'views.md',
+-      },
+-    ],
+-  },
+-  {
+-    type: 'file',
+-    name: 'views.md',
+-  },
+-]
+-
+-describe('Tree', () => {
+-  it('should mount correctly', () => {
+-    const wrapper = mount(
+-      <Tree>
+-        <Tree.File name=""package.json"" />
+-        <Tree.Folder name=""components"">
+-          <Tree.File name=""layout.js"" />
+-          <Tree.File name=""header.js"" />
+-        </Tree.Folder>
+-        <Tree.File name=""readme.md"" />
+-      </Tree>,
+-    )
+-    expect(<Tree.File name=""package.json"" />).toMatchSnapshot()
+-    expect(<Tree.Folder name=""components"" />).toMatchSnapshot()
+-    expect(wrapper).toMatchSnapshot()
+-    expect(() => wrapper.unmount()).not.toThrow()
+-  })
+-
+-  it('should show extra messages', () => {
+-    const files = mockFiles.map(item => ({ ...item, extra: 'extra' }))
+-    const wrapper = mount(<Tree value={files} />)
+-    const firstName = wrapper.find('.name').at(0)
+-    expect(firstName.text()).toContain('extra')
+-    expect(() => wrapper.unmount()).not.toThrow()
+-  })
+-
+-  it('should trigger event when file clicked', () => {
+-    const callback = jest.fn()
+-    const wrapper = mount(<Tree value={mockFiles} onClick={callback} />)
+-    wrapper.find('.file').at(0).simulate('click', nativeEvent)
+-    expect(callback).toHaveBeenCalled()
+-  })
+-
+-  it('should be work when value is empty', () => {
+-    const wrapper = mount(<Tree value={[]} />)
+-    expect(() => wrapper.unmount()).not.toThrow()
+-  })
+-})
+
+diff --git a/components/toast/__tests__/index.test.tsx b/components/toast/__tests__/index.test.tsx
+deleted file mode 100644
+index 778f8e5..0000000
+--- a/components/toast/__tests__/index.test.tsx
++++ /dev/null
+@@ -1,187 +0,0 @@
+-import React from 'react'
+-import { mount, ReactWrapper } from 'enzyme'
+-import { useToasts, ZEITUIProvider } from 'components'
+-import { nativeEvent, updateWrapper } from 'tests/utils'
+-
+-const MockToast: React.FC<{}> = () => {
+-  const [, setToast] = useToasts()
+-  const clickHandler = (e: any = {}) => {
+-    const keys = ['text', 'delay', 'type', 'actions']
+-    const params = keys.reduce((pre, key) => {
+-      const value = e.target[key]
+-      if (!value) return pre
+-      return { ...pre, [key]: value }
+-    }, {})
+-    setToast(params)
+-  }
+-  return (
+-    <div id=""btn"" onClick={clickHandler}>
+-      btn
+-    </div>
+-  )
+-}
+-
+-const triggerToast = (wrapper: ReactWrapper, params = {}) => {
+-  wrapper.find('#btn').simulate('click', {
+-    ...nativeEvent,
+-    target: params,
+-  })
+-}
+-
+-const expectToastIsShow = (wrapper: ReactWrapper) => {
+-  const toast = wrapper.find('.toast-container').find('.toast')
+-  expect(toast.length).not.toBe(0)
+-}
+-
+-const expectToastIsHidden = (wrapper: ReactWrapper) => {
+-  const toast = wrapper.find('.toast-container').find('.toast')
+-  expect(toast.length).toBe(0)
+-}
+-
+-describe('UseToast', () => {
+-  it('should render correctly', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { text: 'test-value' })
+-    await updateWrapper(wrapper)
+-    expectToastIsShow(wrapper)
+-  })
+-
+-  it('should work with different types', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { type: 'success', text: 'hello' })
+-    await updateWrapper(wrapper, 100)
+-    expectToastIsShow(wrapper)
+-    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
+-  })
+-
+-  it('should close toast', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    await updateWrapper(wrapper, 0)
+-    expectToastIsShow(wrapper)
+-    // Element already hidden, but Dom was removed after delay
+-    await updateWrapper(wrapper, 350)
+-    const toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).not.toBe(0)
+-  })
+-
+-  it('the removeal should be delayed when hover is triggerd', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    await updateWrapper(wrapper, 0)
+-    expectToastIsShow(wrapper)
+-
+-    wrapper.find('.toast-container').simulate('mouseEnter', nativeEvent)
+-    await updateWrapper(wrapper, 350)
+-
+-    // Hover event will postpone hidden event
+-    let toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).toBe(0)
+-
+-    // Restart hidden event after mouse leave
+-    wrapper.find('.toast-container').simulate('mouseLeave', nativeEvent)
+-    await updateWrapper(wrapper, 350 + 200)
+-    toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).not.toBe(0)
+-  })
+-
+-  it('should render different actions', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-    const actions = [
+-      {
+-        name: 'remove',
+-        handler: () => {},
+-      },
+-      {
+-        name: 'remove',
+-        handler: () => {},
+-        passive: true,
+-      },
+-    ]
+-
+-    triggerToast(wrapper, { actions, text: 'hello' })
+-    await updateWrapper(wrapper)
+-    expectToastIsShow(wrapper)
+-    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
+-  })
+-
+-  it('should close toast when action triggered', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-    const actions = [
+-      {
+-        name: 'remove',
+-        handler: (_event: any, cancel: Function) => cancel(),
+-      },
+-    ]
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { actions, text: 'hello' })
+-    await updateWrapper(wrapper)
+-    expectToastIsShow(wrapper)
+-    wrapper.find('.action').find('.btn').at(0).simulate('click', nativeEvent)
+-
+-    // Element already hidden, but Dom was removed after delay
+-    await updateWrapper(wrapper, 250)
+-    const toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).not.toBe(0)
+-  })
+-
+-  it('should work with multiple toasts', async () => {
+-    const wrapper = mount(
+-      <ZEITUIProvider>
+-        <MockToast />
+-      </ZEITUIProvider>,
+-    )
+-
+-    expectToastIsHidden(wrapper)
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    triggerToast(wrapper, { delay: 100, text: 'hello' })
+-    triggerToast(wrapper, { delay: 200, text: 'hello' })
+-
+-    /**
+-     * If there are multiple Toasts at different deplay in the stack,
+-     * the destory Dom event will wait for the maximum delay time.
+-     */
+-    await updateWrapper(wrapper, 350)
+-    expectToastIsShow(wrapper)
+-
+-    await updateWrapper(wrapper, 200)
+-    const toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).not.toBe(0)
+-  })
+-})
+
+diff --git a/components/tree/__tests__/index.test.tsx b/components/tree/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..cde7557
+--- /dev/null
++++ b/components/tree/__tests__/index.test.tsx
+@@ -0,0 +1,87 @@
++import React from 'react'
++import { mount } from 'enzyme'
++import { Tree } from 'components'
++import { nativeEvent } from 'tests/utils'
++import { FileTreeValue } from 'components/tree/tree'
++
++const mockFiles: Array<FileTreeValue> = [
++  {
++    type: 'file',
++    name: 'cs.js',
++  },
++  {
++    type: 'directory',
++    name: 'bin',
++    files: [
++      {
++        type: 'file',
++        name: 'cs.js',
++      },
++    ],
++  },
++  {
++    type: 'directory',
++    name: 'docs',
++    files: [
++      {
++        type: 'file',
++        name: 'controllers.md',
++      },
++      {
++        type: 'file',
++        name: 'es6.md',
++      },
++      {
++        type: 'file',
++        name: 'production.md',
++      },
++      {
++        type: 'file',
++        name: 'views.md',
++      },
++    ],
++  },
++  {
++    type: 'file',
++    name: 'views.md',
++  },
++]
++
++describe('Tree', () => {
++  it('should mount correctly', () => {
++    const wrapper = mount(
++      <Tree>
++        <Tree.File name=""package.json"" />
++        <Tree.Folder name=""components"">
++          <Tree.File name=""layout.js"" />
++          <Tree.File name=""header.js"" />
++        </Tree.Folder>
++        <Tree.File name=""readme.md"" />
++      </Tree>,
++    )
++    expect(<Tree.File name=""package.json"" />).toMatchSnapshot()
++    expect(<Tree.Folder name=""components"" />).toMatchSnapshot()
++    expect(wrapper).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should show extra messages', () => {
++    const files = mockFiles.map(item => ({ ...item, extra: 'extra' }))
++    const wrapper = mount(<Tree value={files} />)
++    const firstName = wrapper.find('.name').at(0)
++    expect(firstName.text()).toContain('extra')
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should trigger event when file clicked', () => {
++    const callback = jest.fn()
++    const wrapper = mount(<Tree value={mockFiles} onClick={callback} />)
++    wrapper.find('.file').at(0).simulate('click', nativeEvent)
++    expect(callback).toHaveBeenCalled()
++  })
++
++  it('should be work when value is empty', () => {
++    const wrapper = mount(<Tree value={[]} />)
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++})
+
+diff --git a/components/use-toasts/__tests__/index.test.tsx b/components/use-toasts/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..db32b67
+--- /dev/null
++++ b/components/use-toasts/__tests__/index.test.tsx
+@@ -0,0 +1,187 @@
++import React from 'react'
++import { mount, ReactWrapper } from 'enzyme'
++import { useToasts, ZeitProvider } from 'components'
++import { nativeEvent, updateWrapper } from 'tests/utils'
++
++const MockToast: React.FC<{}> = () => {
++  const [, setToast] = useToasts()
++  const clickHandler = (e: any = {}) => {
++    const keys = ['text', 'delay', 'type', 'actions']
++    const params = keys.reduce((pre, key) => {
++      const value = e.target[key]
++      if (!value) return pre
++      return { ...pre, [key]: value }
++    }, {})
++    setToast(params)
++  }
++  return (
++    <div id=""btn"" onClick={clickHandler}>
++      btn
++    </div>
++  )
++}
++
++const triggerToast = (wrapper: ReactWrapper, params = {}) => {
++  wrapper.find('#btn').simulate('click', {
++    ...nativeEvent,
++    target: params,
++  })
++}
++
++const expectToastIsShow = (wrapper: ReactWrapper) => {
++  const toast = wrapper.find('.toast-container').find('.toast')
++  expect(toast.length).not.toBe(0)
++}
++
++const expectToastIsHidden = (wrapper: ReactWrapper) => {
++  const toast = wrapper.find('.toast-container').find('.toast')
++  expect(toast.length).toBe(0)
++}
++
++describe('UseToast', () => {
++  it('should render correctly', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { text: 'test-value' })
++    await updateWrapper(wrapper)
++    expectToastIsShow(wrapper)
++  })
++
++  it('should work with different types', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { type: 'success', text: 'hello' })
++    await updateWrapper(wrapper, 100)
++    expectToastIsShow(wrapper)
++    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
++  })
++
++  it('should close toast', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    await updateWrapper(wrapper, 0)
++    expectToastIsShow(wrapper)
++    // Element already hidden, but Dom was removed after delay
++    await updateWrapper(wrapper, 350)
++    const toast = wrapper.find('.toast-container').find('.hide')
++    expect(toast.length).not.toBe(0)
++  })
++
++  it('the removeal should be delayed when hover is triggerd', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    await updateWrapper(wrapper, 0)
++    expectToastIsShow(wrapper)
++
++    wrapper.find('.toast-container').simulate('mouseEnter', nativeEvent)
++    await updateWrapper(wrapper, 350)
++
++    // Hover event will postpone hidden event
++    let toast = wrapper.find('.toast-container').find('.hide')
++    expect(toast.length).toBe(0)
++
++    // Restart hidden event after mouse leave
++    wrapper.find('.toast-container').simulate('mouseLeave', nativeEvent)
++    await updateWrapper(wrapper, 350 + 200)
++    toast = wrapper.find('.toast-container').find('.hide')
++    expect(toast.length).not.toBe(0)
++  })
++
++  it('should render different actions', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++    const actions = [
++      {
++        name: 'remove',
++        handler: () => {},
++      },
++      {
++        name: 'remove',
++        handler: () => {},
++        passive: true,
++      },
++    ]
++
++    triggerToast(wrapper, { actions, text: 'hello' })
++    await updateWrapper(wrapper)
++    expectToastIsShow(wrapper)
++    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
++  })
++
++  it('should close toast when action triggered', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++    const actions = [
++      {
++        name: 'remove',
++        handler: (_event: any, cancel: Function) => cancel(),
++      },
++    ]
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { actions, text: 'hello' })
++    await updateWrapper(wrapper)
++    expectToastIsShow(wrapper)
++    wrapper.find('.action').find('.btn').at(0).simulate('click', nativeEvent)
++
++    // Element already hidden, but Dom was removed after delay
++    await updateWrapper(wrapper, 250)
++    const toast = wrapper.find('.toast-container').find('.hide')
++    expect(toast.length).not.toBe(0)
++  })
++
++  it('should work with multiple toasts', async () => {
++    const wrapper = mount(
++      <ZeitProvider>
++        <MockToast />
++      </ZeitProvider>,
++    )
++
++    expectToastIsHidden(wrapper)
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    triggerToast(wrapper, { delay: 100, text: 'hello' })
++    triggerToast(wrapper, { delay: 200, text: 'hello' })
++
++    /**
++     * If there are multiple Toasts at different deplay in the stack,
++     * the destory Dom event will wait for the maximum delay time.
++     */
++    await updateWrapper(wrapper, 350)
++    expectToastIsShow(wrapper)
++
++    await updateWrapper(wrapper, 200)
++    const toast = wrapper.find('.toast-container').find('.hide')
++    expect(toast.length).not.toBe(0)
++  })
++})
+",0,,74,4297,4,5,60,269
+208,e63cfd19b7fc95bc16eed85c13ca3987d1aa7bdc,e63cfd19b7fc95bc16eed85c13ca3987d1aa7bdc,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","test(code): remove unused testcase
+","diff --git a/components/code/__tests__/index.test.tsx b/components/code/__tests__/index.test.tsx
+index fd6c17d..9f25b3c 100644
+--- a/components/code/__tests__/index.test.tsx
++++ b/components/code/__tests__/index.test.tsx
+@@ -28,22 +28,4 @@ describe('Code', () => {
+     wrapper.setProps({ block: true })
+     expect(wrapper.find('pre').length).not.toBe(0)
+   })
+-
+-  it('should alert warning when use bash', () => {
+-    let errorMessage = ''
+-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(msg => (errorMessage = msg))
+-
+-    mount(<Code bash>code</Code>)
+-    expect(errorMessage.toLowerCase()).toContain('deprecated')
+-    errorSpy.mockRestore()
+-  })
+-
+-  it('should alert warning when use darkBash', () => {
+-    let errorMessage = ''
+-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(msg => (errorMessage = msg))
+-
+-    mount(<Code darkBash>code</Code>)
+-    expect(errorMessage.toLowerCase()).toContain('deprecated')
+-    errorSpy.mockRestore()
+-  })
+ })
+",0,,2,72,1,2,3,102
+221,a223624e6043abfa777cad7fff7bfc8633e99e3b,da08be5d5596bf87f2a859207401eccaf9b902ba,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #219 
+","feat(button): forward the ref of the original element
+","diff --git a/components/button/__tests__/index.test.tsx b/components/button/__tests__/index.test.tsx
+index eb5434d..725786e 100644
+--- a/components/button/__tests__/index.test.tsx
++++ b/components/button/__tests__/index.test.tsx
+@@ -131,4 +131,11 @@ describe('Button', () => {
+     await sleep(500)
+     expect(wrapper.find('.loading-container').length).not.toBe(0)
+   })
++
++  it('ref should be forwarded', () => {
++    const ref = React.createRef<HTMLButtonElement>()
++    const wrapper = mount(<Button ref={ref}>action</Button>)
++    expect(wrapper.find('button').getDOMNode()).toEqual(ref.current)
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
+ })
+",0,,4,586,2,3,12,1430
+230,7cac2d665ee4956a227bfb259466a6b035e211d7,7cac2d665ee4956a227bfb259466a6b035e211d7,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #223 
+
+","test(radio): add testcases for size
+","diff --git a/components/radio/__tests__/group.test.tsx b/components/radio/__tests__/group.test.tsx
+index 8febedb..9cb15c5 100644
+--- a/components/radio/__tests__/group.test.tsx
++++ b/components/radio/__tests__/group.test.tsx
+@@ -21,6 +21,24 @@ describe('Radio Group', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work correctly with different sizes', () => {
++    const wrapper = mount(
++      <div>
++        <Radio.Group value=""1"" size=""mini"">
++          <Radio value=""1"">1</Radio>
++        </Radio.Group>
++        <Radio.Group value=""1"" size=""small"">
++          <Radio value=""1"">1</Radio>
++        </Radio.Group>
++        <Radio.Group value=""1"" size=""large"">
++          <Radio value=""1"">1</Radio>
++        </Radio.Group>
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should trigger events in group', () => {
+     let value = ''
+     const changeHandler = jest.fn().mockImplementation(val => (value = val))
+
+diff --git a/components/radio/__tests__/index.test.tsx b/components/radio/__tests__/index.test.tsx
+index 535c8f8..9ab0375 100644
+--- a/components/radio/__tests__/index.test.tsx
++++ b/components/radio/__tests__/index.test.tsx
+@@ -10,6 +10,19 @@ describe('Radio', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work correctly with different sizes', () => {
++    const wrapper = mount(
++      <div>
++        <Radio size=""mini"">mini</Radio>
++        <Radio size=""small"">small</Radio>
++        <Radio size=""medium"">medium</Radio>
++        <Radio size=""large"">large</Radio>
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should render correctly with checked prop', () => {
+     const wrapper = mount(<Radio>Option</Radio>)
+     wrapper.setProps({ checked: false })
+",0,,4,793,2,3,10,954
+231,d46e319d14fc123d46db4b3479efb3043cd16e29,d46e319d14fc123d46db4b3479efb3043cd16e29,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #223 
+
+","docs(checkbox): add docs for size prop
+
+test(checkbox): add testcases for size
+","diff --git a/components/checkbox/__tests__/group.test.tsx b/components/checkbox/__tests__/group.test.tsx
+index 896a815..abf36b6 100644
+--- a/components/checkbox/__tests__/group.test.tsx
++++ b/components/checkbox/__tests__/group.test.tsx
+@@ -18,6 +18,27 @@ describe('Checkbox Group', () => {
+     expect(rendered).toMatchSnapshot()
+   })
+ 
++  it('should work correctly with different sizes', () => {
++    const wrapper = mount(
++      <div>
++        <Checkbox.Group value={[]} size=""mini"">
++          <Checkbox value=""sydney"">Sydney</Checkbox>
++        </Checkbox.Group>
++        <Checkbox.Group value={[]} size=""small"">
++          <Checkbox value=""sydney"">Sydney</Checkbox>
++        </Checkbox.Group>
++        <Checkbox.Group value={[]} size=""medium"">
++          <Checkbox value=""sydney"">Sydney</Checkbox>
++        </Checkbox.Group>
++        <Checkbox.Group value={[]} size=""large"">
++          <Checkbox value=""sydney"">Sydney</Checkbox>
++        </Checkbox.Group>
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should work correctly with initial value', () => {
+     let wrapper = mount(
+       <Checkbox.Group value={['sydney']}>
+
+diff --git a/components/checkbox/__tests__/index.test.tsx b/components/checkbox/__tests__/index.test.tsx
+index ef46cd9..acd1f71 100644
+--- a/components/checkbox/__tests__/index.test.tsx
++++ b/components/checkbox/__tests__/index.test.tsx
+@@ -10,6 +10,19 @@ describe('Checkbox', () => {
+     expect(rendered).toMatchSnapshot()
+   })
+ 
++  it('should work correctly with different sizes', () => {
++    const wrapper = mount(
++      <div>
++        <Checkbox size=""mini"">mini</Checkbox>
++        <Checkbox size=""small"">small</Checkbox>
++        <Checkbox size=""medium"">medium</Checkbox>
++        <Checkbox size=""large"">large</Checkbox>
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should work correctly with initial value', () => {
+     let wrapper = mount(<Checkbox checked={true}>Sydney</Checkbox>)
+     let input = wrapper.find('input').getDOMNode()
+",0,,6,764,2,2,9,821
+232,f17bb28223bcce691705959a15342f81ea8ce1fb,a360d1b83b084e0aa4164ecae61228f2178f4bf1,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","refactor(radio): use CSS variable instead of Context broadcast size
+",,0,,4,30,1,2,4,35
+233,d793faa1f688c4f3409f776e7cabc666919b0290,e1a488175d2bf92e5b10c63074f4e6237fac83ad,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #222 
+","feat(select): handle multiple selections
+","diff --git a/components/select/__tests__/index.test.tsx b/components/select/__tests__/index.test.tsx
+index cb759ce..eedb141 100644
+--- a/components/select/__tests__/index.test.tsx
++++ b/components/select/__tests__/index.test.tsx
+@@ -17,6 +17,19 @@ describe('Select', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work correctly with labels', () => {
++    const wrapper = mount(
++      <Select>
++        <Select.Option label>1</Select.Option>
++        <Select.Option divider>1</Select.Option>
++        <Select.Option value=""1"">1</Select.Option>
++        <Select.Option value=""2"">Option 2</Select.Option>
++      </Select>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should work with different icons', () => {
+     const MockIcon = () => <span>icon</span>
+     const pure = render(<Select pure />)
+
+diff --git a/components/select/__tests__/multiple.test.tsx b/components/select/__tests__/multiple.test.tsx
+new file mode 100644
+index 0000000..cc413ee
+--- /dev/null
++++ b/components/select/__tests__/multiple.test.tsx
+@@ -0,0 +1,55 @@
++import React from 'react'
++import { mount } from 'enzyme'
++import { Select } from 'components'
++import { nativeEvent, updateWrapper } from 'tests/utils'
++
++describe('Select Multiple', () => {
++  it('should render correctly', () => {
++    const wrapper = mount(
++      <Select multiple>
++        <Select.Option value=""1"">1</Select.Option>
++        <Select.Option value=""2"">Option 2</Select.Option>
++      </Select>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should render value with initial-value', () => {
++    const wrapper = mount(
++      <Select initialValue={['1', '2']} multiple>
++        <Select.Option value=""1"">test-1</Select.Option>
++        <Select.Option value=""2"">test-2</Select.Option>
++        <Select.Option value=""3"">test-3</Select.Option>
++      </Select>,
++    )
++    expect(wrapper.find('.option').length).toBeGreaterThan(1)
++    const text = wrapper.find('.option').map(item => item.text())
++    expect(text.includes('test-1')).toBeTruthy()
++    expect(text.includes('test-2')).toBeTruthy()
++    expect(text.includes('test-3')).not.toBeTruthy()
++  })
++
++  it('should trigger events when option changed', async () => {
++    let value = ''
++    const changeHandler = jest.fn().mockImplementation(val => (value = val))
++    const wrapper = mount(
++      <Select onChange={changeHandler} multiple>
++        <Select.Option value=""1"">1</Select.Option>
++        <Select.Option value=""2"">Option 2</Select.Option>
++      </Select>,
++    )
++    wrapper.find('.select').simulate('click', nativeEvent)
++    wrapper.find('.select-dropdown').find('.option').at(0).simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expect(changeHandler).toHaveBeenCalled()
++    expect(Array.isArray(value)).toBeTruthy()
++    expect(value.includes('1')).toBeTruthy()
++
++    wrapper.find('.select-dropdown').find('.option').at(0).simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expect(Array.isArray(value)).toBeTruthy()
++    expect(value.includes('1')).not.toBeTruthy()
++    changeHandler.mockRestore()
++  })
++})
+",0,,8,564,2,7,17,745
+242,9bae10da14f6bafed3f362188715bd1ad0f37d34,9bae10da14f6bafed3f362188715bd1ad0f37d34,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","test: update snapshots
+",,0,,2,50,2,2,3,58
+243,2ed2faacafb4cf0fb7cadd5a972f9828b8266fe5,2ed2faacafb4cf0fb7cadd5a972f9828b8266fe5,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #239 
+
+","test: update snapshots
+",,0,,1,1,1,3,6,67
+253,4715b78710d8d3644f9751bf0a4852ebb3d937ea,f1b6c2b134f1e4711f44f542f7ccff9193aee2a0,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","test(breadcrumbs): add testcase
+
+docs: add api for breadcrumbs
+","diff --git a/components/breadcrumbs/__tests__/breadcrumbs.test.tsx b/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
+index e69de29..45ac9a0 100644
+--- a/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
++++ b/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
+@@ -0,0 +1,77 @@
++import React from 'react'
++import { mount } from 'enzyme'
++import { Breadcrumbs } from 'components'
++
++describe('Breadcrumbs', () => {
++  it('should render correctly', () => {
++    const wrapper = mount(
++      <Breadcrumbs>
++        <Breadcrumbs.Item>test-1</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should redefined all separators', () => {
++    const wrapper = mount(
++      <Breadcrumbs separator=""*"">
++        <Breadcrumbs.Item>test-1</Breadcrumbs.Item>
++        <Breadcrumbs.Item>test-2</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(wrapper.html()).toContain('*')
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('the specified separator should be redefined', () => {
++    const wrapper = mount(
++      <Breadcrumbs separator=""*"">
++        <Breadcrumbs.Item>
++          test-1
++          <Breadcrumbs.Separator>%</Breadcrumbs.Separator>
++        </Breadcrumbs.Item>
++        <Breadcrumbs.Item>test-2</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    expect(wrapper.html()).toContain('%')
++  })
++
++  it('should render string when href missing', () => {
++    let wrapper = mount(
++      <Breadcrumbs>
++        <Breadcrumbs.Item>test-1</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    let dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    expect(dom.tagName).toEqual('SPAN')
++
++    wrapper = mount(
++      <Breadcrumbs>
++        <Breadcrumbs.Item href="""">test-1</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    expect(dom.tagName).toEqual('A')
++
++    wrapper = mount(
++      <Breadcrumbs>
++        <Breadcrumbs.Item nextLink>test-1</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    expect(dom.tagName).toEqual('A')
++  })
++
++  it('should trigger click event', () => {
++    const handler = jest.fn()
++    const wrapper = mount(
++      <Breadcrumbs>
++        <Breadcrumbs.Item onClick={handler}>test-1</Breadcrumbs.Item>
++      </Breadcrumbs>,
++    )
++    wrapper.find('.breadcrums-item').at(0).simulate('click')
++    expect(handler).toHaveBeenCalled()
++  })
++})
+",0,,4,282,1,4,12,659
+255,847b58a8f3bb1bbfa9d457851aef480a254edf72,8d787f6d78f8cd9b5b7418c5d3158becb3860d75,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #250 
+","test(auto-complete): add testcase for free solo
+","diff --git a/components/auto-complete/__tests__/index.test.tsx b/components/auto-complete/__tests__/index.test.tsx
+index b01ce72..911bc00 100644
+--- a/components/auto-complete/__tests__/index.test.tsx
++++ b/components/auto-complete/__tests__/index.test.tsx
+@@ -2,6 +2,7 @@ import React from 'react'
+ import { mount } from 'enzyme'
+ import { AutoComplete } from 'components'
+ import { nativeEvent } from 'tests/utils'
++import { act } from 'react-dom/test-utils'
+ 
+ describe('AutoComplete', () => {
+   it('should render correctly', () => {
+@@ -32,11 +33,13 @@ describe('AutoComplete', () => {
+     expect((input as HTMLInputElement).value).toEqual('value2')
+   })
+ 
+-  it('should render clear icon', () => {
++  it('should render clear icon', async () => {
+     const wrapper = mount(<AutoComplete initialValue=""value"" />)
+     expect(wrapper.find('svg').length).toBe(0)
+ 
+-    wrapper.setProps({ clearable: true })
++    await act(async () => {
++      wrapper.setProps({ clearable: true })
++    })
+     expect(wrapper.find('svg').length).toBe(1)
+ 
+     wrapper.find('svg').simulate('click', nativeEvent)
+@@ -44,11 +47,13 @@ describe('AutoComplete', () => {
+     expect((input as HTMLInputElement).value).toEqual('')
+   })
+ 
+-  it('should reponse width change', () => {
++  it('should reponse width change', async () => {
+     const wrapper = mount(<AutoComplete initialValue=""value"" width=""100px"" />)
+     expect(wrapper.prop('width')).toEqual('100px')
++    await act(async () => {
++      wrapper.setProps({ width: '200px' })
++    })
+ 
+-    wrapper.setProps({ width: '200px' })
+     expect(wrapper.prop('width')).toEqual('200px')
+   })
+ })
+",0,,3,34,1,4,7,153
+261,a85e07af5b0baac17e05c8019ed3156d21ad0b37,a85e07af5b0baac17e05c8019ed3156d21ad0b37,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #235 
+
+","test(pagination): add testcase
+","diff --git a/components/pagination/__tests__/pagination.test.tsx b/components/pagination/__tests__/pagination.test.tsx
+new file mode 100644
+index 0000000..8bf9dfb
+--- /dev/null
++++ b/components/pagination/__tests__/pagination.test.tsx
+@@ -0,0 +1,148 @@
++import React from 'react'
++import { mount } from 'enzyme'
++import { Pagination } from 'components'
++import { act } from 'react-dom/test-utils'
++import { updateWrapper } from 'tests/utils'
++
++describe('Pagination', () => {
++  it('should render correctly', () => {
++    const wrapper = mount(<Pagination />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('the specified page should be activated', async () => {
++    const wrapper = mount(<Pagination count={10} initialPage={2} />)
++    expect(wrapper.find('.active').text()).toEqual('2')
++    await act(async () => {
++      wrapper.setProps({ page: 10 })
++    })
++    await updateWrapper(wrapper, 200)
++    expect(wrapper.find('.active').text()).toEqual('10')
++  })
++
++  it('should trigger change event', async () => {
++    let current = 1
++    const handler = jest.fn().mockImplementation(val => (current = val))
++    const wrapper = mount(<Pagination count={10} initialPage={2} onChange={handler} />)
++
++    await act(async () => {
++      wrapper.setProps({ page: 10 })
++    })
++    await updateWrapper(wrapper, 200)
++    expect(handler).toHaveBeenCalled()
++    expect(current).toEqual(10)
++
++    const btns = wrapper.find('button')
++    btns.at(0).simulate('click')
++    await updateWrapper(wrapper, 200)
++    expect(current).toEqual(9)
++
++    btns.at(btns.length - 1).simulate('click')
++    btns.at(btns.length - 1).simulate('click')
++    btns.at(btns.length - 1).simulate('click')
++    btns.at(btns.length - 1).simulate('click')
++    await updateWrapper(wrapper, 200)
++    expect(current).toEqual(10)
++    handler.mockRestore()
++  })
++
++  it('the page should be rendered to follow the specified limit', async () => {
++    const wrapper = mount(<Pagination count={20} limit={20} />)
++    expect(wrapper.find('button').length).toBeGreaterThanOrEqual(20)
++    await act(async () => {
++      wrapper.setProps({ limit: 5 })
++    })
++    await updateWrapper(wrapper, 200)
++    expect(wrapper.find('button').length).toBeLessThanOrEqual(10)
++  })
++
++  it('should be render all pages when limit is greater than the total', async () => {
++    const handler = jest.fn()
++    const wrapper = mount(<Pagination count={15} limit={40} onChange={handler} />)
++    expect(wrapper.find('button').length).toBeGreaterThanOrEqual(15)
++    wrapper.find('button').at(10).simulate('click')
++    await updateWrapper(wrapper, 200)
++
++    expect(handler).toHaveBeenCalled()
++    handler.mockRestore()
++  })
++
++  it('omit pages by limit value', async () => {
++    const wrapper = mount(<Pagination count={20} limit={5} />)
++    const btn4 = wrapper.find('button').at(4)
++    expect(btn4.text()).toEqual('4')
++    btn4.simulate('click')
++    await updateWrapper(wrapper, 200)
++    let btns = wrapper.find('button').map(btn => btn.text())
++    expect(btns.includes('2')).not.toBeTruthy()
++    expect(btns.includes('1')).toBeTruthy()
++    expect(btns.includes('3')).toBeTruthy()
++    expect(btns.includes('4')).toBeTruthy()
++    expect(btns.includes('5')).toBeTruthy()
++    expect(btns.includes('6')).not.toBeTruthy()
++    expect(btns.includes('20')).toBeTruthy()
++
++    const btn5 = wrapper.find('button').at(5)
++    expect(btn5.text()).toEqual('5')
++    btn5.simulate('click')
++    await updateWrapper(wrapper, 200)
++    btns = wrapper.find('button').map(btn => btn.text())
++    expect(btns.includes('1')).toBeTruthy()
++    expect(btns.includes('2')).not.toBeTruthy()
++    expect(btns.includes('3')).not.toBeTruthy()
++    expect(btns.includes('4')).toBeTruthy()
++    expect(btns.includes('5')).toBeTruthy()
++    expect(btns.includes('6')).toBeTruthy()
++    expect(btns.includes('7')).not.toBeTruthy()
++    expect(btns.includes('8')).not.toBeTruthy()
++    expect(btns.includes('20')).toBeTruthy()
++  })
++
++  it('should trigger change event when ellipsis clicked', async () => {
++    let current = 20
++    const handler = jest.fn().mockImplementation(val => (current = val))
++    const wrapper = mount(<Pagination count={20} initialPage={20} onChange={handler} />)
++    const btn = wrapper.find('svg').at(0).parents('button')
++    btn.at(0).simulate('click')
++    await updateWrapper(wrapper, 200)
++    expect(handler).toHaveBeenCalled()
++    expect(current).toEqual(15)
++
++    await act(async () => {
++      wrapper.setProps({ page: 1 })
++    })
++    await updateWrapper(wrapper, 200)
++    const lastBtn = wrapper.find('svg').at(0).parents('button')
++    lastBtn.at(0).simulate('click')
++    await updateWrapper(wrapper, 200)
++    expect(current).toEqual(1 + 5)
++  })
++
++  it('another SVG should be displayed when the mouse is moved in', async () => {
++    const wrapper = mount(<Pagination count={20} initialPage={20} />)
++    const svg = wrapper.find('svg').at(0)
++    const btn = svg.parents('button')
++
++    const html = svg.html()
++    btn.simulate('mouseEnter')
++    await updateWrapper(wrapper)
++    expect(html).not.toEqual(wrapper.find('svg').at(0).html())
++
++    btn.simulate('mouseLeave')
++    await updateWrapper(wrapper)
++    expect(html).toEqual(wrapper.find('svg').at(0).html())
++  })
++
++  it('custom buttons should be display', () => {
++    const wrapper = mount(
++      <Pagination count={20}>
++        <Pagination.Previous>custom-prev</Pagination.Previous>
++        <Pagination.Next>custom-next</Pagination.Next>
++      </Pagination>,
++    )
++    const btns = wrapper.find('button')
++    expect(btns.at(0).text()).toEqual('custom-prev')
++    expect(btns.at(btns.length - 1).text()).toEqual('custom-next')
++  })
++})
+",0,,4,341,1,3,15,1030
+276,cb9f5a3390d99de3222999096d3a6d931fc495ad,cb9f5a3390d99de3222999096d3a6d931fc495ad,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #275 
+","test(baseline): update snapshots
+",,0,,1,4,1,2,2,6
+280,ebd8d6cdd815eb4b3ccea85722646e0314b51866,490d3d2d8e2a77b3f8dd5cdc46655e794973f3de,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+resolved #278 
+
+","test(grid): add testcase for grid hidden
+","diff --git a/components/grid/__tests__/index.test.tsx b/components/grid/__tests__/index.test.tsx
+index 72250d0..f40b00a 100644
+--- a/components/grid/__tests__/index.test.tsx
++++ b/components/grid/__tests__/index.test.tsx
+@@ -111,4 +111,10 @@ describe('Grid', () => {
+     expect(wrapper.html()).toMatchSnapshot()
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
++
++  it('Grid should be hidden when value is 0', () => {
++    let wrapper = mount(<Grid.Container xs={0} />)
++    expect(wrapper.find('.item').hasClass('xs')).toBeTruthy()
++    expect(wrapper.find('.item').html()).toContain('display: none')
++  })
+ })
+",0,,2,126,1,4,6,186
+287,d7f3be0aafb7ce428049b1c6c988d1b2d9005b50,d7f3be0aafb7ce428049b1c6c988d1b2d9005b50,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","test(snippet): add custom symbol and toast
+","diff --git a/components/snippet/__tests__/index.test.tsx b/components/snippet/__tests__/index.test.tsx
+index 7751caa..d3e3066 100644
+--- a/components/snippet/__tests__/index.test.tsx
++++ b/components/snippet/__tests__/index.test.tsx
+@@ -70,6 +70,20 @@ describe('Snippet', () => {
+     expect(wrapper.find('.copy').length).toBe(0)
+   })
+ 
++  it('should work with custom symbol', () => {
++    const wrapper = mount(<Snippet text={command} symbol={'>'} />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should work with custom toast', () => {
++    document.execCommand = jest.fn()
++    const wrapper = mount(<Snippet text={command} toastText=""Code copied!"" toastType=""secondary"" />)
++    wrapper.find('.copy').simulate('click')
++    expect(document.execCommand).toHaveBeenCalled()
++    ;(document.execCommand as jest.Mock).mockRestore()
++  })
++
+   afterAll(() => {
+     ;(window.getSelection as jest.Mock).mockRestore()
+     ;(document.createRange as jest.Mock).mockRestore()
+",0,,2,72,1,4,4,104
+292,343732aff9f44b70237f5989983a1b8a438bc742,343732aff9f44b70237f5989983a1b8a438bc742,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+
+","test: update snapshots
+",,0,,2,48,2,2,4,72
+302,42c5b4d425198b86602f1bdd7a5b6810b9704dd4,42c5b4d425198b86602f1bdd7a5b6810b9704dd4,"## PR Checklist
+
+- [x] Fix linting errors
+- [x] Label has been added
+
+
+## Change information
+
+  - Optimize the style of `Modal`.
+  - The behavior of the component has not changed.
+  - `shared/backdrop` is currently only quoted by `Modal`.
+
+resolved #300
+
+","test: update snapshots
+",,0,,2,12,2,3,5,20
+319,176aa64402aa09354e99cbf7b35b2cb0ce7570e2,3513112f6952db4cb0bbdd06ca7af9c0a66f91a0,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolve #316 ","test(button): add testcase for icon only
+","diff --git a/components/button/__tests__/icon.test.tsx b/components/button/__tests__/icon.test.tsx
+index 02470d6..b443b06 100644
+--- a/components/button/__tests__/icon.test.tsx
++++ b/components/button/__tests__/icon.test.tsx
+@@ -16,6 +16,13 @@ describe('ButtonIcon', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work without text', () => {
++    const wrapper = mount(<Button iconRight={<Icon />} />)
++    const text = wrapper.find('.text')
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(text.length).toBe(0)
++  })
++
+   it('the width of the text should be filled', () => {
+     const autoWrapper = mount(
+       <Button auto icon={<Icon />}>
+",0,,2,115,1,3,6,137
+325,e574360bd9840eca2b2f3049cfd9de668f91f10c,6ef15c0befba879596e3f881b0fc52b67d0954ce,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+fixed #324 
+","fix(snippet): remove space when the symbol is empty
+
+style(snippet): remove unnecessary escape symbols
+","diff --git a/components/snippet/__tests__/index.test.tsx b/components/snippet/__tests__/index.test.tsx
+index d3e3066..0c158ac 100644
+--- a/components/snippet/__tests__/index.test.tsx
++++ b/components/snippet/__tests__/index.test.tsx
+@@ -71,7 +71,11 @@ describe('Snippet', () => {
+   })
+ 
+   it('should work with custom symbol', () => {
+-    const wrapper = mount(<Snippet text={command} symbol={'>'} />)
++    let wrapper = mount(<Snippet text={command} symbol={'>'} />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++
++    wrapper = mount(<Snippet text={command} symbol={' '} />)
+     expect(wrapper.html()).toMatchSnapshot()
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+",0,,3,66,1,2,5,77
+332,1c49f71a0a9ecd9a5346bb2964d75ccc79c15b49,1c49f71a0a9ecd9a5346bb2964d75ccc79c15b49,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolve #330 ","test: update snapshots
+",,0,,1,168,1,3,5,384
+341,1dd55a8645eb5fb0e3e68d175d91881bcc8fe565,1dd55a8645eb5fb0e3e68d175d91881bcc8fe565,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+similar to #336 ","fix(textarea): imperative api same as input
+",,0,,4,664,1,1,4,664
+344,9f0d5e039dfc6a826a8148cfd0251d00f5172a3e,2ca4086baf1ec2d09fad0212b98acc6eca44f077,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolve #342","test(modal): update snapshots
+",,0,,1,1,1,5,9,208
+347,a773289a422719f7cab2ce2bf9b5f8957ac367d5,a773289a422719f7cab2ce2bf9b5f8957ac367d5,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+fix issue #337 ","fix(link): fix hard-coded background color
+",,0,,2,5,1,1,2,5
+354,d3a7e47cad11430146ebb8da85a3d85a629ef31b,dcfdf3ff02eaf80dbdf29d9dbbe9736eb7f479e6,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolved #352 ","test(modal): add tests for modal focus
+","diff --git a/components/modal/__tests__/index.test.tsx b/components/modal/__tests__/index.test.tsx
+index d73d135..7e6d2c3 100644
+--- a/components/modal/__tests__/index.test.tsx
++++ b/components/modal/__tests__/index.test.tsx
+@@ -3,6 +3,13 @@ import { mount } from 'enzyme'
+ import { Modal } from 'components'
+ import { nativeEvent, updateWrapper } from 'tests/utils'
+ import { expectModalIsClosed, expectModalIsOpened } from './use-modal.test'
++import { act } from 'react-dom/test-utils'
++
++const TabEvent = {
++  key: 'TAB',
++  keyCode: 9,
++  which: 9,
++}
+ 
+ describe('Modal', () => {
+   it('should render correctly', () => {
+@@ -117,4 +124,32 @@ describe('Modal', () => {
+     expect(html).toContain('test-class')
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
++
++  it('focus should only be switched within modal', () => {
++    const wrapper = mount(
++      <Modal open={true} width=""100px"" wrapClassName=""test-class"">
++        <Modal.Title>Modal</Modal.Title>
++      </Modal>,
++    )
++    const tabStart = wrapper.find('.hide-tab').at(0).getDOMNode()
++    const tabEnd = wrapper.find('.hide-tab').at(1).getDOMNode()
++    const eventElement = wrapper.find('.wrapper').at(0)
++    expect(document.activeElement).toBe(tabStart)
++
++    act(() => {
++      eventElement.simulate('keydown', {
++        ...TabEvent,
++        shiftKey: true,
++      })
++    })
++    expect(document.activeElement).toBe(tabEnd)
++
++    act(() => {
++      eventElement.simulate('keydown', {
++        ...TabEvent,
++        shiftKey: false,
++      })
++    })
++    expect(document.activeElement).toBe(tabStart)
++  })
+ })
+",0,,2,67,1,5,10,172
+367,e3db55b13452067ce9daeb68133ac0b559dacfde,9cb99731cad1590779b29040d1264f5a1fcdce55,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test(snippet): add custom symbol and toast
+","diff --git a/components/snippet/__tests__/index.test.tsx b/components/snippet/__tests__/index.test.tsx
+index 7751caa..d3e3066 100644
+--- a/components/snippet/__tests__/index.test.tsx
++++ b/components/snippet/__tests__/index.test.tsx
+@@ -70,6 +70,20 @@ describe('Snippet', () => {
+     expect(wrapper.find('.copy').length).toBe(0)
+   })
+ 
++  it('should work with custom symbol', () => {
++    const wrapper = mount(<Snippet text={command} symbol={'>'} />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should work with custom toast', () => {
++    document.execCommand = jest.fn()
++    const wrapper = mount(<Snippet text={command} toastText=""Code copied!"" toastType=""secondary"" />)
++    wrapper.find('.copy').simulate('click')
++    expect(document.execCommand).toHaveBeenCalled()
++    ;(document.execCommand as jest.Mock).mockRestore()
++  })
++
+   afterAll(() => {
+     ;(window.getSelection as jest.Mock).mockRestore()
+     ;(document.createRange as jest.Mock).mockRestore()
+",0,,2,72,1,36,60,2143
+382,1b385b0624ae82fc173f25a74d916a51f78e9ac5,22ed6458375ec3236fa97c718c38df66595489e1,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolved #380
+","test(modal): update snapshots
+","diff --git a/components/shared/__tests__/backdrop.test.tsx b/components/shared/__tests__/backdrop.test.tsx
+index 13462a6..1e6b181 100644
+--- a/components/shared/__tests__/backdrop.test.tsx
++++ b/components/shared/__tests__/backdrop.test.tsx
+@@ -56,7 +56,6 @@ describe('Backdrop', () => {
+       </Backdrop>,
+     )
+     wrapper.find('.content').simulate('click', nativeEvent)
+-    wrapper.find('.offset').simulate('click', nativeEvent)
+     expect(handler).not.toHaveBeenCalled()
+     handler.mockRestore()
+   })
+",0,,3,86,2,5,11,191
+404,3fee3643053795e8dc9cd407c9d8124e8eabbf53,3fee3643053795e8dc9cd407c9d8124e8eabbf53,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+- Added overflow to tabs
+- Hid scrollbar on tabs
+- Made menu sticker compatible with scrollable tabs by assigning correct width
+- Added scroll behavior example in docs (english)
+- Tab labels now no longer breaks on multiple lines","fix(tabs): scrollable
+
+docs(tabs): scroll behavior
+",,0,,4,78,1,1,4,78
+416,8c0759bd857b2dd600704896e61bdb1ca712ef5f,8c0759bd857b2dd600704896e61bdb1ca712ef5f,"## Checklist
+
+- [ ] Fix linting errors
+- [ ] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Included prop for the textarea which allows setting the resize css value.
+
+","test(textarea): update snapshots
+",,0,,1,4,1,4,4,63
+432,384bea549efbbaf2413f92621126c1484b7391e1,2872cacef26bf059555ef6960c70f4f6b27e630b,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+fixed #425 ","test: update snapshots
+",,0,,23,13163,23,5,64,16662
+440,251db5b6a74240e42fd3e8e3387f252f1bf0e47a,8323644c560caab76ae6bd43979bdd7690168fbf,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolved #436 
+resolved #353 
+
+## Introduction of new Themes
+
+The new Theme system is divided into three parts:
+
+**1. Provides system preset themes and static methods.** You can get the system preset themes directly inside any file, it does not have to be within the component, the `Themes` provides all **static methods** and **pure functions**, which can be useful if you want to customize the theme.
+
+```ts
+import { Themes } from '@geist-ui/react'
+
+// -> [lightTheme, darkTheme], there will be more in the future.
+const themes = Themes.getPresets()
+
+// -> create theme based on DarkTheme
+Themes.createFromDark({ ... })
+
+...
+```
+
+**2. `Provider` can now store multiple themes in the context and get all current topics within the component.**
+
+```ts
+const myThemes = [{...}, {...}, {...}]
+
+<GeistProvider themes={myThemes}>
+</GeistProvider>
+```
+```ts
+const { themes } = useAllThemes()
+
+// -> [{...}, ...]
+console.log(themes)
+```
+
+**3. All themes are supported to switch at will, `useTheme` always return to the theme currently in use.**  It's very easy to use, and the themes you get within the component are always secured by the type.
+
+```ts
+<GeistProvider themeType=""myCusomTheme"">
+</GeistProvider>
+```
+```ts
+const theme = useTheme()
+```
+
+## Breaking changes
+
+Although the Theme system has been redesigned, happily there are no changes to the `useTheme` interface, which means that any components based on the `useTheme` implementation do not need to be migrated. However, if any page contains the ability to **switch themes**, some minor changes are necessary.
+
+
+
+
+","refactor(themes): refactor theme module to keep multiple themes
+","diff --git a/components/styles/__tests__/theme-provider.test.tsx b/components/styles/__tests__/theme-provider.test.tsx
+deleted file mode 100644
+index a88d656..0000000
+--- a/components/styles/__tests__/theme-provider.test.tsx
++++ /dev/null
+@@ -1,74 +0,0 @@
+-import React from 'react'
+-import { render, mount } from 'enzyme'
+-import { deepMergeObject } from '../theme-provider/theme-provider'
+-import DefaultThemes from '../themes/default'
+-import { GeistProvider, GeistUIThemes, Text } from 'components'
+-import { DeepPartial } from 'components/utils/types'
+-
+-describe('ThemeProvider', () => {
+-  it('should deep merge objects but not add new key', () => {
+-    const sourceObject: any = {
+-      palette: {
+-        success: '#000',
+-      },
+-      arr: ['array', 10],
+-      font: {
+-        subFont: {
+-          key: 'font',
+-        },
+-      },
+-    }
+-    const targetObject: any = {
+-      palette: {
+-        warning: '#000',
+-        success: '#ccc',
+-      },
+-      arr: [5],
+-      font: {
+-        first: 'first',
+-      },
+-    }
+-    expect(deepMergeObject(sourceObject, targetObject)).toMatchObject({
+-      palette: {
+-        success: '#ccc',
+-      },
+-      arr: [5, 'array', 10],
+-      font: {
+-        subFont: {
+-          key: 'font',
+-        },
+-      },
+-    })
+-  })
+-
+-  it('should merge themes with custom function', () => {
+-    const customFunc = (): DeepPartial<GeistUIThemes> => {
+-      return {
+-        ...DefaultThemes,
+-        palette: {
+-          success: '#ccc',
+-        },
+-      }
+-    }
+-    const wrapper = render(
+-      <GeistProvider theme={customFunc}>
+-        <Text type=""success"">hello</Text>
+-      </GeistProvider>,
+-    )
+-    expect(wrapper).toMatchSnapshot()
+-  })
+-
+-  it('should warning when using the wrong merge function', () => {
+-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+-    const customFunc = () => 0 as DeepPartial<GeistUIThemes>
+-    const wrapper = mount(
+-      <GeistProvider theme={customFunc}>
+-        <p>test</p>
+-      </GeistProvider>,
+-    )
+-
+-    expect(errorSpy).toHaveBeenCalled()
+-    errorSpy.mockRestore()
+-    wrapper.unmount()
+-  })
+-})
+",0,,25,1146,2,8,64,897
+450,69a313f6830060db66287a0e85bd357fee170b61,6c49311f242ee9714c92059e36c24922f8c8ca54,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test: updatee snapshots for auto typesetting
+",,0,,5,431,5,8,142,4809
+451,27a60dfd4dae2c32af82ae78f43b1c52ad2577df,21c730e0825af5033942cb9874d6501b53b887e2,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","refactor(themes): refactor theme module to keep multiple themes (#440)
+
+* refactor(themes): refactor theme module to keep multiple themes
+
+* chore: migrate APIs to be compatible with new theme system
+
+* test: update snapshots
+
+* chore: migrate the path of the theme module
+
+* feat(themes): append static methods of themes
+
+* chore: hide custom theme when no custom content in the context
+
+* chore: manually add flush to preload styles in html
+
+* docs(themes): update to fit the new theme system","diff --git a/components/styles/__tests__/theme-provider.test.tsx b/components/styles/__tests__/theme-provider.test.tsx
+deleted file mode 100644
+index a88d656..0000000
+--- a/components/styles/__tests__/theme-provider.test.tsx
++++ /dev/null
+@@ -1,74 +0,0 @@
+-import React from 'react'
+-import { render, mount } from 'enzyme'
+-import { deepMergeObject } from '../theme-provider/theme-provider'
+-import DefaultThemes from '../themes/default'
+-import { GeistProvider, GeistUIThemes, Text } from 'components'
+-import { DeepPartial } from 'components/utils/types'
+-
+-describe('ThemeProvider', () => {
+-  it('should deep merge objects but not add new key', () => {
+-    const sourceObject: any = {
+-      palette: {
+-        success: '#000',
+-      },
+-      arr: ['array', 10],
+-      font: {
+-        subFont: {
+-          key: 'font',
+-        },
+-      },
+-    }
+-    const targetObject: any = {
+-      palette: {
+-        warning: '#000',
+-        success: '#ccc',
+-      },
+-      arr: [5],
+-      font: {
+-        first: 'first',
+-      },
+-    }
+-    expect(deepMergeObject(sourceObject, targetObject)).toMatchObject({
+-      palette: {
+-        success: '#ccc',
+-      },
+-      arr: [5, 'array', 10],
+-      font: {
+-        subFont: {
+-          key: 'font',
+-        },
+-      },
+-    })
+-  })
+-
+-  it('should merge themes with custom function', () => {
+-    const customFunc = (): DeepPartial<GeistUIThemes> => {
+-      return {
+-        ...DefaultThemes,
+-        palette: {
+-          success: '#ccc',
+-        },
+-      }
+-    }
+-    const wrapper = render(
+-      <GeistProvider theme={customFunc}>
+-        <Text type=""success"">hello</Text>
+-      </GeistProvider>,
+-    )
+-    expect(wrapper).toMatchSnapshot()
+-  })
+-
+-  it('should warning when using the wrong merge function', () => {
+-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+-    const customFunc = () => 0 as DeepPartial<GeistUIThemes>
+-    const wrapper = mount(
+-      <GeistProvider theme={customFunc}>
+-        <p>test</p>
+-      </GeistProvider>,
+-    )
+-
+-    expect(errorSpy).toHaveBeenCalled()
+-    errorSpy.mockRestore()
+-    wrapper.unmount()
+-  })
+-})
+",0,,68,1461,1,13,265,22159
+494,ec9c61022bd9742b1e6cd58476a73c80c99df5dc,ec9c61022bd9742b1e6cd58476a73c80c99df5dc,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Adds the Feature of `hideValue` prop in Slider Component 
+
+Closes #491 
+
+<img width=""783"" alt=""Screenshot 2021-03-30 at 12 51 42 PM"" src=""https://user-images.githubusercontent.com/61158210/112949295-b1bb7700-9156-11eb-8c87-fa852d8af759.png"">
+","test(slider): test added for hideValue prop
+
+docs(slider): add hideValue prop
+
+docs(slider): add hideValue prop for cn docs
+
+feat(slider): ensure the dot stays round when no content
+
+test(slider): update snapshots
+","diff --git a/components/slider/__tests__/index.test.tsx b/components/slider/__tests__/index.test.tsx
+index 43e47e3..7ef1877 100644
+--- a/components/slider/__tests__/index.test.tsx
++++ b/components/slider/__tests__/index.test.tsx
+@@ -133,4 +133,8 @@ describe('Slider', () => {
+     wrapper = mount(<Slider step={20} showMarkers />)
+     expect(wrapper.html()).toMatchSnapshot()
+   })
++  it('should work with hideValue', () => {
++    let wrapper = mount(<Slider initialValue={20} hideValue />)
++    expect(wrapper.html()).toMatchSnapshot()
++  })
+ })
+",0,,6,61,1,2,6,65
+500,085bda00499c39cc8d013339ce881a2beea0b4a2,8fe158fa3cdd6908cc93871615751ce47b45aa1e,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Solves #488 
+
+
+In the file : [Loading.tsx](https://github.com/geist-org/react/tree/master/components/loading)
+
+There are `width` and `height` props being passed but they don't seem to be used anywhere, furthermore `width` & `height` are calculated based on the `size` props which decided the actual size of the Loading Component.
+
+## Before
+
+<img width=""770"" alt=""Screenshot 2021-03-23 at 9 07 40 PM"" src=""https://user-images.githubusercontent.com/61158210/112173700-d1651380-8c1b-11eb-9099-b54b929f9fb4.png"">
+
+
+After : 
+
+<img width=""827"" alt=""Screenshot 2021-03-23 at 9 06 42 PM"" src=""https://user-images.githubusercontent.com/61158210/112173548-ada1cd80-8c1b-11eb-9f10-e70bad1e282c.png"">
+
+Added a Test Case for `width` and `height` and Updated Snapshots.
+
+Let me know if Changes Needed ✨
+
+","test(loading): test case added & updating snapshots
+","diff --git a/components/loading/__tests__/index.test.tsx b/components/loading/__tests__/index.test.tsx
+index f7f34b9..b6dbe35 100644
+--- a/components/loading/__tests__/index.test.tsx
++++ b/components/loading/__tests__/index.test.tsx
+@@ -41,6 +41,7 @@ describe('Loading', () => {
+         <Loading color=""#fff"" />
+         <Loading width=""20%"" />
+         <Loading height=""10px"" />
++        <Loading width=""20px"" height=""50px"" />
+       </div>,
+     )
+     expect(wrapper.html()).toMatchSnapshot()
+",0,,2,71,1,5,5,283
+530,cac21ca00a2c36c9287da6d67d971e25257108f0,9162f526dc5a461d52212f501148cb0c51962052,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+To make components more consistents, added the `status` prop who allows to show the component with different colors based in a status.
+components affected: `checkbox`, `radio`, `select`, `slider` and `toggle`
+
+Will solve https://github.com/geist-org/react/issues/507","feat: added status prop to set color by states
+
+test: check status success, warning and error
+","diff --git a/components/checkbox/__tests__/index.test.tsx b/components/checkbox/__tests__/index.test.tsx
+index acd1f71..0b7fecd 100644
+--- a/components/checkbox/__tests__/index.test.tsx
++++ b/components/checkbox/__tests__/index.test.tsx
+@@ -23,6 +23,18 @@ describe('Checkbox', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work with different status', () => {
++    const wrapper = mount(
++      <div>
++        <Checkbox status=""secondary"" />
++        <Checkbox status=""success"" />
++        <Checkbox status=""warning"" />
++        <Checkbox status=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++
+   it('should work correctly with initial value', () => {
+     let wrapper = mount(<Checkbox checked={true}>Sydney</Checkbox>)
+     let input = wrapper.find('input').getDOMNode()
+
+diff --git a/components/radio/__tests__/index.test.tsx b/components/radio/__tests__/index.test.tsx
+index 9ab0375..2138087 100644
+--- a/components/radio/__tests__/index.test.tsx
++++ b/components/radio/__tests__/index.test.tsx
+@@ -23,6 +23,18 @@ describe('Radio', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work with different status', () => {
++    const wrapper = mount(
++      <div>
++        <Radio status=""secondary"" />
++        <Radio status=""success"" />
++        <Radio status=""warning"" />
++        <Radio status=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++
+   it('should render correctly with checked prop', () => {
+     const wrapper = mount(<Radio>Option</Radio>)
+     wrapper.setProps({ checked: false })
+
+diff --git a/components/select/__tests__/index.test.tsx b/components/select/__tests__/index.test.tsx
+index 2eb55d3..1f1c87e 100644
+--- a/components/select/__tests__/index.test.tsx
++++ b/components/select/__tests__/index.test.tsx
+@@ -17,6 +17,18 @@ describe('Select', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work with different status', () => {
++    const wrapper = mount(
++      <div>
++        <Select status=""secondary"" />
++        <Select status=""success"" />
++        <Select status=""warning"" />
++        <Select status=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++
+   it('should work correctly with labels', () => {
+     const wrapper = mount(
+       <Select>
+
+diff --git a/components/slider/__tests__/index.test.tsx b/components/slider/__tests__/index.test.tsx
+index 7ef1877..df8eb1e 100644
+--- a/components/slider/__tests__/index.test.tsx
++++ b/components/slider/__tests__/index.test.tsx
+@@ -69,6 +69,18 @@ describe('Slider', () => {
+     changeHandler.mockRestore()
+   })
+ 
++  it('should work with different status', () => {
++    const wrapper = mount(
++      <div>
++        <Slider status=""secondary"" />
++        <Slider status=""success"" />
++        <Slider status=""warning"" />
++        <Slider status=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++
+   it('should ignore events when disabled', async () => {
+     let value = 0
+     const changeHandler = jest.fn().mockImplementation(val => (value = val))
+
+diff --git a/components/toggle/__tests__/index.test.tsx b/components/toggle/__tests__/index.test.tsx
+index 5dfffc5..f856a31 100644
+--- a/components/toggle/__tests__/index.test.tsx
++++ b/components/toggle/__tests__/index.test.tsx
+@@ -31,6 +31,18 @@ describe('Toggle', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work with different status', () => {
++    const wrapper = mount(
++      <div>
++        <Toggle status=""secondary"" />
++        <Toggle status=""success"" />
++        <Toggle status=""warning"" />
++        <Toggle status=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++
+   it('should set toggle follow checked prop', async () => {
+     const wrapper = mount(<Toggle initialChecked={true} />)
+     expectToggleIsChecked(wrapper)
+",0,,21,1600,5,6,50,2026
+531,cb915c8b173bcf311462d729891379cde5e898d8,43277c7c0af9c6970db3a77daa26330346f149ad,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+resolved #515 
+
+This is a first draft of the design, and is expected to be released in version `v2.2.0`.
+
+- [x] create `with-scaleable` functions to automatically match all `unit`
+- [x] performance and boundary scenario testing of `with-scaleable`
+- [x] add HOC functions for each component
+- [x] migrate document sites to be compatible with scaleable
+- [x] add documentation for each component
+- [x] add test cases and migration documentation
+","feat: apply scaleable to components
+
+chore: remove with-default
+
+test: improve testcase for scaleable
+
+chore: resolve test warning
+
+ci: upgrade nodejs to latest lts
+
+docs: fix type error in document site
+","diff --git a/components/auto-complete/__tests__/index.test.tsx b/components/auto-complete/__tests__/index.test.tsx
+index fcd376a..214abb3 100644
+--- a/components/auto-complete/__tests__/index.test.tsx
++++ b/components/auto-complete/__tests__/index.test.tsx
+@@ -16,8 +16,8 @@ describe('AutoComplete', () => {
+       <div>
+         <AutoComplete type=""secondary"" />
+         <AutoComplete type=""success"" />
+-        <AutoComplete size=""mini"" />
+-        <AutoComplete size=""large"" />
++        <AutoComplete />
++        <AutoComplete />
+       </div>,
+     )
+     expect(() => wrapper.unmount()).not.toThrow()
+
+diff --git a/components/avatar/__tests__/index.test.tsx b/components/avatar/__tests__/index.test.tsx
+index d3140f9..a1655b8 100644
+--- a/components/avatar/__tests__/index.test.tsx
++++ b/components/avatar/__tests__/index.test.tsx
+@@ -28,11 +28,6 @@ describe('Avatar', () => {
+     expect(() => avatar.unmount()).not.toThrow()
+   })
+ 
+-  it('should render component of a specified size', () => {
+-    const avatar = render(<Avatar size={20} />)
+-    expect(avatar).toMatchSnapshot()
+-  })
+-
+   it('group component should render all children', () => {
+     const group = mount(
+       <Avatar.Group>
+@@ -55,7 +50,7 @@ describe('Avatar', () => {
+ 
+   it('should show count in group', () => {
+     const count = 20
+-    const group = shallow(<Avatar.Group count={count} />)
++    const group = render(<Avatar.Group count={count} />)
+     const text = group.find('.count').text()
+     expect(text).toContain(count)
+   })
+
+diff --git a/components/fieldset/__tests__/index.test.tsx b/components/fieldset/__tests__/index.test.tsx
+index fcf9627..8df2890 100644
+--- a/components/fieldset/__tests__/index.test.tsx
++++ b/components/fieldset/__tests__/index.test.tsx
+@@ -9,10 +9,8 @@ describe('Fieldset', () => {
+         <Fieldset.Title>title</Fieldset.Title>
+         <Fieldset.Subtitle>subtitle</Fieldset.Subtitle>
+         <Fieldset.Footer>
+-          <Fieldset.Footer.Status>status</Fieldset.Footer.Status>
+-          <Fieldset.Footer.Actions>
+-            <button>Actions</button>
+-          </Fieldset.Footer.Actions>
++          status
++          <button>Actions</button>
+         </Fieldset.Footer>
+       </Fieldset>,
+     )
+@@ -25,10 +23,8 @@ describe('Fieldset', () => {
+         <Fieldset.Title>title</Fieldset.Title>
+         <Fieldset.Subtitle>subtitle</Fieldset.Subtitle>
+         <Fieldset.Footer>
+-          <Fieldset.Footer.Status>status</Fieldset.Footer.Status>
+-          <Fieldset.Footer.Actions>
+-            <button>Actions</button>
+-          </Fieldset.Footer.Actions>
++          status
++          <button>Actions</button>
+         </Fieldset.Footer>
+       </Fieldset>,
+     )
+
+diff --git a/components/keyboard/__tests__/index.test.tsx b/components/keyboard/__tests__/index.test.tsx
+index 7d368af..8e5c7a1 100644
+--- a/components/keyboard/__tests__/index.test.tsx
++++ b/components/keyboard/__tests__/index.test.tsx
+@@ -1,5 +1,5 @@
+ import React from 'react'
+-import { mount, render } from 'enzyme'
++import { mount } from 'enzyme'
+ import { Keyboard } from 'components'
+ 
+ describe('Keyboard', () => {
+@@ -22,9 +22,4 @@ describe('Keyboard', () => {
+     expect(wrapper.html()).toMatchSnapshot()
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+-
+-  it('should work with small size', () => {
+-    const wrapper = render(<Keyboard small>F</Keyboard>)
+-    expect(wrapper).toMatchSnapshot()
+-  })
+ })
+
+diff --git a/components/note/__tests__/index.test.tsx b/components/note/__tests__/index.test.tsx
+index ac9ecd0..e307da9 100644
+--- a/components/note/__tests__/index.test.tsx
++++ b/components/note/__tests__/index.test.tsx
+@@ -35,16 +35,11 @@ describe('Note', () => {
+   it('should work with different styles', () => {
+     const wrapper = mount(
+       <div>
+-        <Note type=""secondary"" small>
+-          secondary
+-        </Note>
++        <Note type=""secondary"">secondary</Note>
+         <Note type=""success"" filled>
+           success
+         </Note>
+         <Note filled>warning</Note>
+-        <Note filled small>
+-          error
+-        </Note>
+       </div>,
+     )
+     expect(wrapper.html()).toMatchSnapshot()
+
+diff --git a/components/shared/__tests__/transition.test.tsx b/components/shared/__tests__/transition.test.tsx
+index 0fefc5c..5970478 100644
+--- a/components/shared/__tests__/transition.test.tsx
++++ b/components/shared/__tests__/transition.test.tsx
+@@ -1,14 +1,14 @@
+ import React from 'react'
+ import { mount } from 'enzyme'
+-import CSSTransition from '../css-transition'
++import CssTransition from '../css-transition'
+ import { updateWrapper } from 'tests/utils'
+ 
+-describe('CSSTransition', () => {
++describe('CssTransition', () => {
+   it('should render correctly', () => {
+     const wrapper = mount(
+-      <CSSTransition visible>
++      <CssTransition visible>
+         <span>test</span>
+-      </CSSTransition>,
++      </CssTransition>,
+     )
+     expect(wrapper.text()).toContain('test')
+     expect(wrapper.html()).toMatchSnapshot()
+@@ -17,9 +17,9 @@ describe('CSSTransition', () => {
+ 
+   it('should work correctly with time props', async () => {
+     const wrapper = mount(
+-      <CSSTransition enterTime={300} leaveTime={300}>
++      <CssTransition enterTime={300} leaveTime={300}>
+         <span id=""test"">test</span>
+-      </CSSTransition>,
++      </CssTransition>,
+     )
+     expect(wrapper.find('.transition-enter-active').length).toBe(0)
+ 
+@@ -34,9 +34,9 @@ describe('CSSTransition', () => {
+ 
+   it('should clear css-transition classes after hidden', async () => {
+     const wrapper = mount(
+-      <CSSTransition visible>
++      <CssTransition visible>
+         <span>test</span>
+-      </CSSTransition>,
++      </CssTransition>,
+     )
+     // don't remove classes after shown
+     await updateWrapper(wrapper, 60)
+@@ -57,9 +57,9 @@ describe('CSSTransition', () => {
+ 
+   it('custom class names should be rendered', async () => {
+     const wrapper = mount(
+-      <CSSTransition name=""test"">
++      <CssTransition name=""test"">
+         <span id=""test"">test</span>
+-      </CSSTransition>,
++      </CssTransition>,
+     )
+ 
+     expect(wrapper.find('.test-enter-active').length).toBe(0)
+
+diff --git a/components/tabs/__tests__/index.test.tsx b/components/tabs/__tests__/index.test.tsx
+index aa23de6..3483936 100644
+--- a/components/tabs/__tests__/index.test.tsx
++++ b/components/tabs/__tests__/index.test.tsx
+@@ -87,7 +87,7 @@ describe('Tabs', () => {
+     expect(active.text()).toContain('label2')
+   })
+ 
+-  it('should re-render when items updated', () => {
++  it('should re-render when items updated', async () => {
+     const Mock = ({ label = 'label1' }) => {
+       return (
+         <Tabs value=""1"">
+@@ -105,6 +105,7 @@ describe('Tabs', () => {
+     expect(active.text()).toContain('label1')
+ 
+     wrapper.setProps({ label: 'label2' })
++    await updateWrapper(wrapper, 350)
+     active = wrapper.find('header').find('.active')
+     expect(active.text()).toContain('label2')
+     expect(() => wrapper.unmount()).not.toThrow()
+
+diff --git a/components/toggle/__tests__/index.test.tsx b/components/toggle/__tests__/index.test.tsx
+index 41520d7..15fa757 100644
+--- a/components/toggle/__tests__/index.test.tsx
++++ b/components/toggle/__tests__/index.test.tsx
+@@ -21,10 +21,10 @@ describe('Toggle', () => {
+   it('should work with different sizes', () => {
+     const wrapper = mount(
+       <div>
+-        <Toggle size=""mini"" />
+-        <Toggle size=""small"" />
+-        <Toggle size=""medium"" />
+-        <Toggle size=""large"" />
++        <Toggle scale={1} />
++        <Toggle scale={0.2} />
++        <Toggle scale={2} />
++        <Toggle unit=""10px"" />
+       </div>,
+     )
+     expect(wrapper.html()).toMatchSnapshot()
+",0,,251,25395,52,10,383,34084
+542,0c50aedf9ba1d8fbc3530a663f6dd1e46a051146,0f2172132a2d8288351d6e602edc94a7bc5f999a,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test(auto-complete): add testcase to ensure ref is available
+","diff --git a/components/auto-complete/__tests__/index.test.tsx b/components/auto-complete/__tests__/index.test.tsx
+index 911bc00..1b20654 100644
+--- a/components/auto-complete/__tests__/index.test.tsx
++++ b/components/auto-complete/__tests__/index.test.tsx
+@@ -56,4 +56,11 @@ describe('AutoComplete', () => {
+ 
+     expect(wrapper.prop('width')).toEqual('200px')
+   })
++
++  it('should forward ref by default', () => {
++    const ref = React.createRef<HTMLInputElement>()
++    const wrapper = mount(<AutoComplete ref={ref} />)
++    expect(ref.current).not.toBeNull()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
+ })
+",0,,3,89,2,3,6,417
+543,902eff73c27b75c7b003330881f3b1b7b04a6dd3,9a006f0f754b82c5f3e4b90b0ca44c23f88a73ec,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+- [x] Rating component tests 100% coverage
+- [x] Rating component docs  
+- [x] Style guidelines for rating are checked
+- [ ]  Native drag on mobile not working but rating selection on mobile works properly
+
+## A new rating component
+
+So i had some spare time to implement a rating component with a few possible options listed below:
+
+- customize amount of rating indicators and initial number of indicators
+- provide state callbacks for the current selection and lock state
+- styling events for mouseenter
+- icon customization support
+- native onClick/MouseEnter event callbacks
+
+Please check and provide some feedback 😄 
+
+## Preview
+
+![rating_preview](https://user-images.githubusercontent.com/15143394/119337096-b865f680-bc8e-11eb-8e83-f3006d6c6843.png)
+
+","(feature) custom emojis for the ratings added
+","diff --git a/components/rating/__tests__/index.test.tsx b/components/rating/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..0eade7a
+--- /dev/null
++++ b/components/rating/__tests__/index.test.tsx
+@@ -0,0 +1,106 @@
++import React, { useState } from 'react'
++
++import { Rating } from 'components'
++import { mount } from 'enzyme'
++
++describe('Rating', () => {
++  it('should render correctly', () => {
++    const wrapper = mount(<Rating />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should work with different types', () => {
++    const wrapper = mount(
++      <div>
++        <Rating type=""secondary"" />
++        <Rating type=""success"" />
++        <Rating type=""warning"" />
++        <Rating type=""error"" />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should show different initialization values', () => {
++    const wrapper = mount(
++      <div>
++        <Rating count={10} value={5} />
++        <Rating count={2} value={1} />
++        <Rating count={10} value={10} />
++        <Rating count={2} value={2} />
++      </div>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should initialize state and lock value', () => {
++    const WrapperRating = () => {
++      const [value, setValue] = useState<number>(0)
++      const [lock, setLock] = useState<boolean>(false)
++
++      return (
++        <div>
++          <Rating type=""success"" onLockedChange={setLock} onValueChange={setValue} />
++          <div id=""valueDiv"">{value}</div>
++          <div id=""lockDiv"">{lock ? 'true' : 'false'}</div>
++        </div>
++      )
++    }
++    const wrapper = mount(<WrapperRating />)
++    expect(wrapper.find('svg').children())
++    expect(wrapper.find('#valueDiv').text()).toContain('1')
++    expect(wrapper.find('#lockDiv').text()).toContain('false')
++  })
++
++  it('should update state and lock value on click', () => {
++    const WrapperRating = () => {
++      const [value, setValue] = useState<number>(0)
++      const [lock, setLock] = useState<boolean>(false)
++
++      return (
++        <div>
++          <Rating type=""success"" onLockedChange={setLock} onValueChange={setValue} />
++          <div id=""valueDiv"">{value}</div>
++          <div id=""lockDiv"">{lock ? 'true' : 'false'}</div>
++        </div>
++      )
++    }
++    const wrapper = mount(<WrapperRating />)
++    expect(wrapper.find('svg').last().simulate('mousedown'))
++    expect(wrapper.find('svg').last().simulate('mouseup'))
++    expect(wrapper.find('#valueDiv').text()).toContain('5')
++    expect(wrapper.find('#lockDiv').text()).toContain('true')
++    // unlock again
++    expect(wrapper.find('svg').last().simulate('mousedown'))
++    expect(wrapper.find('svg').last().simulate('mouseup'))
++    expect(wrapper.find('#valueDiv').text()).toContain('5')
++    expect(wrapper.find('#lockDiv').text()).toContain('false')
++  })
++
++  it('should update snapshot on mouse enter', () => {
++    const WrapperRating = () => {
++      const [value, setValue] = useState<number>(0)
++      const [lock, setLock] = useState<boolean>(false)
++
++      return (
++        <div>
++          <Rating type=""success"" onLockedChange={setLock} onValueChange={setValue} />
++          <div id=""valueDiv"">{value}</div>
++          <div id=""lockDiv"">{lock ? 'true' : 'false'}</div>
++        </div>
++      )
++    }
++    const wrapper = mount(<WrapperRating />)
++    const lastStar = wrapper.find('svg').last()
++    const firstStar = wrapper.find('svg').first()
++    expect(lastStar.simulate('mouseenter'))
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(lastStar.simulate('mousedown'))
++    expect(lastStar.simulate('mouseup'))
++    expect(firstStar.simulate('mouseenter'))
++    expect(wrapper.html()).toMatchSnapshot()
++  })
++})
+",0,,6,34441,1,6,14,35173
+562,5339b0a325297d462454a7d3b303efb6aa4627eb,211e69939c1247dcc0174402f85b658facfcae05,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test: append testcases for popup base component
+","diff --git a/components/popover/__tests__/index.test.tsx b/components/popover/__tests__/index.test.tsx
+index 2ff7a1f..7a8ab4c 100644
+--- a/components/popover/__tests__/index.test.tsx
++++ b/components/popover/__tests__/index.test.tsx
+@@ -98,4 +98,75 @@ describe('Popover', () => {
+     expect(line.length).not.toBe(0)
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
++
++  it('should close popover when item clicked', async () => {
++    const wrapper = mount(
++      <Popover content=""test"">
++        <Popover.Item id=""item"" />
++      </Popover>,
++    )
++    expectPopoverIsHidden(wrapper)
++
++    wrapper.find('.tooltip').simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++
++    const item = wrapper.find('#item').at(0)
++
++    item.simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsHidden(wrapper)
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should prevent close popover when item clicked', async () => {
++    const wrapper = mount(
++      <Popover content=""test"">
++        <Popover.Item id=""item"" disableAutoClose />
++        <Popover.Item id=""item2"" />
++      </Popover>,
++    )
++    expectPopoverIsHidden(wrapper)
++
++    wrapper.find('.tooltip').simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++
++    const item = wrapper.find('#item').at(0)
++    const item2 = wrapper.find('#item2').at(0)
++
++    item.simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++
++    item2.simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsHidden(wrapper)
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should prevent all items', async () => {
++    const wrapper = mount(
++      <Popover content=""test"" disableItemsAutoClose>
++        <Popover.Item id=""item"" />
++        <Popover.Item id=""item2"" />
++      </Popover>,
++    )
++    expectPopoverIsHidden(wrapper)
++
++    wrapper.find('.tooltip').simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++
++    const item = wrapper.find('#item').at(0)
++    const item2 = wrapper.find('#item2').at(0)
++
++    item.simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++    item2.simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 350)
++    expectPopoverIsShow(wrapper)
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
+ })
+",0,,10,184,2,5,117,1632
+569,fd36b3313ecc910364af8e321f5256ae19b42456,10ca83acb5f542f055b2c47df598a59a83fcb02c,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","refactor(table): redesign interfaces to improve the experience in TypeScript
+","diff --git a/components/table/__tests__/index.test.tsx b/components/table/__tests__/index.test.tsx
+index 8d04c67..cba71be 100644
+--- a/components/table/__tests__/index.test.tsx
++++ b/components/table/__tests__/index.test.tsx
+@@ -1,9 +1,9 @@
+ import React from 'react'
+ import { mount } from 'enzyme'
+ import { Table, Code } from 'components'
+-import { TableCellActions } from '../table-cell'
+ import { nativeEvent, updateWrapper } from 'tests/utils'
+ import { act } from 'react-dom/test-utils'
++import { TableColumnRender } from 'components/table/table-types'
+ 
+ const data = [
+   { property: 'type', description: 'Content type', default: '-' },
+@@ -24,6 +24,20 @@ describe('Table', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should work correctly with multiple identical props', () => {
++    const wrapper = mount(
++      <Table data={data}>
++        <Table.Column prop=""property"" label=""property"" />
++        <Table.Column prop=""description"" label=""description"" />
++        <Table.Column prop=""property"" label=""property2"" />
++        <Table.Column prop=""property"" label=""property3"" />
++        <Table.Column prop=""description"" label=""description2"" />
++      </Table>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should re-render when data changed', async () => {
+     const wrapper = mount(
+       <Table data={data}>
+@@ -99,47 +113,39 @@ describe('Table', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
+-  it('should be possible to remove the row', () => {
+-    const operation = (actions: TableCellActions) => {
+-      return <button onClick={() => actions.remove()}>Remove</button>
++  it('should be render specified elements', async () => {
++    type Item = {
++      property: string
++      description: string
++      operation: string
+     }
+-    const data = [{ property: 'bold', description: 'boolean', operation }]
+-    const wrapper = mount(
+-      <Table data={data}>
+-        <Table.Column prop=""property"" label=""property"" />
+-        <Table.Column prop=""description"" label=""description"" />
+-        <Table.Column prop=""operation"" label=""operation"" />
+-      </Table>,
+-    )
+-    expect(wrapper.find('tbody').find('tr').length).toBe(1)
+-    wrapper.find('tbody').find('button').simulate('click')
+-    expect(wrapper.find('tbody').find('tr').length).toBe(0)
+-    expect(() => wrapper.unmount()).not.toThrow()
+-  })
+-
+-  it('should be possible to update the row', () => {
+-    const operation = (actions: TableCellActions) => {
++    const renderAction: TableColumnRender<Item> = (value, rowData, index) => {
+       return (
+-        <button
+-          onClick={() =>
+-            actions.update({ property: 'test', description: 'test', operation })
+-          }>
+-          Update
+-        </button>
++        <div>
++          <button id=""test-btn"">Remove</button>
++          <div id=""value"">{value}</div>
++          <div id=""row-data"">{rowData.description}</div>
++          <div id=""row-index"">{index}</div>
++        </div>
+       )
+     }
++    const operation = Math.random().toString(16).slice(-10)
+     const data = [{ property: 'bold', description: 'boolean', operation }]
+     const wrapper = mount(
+-      <Table data={data}>
+-        <Table.Column prop=""property"" label=""property"" />
+-        <Table.Column prop=""description"" label=""description"" />
+-        <Table.Column prop=""operation"" label=""operation"" />
++      <Table<Item> data={data}>
++        <Table.Column<Item> prop=""property"" label=""property"" />
++        <Table.Column<Item> prop=""description"" label=""description"" />
++        <Table.Column<Item> prop={'operation'} label=""operation"" render={renderAction} />
+       </Table>,
+     )
+-    expect(wrapper.find('tbody').find('tr').length).toBe(1)
+-    wrapper.find('tbody').find('button').simulate('click')
+-    expect(wrapper.find('tbody').find('tr').find('td').first().text()).toContain('test')
+-    expect(() => wrapper.unmount()).not.toThrow()
++    const buttons = wrapper.find('tbody').find('#test-btn')
++    expect(buttons.length).not.toEqual(0)
++    const value = wrapper.find('tbody').find('#value').html()
++    expect(value).toMatch(operation)
++    const rowData = wrapper.find('tbody').find('#row-data').html()
++    expect(rowData).toMatch(`${data[0].description}`)
++    const rowIndex = wrapper.find('tbody').find('#row-index').html()
++    expect(rowIndex).toMatch(`0`)
+   })
+ 
+   it('should render emptyText when data missing', () => {
+",0,,10,562,1,3,16,881
+575,1ecb9ed52576b359179ac14392d159a5162538e0,44d693ee1694f951f68643a4981108de43b75fc2,"## Checklist
+
+- [x] Fix linting errors
+- [ ] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Refs:
+  - [Modalify](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality#sheet)
+  - [Material Drawer](https://material-ui.com/components/drawers/)","feat(drawer): refinement of drawer component
+","diff --git a/components/drawer/__tests__/index.test.tsx b/components/drawer/__tests__/index.test.tsx
+new file mode 100644
+index 0000000..9f6ca0e
+--- /dev/null
++++ b/components/drawer/__tests__/index.test.tsx
+@@ -0,0 +1,151 @@
++import React from 'react'
++import { mount } from 'enzyme'
++import { Drawer } from 'components'
++import { nativeEvent, updateWrapper } from 'tests/utils'
++import { expectDrawerIsClosed, expectDrawerIsOpened } from './use-modal.test'
++import userEvent from '@testing-library/user-event'
++
++describe('Drawer', () => {
++  it('should render correctly', () => {
++    const wrapper = mount(
++      <Drawer visible={true}>
++        <Drawer.Title>Drawer</Drawer.Title>
++        <Drawer.Subtitle>This is a drawer</Drawer.Subtitle>
++        <Drawer.Content>
++          <p>Some content contained within the drawer.</p>
++        </Drawer.Content>
++      </Drawer>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('should work correctly with different placement', () => {
++    const top = mount(
++      <Drawer visible={true} placement=""top"">
++        <p>Some content contained within the drawer.</p>
++      </Drawer>,
++    )
++    expect(top.html()).toMatchSnapshot()
++    expect(() => top.unmount()).not.toThrow()
++
++    const right = mount(
++      <Drawer visible={true} placement=""right"">
++        <p>Some content contained within the drawer.</p>
++      </Drawer>,
++    )
++    expect(right.html()).toMatchSnapshot()
++    expect(() => right.unmount()).not.toThrow()
++
++    const bottom = mount(
++      <Drawer visible={true} placement=""bottom"">
++        <p>Some content contained within the drawer.</p>
++      </Drawer>,
++    )
++    expect(bottom.html()).toMatchSnapshot()
++    expect(() => bottom.unmount()).not.toThrow()
++
++    const left = mount(
++      <Drawer visible={true} placement=""left"">
++        <p>Some content contained within the drawer.</p>
++      </Drawer>,
++    )
++    expect(left.html()).toMatchSnapshot()
++    expect(() => left.unmount()).not.toThrow()
++  })
++
++  it('should trigger event when drawer changed', async () => {
++    const closeHandler = jest.fn()
++    const wrapper = mount(
++      <Drawer onClose={closeHandler}>
++        <Drawer.Title>Modal</Drawer.Title>
++      </Drawer>,
++    )
++    expectDrawerIsClosed(wrapper)
++
++    wrapper.setProps({ visible: true })
++    await updateWrapper(wrapper, 350)
++    expectDrawerIsOpened(wrapper)
++
++    wrapper.find('.backdrop').simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 500)
++    expectDrawerIsClosed(wrapper)
++    expect(closeHandler).toHaveBeenCalled()
++  })
++
++  it('should disable backdrop event', async () => {
++    const closeHandler = jest.fn()
++    const wrapper = mount(
++      <Drawer visible={true} disableBackdropClick onClose={closeHandler}>
++        <Drawer.Title>Modal</Drawer.Title>
++      </Drawer>,
++    )
++    wrapper.find('.backdrop').simulate('click', nativeEvent)
++    await updateWrapper(wrapper, 500)
++    expectDrawerIsOpened(wrapper)
++    expect(closeHandler).not.toHaveBeenCalled()
++  })
++
++  it('customization should be supported', () => {
++    const wrapper = mount(
++      <Drawer visible={true} width=""100px"" wrapClassName=""test-class"">
++        <Drawer.Title>Modal</Drawer.Title>
++      </Drawer>,
++    )
++    const html = wrapper.find('.wrapper').html()
++    expect(html).toMatchSnapshot()
++    expect(html).toContain('test-class')
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
++  it('focus should only be switched within modal', async () => {
++    const wrapper = mount(
++      <Drawer visible={true} width=""100px"" wrapClassName=""test-class"">
++        <button id=""button"" />
++      </Drawer>,
++    )
++    const tabStart = wrapper.find('.hide-tab').at(0).getDOMNode()
++    const tabEnd = wrapper.find('.hide-tab').at(1).getDOMNode()
++    const button = wrapper.find('#button').at(0).getDOMNode()
++    const focusTrap = wrapper.find('.wrapper').at(0).getDOMNode()
++
++    expect(tabStart).toHaveFocus()
++    userEvent.tab({ focusTrap })
++    expect(button).toHaveFocus()
++    userEvent.tab()
++    expect(tabEnd).toHaveFocus()
++    userEvent.tab()
++    expect(tabStart).toHaveFocus()
++
++    userEvent.tab({ shift: true, focusTrap })
++    expect(tabEnd).toHaveFocus()
++    userEvent.tab({ shift: true, focusTrap })
++    expect(button).toHaveFocus()
++    userEvent.tab({ shift: true, focusTrap })
++    expect(tabStart).toHaveFocus()
++  })
++
++  it('should close drawer when keyboard event is triggered', async () => {
++    const wrapper = mount(
++      <Drawer visible={true}>
++        <Drawer.Title>Drawer</Drawer.Title>
++      </Drawer>,
++    )
++    expectDrawerIsOpened(wrapper)
++    userEvent.keyboard('{esc}')
++    await updateWrapper(wrapper, 500)
++    expectDrawerIsClosed(wrapper)
++  })
++
++  it('should prevent close modal when keyboard is false', async () => {
++    const wrapper = mount(
++      <Drawer visible={true} keyboard={false}>
++        <Drawer.Title>Drawer</Drawer.Title>
++      </Drawer>,
++    )
++    expectDrawerIsOpened(wrapper)
++    userEvent.keyboard('{esc}')
++    await updateWrapper(wrapper, 500)
++    expectDrawerIsOpened(wrapper)
++  })
++})
+",0,,8,1218,1,6,17,1816
+579,087d26fae4d284c8c0eea9590ec95682ff0cc274,1c9291f1491b109bfed1c1c1d2a53a6f46c0a308,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+- When `blur` is called, Select loses focus and closes the dropdown element.
+- When `focus` is called, Select gets focus but does not open the dropdown element.
+- The scrollTo function only works after the `onDropdownVisibleChange` event has been triggered, because before that, the dropdown had not yet started rendering.
+- Tab presses trigger the focus event correctly, however, no more keyboard event interactions are currently added.
+
+
+
+","feat(select): imporve the focus events to export simulated ref
+",,0,,11,4419,2,3,13,4537
+602,8367dce981dd45ac7db16627043b80a9df604473,a0784a61391c008c298d840fbad27b744e1cffc5,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","feat(slider): add option to hide slider value (#494)
+
+* feat(slider): hideValue prop added
+
+* test(slider): test added for hideValue prop
+
+docs(slider): add hideValue prop
+
+docs(slider): add hideValue prop for cn docs
+
+feat(slider): ensure the dot stays round when no content
+
+test(slider): update snapshots","diff --git a/components/slider/__tests__/index.test.tsx b/components/slider/__tests__/index.test.tsx
+index 43e47e3..7ef1877 100644
+--- a/components/slider/__tests__/index.test.tsx
++++ b/components/slider/__tests__/index.test.tsx
+@@ -133,4 +133,8 @@ describe('Slider', () => {
+     wrapper = mount(<Slider step={20} showMarkers />)
+     expect(wrapper.html()).toMatchSnapshot()
+   })
++  it('should work with hideValue', () => {
++    let wrapper = mount(<Slider initialValue={20} hideValue />)
++    expect(wrapper.html()).toMatchSnapshot()
++  })
+ })
+",0,,6,65,1,40,504,52700
+630,b3d52103fb7ac65e9e79ab6bc2ed1c7fc6747030,b3d52103fb7ac65e9e79ab6bc2ed1c7fc6747030,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+#626 
+
+
+
+","feat(button-dropdown): add icon config
+","diff --git a/components/button-dropdown/__tests__/index.test.tsx b/components/button-dropdown/__tests__/index.test.tsx
+index 7b3623d..b12a0f6 100644
+--- a/components/button-dropdown/__tests__/index.test.tsx
++++ b/components/button-dropdown/__tests__/index.test.tsx
+@@ -2,6 +2,7 @@ import React from 'react'
+ import { mount, render } from 'enzyme'
+ import { ButtonDropdown } from 'components'
+ import { mockNativeEvent, nativeEvent } from 'tests/utils'
++const Icon: React.FC<any> = () => <svg />
+ 
+ describe('Button Dropdown', () => {
+   it('should render correctly', () => {
+@@ -15,6 +16,17 @@ describe('Button Dropdown', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('right icon should render correctly', () => {
++    const wrapper = mount(
++      <ButtonDropdown icon={<Icon />}>
++        <ButtonDropdown.Item main>Default Action</ButtonDropdown.Item>
++        <ButtonDropdown.Item>Secondary Action</ButtonDropdown.Item>
++        <ButtonDropdown.Item>Tertiary Action</ButtonDropdown.Item>
++      </ButtonDropdown>,
++    )
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should support types', () => {
+     const wrapper = render(
+       <div>
+",0,,5,305,1,1,5,305
+658,5802e7864d630453d9c1a9d1bff45fc7f75a2502,48b29524ff75291a800d88ddf094976f4ba86fb5,"feature Add highlight on Tabs component #653
+
+## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test(tabs): update snapshots for styles changes
+",,0,,1,161,1,4,6,267
+676,6f07afe6ea6114b8b9ff5c989afc9208f779fd87,6f07afe6ea6114b8b9ff5c989afc9208f779fd87,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+#677 ","chore: migrate project name to core
+","diff --git a/components/image/__tests__/browser.test.tsx b/components/image/__tests__/browser.test.tsx
+index a98c20f..3372b39 100644
+--- a/components/image/__tests__/browser.test.tsx
++++ b/components/image/__tests__/browser.test.tsx
+@@ -2,7 +2,7 @@ import React from 'react'
+ import { mount, render } from 'enzyme'
+ import { Image } from 'components'
+ 
+-const link = 'https://react.geist-ui.dev/en-us/guide/introduction'
++const link = 'https://geist-ui.dev/en-us/guide/introduction'
+ const url =
+   'data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA' +
+   'AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO' +
+
+diff --git a/components/link/__tests__/index.test.tsx b/components/link/__tests__/index.test.tsx
+index ca4b240..ca94ef0 100644
+--- a/components/link/__tests__/index.test.tsx
++++ b/components/link/__tests__/index.test.tsx
+@@ -6,17 +6,17 @@ describe('Link', () => {
+   it('should render correctly', () => {
+     const wrapper = mount(
+       <div>
+-        <Link href=""https://react.geist-ui.dev"">link</Link>
+-        <Link href=""https://react.geist-ui.dev"" color>
++        <Link href=""https://geist-ui.dev"">link</Link>
++        <Link href=""https://geist-ui.dev"" color>
+           link
+         </Link>
+-        <Link href=""https://react.geist-ui.dev"" icon>
++        <Link href=""https://geist-ui.dev"" icon>
+           link
+         </Link>
+-        <Link href=""https://react.geist-ui.dev"" underline>
++        <Link href=""https://geist-ui.dev"" underline>
+           link
+         </Link>
+-        <Link href=""https://react.geist-ui.dev"" block>
++        <Link href=""https://geist-ui.dev"" block>
+           link
+         </Link>
+       </div>,
+
+diff --git a/components/snippet/__tests__/index.test.tsx b/components/snippet/__tests__/index.test.tsx
+index 1ddf7ca..c176634 100644
+--- a/components/snippet/__tests__/index.test.tsx
++++ b/components/snippet/__tests__/index.test.tsx
+@@ -2,7 +2,7 @@ import React from 'react'
+ import { mount } from 'enzyme'
+ import { Snippet } from 'components'
+ 
+-const command = 'yarn add @geist-ui/react'
++const command = 'yarn add @geist-ui/core'
+ const multiLine = ['cd project', 'now']
+ 
+ describe('Snippet', () => {
+",0,,80,570,3,1,80,570
+687,efd95eb31750841ab22932a26beede96855988f9,efd95eb31750841ab22932a26beede96855988f9,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","feat(page): add props to control the style of dot
+","diff --git a/components/page/__tests__/index.test.tsx b/components/page/__tests__/index.test.tsx
+index 53c7c0e..2587ce4 100644
+--- a/components/page/__tests__/index.test.tsx
++++ b/components/page/__tests__/index.test.tsx
+@@ -41,4 +41,10 @@ describe('Page', () => {
+     )
+     expect(wrapper.html()).not.toContain('global(body)')
+   })
++
++  it('should work correctly with dot configs', () => {
++    const wrapper = mount(<Page dotBackdrop dotSize=""20px"" dotSpace={0.5} />)
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
+ })
+",0,,5,97,1,1,5,97
+692,1906c1e13970c7cade697615de80ec94c3618690,2ece822274feaab9c7a3a7b346cc753d914d18da,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+close #646 
+
+","feat(image): allow component to render svg string
+","diff --git a/components/image/__tests__/index.test.tsx b/components/image/__tests__/index.test.tsx
+index 9363bfa..d191ff5 100644
+--- a/components/image/__tests__/index.test.tsx
++++ b/components/image/__tests__/index.test.tsx
+@@ -8,6 +8,9 @@ const url =
+   'AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO' +
+   '9TXL0Y4OHwAAAABJRU5ErkJggg=='
+ 
++const svg = `<svg xmlns=""http://www.w3.org/2000/svg"" width=""15px"" height=""15px"" viewBox=""0 0 15 15"" fill=""none"">
++      <path d=""M12.5 8V7.83333C12.5 7.09695 11.903 6.5 11.1667 6.5H10C9.17157 6.5 8.5 7.17157 8.5 8C8.5 8.82843 9.17157 9.5 10 9.5H11C11.8284 9.5 12.5 10.1716 12.5 11C12.5 11.8284 11.8284 12.5 11 12.5H10C9.17157 12.5 8.5 11.8284 8.5 11M8 6.5H3M5.5 6.5V13M0.5 0.5H14.5V14.5H0.5V0.5Z"" stroke=""black""/></svg>`
++
+ describe('Image', () => {
+   it('should render correctly', async () => {
+     let wrapper = mount(<Image src={url} />)
+@@ -25,6 +28,22 @@ describe('Image', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should render correctly with svg string', () => {
++    let wrapper = mount(<Image src={svg} />)
++    expect(wrapper).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++
++    wrapper = mount(<Image src={svg} width={20} height={20} />)
++    wrapper.find('img').at(0).simulate('load')
++    expect(wrapper).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++
++    wrapper = mount(<Image src={svg} width={20} height={20} disableSkeleton />)
++    wrapper.find('img').at(0).simulate('load')
++    expect(wrapper).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should work correctly with skeleton', async () => {
+     let wrapper = mount(<Image src={url} width={20} height={20} />)
+     expect(wrapper.find('.skeleton').length).not.toBe(0)
+",0,,6,69,2,2,13,119
+693,f63bcce7789e9ae53179f147ede81e2d29a5d3b1,510904383f1bab7c7771a017908aa62fd2646236,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+- Rename `scaleable` to `scale`, keeping exported function names consistent.
+- Display all hooks summaries together.
+- Export `use-scale` fucntion
+
+","chore: rename scaleable to scale
+",,0,,112,1966,2,5,193,3334
+694,4a792ad85113400cf8540b9982e0856136a886b7,4a792ad85113400cf8540b9982e0856136a886b7,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","fix(tabs): fix sub-components ignore theme changes
+",,0,,2,26,1,1,2,26
+696,071bd9a65cacfb4e100b82b04f04ef67ec8afee6,071bd9a65cacfb4e100b82b04f04ef67ec8afee6,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+- [x] Add highlight block to Tabs 
+- [x] Abstract Highlight as a shared component and refine tooling facilities
+- [x] Add `useClasses` to solve the multiple class name string
+- [x] Documentation for `Tabs`
+- [x] Testcase for `useClasses`
+- [ ] Testcase for `Highlight`
+- [ ] Improve testcase for `Tabs`","test: fix paths for testcase
+",,0,,4,93,1,5,18,562
+698,9feb423932167f8c877a81eaef6cb8cf25137219,95c98371fcb72e388a0077d56ca9d301bd7307db,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","feat(code): add props for title text and optimize the styles
+","diff --git a/components/code/__tests__/index.test.tsx b/components/code/__tests__/index.test.tsx
+index 9f25b3c..07dd34a 100644
+--- a/components/code/__tests__/index.test.tsx
++++ b/components/code/__tests__/index.test.tsx
+@@ -28,4 +28,13 @@ describe('Code', () => {
+     wrapper.setProps({ block: true })
+     expect(wrapper.find('pre').length).not.toBe(0)
+   })
++
++  it('should work correctly with title', () => {
++    const wrapper = render(
++      <Code block name=""name"" classic>
++        code
++      </Code>,
++    )
++    expect(wrapper).toMatchSnapshot()
++  })
+ })
+",0,,34,2506,29,2,42,2680
+699,fd114175f1fdc1c732a7dfe28effef8d9953b272,fd114175f1fdc1c732a7dfe28effef8d9953b272,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","fix(tabs): fix class names be accidentally add to all children
+",,0,,2,17,1,3,19,329
+703,58451870840d983fab9143a0fd70f2340eefd822,59f60695f5fb035196efd6688780d902d877cb12,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","fix(links): keep links consistent across typography
+",,0,,4,269,2,2,6,273
+704,5ff4b3892705feadbb4ff7bdd9d0b7e7df7aa2f7,5ff4b3892705feadbb4ff7bdd9d0b7e7df7aa2f7,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Slightly reduce the default `width` of the `Button` to avoid imbalance when over-scaling.
+","feat(button): slightly reduce the default width
+",,0,,3,12,2,1,3,12
+705,671490fad0ea7c1092ee21162332574d5d2d94b4,671490fad0ea7c1092ee21162332574d5d2d94b4,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Remove all scale related props from the scale entry, their native values will not really be used to. So, all prop filter functions can be removed.","refactor: remove unnecessary filter for scale props
+",,0,,86,457,5,1,86,457
+708,13047cb178c23bb3b4f89b09933c60c3ffed2304,df2818c9f0e083d42309a0a7b79c3554be42a04f,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+- Add `placement` support.
+- Add `ReactNode` support.
+- Allow users to modify the global style of Toast. (`useToast(styles)`)
+- Users can query the instance of Toast according to the specified ID and can manipulate the methods on the instance.
+- Greatly optimized for Toast performance and stability.
+","feat(toast): redesign hooks to compatible with placement and styles
+","diff --git a/components/use-toasts/__tests__/index.test.tsx b/components/use-toasts/__tests__/index.test.tsx
+index 6ec0928..0d7e8df 100644
+--- a/components/use-toasts/__tests__/index.test.tsx
++++ b/components/use-toasts/__tests__/index.test.tsx
+@@ -2,9 +2,10 @@ import React from 'react'
+ import { mount, ReactWrapper } from 'enzyme'
+ import { useToasts, GeistProvider } from 'components'
+ import { nativeEvent, updateWrapper } from 'tests/utils'
++import { ToastInput } from '../use-toast'
+ 
+ const MockToast: React.FC<unknown> = () => {
+-  const [, setToast] = useToasts()
++  const { setToast } = useToasts()
+   const clickHandler = (e: any = {}) => {
+     const keys = ['text', 'delay', 'type', 'actions']
+     const params = keys.reduce((pre, key) => {
+@@ -12,7 +13,7 @@ const MockToast: React.FC<unknown> = () => {
+       if (!value) return pre
+       return { ...pre, [key]: value }
+     }, {})
+-    setToast(params)
++    setToast(params as ToastInput)
+   }
+   return (
+     <div id=""btn"" onClick={clickHandler}>
+@@ -29,12 +30,12 @@ const triggerToast = (wrapper: ReactWrapper, params = {}) => {
+ }
+ 
+ const expectToastIsShow = (wrapper: ReactWrapper) => {
+-  const toast = wrapper.find('.toast-container').find('.toast')
++  const toast = wrapper.find('.toasts').find('.toast')
+   expect(toast.length).not.toBe(0)
+ }
+ 
+ const expectToastIsHidden = (wrapper: ReactWrapper) => {
+-  const toast = wrapper.find('.toast-container').find('.toast')
++  const toast = wrapper.find('.toasts').find('.toast')
+   expect(toast.length).toBe(0)
+ }
+ 
+@@ -63,7 +64,7 @@ describe('UseToast', () => {
+     triggerToast(wrapper, { type: 'success', text: 'hello' })
+     await updateWrapper(wrapper, 100)
+     expectToastIsShow(wrapper)
+-    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
++    expect(wrapper.find('.toasts').html()).toMatchSnapshot()
+   })
+ 
+   it('should close toast', async () => {
+@@ -79,7 +80,7 @@ describe('UseToast', () => {
+     expectToastIsShow(wrapper)
+     // Element already hidden, but Dom was removed after delay
+     await updateWrapper(wrapper, 350)
+-    const toast = wrapper.find('.toast-container').find('.hide')
++    const toast = wrapper.find('.toasts').find('.toast')
+     expect(toast.length).not.toBe(0)
+   })
+ 
+@@ -95,18 +96,18 @@ describe('UseToast', () => {
+     await updateWrapper(wrapper, 0)
+     expectToastIsShow(wrapper)
+ 
+-    wrapper.find('.toast-container').simulate('mouseEnter', nativeEvent)
++    wrapper.find('.toasts').simulate('mouseEnter', nativeEvent)
+     await updateWrapper(wrapper, 350)
+ 
+     // Hover event will postpone hidden event
+-    let toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).toBe(0)
++    let toast = wrapper.find('.toasts').find('.toast')
++    expect(toast.length).not.toBe(0)
+ 
+     // Restart hidden event after mouse leave
+-    wrapper.find('.toast-container').simulate('mouseLeave', nativeEvent)
++    wrapper.find('.toasts').simulate('mouseLeave', nativeEvent)
+     await updateWrapper(wrapper, 350 + 200)
+-    toast = wrapper.find('.toast-container').find('.hide')
+-    expect(toast.length).not.toBe(0)
++    toast = wrapper.find('.toasts').find('.toast')
++    expect(toast.length).toBe(0)
+   })
+ 
+   it('should render different actions', async () => {
+@@ -130,7 +131,7 @@ describe('UseToast', () => {
+     triggerToast(wrapper, { actions, text: 'hello' })
+     await updateWrapper(wrapper)
+     expectToastIsShow(wrapper)
+-    expect(wrapper.find('.toast-container').html()).toMatchSnapshot()
++    expect(wrapper.find('.toasts').html()).toMatchSnapshot()
+   })
+ 
+   it('should close toast when action triggered', async () => {
+@@ -154,7 +155,7 @@ describe('UseToast', () => {
+ 
+     // Element already hidden, but Dom was removed after delay
+     await updateWrapper(wrapper, 250)
+-    const toast = wrapper.find('.toast-container').find('.hide')
++    const toast = wrapper.find('.toasts').find('.toast')
+     expect(toast.length).not.toBe(0)
+   })
+ 
+@@ -181,7 +182,7 @@ describe('UseToast', () => {
+     expectToastIsShow(wrapper)
+ 
+     await updateWrapper(wrapper, 200)
+-    const toast = wrapper.find('.toast-container').find('.hide')
++    const toast = wrapper.find('.toasts').find('.toast')
+     expect(toast.length).not.toBe(0)
+   })
+ })
+",0,,11,813,1,4,20,1081
+709,35343094e76875ee9fefaa0afb6465f730f28ab3,02e84a4e2275cd10edcf1a16cba94c1629e31481,"## Checklist
+
+- [ ] Fix linting errors
+- [ ] Tests have been added / updated (or snapshots)
+
+## Change information
+
+Splice `className` using the same method to remove the extra spaces:
+
+<img width=""1179"" alt=""classes-1"" src=""https://user-images.githubusercontent.com/11304944/152495969-ff229ba0-3cd8-45a9-8e56-82235ba3f96f.png"">
+<img width=""1122"" alt=""classes-2"" src=""https://user-images.githubusercontent.com/11304944/152495981-e5b0ff41-ef5c-40de-a074-c70999443287.png"">
+
+","feat: remove the extra spaces in class-name
+","diff --git a/components/breadcrumbs/__tests__/breadcrumbs.test.tsx b/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
+index b0ff8cf..3430a24 100644
+--- a/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
++++ b/components/breadcrumbs/__tests__/breadcrumbs.test.tsx
+@@ -42,7 +42,7 @@ describe('Breadcrumbs', () => {
+         <Breadcrumbs.Item>test-1</Breadcrumbs.Item>
+       </Breadcrumbs>,
+     )
+-    let dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    let dom = wrapper.find('.breadcrumbs-item').at(0).getDOMNode()
+     expect(dom.tagName).toEqual('SPAN')
+ 
+     wrapper = mount(
+@@ -50,7 +50,7 @@ describe('Breadcrumbs', () => {
+         <Breadcrumbs.Item href="""">test-1</Breadcrumbs.Item>
+       </Breadcrumbs>,
+     )
+-    dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    dom = wrapper.find('.breadcrumbs-item').at(0).getDOMNode()
+     expect(dom.tagName).toEqual('A')
+ 
+     wrapper = mount(
+@@ -58,7 +58,7 @@ describe('Breadcrumbs', () => {
+         <Breadcrumbs.Item nextLink>test-1</Breadcrumbs.Item>
+       </Breadcrumbs>,
+     )
+-    dom = wrapper.find('.breadcrums-item').at(0).getDOMNode()
++    dom = wrapper.find('.breadcrumbs-item').at(0).getDOMNode()
+     expect(dom.tagName).toEqual('A')
+   })
+ 
+@@ -69,7 +69,7 @@ describe('Breadcrumbs', () => {
+         <Breadcrumbs.Item onClick={handler}>test-1</Breadcrumbs.Item>
+       </Breadcrumbs>,
+     )
+-    wrapper.find('.breadcrums-item').at(0).simulate('click')
++    wrapper.find('.breadcrumbs-item').at(0).simulate('click')
+     expect(handler).toHaveBeenCalled()
+   })
+ })
+",0,,117,1937,46,3,129,2138
+710,0f2fe6b965dbee4e05efbb0387f4631f2bf798d4,2ba5401b64f9282fb940400685c5ee9f1c9dc447,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","feat(tabs): allow to hide the border when tab is activated
+","diff --git a/components/tabs/__tests__/index.test.tsx b/components/tabs/__tests__/index.test.tsx
+index 3483936..934d9c9 100644
+--- a/components/tabs/__tests__/index.test.tsx
++++ b/components/tabs/__tests__/index.test.tsx
+@@ -31,6 +31,18 @@ describe('Tabs', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('should hide border on active', () => {
++    const wrapper = mount(
++      <Tabs hideBorder>
++        <Tabs.Item label=""label1"" value=""1"">
++          1
++        </Tabs.Item>
++      </Tabs>,
++    )
++    expect(wrapper.html()).toMatchSnapshot()
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should trigger events when tab changed', () => {
+     let value = ''
+     const changeHandler = jest.fn().mockImplementation(val => (value = val))
+",0,,5,201,1,4,27,857
+712,b01b3f3e11aa90ec5ae0cfe1e089643f639e458d,6f8753b0cc548f4e21fee644d03a166e687260c5,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","test: update snapshots
+",,0,,1,6,1,8,25,1134
+715,706775c0337699a49a51c74b037e03329a72e7a2,3f3a2933de95e7103c3265eb40fc477ad20cd14d,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+","feat(button-dropdown): add icon config (#630)
+
+","diff --git a/components/button-dropdown/__tests__/index.test.tsx b/components/button-dropdown/__tests__/index.test.tsx
+index 7b3623d..b12a0f6 100644
+--- a/components/button-dropdown/__tests__/index.test.tsx
++++ b/components/button-dropdown/__tests__/index.test.tsx
+@@ -2,6 +2,7 @@ import React from 'react'
+ import { mount, render } from 'enzyme'
+ import { ButtonDropdown } from 'components'
+ import { mockNativeEvent, nativeEvent } from 'tests/utils'
++const Icon: React.FC<any> = () => <svg />
+ 
+ describe('Button Dropdown', () => {
+   it('should render correctly', () => {
+@@ -15,6 +16,17 @@ describe('Button Dropdown', () => {
+     expect(() => wrapper.unmount()).not.toThrow()
+   })
+ 
++  it('right icon should render correctly', () => {
++    const wrapper = mount(
++      <ButtonDropdown icon={<Icon />}>
++        <ButtonDropdown.Item main>Default Action</ButtonDropdown.Item>
++        <ButtonDropdown.Item>Secondary Action</ButtonDropdown.Item>
++        <ButtonDropdown.Item>Tertiary Action</ButtonDropdown.Item>
++      </ButtonDropdown>,
++    )
++    expect(() => wrapper.unmount()).not.toThrow()
++  })
++
+   it('should support types', () => {
+     const wrapper = render(
+       <div>
+",0,,5,305,1,28,348,13396
+718,dc5f2594900c3974dde051347273984fe82e8473,98a8019ff31e3e6131e6a50c9614631c85c24582,"## Checklist
+
+- [x] Fix linting errors
+- [x] Tests have been added / updated (or snapshots)
+
+## Change information
+
+- Adds more class-names compatibility to the Modal component, extending the interface downwards, which does not affect the existing behavior. Release these again in the next canary version.
+
+","fix(modal): make modal compatble with more class-names
+","diff --git a/components/shared/__tests__/backdrop.test.tsx b/components/shared/__tests__/backdrop.test.tsx
+index 435a0ed..d7635de 100644
+--- a/components/shared/__tests__/backdrop.test.tsx
++++ b/components/shared/__tests__/backdrop.test.tsx
+@@ -55,7 +55,7 @@ describe('Backdrop', () => {
+         <span>test-value</span>
+       </Backdrop>,
+     )
+-    wrapper.find('.content').simulate('click', nativeEvent)
++    wrapper.find('.position').simulate('click', nativeEvent)
+     expect(handler).toHaveBeenCalled()
+     handler.mockRestore()
+   })
+@@ -72,7 +72,7 @@ describe('Backdrop', () => {
+      * In simulation,`mousedown` and `mouseup`not directly triiger `click` event,
+      * the click event below is just for simulation.
+      */
+-    wrapper.find('.content').simulate('mousedown')
++    wrapper.find('.position').simulate('mousedown')
+     wrapper.find('.backdrop').simulate('click', nativeEvent)
+     wrapper.find('.backdrop').simulate('mouseup')
+     await updateWrapper(wrapper)
+",0,,8,126,3,2,9,159

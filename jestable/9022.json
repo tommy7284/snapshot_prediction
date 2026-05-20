@@ -1,0 +1,100 @@
+{
+    "id": 6798339,
+    "name": "webpack-contrib/stylus-loader",
+    "isFork": false,
+    "commits": 399,
+    "branches": 1,
+    "releases": 19,
+    "forks": 102,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 20,
+    "stargazers": 500,
+    "contributors": 42,
+    "size": 3455,
+    "createdAt": "2013-11-04T07:12:51",
+    "pushedAt": "2024-04-11T11:00:32",
+    "updatedAt": "2024-03-25T10:17:02",
+    "totalIssues": 162,
+    "openIssues": 0,
+    "totalPullRequests": 251,
+    "openPullRequests": 0,
+    "blankLines": 972,
+    "codeLines": 19576,
+    "commentLines": 1749,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 16408
+        },
+        {
+            "blankLines": 556,
+            "language": "JavaScript",
+            "commentLines": 1685,
+            "codeLines": 1738
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 304,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 870
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 88
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 81,
+            "language": "Stylus",
+            "commentLines": 1,
+            "codeLines": 449
+        }
+    ],
+    "lastCommit": "2024-04-11T11:00:32",
+    "lastCommitSHA": "3e50712b8315f13139345721f6495ed7dff4d474",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 118291,
+        "Stylus": 1278,
+        "Shell": 151
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "patches welcome",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

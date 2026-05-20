@@ -1,0 +1,100 @@
+{
+    "id": 6684754,
+    "name": "webpack-contrib/terser-webpack-plugin",
+    "isFork": false,
+    "commits": 365,
+    "branches": 6,
+    "releases": 77,
+    "forks": 158,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 20,
+    "stargazers": 1923,
+    "contributors": 35,
+    "size": 5928,
+    "createdAt": "2018-07-31T07:25:19",
+    "pushedAt": "2024-03-08T07:00:29",
+    "updatedAt": "2024-03-08T08:33:15",
+    "totalIssues": 243,
+    "openIssues": 5,
+    "totalPullRequests": 353,
+    "openPullRequests": 4,
+    "blankLines": 1980,
+    "codeLines": 39354,
+    "commentLines": 753,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 116,
+            "codeLines": 227
+        },
+        {
+            "blankLines": 1354,
+            "language": "JavaScript",
+            "commentLines": 574,
+            "codeLines": 5966
+        },
+        {
+            "blankLines": 28,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 92
+        },
+        {
+            "blankLines": 593,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 1216
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 31837
+        }
+    ],
+    "lastCommit": "2024-03-02T01:05:52",
+    "lastCommitSHA": "24b6e6445207277e92740549608c88d2c613919c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 223511,
+        "Shell": 151
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "minify",
+        "minimizer",
+        "terser",
+        "uglify",
+        "webpack",
+        "webpack-plugin"
+    ]
+}

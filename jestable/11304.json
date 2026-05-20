@@ -1,0 +1,155 @@
+{
+    "id": 7798653,
+    "name": "asyncapi/generator",
+    "isFork": false,
+    "commits": 1140,
+    "branches": 13,
+    "releases": 208,
+    "forks": 194,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://asyncapi.com/docs/tools/generator",
+    "watchers": 18,
+    "stargazers": 730,
+    "contributors": 69,
+    "size": 6001,
+    "createdAt": "2018-07-24T01:55:43",
+    "pushedAt": "2024-04-25T11:19:44",
+    "updatedAt": "2024-04-26T04:45:20",
+    "totalIssues": 311,
+    "openIssues": 24,
+    "totalPullRequests": 857,
+    "openPullRequests": 6,
+    "blankLines": 1763,
+    "codeLines": 38147,
+    "commentLines": 1253,
+    "metrics": [
+        {
+            "blankLines": 508,
+            "language": "JavaScript",
+            "commentLines": 840,
+            "codeLines": 3128
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 28559
+        },
+        {
+            "blankLines": 6,
+            "language": "Dockerfile",
+            "commentLines": 5,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 82,
+            "language": "HTML",
+            "commentLines": 3,
+            "codeLines": 953
+        },
+        {
+            "blankLines": 4,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 10,
+            "language": "Handlebars",
+            "commentLines": 1,
+            "codeLines": 56
+        },
+        {
+            "blankLines": 311,
+            "language": "CSS",
+            "commentLines": 211,
+            "codeLines": 1157
+        },
+        {
+            "blankLines": 0,
+            "language": "Properties",
+            "commentLines": 1,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 206,
+            "language": "YAML",
+            "commentLines": 149,
+            "codeLines": 2182
+        },
+        {
+            "blankLines": 623,
+            "language": "Markdown",
+            "commentLines": 22,
+            "codeLines": 2033
+        },
+        {
+            "blankLines": 13,
+            "language": "Bourne Shell",
+            "commentLines": 21,
+            "codeLines": 55
+        }
+    ],
+    "lastCommit": "2024-04-25T11:19:44",
+    "lastCommitSHA": "a6881874319e453138046dc38a686fcce2814a79",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 146493,
+        "Shell": 3398,
+        "Dockerfile": 775
+    },
+    "labels": [
+        "area/ci-cd",
+        "area/design",
+        "area/docs",
+        "area/go",
+        "area/java",
+        "area/javascript",
+        "area/typescript",
+        "autoapproved",
+        "autoupdate",
+        "bounty",
+        "bounty/2023-q4",
+        "bug",
+        "dependencies",
+        "do-not-merge",
+        "duplicate",
+        "enhancement",
+        "epic",
+        "good first issue",
+        "gsoc",
+        "gsod",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "keep-open",
+        "level/advanced",
+        "level/medium",
+        "question",
+        "ready-to-merge",
+        "released",
+        "semantic-release",
+        "stale",
+        "wontfix",
+        "\ud83c\udfa8 design",
+        "\ud83d\udc1e docs bug",
+        "\ud83d\udcd1 docs"
+    ],
+    "topics": [
+        "asyncapi",
+        "codegen",
+        "codegenerator",
+        "documentation",
+        "generator",
+        "get-global-docs-autoupdate",
+        "get-global-node-release-workflows",
+        "get-global-releaserc",
+        "hacktoberfest",
+        "nodejs"
+    ]
+}

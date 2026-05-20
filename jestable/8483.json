@@ -1,0 +1,116 @@
+{
+    "id": 6745870,
+    "name": "shakacode/sass-resources-loader",
+    "isFork": false,
+    "commits": 171,
+    "branches": 3,
+    "releases": 4,
+    "forks": 74,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 26,
+    "stargazers": 976,
+    "contributors": 27,
+    "size": 1772,
+    "createdAt": "2015-11-25T05:27:49",
+    "pushedAt": "2023-11-30T06:36:36",
+    "updatedAt": "2024-01-04T09:02:36",
+    "totalIssues": 97,
+    "openIssues": 14,
+    "totalPullRequests": 103,
+    "openPullRequests": 1,
+    "blankLines": 281,
+    "codeLines": 1357,
+    "commentLines": 41,
+    "metrics": [
+        {
+            "blankLines": 12,
+            "language": "SCSS",
+            "commentLines": 2,
+            "codeLines": 80
+        },
+        {
+            "blankLines": 10,
+            "language": "JSX",
+            "commentLines": 1,
+            "codeLines": 41
+        },
+        {
+            "blankLines": 109,
+            "language": "JavaScript",
+            "commentLines": 33,
+            "codeLines": 560
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 8,
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 5,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 122,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 402
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 127
+        },
+        {
+            "blankLines": 12,
+            "language": "Sass",
+            "commentLines": 2,
+            "codeLines": 80
+        }
+    ],
+    "lastCommit": "2023-11-26T07:16:10",
+    "lastCommitSHA": "98b2f3e0d36d12d3f4007935de53e5a36e1ab93f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 21937,
+        "SCSS": 1753,
+        "Shell": 286,
+        "HTML": 270,
+        "CSS": 28
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "prs welcome",
+        "question",
+        "review needed",
+        "waiting on submitter",
+        "wontfix"
+    ],
+    "topics": []
+}

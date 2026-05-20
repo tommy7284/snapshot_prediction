@@ -1,0 +1,134 @@
+{
+    "id": 6929487,
+    "name": "youzan/vant-weapp",
+    "isFork": false,
+    "commits": 2783,
+    "branches": 5,
+    "releases": 53,
+    "forks": 3461,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "dev",
+    "license": "MIT License",
+    "homepage": "https://youzan.github.io/vant-weapp/",
+    "watchers": 436,
+    "stargazers": 17428,
+    "contributors": 162,
+    "size": 21809,
+    "createdAt": "2017-01-23T07:05:54",
+    "pushedAt": "2024-04-22T03:13:55",
+    "updatedAt": "2024-04-22T11:04:49",
+    "totalIssues": 3787,
+    "openIssues": 12,
+    "totalPullRequests": 1929,
+    "openPullRequests": 16,
+    "blankLines": 5635,
+    "codeLines": 50417,
+    "commentLines": 393,
+    "metrics": [
+        {
+            "blankLines": 30,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 208
+        },
+        {
+            "blankLines": 5,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 7,
+            "language": "Bourne Shell",
+            "commentLines": 4,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 761,
+            "language": "Less",
+            "commentLines": 75,
+            "codeLines": 4790
+        },
+        {
+            "blankLines": 18,
+            "language": "WXSS",
+            "commentLines": 0,
+            "codeLines": 194
+        },
+        {
+            "blankLines": 2725,
+            "language": "Markdown",
+            "commentLines": 21,
+            "codeLines": 8249
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 5462
+        },
+        {
+            "blankLines": 1486,
+            "language": "TypeScript",
+            "commentLines": 118,
+            "codeLines": 9974
+        },
+        {
+            "blankLines": 28,
+            "language": "JavaScript",
+            "commentLines": 160,
+            "codeLines": 15463
+        },
+        {
+            "blankLines": 383,
+            "language": "WXML",
+            "commentLines": 11,
+            "codeLines": 5029
+        },
+        {
+            "blankLines": 192,
+            "language": "WiX source",
+            "commentLines": 0,
+            "codeLines": 1002
+        }
+    ],
+    "lastCommit": "2024-04-15T02:53:00",
+    "lastCommitSHA": "ab45d8011cdc5c1851c06e67660e226b366172c1",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 274147,
+        "TypeScript": 263270,
+        "Less": 127220,
+        "Shell": 765
+    },
+    "labels": [
+        "bug: need confirm",
+        "build",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature:need confirm",
+        "help wanted",
+        "invalid",
+        "mpvue",
+        "question",
+        "sync vant",
+        "taro",
+        "\ud83c\udfaf feature",
+        "\ud83d\udc8e new component",
+        "\ud83d\udcd2 document",
+        "\ud83d\ude4b pr welcome",
+        "\ud83d\ude80 performance",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": [
+        "miniprogram",
+        "ui",
+        "vant",
+        "weapp",
+        "weixin"
+    ]
+}

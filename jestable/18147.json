@@ -1,0 +1,130 @@
+{
+    "id": 70436806,
+    "name": "elegantapp/pwa-asset-generator",
+    "isFork": false,
+    "commits": 884,
+    "branches": 14,
+    "releases": 69,
+    "forks": 130,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 20,
+    "stargazers": 2520,
+    "contributors": 13,
+    "size": 34574,
+    "createdAt": "2019-08-09T08:26:44",
+    "pushedAt": "2023-09-29T09:42:09",
+    "updatedAt": "2023-11-12T03:05:49",
+    "totalIssues": 152,
+    "openIssues": 32,
+    "totalPullRequests": 849,
+    "openPullRequests": 13,
+    "blankLines": 824,
+    "codeLines": 29231,
+    "commentLines": 260,
+    "metrics": [
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 27,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 258,
+            "codeLines": 2485,
+            "blankLines": 404
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 2
+        },
+        {
+            "language": "YAML",
+            "commentLines": 2,
+            "codeLines": 151,
+            "blankLines": 10
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 602,
+            "blankLines": 405
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25940,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-05-18T04:28:07",
+    "lastCommitSHA": "124b906b7fd0b4dc4d4926e49291332079e6c032",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 84960,
+        "JavaScript": 2045,
+        "HTML": 522,
+        "Shell": 151
+    },
+    "labels": [
+        "bug",
+        "dep-upgrade",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "esm",
+        "external-dependency",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "needs verification",
+        "node-upgrade",
+        "question",
+        "released",
+        "security",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": [
+        "android",
+        "favicon",
+        "favicon-generator",
+        "html-tags",
+        "icon",
+        "icon-sizes",
+        "image-generation",
+        "ios",
+        "launch-image",
+        "manifest",
+        "manifest-specs",
+        "mstile",
+        "progressive-web-app",
+        "progressive-web-apps",
+        "puppeteer",
+        "pwa",
+        "pwa-assets",
+        "splash-screen",
+        "splash-screens"
+    ]
+}

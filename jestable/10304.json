@@ -1,0 +1,120 @@
+{
+    "id": 6920136,
+    "name": "kentcdodds/bookshelf",
+    "isFork": false,
+    "commits": 564,
+    "branches": 20,
+    "releases": 0,
+    "forks": 1112,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": "https://epicreact.dev/app",
+    "watchers": 49,
+    "stargazers": 2605,
+    "contributors": 28,
+    "size": 6388,
+    "createdAt": "2019-05-10T05:29:39",
+    "pushedAt": "2024-03-07T08:43:50",
+    "updatedAt": "2024-03-07T08:58:45",
+    "totalIssues": 55,
+    "openIssues": 0,
+    "totalPullRequests": 258,
+    "openPullRequests": 0,
+    "blankLines": 690,
+    "codeLines": 39381,
+    "commentLines": 208,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 0,
+            "language": "TOML",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 2,
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 34610
+        },
+        {
+            "blankLines": 124,
+            "language": "Markdown",
+            "commentLines": 10,
+            "codeLines": 451
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 554,
+            "language": "JavaScript",
+            "commentLines": 175,
+            "codeLines": 4213
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 2,
+            "codeLines": 24
+        }
+    ],
+    "lastCommit": "2024-02-14T03:42:15",
+    "lastCommitSHA": "92f1589e380b95659d30c6784a94b027df0ef095",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 135996,
+        "HTML": 1520,
+        "CSS": 577,
+        "Shell": 280,
+        "Dockerfile": 96
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "video update needed",
+        "wip",
+        "wontfix"
+    ],
+    "topics": [
+        "epicreact-dev",
+        "kcd-edu",
+        "react"
+    ]
+}

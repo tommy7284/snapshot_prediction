@@ -1,0 +1,105 @@
+{
+    "id": 4051182,
+    "name": "yjose/reactjs-popup",
+    "isFork": false,
+    "commits": 417,
+    "branches": 31,
+    "releases": 21,
+    "forks": 204,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://react-popup.elazizi.com/",
+    "watchers": 20,
+    "stargazers": 1756,
+    "contributors": 33,
+    "size": 7665,
+    "createdAt": "2017-12-17T03:10:18",
+    "pushedAt": "2023-12-22T05:28:34",
+    "updatedAt": "2024-01-06T02:48:33",
+    "totalIssues": 169,
+    "openIssues": 46,
+    "totalPullRequests": 178,
+    "openPullRequests": 41,
+    "blankLines": 762,
+    "codeLines": 4631,
+    "commentLines": 129,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 18,
+            "codeLines": 1329,
+            "blankLines": 457
+        },
+        {
+            "language": "CSS",
+            "commentLines": 28,
+            "codeLines": 433,
+            "blankLines": 43
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 162,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 45,
+            "blankLines": 8
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 56,
+            "codeLines": 1663,
+            "blankLines": 216
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 26,
+            "codeLines": 659,
+            "blankLines": 38
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 340,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2023-09-06T03:54:10",
+    "lastCommitSHA": "640f95a287051262297a5d0df3bb82b7ec8d826d",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 56594,
+        "CSS": 1907,
+        "JavaScript": 968
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "features",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "component",
+        "modal",
+        "react",
+        "react-component",
+        "react-modal",
+        "react-popup",
+        "tooltip",
+        "tooltip-library"
+    ]
+}

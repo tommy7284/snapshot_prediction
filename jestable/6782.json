@@ -1,0 +1,75 @@
+{
+    "id": 6324534,
+    "name": "nmfr/optimize-css-assets-webpack-plugin",
+    "isFork": false,
+    "commits": 64,
+    "branches": 9,
+    "releases": 0,
+    "forks": 67,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 12,
+    "stargazers": 1134,
+    "contributors": 13,
+    "size": 663,
+    "createdAt": "2016-01-09T12:52:16",
+    "pushedAt": "2022-07-17T12:16:33",
+    "updatedAt": "2022-07-20T09:30:45",
+    "totalIssues": 138,
+    "openIssues": 28,
+    "totalPullRequests": 45,
+    "openPullRequests": 10,
+    "blankLines": 46,
+    "codeLines": 11364,
+    "commentLines": 5,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 10966
+        },
+        {
+            "blankLines": 30,
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 314
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 16,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 47
+        }
+    ],
+    "lastCommit": "2021-06-23T09:33:51",
+    "lastCommitSHA": "d0bf176a01b144cd8736f01c409dd1214ecfbe8c",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 10357,
+        "CSS": 739
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature-request",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

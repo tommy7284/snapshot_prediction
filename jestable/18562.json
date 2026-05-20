@@ -1,0 +1,167 @@
+{
+    "id": 89062145,
+    "name": "malloydata/malloy",
+    "isFork": false,
+    "commits": 3707,
+    "branches": 219,
+    "releases": 1,
+    "forks": 73,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "http://www.malloydata.dev",
+    "watchers": 26,
+    "stargazers": 1849,
+    "contributors": 35,
+    "size": 313755,
+    "createdAt": "2021-08-13T05:11:08",
+    "pushedAt": "2024-05-09T10:57:48",
+    "updatedAt": "2024-05-09T10:57:52",
+    "totalIssues": 545,
+    "openIssues": 280,
+    "totalPullRequests": 1133,
+    "openPullRequests": 19,
+    "blankLines": 6688,
+    "codeLines": 96818,
+    "commentLines": 14738,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 9,
+            "codeLines": 418,
+            "blankLines": 34
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1236,
+            "blankLines": 569
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 14413,
+            "codeLines": 59810,
+            "blankLines": 5738
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 33054,
+            "blankLines": 0
+        },
+        {
+            "language": "PEG.js",
+            "commentLines": 0,
+            "codeLines": 109,
+            "blankLines": 16
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 73,
+            "codeLines": 259,
+            "blankLines": 56
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 107,
+            "blankLines": 0
+        },
+        {
+            "language": "SQL",
+            "commentLines": 5,
+            "codeLines": 581,
+            "blankLines": 48
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 122,
+            "blankLines": 21
+        },
+        {
+            "language": "Nix",
+            "commentLines": 0,
+            "codeLines": 1,
+            "blankLines": 0
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 143,
+            "codeLines": 156,
+            "blankLines": 16
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 1
+        },
+        {
+            "language": "ANTLR Grammar",
+            "commentLines": 95,
+            "codeLines": 947,
+            "blankLines": 189
+        },
+        {
+            "language": "CSV",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-09T10:57:48",
+    "lastCommitSHA": "0c8118039e95323817a6c362e9e8f29835d0bf14",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 2564574,
+        "ANTLR": 30165,
+        "Shell": 11643,
+        "JavaScript": 11395,
+        "CSS": 3433,
+        "HTML": 2652,
+        "PEG.js": 2297,
+        "Ruby": 1607,
+        "MDX": 699,
+        "Nix": 161
+    },
+    "labels": [
+        "back burner",
+        "bug",
+        "composer",
+        "data turing complete",
+        "dependencies",
+        "do not merge",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "error messaging",
+        "feedback sprint",
+        "fiddle",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "language",
+        "language roadmap",
+        "p0",
+        "p1",
+        "p2",
+        "question",
+        "renderer",
+        "syntax highlighting",
+        "vscode plugin",
+        "website",
+        "wontfix"
+    ],
+    "topics": [
+        "data",
+        "data-visualization",
+        "database",
+        "malloy",
+        "semantic-modeling",
+        "sql"
+    ]
+}

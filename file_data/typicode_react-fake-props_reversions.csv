@@ -1,0 +1,181 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+20,33c95ce8bbe35d755ef0ace1e89b051b67031cac,33c95ce8bbe35d755ef0ace1e89b051b67031cac,__tests__/__snapshots__/typescript.js.snap,__tests__/typescript.js,"## Description
+This PR updates react-docgen to add typescript support, fixing https://github.com/typicode/react-fake-props/issues/18
+
+I made use of the `getFakeFlow` util to also get the fake props for typescript, from my investigation on [react-docsgen](https://github.com/reactjs/react-docgen#result-data-structure) documentation, it looks like both flow and typescript have a pretty similar object structure, so I renamed this helper to be a bit more generic, and used the same one for ts and flow.
+
+I also added tests for typescript, pretty much the same tests we have for flow, we now have for flow, and the snapshot results are exactly the same.
+
+I also updated babel and its dependencies, the only thing I had to keep was `babel-eslint` to use as the parser for `standard`, I tried to update it to `@babel/eslint-parser`, but for some reason it was complaining about jsx being used on the components, I tried a bunch of different approaches but none really seemed to fix this issue.
+
+I'll add comments to the code on some key areas, to explain the reason why some things were used","feat: Update react-docgen to add typescript support
+
+feat: move dependency to devDependency
+
+docs: Update README
+","diff --git a/__tests__/typescript.js b/__tests__/typescript.js
+new file mode 100644
+index 0000000..6ded2ab
+--- /dev/null
++++ b/__tests__/typescript.js
+@@ -0,0 +1,69 @@
++import path from 'path'
++import fakeProps from '../src'
++
++const ComponentFile = path.join(
++  __dirname,
++  '../fixtures/typescript/Component.tsx'
++)
++const SimpleFile = path.join(__dirname, '../fixtures/typescript/Simple.tsx')
++const NoProps = require.resolve('../fixtures/typescript/NoProps.tsx')
++const Multiple = require.resolve('../fixtures/typescript/Multiple.tsx')
++
++describe('fakeProps', () => {
++  it('should return an object with no props (snapshot)', () => {
++    expect(fakeProps(NoProps)).toMatchSnapshot()
++  })
++
++  it('should return an object with required props faked (snapshot)', () => {
++    expect(fakeProps(ComponentFile)).toMatchSnapshot()
++  })
++
++  it('should return an object with all props faked (snapshot)', () => {
++    expect(fakeProps(ComponentFile, { optional: true })).toMatchSnapshot()
++  })
++
++  it('should return a person on calling getFriend prop function (test function generation)', () => {
++    const allProps = fakeProps(ComponentFile, { optional: true })
++    const friend = allProps.getFriend()
++
++    expect(friend.name).toBeDefined()
++    expect(friend.name).toBe('getFriend.name')
++    expect(friend.age).toBe(1)
++  })
++
++  it('should return more props with optional', () => {
++    const allProps = fakeProps(ComponentFile, { optional: true })
++    const requiredProps = fakeProps(ComponentFile)
++
++    const allPropsLength = Object.keys(allProps).length
++    const requiredPropsLength = Object.keys(requiredProps).length
++
++    expect(allPropsLength).toBeGreaterThan(requiredPropsLength)
++  })
++
++  it('should return an object with shape props faked', () => {
++    const props = fakeProps(SimpleFile)
++    const { requiredString, requiredObject } = props
++
++    expect(props).toEqual({
++      requiredString,
++      requiredObject: {
++        requiredString: requiredObject.requiredString
++      }
++    })
++  })
++
++  it('should prefix shape props', () => {
++    const props = fakeProps(SimpleFile)
++    expect(props.requiredObject.requiredString).toBe(
++      'requiredObject.requiredString'
++    )
++  })
++
++  it('should work with multiple components', () => {
++    const component = fakeProps(Multiple, { all: true }).find(
++      ({ displayName }) => displayName === 'First'
++    )
++    expect(component.props.requiredString).toBe('requiredString')
++  })
++})
+",0,
+20,33c95ce8bbe35d755ef0ace1e89b051b67031cac,33c95ce8bbe35d755ef0ace1e89b051b67031cac,__tests__/__snapshots__/typescript.js.snap,__tests__/typescript.js,"## Description
+This PR updates react-docgen to add typescript support, fixing https://github.com/typicode/react-fake-props/issues/18
+
+I made use of the `getFakeFlow` util to also get the fake props for typescript, from my investigation on [react-docsgen](https://github.com/reactjs/react-docgen#result-data-structure) documentation, it looks like both flow and typescript have a pretty similar object structure, so I renamed this helper to be a bit more generic, and used the same one for ts and flow.
+
+I also added tests for typescript, pretty much the same tests we have for flow, we now have for flow, and the snapshot results are exactly the same.
+
+I also updated babel and its dependencies, the only thing I had to keep was `babel-eslint` to use as the parser for `standard`, I tried to update it to `@babel/eslint-parser`, but for some reason it was complaining about jsx being used on the components, I tried a bunch of different approaches but none really seemed to fix this issue.
+
+I'll add comments to the code on some key areas, to explain the reason why some things were used","feat: Update react-docgen to add typescript support
+
+feat: move dependency to devDependency
+
+docs: Update README
+","diff --git a/__tests__/typescript.js b/__tests__/typescript.js
+new file mode 100644
+index 0000000..6ded2ab
+--- /dev/null
++++ b/__tests__/typescript.js
+@@ -0,0 +1,69 @@
++import path from 'path'
++import fakeProps from '../src'
++
++const ComponentFile = path.join(
++  __dirname,
++  '../fixtures/typescript/Component.tsx'
++)
++const SimpleFile = path.join(__dirname, '../fixtures/typescript/Simple.tsx')
++const NoProps = require.resolve('../fixtures/typescript/NoProps.tsx')
++const Multiple = require.resolve('../fixtures/typescript/Multiple.tsx')
++
++describe('fakeProps', () => {
++  it('should return an object with no props (snapshot)', () => {
++    expect(fakeProps(NoProps)).toMatchSnapshot()
++  })
++
++  it('should return an object with required props faked (snapshot)', () => {
++    expect(fakeProps(ComponentFile)).toMatchSnapshot()
++  })
++
++  it('should return an object with all props faked (snapshot)', () => {
++    expect(fakeProps(ComponentFile, { optional: true })).toMatchSnapshot()
++  })
++
++  it('should return a person on calling getFriend prop function (test function generation)', () => {
++    const allProps = fakeProps(ComponentFile, { optional: true })
++    const friend = allProps.getFriend()
++
++    expect(friend.name).toBeDefined()
++    expect(friend.name).toBe('getFriend.name')
++    expect(friend.age).toBe(1)
++  })
++
++  it('should return more props with optional', () => {
++    const allProps = fakeProps(ComponentFile, { optional: true })
++    const requiredProps = fakeProps(ComponentFile)
++
++    const allPropsLength = Object.keys(allProps).length
++    const requiredPropsLength = Object.keys(requiredProps).length
++
++    expect(allPropsLength).toBeGreaterThan(requiredPropsLength)
++  })
++
++  it('should return an object with shape props faked', () => {
++    const props = fakeProps(SimpleFile)
++    const { requiredString, requiredObject } = props
++
++    expect(props).toEqual({
++      requiredString,
++      requiredObject: {
++        requiredString: requiredObject.requiredString
++      }
++    })
++  })
++
++  it('should prefix shape props', () => {
++    const props = fakeProps(SimpleFile)
++    expect(props.requiredObject.requiredString).toBe(
++      'requiredObject.requiredString'
++    )
++  })
++
++  it('should work with multiple components', () => {
++    const component = fakeProps(Multiple, { all: true }).find(
++      ({ displayName }) => displayName === 'First'
++    )
++    expect(component.props.requiredString).toBe('requiredString')
++  })
++})
+",0,

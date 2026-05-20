@@ -1,0 +1,164 @@
+{
+    "id": 6662347,
+    "name": "junedomingo/react-native-rename",
+    "isFork": false,
+    "commits": 535,
+    "branches": 8,
+    "releases": 36,
+    "forks": 260,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 17,
+    "stargazers": 2496,
+    "contributors": 19,
+    "size": 1992,
+    "createdAt": "2016-09-20T12:46:31",
+    "pushedAt": "2024-01-20T09:58:22",
+    "updatedAt": "2024-01-20T03:58:30",
+    "totalIssues": 147,
+    "openIssues": 10,
+    "totalPullRequests": 143,
+    "openPullRequests": 6,
+    "blankLines": 420,
+    "codeLines": 14382,
+    "commentLines": 596,
+    "metrics": [
+        {
+            "blankLines": 15,
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 61
+        },
+        {
+            "blankLines": 28,
+            "language": "Objective-C++",
+            "commentLines": 6,
+            "codeLines": 99
+        },
+        {
+            "blankLines": 21,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 66
+        },
+        {
+            "blankLines": 1,
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0
+        },
+        {
+            "blankLines": 2,
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 142,
+            "language": "JavaScript",
+            "commentLines": 182,
+            "codeLines": 915
+        },
+        {
+            "blankLines": 27,
+            "language": "Bourne Shell",
+            "commentLines": 108,
+            "codeLines": 99
+        },
+        {
+            "blankLines": 24,
+            "language": "C/C++ Header",
+            "commentLines": 6,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 8,
+            "language": "Properties",
+            "commentLines": 26,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 9,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 19,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 71
+        },
+        {
+            "blankLines": 28,
+            "language": "C++",
+            "commentLines": 17,
+            "codeLines": 108
+        },
+        {
+            "blankLines": 2,
+            "language": "CMake",
+            "commentLines": 2,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 48,
+            "language": "Java",
+            "commentLines": 72,
+            "codeLines": 292
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12075
+        },
+        {
+            "blankLines": 13,
+            "language": "XML",
+            "commentLines": 21,
+            "codeLines": 267
+        },
+        {
+            "blankLines": 33,
+            "language": "Gradle",
+            "commentLines": 140,
+            "codeLines": 202
+        }
+    ],
+    "lastCommit": "2024-01-20T09:56:41",
+    "lastCommitSHA": "74de00e70728870b46fee0e692c0c2fc978948ec",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37939,
+        "Java": 15668,
+        "C++": 7303,
+        "Objective-C++": 4451,
+        "Objective-C": 2399,
+        "Ruby": 1630,
+        "Starlark": 602,
+        "Shell": 482,
+        "CMake": 278
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "cli",
+        "react-native",
+        "react-native-rename",
+        "rename"
+    ]
+}

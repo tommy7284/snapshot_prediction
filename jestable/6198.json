@@ -1,0 +1,74 @@
+{
+    "id": 6234534,
+    "name": "nitin42/making-a-custom-react-renderer",
+    "isFork": false,
+    "commits": 138,
+    "branches": 12,
+    "releases": 0,
+    "forks": 87,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 22,
+    "stargazers": 1242,
+    "contributors": 7,
+    "size": 490,
+    "createdAt": "2017-09-24T10:57:21",
+    "pushedAt": "2021-12-22T06:31:00",
+    "updatedAt": "2021-12-23T03:47:44",
+    "totalIssues": 3,
+    "openIssues": 2,
+    "totalPullRequests": 21,
+    "openPullRequests": 10,
+    "blankLines": 259,
+    "codeLines": 620,
+    "commentLines": 23,
+    "metrics": [
+        {
+            "blankLines": 210,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 436
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 49,
+            "language": "JavaScript",
+            "commentLines": 23,
+            "codeLines": 145
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 7
+        }
+    ],
+    "lastCommit": "2018-07-10T03:16:17",
+    "lastCommitSHA": "684995affcac0cd9cd3235df1eb29852f1c9b18e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 4783
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

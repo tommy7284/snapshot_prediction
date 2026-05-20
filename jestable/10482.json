@@ -1,0 +1,118 @@
+{
+    "id": 6938104,
+    "name": "necolas/react-native-web",
+    "isFork": false,
+    "commits": 1968,
+    "branches": 17,
+    "releases": 21,
+    "forks": 1764,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://necolas.github.io/react-native-web",
+    "watchers": 336,
+    "stargazers": 21337,
+    "contributors": 170,
+    "size": 95413,
+    "createdAt": "2015-06-09T07:25:38",
+    "pushedAt": "2024-04-22T05:23:35",
+    "updatedAt": "2024-04-23T06:44:22",
+    "totalIssues": 1760,
+    "openIssues": 82,
+    "totalPullRequests": 741,
+    "openPullRequests": 18,
+    "blankLines": 5893,
+    "codeLines": 68060,
+    "commentLines": 7181,
+    "metrics": [
+        {
+            "blankLines": 1125,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3090
+        },
+        {
+            "blankLines": 4631,
+            "language": "JavaScript",
+            "commentLines": 7144,
+            "codeLines": 38385
+        },
+        {
+            "blankLines": 95,
+            "language": "CSS",
+            "commentLines": 33,
+            "codeLines": 466
+        },
+        {
+            "blankLines": 26,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 245
+        },
+        {
+            "blankLines": 1,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 14,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 168
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25690
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2024-04-22T05:23:07",
+    "lastCommitSHA": "36948a63fc50a598a877293bbd13601ae10d47cb",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 127716,
+        "CSS": 14034,
+        "HTML": 12094,
+        "Shell": 74
+    },
+    "labels": [
+        "attention",
+        "bug",
+        "bug: browser",
+        "bug: react-native",
+        "dependencies",
+        "enhancement",
+        "has: pr",
+        "needs: help",
+        "needs: issue template",
+        "needs: more information",
+        "priority: high",
+        "priority: low",
+        "project:react-native-web",
+        "resolution: cannot reproduce",
+        "resolution: no response",
+        "resolution: wontfix"
+    ],
+    "topics": [
+        "cross-platform",
+        "css-in-js",
+        "gui-framework",
+        "react",
+        "react-components",
+        "react-dom",
+        "react-native",
+        "react-native-web",
+        "react-ui"
+    ]
+}

@@ -1,0 +1,77 @@
+{
+    "id": 6848958,
+    "name": "webpack/tapable",
+    "isFork": false,
+    "commits": 235,
+    "branches": 3,
+    "releases": 24,
+    "forks": 402,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 47,
+    "stargazers": 3620,
+    "contributors": 32,
+    "size": 356,
+    "createdAt": "2013-01-21T10:04:17",
+    "pushedAt": "2023-10-27T04:04:06",
+    "updatedAt": "2023-12-15T10:53:45",
+    "totalIssues": 78,
+    "openIssues": 18,
+    "totalPullRequests": 101,
+    "openPullRequests": 12,
+    "blankLines": 442,
+    "codeLines": 3414,
+    "commentLines": 107,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 44
+        },
+        {
+            "blankLines": 16,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 100
+        },
+        {
+            "blankLines": 357,
+            "language": "JavaScript",
+            "commentLines": 107,
+            "codeLines": 3034
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 68,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 228
+        }
+    ],
+    "lastCommit": "2021-09-13T09:55:36",
+    "lastCommitSHA": "a0a7b26224557bd8bb09b97e0126b7dbda9f8e6a",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 90057
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

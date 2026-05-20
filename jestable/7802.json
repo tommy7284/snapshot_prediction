@@ -1,0 +1,96 @@
+{
+    "id": 6676726,
+    "name": "prettier/eslint-config-prettier",
+    "isFork": false,
+    "commits": 381,
+    "branches": 1,
+    "releases": 0,
+    "forks": 251,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 5217,
+    "contributors": 34,
+    "size": 2101,
+    "createdAt": "2017-01-29T08:07:58",
+    "pushedAt": "2024-04-19T12:01:12",
+    "updatedAt": "2024-04-19T11:23:51",
+    "totalIssues": 164,
+    "openIssues": 4,
+    "totalPullRequests": 118,
+    "openPullRequests": 4,
+    "blankLines": 615,
+    "codeLines": 20798,
+    "commentLines": 148,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 169,
+            "language": "JavaScript",
+            "commentLines": 95,
+            "codeLines": 1281
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 18406
+        },
+        {
+            "blankLines": 31,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 414,
+            "language": "Markdown",
+            "commentLines": 45,
+            "codeLines": 981
+        },
+        {
+            "blankLines": 0,
+            "language": "Vuejs Component",
+            "commentLines": 4,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2024-01-14T12:43:21",
+    "lastCommitSHA": "5687e7de69ac132f053b4bc5474d5963aa3bf6d6",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 43498,
+        "Vue": 197,
+        "TypeScript": 192
+    },
+    "labels": [
+        "awaiting response",
+        "bug",
+        "ci",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "internal",
+        "invalid",
+        "meta",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "eslint",
+        "eslint-config",
+        "prettier",
+        "react"
+    ]
+}

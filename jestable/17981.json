@@ -1,0 +1,127 @@
+{
+    "id": 70027848,
+    "name": "paloaltonetworks/docusaurus-openapi-docs",
+    "isFork": false,
+    "commits": 719,
+    "branches": 5,
+    "releases": 56,
+    "forks": 182,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://docusaurus-openapi.tryingpan.dev",
+    "watchers": 9,
+    "stargazers": 540,
+    "contributors": 36,
+    "size": 7190,
+    "createdAt": "2022-02-16T04:06:40",
+    "pushedAt": "2024-05-06T05:13:55",
+    "updatedAt": "2024-05-08T11:22:19",
+    "totalIssues": 274,
+    "openIssues": 91,
+    "totalPullRequests": 474,
+    "openPullRequests": 4,
+    "blankLines": 3001,
+    "codeLines": 23164,
+    "commentLines": 1778,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 11,
+            "codeLines": 3215,
+            "blankLines": 99
+        },
+        {
+            "language": "CSS",
+            "commentLines": 17,
+            "codeLines": 130,
+            "blankLines": 22
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2127,
+            "blankLines": 840
+        },
+        {
+            "language": "Mustache",
+            "commentLines": 0,
+            "codeLines": 38,
+            "blankLines": 1
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1394,
+            "codeLines": 12152,
+            "blankLines": 1573
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 251,
+            "codeLines": 2792,
+            "blankLines": 175
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 570,
+            "blankLines": 4
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 105,
+            "codeLines": 1714,
+            "blankLines": 286
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 423,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-06T02:42:21",
+    "lastCommitSHA": "add373b14bf8ebedfbc2d91f6e5395347d65b788",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 424214,
+        "JavaScript": 77218,
+        "SCSS": 52559,
+        "CSS": 365,
+        "Shell": 57
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "do not merge",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "reviewing :eyes:",
+        "status: needs triage",
+        "v2.0.0",
+        "v3.0.0",
+        "wontfix"
+    ],
+    "topics": [
+        "docusaurus",
+        "docusaurus-plugin",
+        "docusaurus-theme",
+        "docusaurus2",
+        "openapi",
+        "react"
+    ]
+}

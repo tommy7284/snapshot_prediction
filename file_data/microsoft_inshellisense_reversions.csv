@@ -1,0 +1,1113 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+113,d339cc2980b7f1db34fe3f244826bc4b7a87ad09,d339cc2980b7f1db34fe3f244826bc4b7a87ad09,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"## Description
+Closes #62","fix: infinite loop when argument is given when spec doesn't have an argument
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 71b8a2c..e6d1a0f 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -18,13 +18,17 @@ const testData = [
+   { name: ""command"", command: ""sudo git sta"" },
+   { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // TODO: fix skipped test
+   { name: ""loadSpec"", command: ""aws acm add"" },
++  { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+ ];
+ 
+ describe(`parseCommand`, () => {
+-  testData.forEach(({ command, name, skip }) => {
++  testData.forEach(({ command, name, skip, maxSuggestions }) => {
+     if (skip) return;
+     test(name, async () => {
+       const suggestions = await getSuggestions(command);
++      if (suggestions != null && suggestions.suggestions != null) {
++        suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
++      }
+       expect(suggestions).toMatchSnapshot();
+     });
+   });
+",0,
+113,d339cc2980b7f1db34fe3f244826bc4b7a87ad09,d339cc2980b7f1db34fe3f244826bc4b7a87ad09,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"## Description
+Closes #62","fix: infinite loop when argument is given when spec doesn't have an argument
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 71b8a2c..e6d1a0f 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -18,13 +18,17 @@ const testData = [
+   { name: ""command"", command: ""sudo git sta"" },
+   { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // TODO: fix skipped test
+   { name: ""loadSpec"", command: ""aws acm add"" },
++  { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+ ];
+ 
+ describe(`parseCommand`, () => {
+-  testData.forEach(({ command, name, skip }) => {
++  testData.forEach(({ command, name, skip, maxSuggestions }) => {
+     if (skip) return;
+     test(name, async () => {
+       const suggestions = await getSuggestions(command);
++      if (suggestions != null && suggestions.suggestions != null) {
++        suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
++      }
+       expect(suggestions).toMatchSnapshot();
+     });
+   });
+",0,
+114,6832f86e2a2d0fb771121f10759d94b35f38893b,6832f86e2a2d0fb771121f10759d94b35f38893b,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"## Description
+Closes #57 ","test: pipeline parsing
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index 8d200bb..37d7dae 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -23,6 +23,7 @@ const testData = [
+   { command: `cmd ` },
+   { command: `cmd ""value' ` },
+   { command: `cmd ""value'\\""\\"""" ` },
++  { command: `cmd1 | cmd2 ` },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+114,6832f86e2a2d0fb771121f10759d94b35f38893b,6832f86e2a2d0fb771121f10759d94b35f38893b,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"## Description
+Closes #57 ","test: pipeline parsing
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index 8d200bb..37d7dae 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -23,6 +23,7 @@ const testData = [
+   { command: `cmd ` },
+   { command: `cmd ""value' ` },
+   { command: `cmd ""value'\\""\\"""" ` },
++  { command: `cmd1 | cmd2 ` },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+118,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"## Description
+This change makes it so that when an item is found after a variadic sequence, we can still suggest subcommands / options that break the sequence. It also fixes parsing an option found at the end of a command sequence.
+
+Closes #56","fix: showing option suggestions after variadic arg
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index 37d7dae..3c42408 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -24,6 +24,7 @@ const testData = [
+   { command: `cmd ""value' ` },
+   { command: `cmd ""value'\\""\\"""" ` },
+   { command: `cmd1 | cmd2 ` },
++  { command: `cmd1 -` },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+118,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"## Description
+This change makes it so that when an item is found after a variadic sequence, we can still suggest subcommands / options that break the sequence. It also fixes parsing an option found at the end of a command sequence.
+
+Closes #56","fix: showing option suggestions after variadic arg
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index e6d1a0f..49a12bb 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -12,7 +12,8 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""noOptionsSuggestedAfterVariadicArg"", command: ""ls item -"" },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+   { name: ""command"", command: ""sudo git sta"" },
+",0,
+118,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"## Description
+This change makes it so that when an item is found after a variadic sequence, we can still suggest subcommands / options that break the sequence. It also fixes parsing an option found at the end of a command sequence.
+
+Closes #56","fix: showing option suggestions after variadic arg
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index 37d7dae..3c42408 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -24,6 +24,7 @@ const testData = [
+   { command: `cmd ""value' ` },
+   { command: `cmd ""value'\\""\\"""" ` },
+   { command: `cmd1 | cmd2 ` },
++  { command: `cmd1 -` },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+118,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,8189f6c85180ed85df2a8b5a1b94b2186d9efe68,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"## Description
+This change makes it so that when an item is found after a variadic sequence, we can still suggest subcommands / options that break the sequence. It also fixes parsing an option found at the end of a command sequence.
+
+Closes #56","fix: showing option suggestions after variadic arg
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index e6d1a0f..49a12bb 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -12,7 +12,8 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""noOptionsSuggestedAfterVariadicArg"", command: ""ls item -"" },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+   { name: ""command"", command: ""sudo git sta"" },
+",0,
+129,e99ddf2bf1605b488a966f1b1a3fbf76acc747d6,e99ddf2bf1605b488a966f1b1a3fbf76acc747d6,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Closes #13 and closes #12,"fix: generators by syncing types/generators & providing path field support
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 9d4cc85..abf9e58 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -2,6 +2,7 @@
+ // Licensed under the MIT License.
+ 
+ import { getSuggestions } from ""../../runtime/runtime.js"";
++import { Shell } from ""../../utils/shell.js"";
+ 
+ const testData = [
+   { name: ""partialPrefixFilter"", command: ""git sta"" },
+@@ -26,7 +27,7 @@ describe(`parseCommand`, () => {
+   testData.forEach(({ command, name, skip, maxSuggestions }) => {
+     if (skip) return;
+     test(name, async () => {
+-      const suggestions = await getSuggestions(command, process.cwd());
++      const suggestions = await getSuggestions(command, process.cwd(), Shell.Cmd);
+       if (suggestions != null && suggestions.suggestions != null) {
+         suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
+       }
+",0,
+129,e99ddf2bf1605b488a966f1b1a3fbf76acc747d6,e99ddf2bf1605b488a966f1b1a3fbf76acc747d6,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Closes #13 and closes #12,"fix: generators by syncing types/generators & providing path field support
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 9d4cc85..abf9e58 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -2,6 +2,7 @@
+ // Licensed under the MIT License.
+ 
+ import { getSuggestions } from ""../../runtime/runtime.js"";
++import { Shell } from ""../../utils/shell.js"";
+ 
+ const testData = [
+   { name: ""partialPrefixFilter"", command: ""git sta"" },
+@@ -26,7 +27,7 @@ describe(`parseCommand`, () => {
+   testData.forEach(({ command, name, skip, maxSuggestions }) => {
+     if (skip) return;
+     test(name, async () => {
+-      const suggestions = await getSuggestions(command, process.cwd());
++      const suggestions = await getSuggestions(command, process.cwd(), Shell.Cmd);
+       if (suggestions != null && suggestions.suggestions != null) {
+         suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
+       }
+",0,
+168,219d02d2e9b0fc87091c53855273fb9228a90755,219d02d2e9b0fc87091c53855273fb9228a90755,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: tests to use -T
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index abf9e58..212d05d 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -13,7 +13,7 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -l"", maxSuggestions: 3 },
+   { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+",0,
+168,219d02d2e9b0fc87091c53855273fb9228a90755,219d02d2e9b0fc87091c53855273fb9228a90755,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: tests to use -T
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index abf9e58..212d05d 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -13,7 +13,7 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -l"", maxSuggestions: 3 },
+   { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+",0,
+176,219d02d2e9b0fc87091c53855273fb9228a90755,219d02d2e9b0fc87091c53855273fb9228a90755,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"Instead of respecting the user's prompt, force an empty prompt of `> ` or `PS >` to hide user information and make testing less flaky / support testing snapshots.","fix: tests to use -T
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index abf9e58..212d05d 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -13,7 +13,7 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -l"", maxSuggestions: 3 },
+   { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+",0,
+176,219d02d2e9b0fc87091c53855273fb9228a90755,219d02d2e9b0fc87091c53855273fb9228a90755,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,"Instead of respecting the user's prompt, force an empty prompt of `> ` or `PS >` to hide user information and make testing less flaky / support testing snapshots.","fix: tests to use -T
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index abf9e58..212d05d 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -13,7 +13,7 @@ const testData = [
+   { name: ""exclusiveOnOption"", command: ""ag --affinity --no"" },
+   { name: ""providedSuggestion"", command: ""bw completion --shell "" },
+   { name: ""fullyTypedSuggestion"", command: ""ls -W"" },
+-  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -"", maxSuggestions: 3 },
++  { name: ""optionsSuggestedAfterVariadicArg"", command: ""ls item -l"", maxSuggestions: 3 },
+   { name: ""noOptionsSuggestedDuringVariadicArg"", command: ""ls -W ite"" },
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+",0,
+222,e8c9e670836bdc83c964bbc8217acfcd133f9b1d,0e4ec5304089078841e129b9845be7fb06ead976,src/tests/runtime/__snapshots__/alias.test.ts.snap,src/tests/runtime/alias.test.ts,Closes #157,"feat: add alias expansion for bash & zsh
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/alias.test.ts b/src/tests/runtime/alias.test.ts
+new file mode 100644
+index 0000000..74df159
+--- /dev/null
++++ b/src/tests/runtime/alias.test.ts
+@@ -0,0 +1,45 @@
++// Copyright (c) Microsoft Corporation.
++// Licensed under the MIT License.
++
++import { jest } from ""@jest/globals"";
++import { Shell } from ""../../utils/shell"";
++
++const mockExecuteShellCommand = jest.fn();
++
++jest.unstable_mockModule(""../../runtime/utils.js"", () => ({
++  buildExecuteShellCommand: () => mockExecuteShellCommand,
++}));
++
++const { aliasExpand, loadAliases } = await import(""../../runtime/alias.js"");
++
++beforeEach(() => {
++  jest.clearAllMocks();
++});
++
++describe(""aliasExpand"", () => {
++  test(""expand on bash aliases"", async () => {
++    //@ts-expect-error - jest.fn() has no implementation
++    mockExecuteShellCommand.mockResolvedValue({
++      stdout: `alias glo='git log --oneline'
++alias la='echo '\\''lo'\\'' '\\''la'\\'''`,
++    });
++
++    await loadAliases(Shell.Bash);
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
++  });
++
++  test(""expand on zsh aliases"", async () => {
++    //@ts-expect-error - jest.fn() has no implementation
++    mockExecuteShellCommand.mockResolvedValue({
++      stdout: `glo='git log --oneline'
++la='echo '\\''lo'\\'' '\\''la'\\'''`,
++    });
++
++    await loadAliases(Shell.Zsh);
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
++  });
++});
+",0,
+222,e8c9e670836bdc83c964bbc8217acfcd133f9b1d,0e4ec5304089078841e129b9845be7fb06ead976,src/tests/runtime/__snapshots__/alias.test.ts.snap,src/tests/runtime/alias.test.ts,Closes #157,"feat: add alias expansion for bash & zsh
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/alias.test.ts b/src/tests/runtime/alias.test.ts
+new file mode 100644
+index 0000000..74df159
+--- /dev/null
++++ b/src/tests/runtime/alias.test.ts
+@@ -0,0 +1,45 @@
++// Copyright (c) Microsoft Corporation.
++// Licensed under the MIT License.
++
++import { jest } from ""@jest/globals"";
++import { Shell } from ""../../utils/shell"";
++
++const mockExecuteShellCommand = jest.fn();
++
++jest.unstable_mockModule(""../../runtime/utils.js"", () => ({
++  buildExecuteShellCommand: () => mockExecuteShellCommand,
++}));
++
++const { aliasExpand, loadAliases } = await import(""../../runtime/alias.js"");
++
++beforeEach(() => {
++  jest.clearAllMocks();
++});
++
++describe(""aliasExpand"", () => {
++  test(""expand on bash aliases"", async () => {
++    //@ts-expect-error - jest.fn() has no implementation
++    mockExecuteShellCommand.mockResolvedValue({
++      stdout: `alias glo='git log --oneline'
++alias la='echo '\\''lo'\\'' '\\''la'\\'''`,
++    });
++
++    await loadAliases(Shell.Bash);
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
++  });
++
++  test(""expand on zsh aliases"", async () => {
++    //@ts-expect-error - jest.fn() has no implementation
++    mockExecuteShellCommand.mockResolvedValue({
++      stdout: `glo='git log --oneline'
++la='echo '\\''lo'\\'' '\\''la'\\'''`,
++    });
++
++    await loadAliases(Shell.Zsh);
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
++  });
++});
+",0,
+284,fe2d6018ebca7d7b7f81d450ae59343f03cb1dfa,e296b679da2991f74d5f94bcf28dcb1b864f4cbc,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Closes #274,"feat: add tests and bump @withfig/autocomplete to 2.675.0
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 5acf7af..77294da 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -1,8 +1,11 @@
+ // Copyright (c) Microsoft Corporation.
+ // Licensed under the MIT License.
+ 
++import fs from ""node:fs"";
++
+ import { getSuggestions } from ""../../runtime/runtime.js"";
+ import { Shell } from ""../../utils/shell.js"";
++import { SuggestionIcons } from ""../../runtime/suggestion.js"";
+ 
+ const testData = [
+   { name: ""partialPrefixFilter"", command: ""git sta"" },
+@@ -39,20 +42,48 @@ describe(`parseCommand`, () => {
+   });
+ });
+ 
+-const platformTestData = [
+-  { name: ""macosSpawnCommand"", command: ""brew install mullvad-brow"", platform: ""darwin"", maxSuggestions: 1, expectedNames: [""mullvad-browser""] },
++const commandSuggestionsData = [
++  {
++    name: ""brewInstallMullvad"",
++    command: ""brew install mullvad-brow"",
++    platforms: [""darwin""],
++    maxSuggestions: 1,
++    expectedNames: [""mullvad-browser""],
++    expectedIcons: [""🍺""],
++  },
++  { name: ""gitStat"", command: ""git stat"", maxSuggestions: 1, expectedNames: [""status""], expectedIcons: [SuggestionIcons.Subcommand] }, // subcommand generator
++  { name: ""gitStatus"", command: ""git status "", expectedNames: [""demo.ts""] }, // script + post-process generator
++  { name: ""ls"", command: ""ls "", maxSuggestions: 1, expectedNames: ["".eslintrc.cjs""], expectedIcons: [SuggestionIcons.File] }, // file generator
++  { name: ""cd"", command: ""cd "", maxSuggestions: 1, expectedNames: [""build/""], expectedIcons: [SuggestionIcons.Folder] }, // folder generator
++  { name: ""find"", command: ""find -"", maxSuggestions: 1, expectedIcons: [SuggestionIcons.Option] }, // filtering file generator
++  { name: ""goTool"", command: ""go build -buildmode "", maxSuggestions: 1, expectedNames: [""archive""] }, // script + split-on generator
++  { name: ""preCommitRun"", command: ""pre-commit run "", maxSuggestions: 1, expectedIcons: [SuggestionIcons.Option] }, // script + post-process generator w/ console logs
+ ];
+ 
+-describe(`parsePlatformCommand`, () => {
+-  platformTestData.forEach(({ command, name, maxSuggestions, expectedNames, platform }) => {
+-    if (platform != null && process.platform != platform) return;
++describe(`getCommandSuggestions`, () => {
++  beforeAll(async () => await getCommandSuggestionsSetup());
++
++  commandSuggestionsData.forEach(({ command, name, maxSuggestions, expectedNames, expectedIcons, platforms }) => {
++    if (platforms != null && !platforms.includes(process.platform)) return;
+     test(name, async () => {
+       const suggestions = await getSuggestions(command, process.cwd(), Shell.Cmd);
+       if (suggestions != null && suggestions.suggestions != null) {
+         suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
+       }
+       const names = suggestions?.suggestions.map((s) => s.allNames).flat() ?? [];
+-      expect(names).toEqual(expect.arrayContaining(expectedNames));
++      const icons = suggestions?.suggestions.map((s) => s.icon) ?? [];
++      expect(names).toEqual(expect.arrayContaining(expectedNames ?? []));
++      expect(icons).toEqual(expect.arrayContaining(expectedIcons ?? []));
+     });
+   });
++
++  afterAll(async () => await getCommandSuggestionsCleanup());
+ });
++
++const getCommandSuggestionsSetup = async () => {
++  fs.closeSync(fs.openSync(""demo.ts"", ""w""));
++};
++
++const getCommandSuggestionsCleanup = async () => {
++  fs.rmSync(""demo.ts"");
++};
+",0,
+284,fe2d6018ebca7d7b7f81d450ae59343f03cb1dfa,e296b679da2991f74d5f94bcf28dcb1b864f4cbc,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Closes #274,"feat: add tests and bump @withfig/autocomplete to 2.675.0
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 5acf7af..77294da 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -1,8 +1,11 @@
+ // Copyright (c) Microsoft Corporation.
+ // Licensed under the MIT License.
+ 
++import fs from ""node:fs"";
++
+ import { getSuggestions } from ""../../runtime/runtime.js"";
+ import { Shell } from ""../../utils/shell.js"";
++import { SuggestionIcons } from ""../../runtime/suggestion.js"";
+ 
+ const testData = [
+   { name: ""partialPrefixFilter"", command: ""git sta"" },
+@@ -39,20 +42,48 @@ describe(`parseCommand`, () => {
+   });
+ });
+ 
+-const platformTestData = [
+-  { name: ""macosSpawnCommand"", command: ""brew install mullvad-brow"", platform: ""darwin"", maxSuggestions: 1, expectedNames: [""mullvad-browser""] },
++const commandSuggestionsData = [
++  {
++    name: ""brewInstallMullvad"",
++    command: ""brew install mullvad-brow"",
++    platforms: [""darwin""],
++    maxSuggestions: 1,
++    expectedNames: [""mullvad-browser""],
++    expectedIcons: [""🍺""],
++  },
++  { name: ""gitStat"", command: ""git stat"", maxSuggestions: 1, expectedNames: [""status""], expectedIcons: [SuggestionIcons.Subcommand] }, // subcommand generator
++  { name: ""gitStatus"", command: ""git status "", expectedNames: [""demo.ts""] }, // script + post-process generator
++  { name: ""ls"", command: ""ls "", maxSuggestions: 1, expectedNames: ["".eslintrc.cjs""], expectedIcons: [SuggestionIcons.File] }, // file generator
++  { name: ""cd"", command: ""cd "", maxSuggestions: 1, expectedNames: [""build/""], expectedIcons: [SuggestionIcons.Folder] }, // folder generator
++  { name: ""find"", command: ""find -"", maxSuggestions: 1, expectedIcons: [SuggestionIcons.Option] }, // filtering file generator
++  { name: ""goTool"", command: ""go build -buildmode "", maxSuggestions: 1, expectedNames: [""archive""] }, // script + split-on generator
++  { name: ""preCommitRun"", command: ""pre-commit run "", maxSuggestions: 1, expectedIcons: [SuggestionIcons.Option] }, // script + post-process generator w/ console logs
+ ];
+ 
+-describe(`parsePlatformCommand`, () => {
+-  platformTestData.forEach(({ command, name, maxSuggestions, expectedNames, platform }) => {
+-    if (platform != null && process.platform != platform) return;
++describe(`getCommandSuggestions`, () => {
++  beforeAll(async () => await getCommandSuggestionsSetup());
++
++  commandSuggestionsData.forEach(({ command, name, maxSuggestions, expectedNames, expectedIcons, platforms }) => {
++    if (platforms != null && !platforms.includes(process.platform)) return;
+     test(name, async () => {
+       const suggestions = await getSuggestions(command, process.cwd(), Shell.Cmd);
+       if (suggestions != null && suggestions.suggestions != null) {
+         suggestions.suggestions = suggestions?.suggestions.slice(0, maxSuggestions);
+       }
+       const names = suggestions?.suggestions.map((s) => s.allNames).flat() ?? [];
+-      expect(names).toEqual(expect.arrayContaining(expectedNames));
++      const icons = suggestions?.suggestions.map((s) => s.icon) ?? [];
++      expect(names).toEqual(expect.arrayContaining(expectedNames ?? []));
++      expect(icons).toEqual(expect.arrayContaining(expectedIcons ?? []));
+     });
+   });
++
++  afterAll(async () => await getCommandSuggestionsCleanup());
+ });
++
++const getCommandSuggestionsSetup = async () => {
++  fs.closeSync(fs.openSync(""demo.ts"", ""w""));
++};
++
++const getCommandSuggestionsCleanup = async () => {
++  fs.rmSync(""demo.ts"");
++};
+",0,
+291,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,44c8ae29479712abe5c317021c9052df0001f3f1,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"Fixes some weird completion issues for paths introduced in #290 along with improving handling quoted & escaped paths for completions across all shells. 
+
+Related to #289","feat: update parser to handle backtick quoted strings, strings without ending quotes, and strings with quotes with content immediately following
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ecab703..efcecfe 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -26,6 +26,10 @@ const testData = [
+   { command: `cmd1 | cmd2 ` },
+   { command: `cmd1 -` },
+   { command: `cmd dir\\ 1/dir\\ 2/item1` },
++  { command: `cmd1 ""item1""item2` },
++  { command: `cmd1 ""item1""item2 item3` },
++  { command: `cmd1 ""item1""item2 ""item3""` },
++  { command: ""`cmd1`"" },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+291,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,src/tests/runtime/__snapshots__/alias.test.ts.snap,src/tests/runtime/alias.test.ts,"Fixes some weird completion issues for paths introduced in #290 along with improving handling quoted & escaped paths for completions across all shells. 
+
+Related to #289","fix: path completions
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/alias.test.ts b/src/tests/runtime/alias.test.ts
+index 01ed74a..22b6c8a 100644
+--- a/src/tests/runtime/alias.test.ts
++++ b/src/tests/runtime/alias.test.ts
+@@ -8,6 +8,7 @@ const mockExecuteShellCommand = jest.fn();
+ 
+ jest.unstable_mockModule(""../../runtime/utils.js"", () => ({
+   buildExecuteShellCommand: () => mockExecuteShellCommand,
++  getShellWhitespaceEscapeChar: () => ""\\"",
+ }));
+ 
+ const { aliasExpand, loadAliases } = await import(""../../runtime/alias.js"");
+@@ -27,10 +28,10 @@ alias ls='ls --color=auto'`,
+     });
+ 
+     await loadAliases(Shell.Bash);
+-    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
+   });
+ 
+   test(""expand on zsh aliases"", async () => {
+@@ -43,9 +44,9 @@ ls='ls --color=auto'`,
+     });
+ 
+     await loadAliases(Shell.Zsh);
+-    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
+   });
+ });
+",0,
+291,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,44c8ae29479712abe5c317021c9052df0001f3f1,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,"Fixes some weird completion issues for paths introduced in #290 along with improving handling quoted & escaped paths for completions across all shells. 
+
+Related to #289","feat: update parser to handle backtick quoted strings, strings without ending quotes, and strings with quotes with content immediately following
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ecab703..efcecfe 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -26,6 +26,10 @@ const testData = [
+   { command: `cmd1 | cmd2 ` },
+   { command: `cmd1 -` },
+   { command: `cmd dir\\ 1/dir\\ 2/item1` },
++  { command: `cmd1 ""item1""item2` },
++  { command: `cmd1 ""item1""item2 item3` },
++  { command: `cmd1 ""item1""item2 ""item3""` },
++  { command: ""`cmd1`"" },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+291,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,2df39238f31b840f2ec1cd9899118cf4ccc8ae02,src/tests/runtime/__snapshots__/alias.test.ts.snap,src/tests/runtime/alias.test.ts,"Fixes some weird completion issues for paths introduced in #290 along with improving handling quoted & escaped paths for completions across all shells. 
+
+Related to #289","fix: path completions
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/alias.test.ts b/src/tests/runtime/alias.test.ts
+index 01ed74a..22b6c8a 100644
+--- a/src/tests/runtime/alias.test.ts
++++ b/src/tests/runtime/alias.test.ts
+@@ -8,6 +8,7 @@ const mockExecuteShellCommand = jest.fn();
+ 
+ jest.unstable_mockModule(""../../runtime/utils.js"", () => ({
+   buildExecuteShellCommand: () => mockExecuteShellCommand,
++  getShellWhitespaceEscapeChar: () => ""\\"",
+ }));
+ 
+ const { aliasExpand, loadAliases } = await import(""../../runtime/alias.js"");
+@@ -27,10 +28,10 @@ alias ls='ls --color=auto'`,
+     });
+ 
+     await loadAliases(Shell.Bash);
+-    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
+   });
+ 
+   test(""expand on zsh aliases"", async () => {
+@@ -43,9 +44,9 @@ ls='ls --color=auto'`,
+     });
+ 
+     await loadAliases(Shell.Zsh);
+-    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false }])).toMatchSnapshot();
+-    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""glo"", complete: false, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""la"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""git"", complete: true, isOption: false, tokenLength: 3 }])).toMatchSnapshot();
++    expect(aliasExpand([{ token: ""ls"", complete: true, isOption: false, tokenLength: 2 }])).toMatchSnapshot();
+   });
+ });
+",0,
+293,824976936b58a90ace7ca03b5c9d6fba414701f1,911b39f99d5cba11d13f54bad5055e931e33c705,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Fixes some errors in #291 with completing paths and added to the snapshots.,"fix: path seperator logic when files are introduced
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index a65e563..0693f71 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -27,6 +27,10 @@ const testData = [
+   { name: ""loadSpec"", command: ""aws acm add"" },
+   { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+   { name: ""generatorUsingPartialInput"", command: ""dotnet add package Microsoft.Azure.WebJobs.Cor"", maxSuggestions: 1 },
++  { name: ""pathSuggestion"", command: ""source she"" },
++  { name: ""pathNestedSuggestion"", command: ""source .github\\work"" },
++  { name: ""pathWithFileSuggestion"", command: ""source shell\\"", maxSuggestions: 1 },
++  { name: ""pathWithFileFilteredSuggestion"", command: ""source shell\\shellIntegration."", maxSuggestions: 1 },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+293,824976936b58a90ace7ca03b5c9d6fba414701f1,824976936b58a90ace7ca03b5c9d6fba414701f1,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,Fixes some errors in #291 with completing paths and added to the snapshots.,"fix: unquoting didn't use shell escape char, rather used \ for everything
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ee89193..ff40c1d 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -32,13 +32,15 @@ const testData = [
+   { command: `cmd1 ""item1""item2 item3` },
+   { command: `cmd1 ""item1""item2 ""item3""` },
+   { command: ""`cmd1`"" },
++  { command: ""cmd 'item1\\item2\\'item3 "", shell: Shell.Powershell },
++  { command: ""cmd 'item1\\item2\\'item3"", shell: Shell.Powershell },
+   { command: ""😁"" },
+ ];
+ 
+ describe(`parseCommand`, () => {
+-  testData.forEach(({ command }) => {
++  testData.forEach(({ command, shell }) => {
+     test(command, () => {
+-      expect(parseCommand(command, Shell.Bash)).toMatchSnapshot();
++      expect(parseCommand(command, shell ?? Shell.Bash)).toMatchSnapshot();
+     });
+   });
+ });
+",0,
+293,824976936b58a90ace7ca03b5c9d6fba414701f1,911b39f99d5cba11d13f54bad5055e931e33c705,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,Fixes some errors in #291 with completing paths and added to the snapshots.,"fix: path seperator logic when files are introduced
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index a65e563..0693f71 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -27,6 +27,10 @@ const testData = [
+   { name: ""loadSpec"", command: ""aws acm add"" },
+   { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+   { name: ""generatorUsingPartialInput"", command: ""dotnet add package Microsoft.Azure.WebJobs.Cor"", maxSuggestions: 1 },
++  { name: ""pathSuggestion"", command: ""source she"" },
++  { name: ""pathNestedSuggestion"", command: ""source .github\\work"" },
++  { name: ""pathWithFileSuggestion"", command: ""source shell\\"", maxSuggestions: 1 },
++  { name: ""pathWithFileFilteredSuggestion"", command: ""source shell\\shellIntegration."", maxSuggestions: 1 },
+ ];
+ 
+ describe(`parseCommand`, () => {
+",0,
+293,824976936b58a90ace7ca03b5c9d6fba414701f1,824976936b58a90ace7ca03b5c9d6fba414701f1,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,Fixes some errors in #291 with completing paths and added to the snapshots.,"fix: unquoting didn't use shell escape char, rather used \ for everything
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ee89193..ff40c1d 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -32,13 +32,15 @@ const testData = [
+   { command: `cmd1 ""item1""item2 item3` },
+   { command: `cmd1 ""item1""item2 ""item3""` },
+   { command: ""`cmd1`"" },
++  { command: ""cmd 'item1\\item2\\'item3 "", shell: Shell.Powershell },
++  { command: ""cmd 'item1\\item2\\'item3"", shell: Shell.Powershell },
+   { command: ""😁"" },
+ ];
+ 
+ describe(`parseCommand`, () => {
+-  testData.forEach(({ command }) => {
++  testData.forEach(({ command, shell }) => {
+     test(command, () => {
+-      expect(parseCommand(command, Shell.Bash)).toMatchSnapshot();
++      expect(parseCommand(command, shell ?? Shell.Bash)).toMatchSnapshot();
+     });
+   });
+ });
+",0,
+393,caf01737c450d38af8630fddcd8b2fed9d15b6d1,9a51b84cf447445de53f71cb4238c3ce66ceab04,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,,"fix: path completions with strings
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ff40c1d..ecc6150 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -35,12 +35,58 @@ const testData = [
+   { command: ""cmd 'item1\\item2\\'item3 "", shell: Shell.Powershell },
+   { command: ""cmd 'item1\\item2\\'item3"", shell: Shell.Powershell },
+   { command: ""😁"" },
++  { command: `` },
++  { command: `   ` },
++  { command: `cmd   ` },
++  { command: `cmd1 | cmd2 && cmd3 ; cmd4` },
++  { command: `cmd1 || cmd2 | cmd3` },
++  { command: ""cmd\targ"" },
++  { command: `cmd '' ` },
++  { command: `cmd """" ` },
++  { command: `cmd 'incomplete` },
++  { command: `cmd ""incomplete` },
++  { command: `cmd --flag=` },
++  { command: `cmd --flag=''` },
++  { command: `cmd --flag=""""` },
++  { command: `cmd -f=''` },
++  { command: `cmd 'hello' ""world"" ` },
++  { command: `cmd ""it's"" ` },
++  { command: `cmd ""a""b ""c""d` },
++  { command: ""cmd C:\\Users\\dir\\file"", shell: Shell.Powershell },
++  { command: ""cmd dir\\ name/file"", shell: Shell.Bash },
++  { command: ""cmd dir` name/file"", shell: Shell.Pwsh },
++  { command: ""cmd dir^ name/file"", shell: Shell.Cmd },
++  { command: ""cmd --flag value"", shell: Shell.Nushell },
++  { command: ""cmd --flag value"", shell: Shell.Fish },
++  { command: ""cmd --flag value"", shell: Shell.Xonsh },
++  { command: ""cmd `n`t arg"", shell: Shell.Powershell },
+ ];
+ 
+ describe(`parseCommand`, () => {
+   testData.forEach(({ command, shell }) => {
+-    test(command, () => {
++    test(`[${shell ?? ""bash""}] ${command}`, () => {
+       expect(parseCommand(command, shell ?? Shell.Bash)).toMatchSnapshot();
+     });
+   });
+ });
++
++describe(`multi-shell whitespace escaping`, () => {
++  const shellEscapeData: { shell: Shell; command: string }[] = [
++    { shell: Shell.Bash, command: `cmd dir\\ name` },
++    { shell: Shell.Zsh, command: `cmd dir\\ name` },
++    { shell: Shell.Pwsh, command: ""cmd dir` name"" },
++    { shell: Shell.Powershell, command: ""cmd dir` name"" },
++    { shell: Shell.Cmd, command: `cmd dir^ name` },
++    { shell: Shell.Fish, command: `cmd dir\\ name` },
++    { shell: Shell.Xonsh, command: `cmd dir\\ name` },
++    { shell: Shell.Nushell, command: `cmd dir\\ name` },
++  ];
++
++  shellEscapeData.forEach(({ shell, command }) => {
++    test(`[${shell}] escaped space: ${command}`, () => {
++      const tokens = parseCommand(command, shell);
++      expect(tokens).toMatchSnapshot();
++      expect(tokens.at(-1)?.token).toContain("" "");
++    });
++  });
++});
+",0,
+393,caf01737c450d38af8630fddcd8b2fed9d15b6d1,9a51b84cf447445de53f71cb4238c3ce66ceab04,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: path completions with strings
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+",,0,
+393,caf01737c450d38af8630fddcd8b2fed9d15b6d1,9a51b84cf447445de53f71cb4238c3ce66ceab04,src/tests/runtime/__snapshots__/parser.test.ts.snap,src/tests/runtime/parser.test.ts,,"fix: path completions with strings
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/parser.test.ts b/src/tests/runtime/parser.test.ts
+index ff40c1d..ecc6150 100644
+--- a/src/tests/runtime/parser.test.ts
++++ b/src/tests/runtime/parser.test.ts
+@@ -35,12 +35,58 @@ const testData = [
+   { command: ""cmd 'item1\\item2\\'item3 "", shell: Shell.Powershell },
+   { command: ""cmd 'item1\\item2\\'item3"", shell: Shell.Powershell },
+   { command: ""😁"" },
++  { command: `` },
++  { command: `   ` },
++  { command: `cmd   ` },
++  { command: `cmd1 | cmd2 && cmd3 ; cmd4` },
++  { command: `cmd1 || cmd2 | cmd3` },
++  { command: ""cmd\targ"" },
++  { command: `cmd '' ` },
++  { command: `cmd """" ` },
++  { command: `cmd 'incomplete` },
++  { command: `cmd ""incomplete` },
++  { command: `cmd --flag=` },
++  { command: `cmd --flag=''` },
++  { command: `cmd --flag=""""` },
++  { command: `cmd -f=''` },
++  { command: `cmd 'hello' ""world"" ` },
++  { command: `cmd ""it's"" ` },
++  { command: `cmd ""a""b ""c""d` },
++  { command: ""cmd C:\\Users\\dir\\file"", shell: Shell.Powershell },
++  { command: ""cmd dir\\ name/file"", shell: Shell.Bash },
++  { command: ""cmd dir` name/file"", shell: Shell.Pwsh },
++  { command: ""cmd dir^ name/file"", shell: Shell.Cmd },
++  { command: ""cmd --flag value"", shell: Shell.Nushell },
++  { command: ""cmd --flag value"", shell: Shell.Fish },
++  { command: ""cmd --flag value"", shell: Shell.Xonsh },
++  { command: ""cmd `n`t arg"", shell: Shell.Powershell },
+ ];
+ 
+ describe(`parseCommand`, () => {
+   testData.forEach(({ command, shell }) => {
+-    test(command, () => {
++    test(`[${shell ?? ""bash""}] ${command}`, () => {
+       expect(parseCommand(command, shell ?? Shell.Bash)).toMatchSnapshot();
+     });
+   });
+ });
++
++describe(`multi-shell whitespace escaping`, () => {
++  const shellEscapeData: { shell: Shell; command: string }[] = [
++    { shell: Shell.Bash, command: `cmd dir\\ name` },
++    { shell: Shell.Zsh, command: `cmd dir\\ name` },
++    { shell: Shell.Pwsh, command: ""cmd dir` name"" },
++    { shell: Shell.Powershell, command: ""cmd dir` name"" },
++    { shell: Shell.Cmd, command: `cmd dir^ name` },
++    { shell: Shell.Fish, command: `cmd dir\\ name` },
++    { shell: Shell.Xonsh, command: `cmd dir\\ name` },
++    { shell: Shell.Nushell, command: `cmd dir\\ name` },
++  ];
++
++  shellEscapeData.forEach(({ shell, command }) => {
++    test(`[${shell}] escaped space: ${command}`, () => {
++      const tokens = parseCommand(command, shell);
++      expect(tokens).toMatchSnapshot();
++      expect(tokens.at(-1)?.token).toContain("" "");
++    });
++  });
++});
+",0,
+393,caf01737c450d38af8630fddcd8b2fed9d15b6d1,9a51b84cf447445de53f71cb4238c3ce66ceab04,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: path completions with strings
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+",,0,
+401,d988b784b3bf0b2ede14fab632afb0ff62576d38,d988b784b3bf0b2ede14fab632afb0ff62576d38,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: remove testgp
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 55f91b7..1454330 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -24,8 +24,8 @@ const testData = [
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+   { name: ""command"", command: ""sudo git sta"" },
+-  { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // TODO: fix skipped test
+-  { name: ""loadSpec"", command: ""aws acm add"" },
++  { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // no longer supported
++  { name: ""loadSpec"", command: ""aws acm add"", skip: true }, // no longer loaded
+   { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+   { name: ""generatorUsingPartialInput"", command: ""dotnet add package Microsoft.Azure.WebJobs.Cor"", maxSuggestions: 1 },
+   { name: ""pathSuggestion"", command: ""source she"" },
+",0,
+401,d988b784b3bf0b2ede14fab632afb0ff62576d38,d988b784b3bf0b2ede14fab632afb0ff62576d38,src/tests/runtime/__snapshots__/runtime.test.ts.snap,src/tests/runtime/runtime.test.ts,,"fix: remove testgp
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/runtime/runtime.test.ts b/src/tests/runtime/runtime.test.ts
+index 55f91b7..1454330 100644
+--- a/src/tests/runtime/runtime.test.ts
++++ b/src/tests/runtime/runtime.test.ts
+@@ -24,8 +24,8 @@ const testData = [
+   { name: ""providedArgDescription"", command: ""act completion bash -a "" },
+   { name: ""completedOptionWithArg"", command: ""act completion bash -a 'actor' "" },
+   { name: ""command"", command: ""sudo git sta"" },
+-  { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // TODO: fix skipped test
+-  { name: ""loadSpec"", command: ""aws acm add"" },
++  { name: ""nestedNonCommands"", command: ""az az "", skip: true }, // no longer supported
++  { name: ""loadSpec"", command: ""aws acm add"", skip: true }, // no longer loaded
+   { name: ""noArgsArgumentGiven"", command: ""gcc lab "", maxSuggestions: 3 },
+   { name: ""generatorUsingPartialInput"", command: ""dotnet add package Microsoft.Azure.WebJobs.Cor"", maxSuggestions: 1 },
+   { name: ""pathSuggestion"", command: ""source she"" },
+",0,
+87,1eff2f5647942b023f3521641d7e0676d4cb329a,5808dea97af901cc59a7ea3542f82fcbc9bc3673,src/tests/isterm/__snapshots__/pty.test.ts.snap,src/tests/isterm/pty.test.ts,"# Description
+Implements `isterm`, a layer for tracking the input buffers across multiple shells, in order to support passthrough of the entire shell's functionality","test: isterm
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/isterm/pty.test.ts b/src/tests/isterm/pty.test.ts
+new file mode 100644
+index 0000000..6a5cd92
+--- /dev/null
++++ b/src/tests/isterm/pty.test.ts
+@@ -0,0 +1,67 @@
++// Copyright (c) Microsoft Corporation.
++// Licensed under the MIT License.
++
++import os from ""node:os"";
++import isterm from ""../../isterm"";
++import { cursorBackward } from ""../../utils/ansi"";
++import { Shell } from ""../../utils/bindings"";
++
++const windowsTest = os.platform() == ""win32"" ? test : test.skip;
++
++const runTerm = async (shell: Shell, input: string[], env?: { [key: string]: string | undefined }) => {
++  const ptyProcess = isterm.spawn({ shell, rows: process.stdout.rows, cols: process.stdout.columns, env });
++  await new Promise((r) => setTimeout(r, 1_000));
++  for (const data of input) {
++    ptyProcess.write(data);
++    await new Promise((r) => setTimeout(r, 1_500));
++  }
++  const commandState = ptyProcess.getCommandState();
++  const hasPromptText = commandState.promptText != null;
++  delete commandState.promptText;
++  return { ...commandState, hasPromptText };
++};
++
++windowsTest(
++  ""test cmd on initial simple command input"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test cmd on initial simple command input with cursor movement backward"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir"" + cursorBackward(1)]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test cmd on multi line command input"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir\r"", ""cmd""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test powershell on suggestion detection"",
++  async () => {
++    const r = await runTerm(Shell.Pwsh, [""ls -Force\r"", ""ls""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test powershell on command detection after failure"",
++  async () => {
++    const r = await runTerm(Shell.Pwsh, [""tomato\r"", ""zsh""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
+",0,
+87,1eff2f5647942b023f3521641d7e0676d4cb329a,5808dea97af901cc59a7ea3542f82fcbc9bc3673,src/tests/isterm/__snapshots__/pty.test.ts.snap,src/tests/isterm/pty.test.ts,"# Description
+Implements `isterm`, a layer for tracking the input buffers across multiple shells, in order to support passthrough of the entire shell's functionality","test: isterm
+
+Signed-off-by: Chapman Pendery <cpendery@vt.edu>
+","diff --git a/src/tests/isterm/pty.test.ts b/src/tests/isterm/pty.test.ts
+new file mode 100644
+index 0000000..6a5cd92
+--- /dev/null
++++ b/src/tests/isterm/pty.test.ts
+@@ -0,0 +1,67 @@
++// Copyright (c) Microsoft Corporation.
++// Licensed under the MIT License.
++
++import os from ""node:os"";
++import isterm from ""../../isterm"";
++import { cursorBackward } from ""../../utils/ansi"";
++import { Shell } from ""../../utils/bindings"";
++
++const windowsTest = os.platform() == ""win32"" ? test : test.skip;
++
++const runTerm = async (shell: Shell, input: string[], env?: { [key: string]: string | undefined }) => {
++  const ptyProcess = isterm.spawn({ shell, rows: process.stdout.rows, cols: process.stdout.columns, env });
++  await new Promise((r) => setTimeout(r, 1_000));
++  for (const data of input) {
++    ptyProcess.write(data);
++    await new Promise((r) => setTimeout(r, 1_500));
++  }
++  const commandState = ptyProcess.getCommandState();
++  const hasPromptText = commandState.promptText != null;
++  delete commandState.promptText;
++  return { ...commandState, hasPromptText };
++};
++
++windowsTest(
++  ""test cmd on initial simple command input"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test cmd on initial simple command input with cursor movement backward"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir"" + cursorBackward(1)]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test cmd on multi line command input"",
++  async () => {
++    const r = await runTerm(Shell.Cmd, [""dir\r"", ""cmd""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test powershell on suggestion detection"",
++  async () => {
++    const r = await runTerm(Shell.Pwsh, [""ls -Force\r"", ""ls""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
++
++windowsTest(
++  ""test powershell on command detection after failure"",
++  async () => {
++    const r = await runTerm(Shell.Pwsh, [""tomato\r"", ""zsh""]);
++    expect(r).toMatchSnapshot();
++  },
++  10000,
++);
+",0,

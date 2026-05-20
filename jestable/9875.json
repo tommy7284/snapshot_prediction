@@ -1,0 +1,98 @@
+{
+    "id": 6880138,
+    "name": "testing-library/jest-dom",
+    "isFork": false,
+    "commits": 248,
+    "branches": 4,
+    "releases": 105,
+    "forks": 373,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://testing-library.com/docs/ecosystem-jest-dom",
+    "watchers": 31,
+    "stargazers": 4285,
+    "contributors": 97,
+    "size": 459,
+    "createdAt": "2018-04-09T01:45:07",
+    "pushedAt": "2024-04-16T03:59:45",
+    "updatedAt": "2024-04-19T06:26:09",
+    "totalIssues": 252,
+    "openIssues": 88,
+    "totalPullRequests": 309,
+    "openPullRequests": 26,
+    "blankLines": 1437,
+    "codeLines": 8121,
+    "commentLines": 985,
+    "metrics": [
+        {
+            "blankLines": 9,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 77,
+            "language": "TypeScript",
+            "commentLines": 728,
+            "codeLines": 863
+        },
+        {
+            "blankLines": 860,
+            "language": "JavaScript",
+            "commentLines": 145,
+            "codeLines": 5442
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 214
+        },
+        {
+            "blankLines": 491,
+            "language": "Markdown",
+            "commentLines": 111,
+            "codeLines": 1530
+        }
+    ],
+    "lastCommit": "2024-04-01T12:23:39",
+    "lastCommitSHA": "bd82f64592696c9710c59becaf1adfeb1e4c6169",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 204414,
+        "TypeScript": 36407
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "do not merge",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "jsdom",
+        "needs discussion",
+        "question",
+        "released",
+        "released on @beta",
+        "wontfix"
+    ],
+    "topics": [
+        "custom-matcher",
+        "dom",
+        "dom-testing-library",
+        "javascript",
+        "jest",
+        "jest-matchers",
+        "jsdom",
+        "react-testing-library",
+        "testing",
+        "testing-library",
+        "testing-library-react"
+    ]
+}

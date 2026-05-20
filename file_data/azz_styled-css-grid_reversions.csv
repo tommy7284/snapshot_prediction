@@ -1,0 +1,219 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+17,9458d78c070f3f7efc0a5c627b7cb8698b7100ed,9458d78c070f3f7efc0a5c627b7cb8698b7100ed,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,,"feat(Grid): expose grid-template-rows and grid-template-columns
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index b92fa8a..5eb6c24 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -10,20 +10,34 @@ describe(""<Grid />"", () => {
+     expect(tree).toMatchSnapshot();
+   });
+ 
+-  test(""'columns' prop sets 'grid-template-columns'"", () => {
++  test(""'columns' as number prop sets 'grid-template-columns' to repeat()"", () => {
+     const tree = renderer.create(<Grid columns={7} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-template-columns"", ""repeat(7,1fr)"");
+   });
+ 
++  test(""'columns' as string prop sets 'grid-template-columns'"", () => {
++    const tree = renderer
++      .create(<Grid columns=""repeat(auto-fit, minmax(100px, 1fr))"" />)
++      .toJSON();
++    expect(tree).toHaveStyleRule(
++      ""grid-template-columns"",
++      ""repeat(auto-fit,minmax(100px,1fr))""
++    );
++  });
++
++  test(""'rows' as string prop sets 'grid-template-rows'"", () => {
++    const tree = renderer.create(<Grid rows=""1fr 2fr 1fr"" />).toJSON();
++    expect(tree).toHaveStyleRule(""grid-template-rows"", ""1fr 2fr 1fr"");
++  });
++
+   test(""'gap' prop sets 'grid-gap'"", () => {
+     const tree = renderer.create(<Grid gap=""7px"" />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-gap"", ""7px 7px"");
+   });
+ 
+-  test(""'minRowHeight' prop sets 'grid-auto-rows' and 'grid-template-rows'"", () => {
++  test(""'minRowHeight' prop sets 'grid-auto-rows'"", () => {
+     const tree = renderer.create(<Grid minRowHeight=""7px"" />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-auto-rows"", ""minmax(7px,auto)"");
+-    expect(tree).toHaveStyleRule(""grid-template-rows"", ""minmax(7px,auto)"");
+   });
+ 
+   test(""'flow' prop sets 'grid-auto-flow'"", () => {
+",0,
+17,9458d78c070f3f7efc0a5c627b7cb8698b7100ed,9458d78c070f3f7efc0a5c627b7cb8698b7100ed,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,,"feat(Grid): expose grid-template-rows and grid-template-columns
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index b92fa8a..5eb6c24 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -10,20 +10,34 @@ describe(""<Grid />"", () => {
+     expect(tree).toMatchSnapshot();
+   });
+ 
+-  test(""'columns' prop sets 'grid-template-columns'"", () => {
++  test(""'columns' as number prop sets 'grid-template-columns' to repeat()"", () => {
+     const tree = renderer.create(<Grid columns={7} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-template-columns"", ""repeat(7,1fr)"");
+   });
+ 
++  test(""'columns' as string prop sets 'grid-template-columns'"", () => {
++    const tree = renderer
++      .create(<Grid columns=""repeat(auto-fit, minmax(100px, 1fr))"" />)
++      .toJSON();
++    expect(tree).toHaveStyleRule(
++      ""grid-template-columns"",
++      ""repeat(auto-fit,minmax(100px,1fr))""
++    );
++  });
++
++  test(""'rows' as string prop sets 'grid-template-rows'"", () => {
++    const tree = renderer.create(<Grid rows=""1fr 2fr 1fr"" />).toJSON();
++    expect(tree).toHaveStyleRule(""grid-template-rows"", ""1fr 2fr 1fr"");
++  });
++
+   test(""'gap' prop sets 'grid-gap'"", () => {
+     const tree = renderer.create(<Grid gap=""7px"" />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-gap"", ""7px 7px"");
+   });
+ 
+-  test(""'minRowHeight' prop sets 'grid-auto-rows' and 'grid-template-rows'"", () => {
++  test(""'minRowHeight' prop sets 'grid-auto-rows'"", () => {
+     const tree = renderer.create(<Grid minRowHeight=""7px"" />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-auto-rows"", ""minmax(7px,auto)"");
+-    expect(tree).toHaveStyleRule(""grid-template-rows"", ""minmax(7px,auto)"");
+   });
+ 
+   test(""'flow' prop sets 'grid-auto-flow'"", () => {
+",0,
+22,fe08e5b465b99b7c7190f34c78e15f26ba1ef9a3,fe08e5b465b99b7c7190f34c78e15f26ba1ef9a3,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,,"feat(Grid): add justifyContent and alignContent props
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index a253cb6..ce54600 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -49,4 +49,14 @@ describe(""<Grid />"", () => {
+     const tree = renderer.create(<Grid areas={[""a a"", ""b b""]} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-template-areas"", '""a a"" ""b b""');
+   });
++
++  test(""'alignContent' prop sets 'align-content'"", () => {
++    const tree = renderer.create(<Grid alignContent=""end"" />).toJSON();
++    expect(tree).toHaveStyleRule(""align-content"", ""end"");
++  });
++
++  test(""'justifyContent' prop sets 'justify-content'"", () => {
++    const tree = renderer.create(<Grid justifyContent=""end"" />).toJSON();
++    expect(tree).toHaveStyleRule(""justify-content"", ""end"");
++  });
+ });
+",0,
+22,fe08e5b465b99b7c7190f34c78e15f26ba1ef9a3,fe08e5b465b99b7c7190f34c78e15f26ba1ef9a3,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,,"feat(Grid): add justifyContent and alignContent props
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index a253cb6..ce54600 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -49,4 +49,14 @@ describe(""<Grid />"", () => {
+     const tree = renderer.create(<Grid areas={[""a a"", ""b b""]} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-template-areas"", '""a a"" ""b b""');
+   });
++
++  test(""'alignContent' prop sets 'align-content'"", () => {
++    const tree = renderer.create(<Grid alignContent=""end"" />).toJSON();
++    expect(tree).toHaveStyleRule(""align-content"", ""end"");
++  });
++
++  test(""'justifyContent' prop sets 'justify-content'"", () => {
++    const tree = renderer.create(<Grid justifyContent=""end"" />).toJSON();
++    expect(tree).toHaveStyleRule(""justify-content"", ""end"");
++  });
+ });
+",0,
+37,73c853ea7584ba494e504fb4ff9c15020850cf15,3288e956196f4105702f888796cf6a90c168d3b2,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,"As ""columns"" and ""rows"" do pretty much the same, the two properties should work in a similar way.
+The difference is that ""columns"" has a default value of `12`, where ""rows"" has nothing.","Allowing to pass numbers for rows
+",,1,OID=OID
+37,73c853ea7584ba494e504fb4ff9c15020850cf15,3288e956196f4105702f888796cf6a90c168d3b2,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,"As ""columns"" and ""rows"" do pretty much the same, the two properties should work in a similar way.
+The difference is that ""columns"" has a default value of `12`, where ""rows"" has nothing.","Allowing to pass numbers for rows
+",,1,OID=OID
+39,0e8f5d65a2a07855d1d642e5288ca109fb44e047,0e8f5d65a2a07855d1d642e5288ca109fb44e047,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,"Closes #36
+Closes #38","feat: support grid-gap row/columns
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index b06beba..0acc1ab 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -37,7 +37,7 @@ describe(""<Grid />"", () => {
+ 
+   test(""'gap' prop sets 'grid-gap'"", () => {
+     const tree = renderer.create(<Grid gap=""7px"" />).toJSON();
+-    expect(tree).toHaveStyleRule(""grid-gap"", ""7px 7px"");
++    expect(tree).toHaveStyleRule(""grid-gap"", ""7px"");
+   });
+ 
+   test(""'minRowHeight' prop sets 'grid-auto-rows'"", () => {
+",0,
+39,0e8f5d65a2a07855d1d642e5288ca109fb44e047,0e8f5d65a2a07855d1d642e5288ca109fb44e047,lib/__tests__/__snapshots__/Grid.test.js.snap,lib/__tests__/Grid.test.js,"Closes #36
+Closes #38","feat: support grid-gap row/columns
+","diff --git a/lib/__tests__/Grid.test.js b/lib/__tests__/Grid.test.js
+index b06beba..0acc1ab 100644
+--- a/lib/__tests__/Grid.test.js
++++ b/lib/__tests__/Grid.test.js
+@@ -37,7 +37,7 @@ describe(""<Grid />"", () => {
+ 
+   test(""'gap' prop sets 'grid-gap'"", () => {
+     const tree = renderer.create(<Grid gap=""7px"" />).toJSON();
+-    expect(tree).toHaveStyleRule(""grid-gap"", ""7px 7px"");
++    expect(tree).toHaveStyleRule(""grid-gap"", ""7px"");
+   });
+ 
+   test(""'minRowHeight' prop sets 'grid-auto-rows'"", () => {
+",0,
+7,a0c84e6f53bf427d23968f2c6b7c66b59cb580fa,a0c84e6f53bf427d23968f2c6b7c66b59cb580fa,lib/__tests__/__snapshots__/Cell.test.js.snap,lib/__tests__/Cell.test.js,"Grid: add ""flow"" prop.
+Cell: add ""center"" and ""middle"" props.","feat: add some new features to Grid and Cell
+
+Grid: add ""flow"" prop.
+Cell: add ""center"" and ""middle"" props.
+","diff --git a/lib/__tests__/Cell.test.js b/lib/__tests__/Cell.test.js
+index c7b72ee..4cfe586 100644
+--- a/lib/__tests__/Cell.test.js
++++ b/lib/__tests__/Cell.test.js
+@@ -19,4 +19,14 @@ describe(""<Cell/>"", () => {
+     const tree = renderer.create(<Cell height={3} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-row-end"", ""span 3"");
+   });
++
++  test(""'middle' prop vertically aligns contents"", () => {
++    const tree = renderer.create(<Cell middle />).toJSON();
++    expect(tree).toMatchSnapshot();
++  });
++
++  test(""'center' prop horizontally aligns contents"", () => {
++    const tree = renderer.create(<Cell center />).toJSON();
++    expect(tree).toHaveStyleRule(""text-align"", ""center"");
++  });
+ });
+",0,
+7,a0c84e6f53bf427d23968f2c6b7c66b59cb580fa,a0c84e6f53bf427d23968f2c6b7c66b59cb580fa,lib/__tests__/__snapshots__/Cell.test.js.snap,lib/__tests__/Cell.test.js,"Grid: add ""flow"" prop.
+Cell: add ""center"" and ""middle"" props.","feat: add some new features to Grid and Cell
+
+Grid: add ""flow"" prop.
+Cell: add ""center"" and ""middle"" props.
+","diff --git a/lib/__tests__/Cell.test.js b/lib/__tests__/Cell.test.js
+index c7b72ee..4cfe586 100644
+--- a/lib/__tests__/Cell.test.js
++++ b/lib/__tests__/Cell.test.js
+@@ -19,4 +19,14 @@ describe(""<Cell/>"", () => {
+     const tree = renderer.create(<Cell height={3} />).toJSON();
+     expect(tree).toHaveStyleRule(""grid-row-end"", ""span 3"");
+   });
++
++  test(""'middle' prop vertically aligns contents"", () => {
++    const tree = renderer.create(<Cell middle />).toJSON();
++    expect(tree).toMatchSnapshot();
++  });
++
++  test(""'center' prop horizontally aligns contents"", () => {
++    const tree = renderer.create(<Cell center />).toJSON();
++    expect(tree).toHaveStyleRule(""text-align"", ""center"");
++  });
+ });
+",0,

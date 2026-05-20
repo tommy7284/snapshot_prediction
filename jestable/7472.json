@@ -1,0 +1,101 @@
+{
+    "id": 6633387,
+    "name": "shashwatak/satellite-js",
+    "isFork": false,
+    "commits": 349,
+    "branches": 7,
+    "releases": 14,
+    "forks": 141,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "develop",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 35,
+    "stargazers": 833,
+    "contributors": 16,
+    "size": 27707,
+    "createdAt": "2013-05-13T01:56:32",
+    "pushedAt": "2024-01-14T03:33:21",
+    "updatedAt": "2024-01-12T11:37:18",
+    "totalIssues": 61,
+    "openIssues": 5,
+    "totalPullRequests": 67,
+    "openPullRequests": 4,
+    "blankLines": 2219,
+    "codeLines": 71756,
+    "commentLines": 8923,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 51955
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 9,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 48
+        },
+        {
+            "blankLines": 2,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 162
+        },
+        {
+            "blankLines": 181,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 456
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 769
+        },
+        {
+            "blankLines": 23,
+            "language": "TypeScript",
+            "commentLines": 129,
+            "codeLines": 71
+        },
+        {
+            "blankLines": 2003,
+            "language": "JavaScript",
+            "commentLines": 8794,
+            "codeLines": 18274
+        }
+    ],
+    "lastCommit": "2024-01-14T12:50:56",
+    "lastCommitSHA": "0e921026d20b75f42553366994af70eed63a304f",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 119541,
+        "HTML": 5226,
+        "CSS": 585
+    },
+    "labels": [
+        "announcement",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

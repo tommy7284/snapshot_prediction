@@ -1,0 +1,79 @@
+{
+    "id": 6234732,
+    "name": "adriantoine/enzyme-to-json",
+    "isFork": false,
+    "commits": 216,
+    "branches": 14,
+    "releases": 41,
+    "forks": 80,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 11,
+    "stargazers": 963,
+    "contributors": 35,
+    "size": 1261,
+    "createdAt": "2016-09-09T02:52:25",
+    "pushedAt": "2023-01-06T01:44:59",
+    "updatedAt": "2022-12-09T12:50:01",
+    "totalIssues": 90,
+    "openIssues": 11,
+    "totalPullRequests": 104,
+    "openPullRequests": 11,
+    "blankLines": 528,
+    "codeLines": 2294,
+    "commentLines": 49,
+    "metrics": [
+        {
+            "blankLines": 10,
+            "language": "TypeScript",
+            "commentLines": 25,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 378,
+            "language": "JavaScript",
+            "commentLines": 24,
+            "codeLines": 1804
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 134,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 354
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 88
+        }
+    ],
+    "lastCommit": "2021-04-08T10:33:20",
+    "lastCommitSHA": "7d90cdf5f1878815a46b3a53f4e1e1b63418b38f",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 45818
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "doc",
+        "duplicate",
+        "enhancement",
+        "invalid",
+        "missing demo",
+        "pr welcome"
+    ],
+    "topics": []
+}

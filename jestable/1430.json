@@ -1,0 +1,85 @@
+{
+    "id": 4736110,
+    "name": "diegomura/react-log",
+    "isFork": false,
+    "commits": 87,
+    "branches": 17,
+    "releases": 4,
+    "forks": 27,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://diegomura.github.io/react-log/",
+    "watchers": 9,
+    "stargazers": 566,
+    "contributors": 5,
+    "size": 19278,
+    "createdAt": "2016-07-18T09:21:12",
+    "pushedAt": "2023-01-24T05:27:28",
+    "updatedAt": "2023-02-08T03:01:27",
+    "totalIssues": 15,
+    "openIssues": 1,
+    "totalPullRequests": 22,
+    "openPullRequests": 14,
+    "blankLines": 83,
+    "codeLines": 741,
+    "commentLines": 38,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 16,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 66
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 88
+        },
+        {
+            "blankLines": 64,
+            "language": "JavaScript",
+            "commentLines": 38,
+            "codeLines": 563
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        }
+    ],
+    "lastCommit": "2021-07-06T07:03:05",
+    "lastCommitSHA": "6afb550633f2822ce21337794f11adf4db0d5085",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 15079
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

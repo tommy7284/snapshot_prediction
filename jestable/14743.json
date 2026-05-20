@@ -1,0 +1,113 @@
+{
+    "id": 4053204,
+    "name": "typescripttolua/typescripttolua",
+    "isFork": false,
+    "commits": 1345,
+    "branches": 7,
+    "releases": 0,
+    "forks": 162,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 31,
+    "stargazers": 1932,
+    "contributors": 47,
+    "size": 6477,
+    "createdAt": "2017-12-31T05:26:03",
+    "pushedAt": "2024-03-21T06:02:05",
+    "updatedAt": "2024-03-21T09:49:08",
+    "totalIssues": 784,
+    "openIssues": 117,
+    "totalPullRequests": 765,
+    "openPullRequests": 5,
+    "blankLines": 5908,
+    "codeLines": 50744,
+    "commentLines": 2102,
+    "metrics": [
+        {
+            "language": "Lua",
+            "commentLines": 121,
+            "codeLines": 603,
+            "blankLines": 117
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10,
+            "blankLines": 2
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1846,
+            "codeLines": 37281,
+            "blankLines": 5508
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 127,
+            "codeLines": 159,
+            "blankLines": 11
+        },
+        {
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 154,
+            "blankLines": 10
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11752,
+            "blankLines": 4
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 785,
+            "blankLines": 256
+        }
+    ],
+    "lastCommit": "2024-03-21T06:02:02",
+    "lastCommitSHA": "16a8eb3a5aed582f31d5f2306d70d3801983deca",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 1513074,
+        "JavaScript": 20674,
+        "Lua": 17576
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "docs",
+        "enhancement",
+        "experimental feature",
+        "feature request",
+        "help wanted",
+        "missing feature",
+        "more information needed",
+        "optimization",
+        "question",
+        "scope: bundling",
+        "scope: infrastructure",
+        "scope: language extensions",
+        "scope: lualib",
+        "scope: plugins",
+        "scope: tooling",
+        "scope: transformation",
+        "scope: transpile",
+        "wontfix"
+    ],
+    "topics": [
+        "compiler",
+        "converter",
+        "lua",
+        "lua-transpiler",
+        "transpiler",
+        "typescript"
+    ]
+}

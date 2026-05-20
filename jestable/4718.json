@@ -1,0 +1,73 @@
+{
+    "id": 5656351,
+    "name": "souporserious/react-measure",
+    "isFork": false,
+    "commits": 215,
+    "branches": 3,
+    "releases": 58,
+    "forks": 98,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://souporserious.github.io/react-measure/",
+    "watchers": 13,
+    "stargazers": 1800,
+    "contributors": 24,
+    "size": 1355,
+    "createdAt": "2015-09-15T04:15:44",
+    "pushedAt": "2020-09-11T02:19:27",
+    "updatedAt": "2021-02-11T01:39:12",
+    "totalIssues": 95,
+    "openIssues": 28,
+    "totalPullRequests": 53,
+    "openPullRequests": 0,
+    "blankLines": 277,
+    "codeLines": 907,
+    "commentLines": 8,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 43
+        },
+        {
+            "blankLines": 199,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 314
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 106
+        },
+        {
+            "blankLines": 70,
+            "language": "JavaScript",
+            "commentLines": 8,
+            "codeLines": 444
+        }
+    ],
+    "lastCommit": "2020-09-09T06:53:43",
+    "lastCommitSHA": "deedc4b808ae3cb6a831e7696b003c6da80855ab",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 14201,
+        "CSS": 543
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

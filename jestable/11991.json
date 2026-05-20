@@ -1,0 +1,180 @@
+{
+    "id": 52093260,
+    "name": "tencent/cherry-markdown",
+    "isFork": false,
+    "commits": 693,
+    "branches": 51,
+    "releases": 59,
+    "forks": 349,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 44,
+    "stargazers": 3179,
+    "contributors": 42,
+    "size": 137588,
+    "createdAt": "2021-10-15T11:38:22",
+    "pushedAt": "2024-04-25T08:44:00",
+    "updatedAt": "2024-04-25T09:13:02",
+    "totalIssues": 401,
+    "openIssues": 98,
+    "totalPullRequests": 326,
+    "openPullRequests": 23,
+    "blankLines": 29914,
+    "codeLines": 177800,
+    "commentLines": 52737,
+    "metrics": [
+        {
+            "blankLines": 12,
+            "language": "YAML",
+            "commentLines": 29,
+            "codeLines": 335
+        },
+        {
+            "blankLines": 1955,
+            "language": "Markdown",
+            "commentLines": 25,
+            "codeLines": 5251
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 1004,
+            "language": "SCSS",
+            "commentLines": 377,
+            "codeLines": 4809
+        },
+        {
+            "blankLines": 6,
+            "language": "Dockerfile",
+            "commentLines": 13,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 5,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6002
+        },
+        {
+            "blankLines": 195,
+            "language": "Less",
+            "commentLines": 24,
+            "codeLines": 1411
+        },
+        {
+            "blankLines": 8,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 5371
+        },
+        {
+            "blankLines": 320,
+            "language": "TypeScript",
+            "commentLines": 664,
+            "codeLines": 2431
+        },
+        {
+            "blankLines": 250,
+            "language": "HTML",
+            "commentLines": 31,
+            "codeLines": 2314
+        },
+        {
+            "blankLines": 73,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 1367
+        },
+        {
+            "blankLines": 103,
+            "language": "CSS",
+            "commentLines": 11,
+            "codeLines": 2964
+        },
+        {
+            "blankLines": 1,
+            "language": "SVG",
+            "commentLines": 123,
+            "codeLines": 2989
+        },
+        {
+            "blankLines": 43,
+            "language": "Vuejs Component",
+            "commentLines": 13,
+            "codeLines": 270
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON5",
+            "commentLines": 3,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 977,
+            "language": "Sass",
+            "commentLines": 50,
+            "codeLines": 4769
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 24959,
+            "language": "JavaScript",
+            "commentLines": 51374,
+            "codeLines": 137441
+        }
+    ],
+    "lastCommit": "2024-03-06T10:49:10",
+    "lastCommitSHA": "fdff6000c25e6004daac865efb8081beb417a3c5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 4201065,
+        "Less": 408160,
+        "SCSS": 122903,
+        "TypeScript": 59944,
+        "CSS": 8580,
+        "Vue": 6444,
+        "HTML": 3241,
+        "Dockerfile": 1934,
+        "Shell": 1466
+    },
+    "labels": [
+        "backlog",
+        "bug",
+        "client",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "event/tencent issueshoot",
+        "event/tencent rhino-bird program",
+        "good first issue",
+        "good idea",
+        "help wanted",
+        "invalid",
+        "need more info",
+        "not a bug",
+        "question",
+        "typescript",
+        "vscode-plugin",
+        "wontfix"
+    ],
+    "topics": [
+        "editor",
+        "javascript",
+        "markdown"
+    ]
+}

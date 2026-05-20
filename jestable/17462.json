@@ -1,0 +1,128 @@
+{
+    "id": 51085005,
+    "name": "yytypescript/book",
+    "isFork": false,
+    "commits": 1708,
+    "branches": 12,
+    "releases": 4,
+    "forks": 97,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://typescriptbook.jp",
+    "watchers": 10,
+    "stargazers": 905,
+    "contributors": 76,
+    "size": 31838,
+    "createdAt": "2019-12-17T05:17:10",
+    "pushedAt": "2024-05-03T10:35:57",
+    "updatedAt": "2024-05-03T10:36:01",
+    "totalIssues": 425,
+    "openIssues": 115,
+    "totalPullRequests": 437,
+    "openPullRequests": 9,
+    "blankLines": 30985,
+    "codeLines": 132792,
+    "commentLines": 24515,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 1845,
+            "blankLines": 0
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 2
+        },
+        {
+            "language": "CSS",
+            "commentLines": 9,
+            "codeLines": 347,
+            "blankLines": 55
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 2
+        },
+        {
+            "language": "YAML",
+            "commentLines": 96,
+            "codeLines": 882,
+            "blankLines": 14
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 88,
+            "codeLines": 22456,
+            "blankLines": 8369
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 249,
+            "codeLines": 3932,
+            "blankLines": 226
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 24073,
+            "codeLines": 101916,
+            "blankLines": 22317
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 1403,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2024-05-03T10:35:57",
+    "lastCommitSHA": "aa22efe91c710fc19d832826c9e6f67f7f6e9f5b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 128252,
+        "JavaScript": 28176,
+        "CSS": 9155,
+        "Shell": 60
+    },
+    "labels": [
+        "bug",
+        "changelog:\u65b0\u898f\u30b3\u30f3\u30c6\u30f3\u30c4",
+        "changelog:\u6700\u65b0\u3078\u306e\u8ffd\u5f93",
+        "chapter:tips",
+        "chapter:\u3042\u3089\u307e\u3057",
+        "chapter:\u4f5c\u3063\u3066\u5b66\u3076",
+        "chapter:\u8aad\u3093\u3067\u5b66\u3076",
+        "dependencies",
+        "for:\u57f7\u7b46\u8005",
+        "good first issue",
+        "mentenance",
+        "stage1:\u8a71\u3057\u5408\u3044\u4e2d",
+        "stage2:\u7740\u624b\u53ef",
+        "stage3:\u7740\u624b\u4e2d",
+        "type:\u65b0ver\u3078\u306e\u8ffd\u5f93",
+        "type:\u8aa4\u690d",
+        "type:\u8aad\u8005\u306e\u8cea\u554f",
+        "volume:l",
+        "volume:m",
+        "volume:s",
+        "\u30a2\u30a6\u30c8\u30e9\u30a4\u30f3\u6709",
+        "\u6539\u5584\u3057\u305f\u3044\u8868\u73fe",
+        "\u672c\u66f8\u5185\u5bb9\u306e\u4e0d\u5099",
+        "\u8868\u73fe\u306e\u4e00\u8cab\u6027",
+        "\u8aad\u8005\u306e\u611f\u60f3",
+        "\u91cd\u8907"
+    ],
+    "topics": [
+        "typescript",
+        "typescript-documentation",
+        "typescript-tutorials"
+    ]
+}

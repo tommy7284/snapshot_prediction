@@ -1,0 +1,90 @@
+{
+    "id": 6799109,
+    "name": "ollelauribostrom/rebus",
+    "isFork": false,
+    "commits": 263,
+    "branches": 25,
+    "releases": 0,
+    "forks": 843,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 13,
+    "stargazers": 558,
+    "contributors": 109,
+    "size": 1895,
+    "createdAt": "2018-09-25T06:34:44",
+    "pushedAt": "2024-02-10T12:28:57",
+    "updatedAt": "2024-02-10T12:31:11",
+    "totalIssues": 84,
+    "openIssues": 38,
+    "totalPullRequests": 912,
+    "openPullRequests": 555,
+    "blankLines": 218,
+    "codeLines": 15323,
+    "commentLines": 24,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12761
+        },
+        {
+            "blankLines": 47,
+            "language": "JavaScript",
+            "commentLines": 6,
+            "codeLines": 2031
+        },
+        {
+            "blankLines": 3,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 34
+        },
+        {
+            "blankLines": 44,
+            "language": "CSS",
+            "commentLines": 18,
+            "codeLines": 275
+        },
+        {
+            "blankLines": 124,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 208
+        }
+    ],
+    "lastCommit": "2021-01-03T03:14:17",
+    "lastCommitSHA": "37a09197fbe5ecfb497692ba159f076f55f1136e",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 62480,
+        "CSS": 6595,
+        "HTML": 390
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "first-timers-only",
+        "good first issue",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

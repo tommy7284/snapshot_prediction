@@ -1,0 +1,92 @@
+{
+    "id": 5679020,
+    "name": "rubylouvre/anu",
+    "isFork": false,
+    "commits": 5083,
+    "branches": 10,
+    "releases": 81,
+    "forks": 313,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "https://rubylouvre.github.io/anu/",
+    "watchers": 116,
+    "stargazers": 3118,
+    "contributors": 29,
+    "size": 43032,
+    "createdAt": "2017-02-28T07:20:30",
+    "pushedAt": "2020-09-18T02:59:39",
+    "updatedAt": "2021-02-08T07:08:56",
+    "totalIssues": 256,
+    "openIssues": 31,
+    "totalPullRequests": 977,
+    "openPullRequests": 2,
+    "blankLines": 21037,
+    "codeLines": 114344,
+    "commentLines": 16010,
+    "metrics": [
+        {
+            "blankLines": 207,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 537
+        },
+        {
+            "blankLines": 5,
+            "language": "TypeScript",
+            "commentLines": 1,
+            "codeLines": 108
+        },
+        {
+            "blankLines": 20735,
+            "language": "JavaScript",
+            "commentLines": 15947,
+            "codeLines": 112507
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 511
+        },
+        {
+            "blankLines": 8,
+            "language": "YAML",
+            "commentLines": 12,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 52,
+            "language": "JSX",
+            "commentLines": 40,
+            "codeLines": 486
+        },
+        {
+            "blankLines": 30,
+            "language": "HTML",
+            "commentLines": 10,
+            "codeLines": 177
+        }
+    ],
+    "lastCommit": "2020-02-24T03:45:38",
+    "lastCommitSHA": "b99d90b707214093e3bf61a6e8ba269d0d1043d5",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 3945015,
+        "HTML": 5672
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

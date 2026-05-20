@@ -1,0 +1,371 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+194,867b9a279cc9905f89431a9f8eaa0488ef571492,9794f2d96d022b2217d7deec7e052099d1ac88db,"this 
+
+- rewrites to TS
+- supports JS and native stack
+- various small improvements
+- for advances uses cases you can use the new `renderButton` prop as in https://github.com/vonovak/react-navigation-header-buttons/blob/feat/ts-update/example/src/components/MaterialHeaderButton.tsx (closes #28)
+
+BREAKING:
+- requires RN 71
+- renamed `OverflowMenuProvider` to `HeaderButtonsProvider` and made it required
+- removes Flow typings
+
+
+
+closes #190 
+closes #191","feat: ts
+
+feat: move around
+
+chore: failing test
+
+feat: wip
+
+feat: fix tests
+
+feat: finish js stack
+
+feat: move stuff around
+
+feat: add stackType
+
+feat: use columnGap
+
+feat: kinda ok
+
+feat: all works
+
+feat: updates
+
+feat: changing types
+
+chore: updates
+
+fix: overflow menu position
+
+fix: ts config
+
+fix: ts config
+
+chore: before refactor
+
+chore: various improvements
+
+chore: finish
+
+chore: finish
+","diff --git a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js b/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
+deleted file mode 100644
+index a200d54..0000000
+--- a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
++++ /dev/null
+@@ -1,61 +0,0 @@
+-// @flow
+-import { OverflowMenuProvider, OverflowMenuContext } from '../OverflowMenuContext';
+-import { Text } from 'react-native';
+-import { render, fireEvent, waitForElementToBeRemoved } from '@testing-library/react-native';
+-import React from 'react';
+-
+-describe('OverflowMenuProvider renders', () => {
+-  it('only the child when menu is not shown', () => {
+-    const { toJSON } = render(
+-      <OverflowMenuProvider>
+-        <Text>hello</Text>
+-      </OverflowMenuProvider>
+-    );
+-    expect(toJSON()).toMatchInlineSnapshot(`
+-      <Text>
+-        hello
+-      </Text>
+-    `);
+-  });
+-
+-  it('the child and the menu item, when it is displayed by calling toggleMenu() that is provided by OverflowMenuContext', async () => {
+-    const menuItemLabel = 'overflow menu item';
+-    const showMenuLabel = 'show menu';
+-
+-    const ButtonThatShowsMenu = () => {
+-      const toggleMenu = React.useContext(OverflowMenuContext);
+-      return (
+-        <Text
+-          onPress={() => {
+-            toggleMenu({ elements: <Text key=""1"">{menuItemLabel}</Text>, x: 0, y: 0 });
+-          }}
+-        >
+-          {showMenuLabel}
+-        </Text>
+-      );
+-    };
+-    const { toJSON, getByText } = render(
+-      <OverflowMenuProvider>
+-        <ButtonThatShowsMenu />
+-      </OverflowMenuProvider>
+-    );
+-
+-    const toggleMenuShown = () => fireEvent.press(getByText(showMenuLabel));
+-
+-    const beforeShown = toJSON();
+-    toggleMenuShown();
+-    expect(toJSON()).toMatchSnapshot();
+-    getByText(menuItemLabel);
+-    toggleMenuShown();
+-
+-    const waitForMenuToHide = async () => {
+-      await waitForElementToBeRemoved(() => getByText(menuItemLabel), {
+-        timeout: 800,
+-      });
+-    };
+-    await waitForMenuToHide();
+-
+-    const afterHidden = toJSON();
+-    expect(afterHidden).toStrictEqual(beforeShown);
+-  });
+-});
+
+diff --git a/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx b/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx
+new file mode 100644
+index 0000000..2cf4ebf
+--- /dev/null
++++ b/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx
+@@ -0,0 +1,68 @@
++import { HeaderButtonsProvider, useOverflowMenu } from '../OverflowMenuContext';
++import { Text } from 'react-native';
++import {
++  render,
++  fireEvent,
++  waitForElementToBeRemoved,
++} from '@testing-library/react-native';
++import React from 'react';
++
++describe('HeaderButtonsProvider renders', () => {
++  it('only the child when menu is not shown', () => {
++    const { toJSON } = render(
++      <HeaderButtonsProvider stackType={'js'}>
++        <Text>hello</Text>
++      </HeaderButtonsProvider>
++    );
++    expect(toJSON()).toMatchInlineSnapshot(`
++      <Text>
++        hello
++      </Text>
++    `);
++  });
++
++  it('the child and the menu item, when it is displayed by calling toggleMenu() that is provided by OverflowMenuContext', async () => {
++    const menuItemLabel = 'overflow menu item';
++    const showMenuLabel = 'show menu';
++
++    const ButtonThatShowsMenu = () => {
++      const { toggleMenu } = useOverflowMenu();
++      return (
++        <Text
++          onPress={() => {
++            toggleMenu({
++              elements: <Text key=""1"">{menuItemLabel}</Text>,
++              x: 0,
++              y: 0,
++            });
++          }}
++        >
++          {showMenuLabel}
++        </Text>
++      );
++    };
++    const { toJSON, getByText } = render(
++      <HeaderButtonsProvider stackType={'js'}>
++        <ButtonThatShowsMenu />
++      </HeaderButtonsProvider>
++    );
++
++    const toggleMenuShown = () => fireEvent.press(getByText(showMenuLabel));
++
++    const beforeShown = toJSON();
++    toggleMenuShown();
++    expect(toJSON()).toMatchSnapshot();
++    getByText(menuItemLabel);
++    toggleMenuShown();
++
++    const waitForMenuToHide = async () => {
++      await waitForElementToBeRemoved(() => getByText(menuItemLabel), {
++        timeout: 800,
++      });
++    };
++    await waitForMenuToHide();
++
++    const afterHidden = toJSON();
++    expect(afterHidden).toStrictEqual(beforeShown);
++  });
++});
+",0,,111,24463,2,5,95,21947
+220,102a3b9ec8f6f0f811f4f596706eb926ada53e29,9bf74dafe6f30cb68d10f9414482ec0f2b082adc,,"feat: add `presentMenu` and `closeMenu` calls for overflowMenuPressHandlerDropdownMenu
+","diff --git a/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx b/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx
+index 2cf4ebf..51c9278 100644
+--- a/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx
++++ b/src/overflowMenu/__tests__/OverflowMenuProvider.test.tsx
+@@ -1,5 +1,5 @@
+ import { HeaderButtonsProvider, useOverflowMenu } from '../OverflowMenuContext';
+-import { Text } from 'react-native';
++import { Text, View } from 'react-native';
+ import {
+   render,
+   fireEvent,
+@@ -21,16 +21,17 @@ describe('HeaderButtonsProvider renders', () => {
+     `);
+   });
+ 
+-  it('the child and the menu item, when it is displayed by calling toggleMenu() that is provided by OverflowMenuContext', async () => {
++  it('the child and the menu item, when it is displayed by calling presentMenu() that is provided by OverflowMenuContext', async () => {
+     const menuItemLabel = 'overflow menu item';
+     const showMenuLabel = 'show menu';
++    const hideMenuLabel = 'hide menu';
+ 
+     const ButtonThatShowsMenu = () => {
+-      const { toggleMenu } = useOverflowMenu();
++      const { presentMenu } = useOverflowMenu();
+       return (
+         <Text
+           onPress={() => {
+-            toggleMenu({
++            presentMenu({
+               elements: <Text key=""1"">{menuItemLabel}</Text>,
+               x: 0,
+               y: 0,
+@@ -41,19 +42,35 @@ describe('HeaderButtonsProvider renders', () => {
+         </Text>
+       );
+     };
++    const ButtonThatHidesMenu = () => {
++      const { closeMenu } = useOverflowMenu();
++      return (
++        <Text
++          onPress={() => {
++            closeMenu();
++          }}
++        >
++          {hideMenuLabel}
++        </Text>
++      );
++    };
+     const { toJSON, getByText } = render(
+       <HeaderButtonsProvider stackType={'js'}>
+-        <ButtonThatShowsMenu />
++        <View>
++          <ButtonThatShowsMenu />
++          <ButtonThatHidesMenu />
++        </View>
+       </HeaderButtonsProvider>
+     );
+ 
+-    const toggleMenuShown = () => fireEvent.press(getByText(showMenuLabel));
++    const presentMenu = () => fireEvent.press(getByText(showMenuLabel));
++    const hideMenu = () => fireEvent.press(getByText(hideMenuLabel));
+ 
+     const beforeShown = toJSON();
+-    toggleMenuShown();
++    presentMenu();
+     expect(toJSON()).toMatchSnapshot();
+     getByText(menuItemLabel);
+-    toggleMenuShown();
++    hideMenu();
+ 
+     const waitForMenuToHide = async () => {
+       await waitForElementToBeRemoved(() => getByText(menuItemLabel), {
+",0,,12,207,1,4,18,2125
+76,bd1c339ebd53486a62697be78d6595907a41785c,cb1f1aa228ff39be81bf25881f8ae696913ae8ac,,"use latest RNTL
+","diff --git a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js b/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
+index dbb2ab6..c4a2e8b 100644
+--- a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
++++ b/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
+@@ -1,7 +1,7 @@
+ // @flow
+ import { OverflowMenuProvider, OverflowMenuContext } from '../OverflowMenuContext';
+ import { Text } from 'react-native';
+-import { render, fireEvent, flushMicrotasksQueue } from 'react-native-testing-library';
++import { render, fireEvent } from 'react-native-testing-library';
+ import React from 'react';
+ 
+ describe('OverflowMenuProvider renders', () => {
+@@ -19,7 +19,7 @@ describe('OverflowMenuProvider renders', () => {
+   });
+ 
+   it('the child and the menu item, when it is displayed by calling toggleMenu() provided by OverflowMenuContext', async () => {
+-    const menuItemLabel = 'menu item';
++    const menuItemLabel = 'overflow menu item';
+     const showMenuLabel = 'show menu';
+ 
+     const ButtonThatShowsMenu = () => {
+@@ -34,7 +34,7 @@ describe('OverflowMenuProvider renders', () => {
+         </Text>
+       );
+     };
+-    const { toJSON, getByText } = render(
++    const { toJSON, getByText, findByText } = render(
+       <OverflowMenuProvider>
+         <ButtonThatShowsMenu />
+       </OverflowMenuProvider>
+@@ -45,7 +45,7 @@ describe('OverflowMenuProvider renders', () => {
+     expect(toJSON()).toMatchSnapshot();
+     getByText(menuItemLabel);
+     fireEvent.press(getByText(showMenuLabel));
+-    await flushMicrotasksQueue();
++    await expect(findByText(menuItemLabel, { timeout: 100 })).rejects.toBeTruthy();
+ 
+     const afterHidden = toJSON();
+     expect(afterHidden).toStrictEqual(beforeShown);
+",0,,4,1266,1,3,4,1272
+79,93e7272a3c53babc92ffb2d834de799b66455154,57205cc4d96344e29e3f61e21d2c2760f7a194f9,"adds https://github.com/callstack/react-native-paper/pull/1965/files
+
+and also https://github.com/callstack/react-native-paper/commit/a25397b553fdeb7926ed3fffd20211918b632a5d#diff-f2153b60729b5e6875f83b15724fdf9d","catch up with RN paper
+","diff --git a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js b/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
+index 6a486c3..2133ec7 100644
+--- a/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
++++ b/src/overflowMenu/__tests__/OverflowMenuProvider.test.js
+@@ -1,7 +1,7 @@
+ // @flow
+ import { OverflowMenuProvider, OverflowMenuContext } from '../OverflowMenuContext';
+ import { Text } from 'react-native';
+-import { render, fireEvent } from 'react-native-testing-library';
++import { render, fireEvent, waitForElementToBeRemoved } from '@testing-library/react-native';
+ import React from 'react';
+ 
+ describe('OverflowMenuProvider renders', () => {
+@@ -18,7 +18,7 @@ describe('OverflowMenuProvider renders', () => {
+     `);
+   });
+ 
+-  it('the child and the menu item, when it is displayed by calling toggleMenu() provided by OverflowMenuContext', async () => {
++  it('the child and the menu item, when it is displayed by calling toggleMenu() that is provided by OverflowMenuContext', async () => {
+     const menuItemLabel = 'overflow menu item';
+     const showMenuLabel = 'show menu';
+ 
+@@ -34,20 +34,24 @@ describe('OverflowMenuProvider renders', () => {
+         </Text>
+       );
+     };
+-    const { toJSON, getByText, findByText } = render(
++    const { toJSON, getByText } = render(
+       <OverflowMenuProvider>
+         <ButtonThatShowsMenu />
+       </OverflowMenuProvider>
+     );
+ 
++    const toggleMenuShown = () => fireEvent.press(getByText(showMenuLabel));
++
+     const beforeShown = toJSON();
+-    fireEvent.press(getByText(showMenuLabel));
++    toggleMenuShown();
+     expect(toJSON()).toMatchSnapshot();
+     getByText(menuItemLabel);
+-    fireEvent.press(getByText(showMenuLabel));
++    toggleMenuShown();
+ 
+     const waitForMenuToHide = async () => {
+-      await expect(findByText(menuItemLabel, { timeout: 500 })).rejects.toBeTruthy();
++      await waitForElementToBeRemoved(() => getByText(menuItemLabel), {
++        timeout: 500,
++      });
+     };
+     await waitForMenuToHide();
+ 
+",0,,7,60,1,4,8,67

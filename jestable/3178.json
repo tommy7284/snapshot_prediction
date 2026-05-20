@@ -1,0 +1,88 @@
+{
+    "id": 5300290,
+    "name": "saravieira/awesome-talks",
+    "isFork": false,
+    "commits": 156,
+    "branches": 10,
+    "releases": 0,
+    "forks": 67,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 24,
+    "stargazers": 818,
+    "contributors": 14,
+    "size": 3730,
+    "createdAt": "2018-05-19T03:57:27",
+    "pushedAt": "2022-05-09T12:37:14",
+    "updatedAt": "2022-05-11T08:04:25",
+    "totalIssues": 60,
+    "openIssues": 1,
+    "totalPullRequests": 59,
+    "openPullRequests": 1,
+    "blankLines": 478,
+    "codeLines": 4683,
+    "commentLines": 64,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 465,
+            "language": "JavaScript",
+            "commentLines": 64,
+            "codeLines": 4473
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 0,
+            "language": "XML",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 13,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 177
+        }
+    ],
+    "lastCommit": "2022-05-09T12:37:14",
+    "lastCommitSHA": "7058aa2ba4a7102bce151630f397dd160fd12bb3",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 142782
+    },
+    "labels": [
+        "bug",
+        "design",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "in progress",
+        "invalid",
+        "performance",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

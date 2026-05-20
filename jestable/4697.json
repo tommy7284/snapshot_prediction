@@ -1,0 +1,72 @@
+{
+    "id": 5649592,
+    "name": "nitin42/redocx",
+    "isFork": false,
+    "commits": 159,
+    "branches": 1,
+    "releases": 11,
+    "forks": 83,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1326,
+    "contributors": 9,
+    "size": 395,
+    "createdAt": "2017-08-19T07:08:06",
+    "pushedAt": "2020-09-10T07:27:24",
+    "updatedAt": "2021-02-11T03:24:19",
+    "totalIssues": 16,
+    "openIssues": 9,
+    "totalPullRequests": 12,
+    "openPullRequests": 3,
+    "blankLines": 472,
+    "codeLines": 1972,
+    "commentLines": 223,
+    "metrics": [
+        {
+            "blankLines": 309,
+            "language": "JavaScript",
+            "commentLines": 223,
+            "codeLines": 1423
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 65
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 163,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 477
+        }
+    ],
+    "lastCommit": "2018-12-07T11:17:03",
+    "lastCommitSHA": "384305bfe6d792837ed93efc675a2b4f3aca8a55",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 42722
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

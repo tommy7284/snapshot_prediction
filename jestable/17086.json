@@ -1,0 +1,103 @@
+{
+    "id": 18638201,
+    "name": "banga/git-split-diffs",
+    "isFork": false,
+    "commits": 265,
+    "branches": 4,
+    "releases": 0,
+    "forks": 42,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 12,
+    "stargazers": 2498,
+    "contributors": 5,
+    "size": 51485,
+    "createdAt": "2021-04-10T07:21:44",
+    "pushedAt": "2024-01-05T01:29:44",
+    "updatedAt": "2024-01-04T04:56:40",
+    "totalIssues": 27,
+    "openIssues": 6,
+    "totalPullRequests": 21,
+    "openPullRequests": 1,
+    "blankLines": 450,
+    "codeLines": 9767,
+    "commentLines": 130,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 2,
+            "codeLines": 33,
+            "blankLines": 12
+        },
+        {
+            "language": "Diff",
+            "commentLines": 14,
+            "codeLines": 10,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 20,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 165,
+            "blankLines": 78
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 109,
+            "codeLines": 2475,
+            "blankLines": 343
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 62,
+            "blankLines": 10
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7002,
+            "blankLines": 7
+        }
+    ],
+    "lastCommit": "2024-01-05T01:27:04",
+    "lastCommitSHA": "7bb1d3494d816784162102211063c83e4e07c5aa",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 85292,
+        "JavaScript": 1844,
+        "Shell": 978
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "diffs",
+        "difftool",
+        "git",
+        "github",
+        "split-diffs",
+        "syntax-highlighting",
+        "visual-studio-code"
+    ]
+}

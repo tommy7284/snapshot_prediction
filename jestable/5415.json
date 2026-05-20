@@ -1,0 +1,79 @@
+{
+    "id": 6122607,
+    "name": "shipitjs/shipit",
+    "isFork": false,
+    "commits": 248,
+    "branches": 1,
+    "releases": 22,
+    "forks": 221,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.smooth-code.com",
+    "watchers": 65,
+    "stargazers": 5300,
+    "contributors": 33,
+    "size": 1041,
+    "createdAt": "2015-01-15T03:22:43",
+    "pushedAt": "2022-09-26T11:51:59",
+    "updatedAt": "2022-09-29T02:01:09",
+    "totalIssues": 202,
+    "openIssues": 42,
+    "totalPullRequests": 88,
+    "openPullRequests": 3,
+    "blankLines": 1273,
+    "codeLines": 4590,
+    "commentLines": 508,
+    "metrics": [
+        {
+            "blankLines": 670,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1030
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 150
+        },
+        {
+            "blankLines": 597,
+            "language": "JavaScript",
+            "commentLines": 508,
+            "codeLines": 3390
+        }
+    ],
+    "lastCommit": "2020-03-18T07:54:14",
+    "lastCommitSHA": "5e9b5fb4396e75cbe43382781c0b06491a66ad3c",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 125223
+    },
+    "labels": [
+        "bug",
+        "chore",
+        "dependencies",
+        "docs",
+        "feat",
+        "good first issue",
+        "help wanted",
+        "idea",
+        "refactor",
+        "shipit-cli",
+        "shipit-deploy",
+        "shipit-util",
+        "ssh-pool",
+        "unconfirmed"
+    ],
+    "topics": []
+}

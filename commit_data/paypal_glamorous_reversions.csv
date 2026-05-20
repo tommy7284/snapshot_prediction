@@ -1,0 +1,3647 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+127,ac1bca263f33681394b54e52f078d9ac0732cd3a,ac1bca263f33681394b54e52f078d9ac0732cd3a,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: `context` is now accessible in dynamic style functions
+
+```js
+const MyDiv = glamorous.div(
+  (props, context) => ({ /* style from context */ })
+)
+MyDiv.contextTypes = { /* user context types */ }
+```
+
+<!-- Why are these changes necessary? -->
+**Why**: See goals in #125, previously `context` was inaccessible by `glamorous` dynamic styles
+
+<!-- How were these changes implemented? -->
+**How**: The `GlamorousComponent` now [passes `context` to `getGlamorClassName`](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/create-glamorous.js#L103) instead of `theme`, which [passes the `context` along to the dynamic style function](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/get-glamor-classname.js#L35).
+
+The `theme` is still in the picture: we [add it to the context](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/create-glamorous.js#L96) only if the `context` does not already contain a `theme` (this would happen if the user has a `theme` in their `context`).
+
+
+
+## Feedback requested prior to merging
+
+The user is now able to provide their own `contextTypes`:
+
+```js
+const MyDiv = glamorous.div(
+  (props, context) => ({ /* style from context */ })
+)
+MyDiv.contextTypes = { /* user context types */ }
+// oh no! they overwrote the contextTypes that we wrote!
+```
+
+We still ultimately want `CHANNEL` to be defined on the `GlamorousComponent`'s `contextTypes` definition. 
+
+[Here's the current solution](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/create-glamorous.js#L122-L146):
+I have `Object.defineProperty` defining a custom `get` and `set` rule on `GlamorousComponent.contextTypes`, such that we can always append our `CHANNEL` onto the `contextTypes`. **We don't want to lose our original context definition.**
+
+When the user assignes `TheirGlamorousComponent.contextTypes = ...`, it [updates a private local variable `userDefinedContextTypes`](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/create-glamorous.js#L132-L134).
+
+When React reads the component's `contextTypes`, [the custom `getter` returns a merged object of the user's `contextTypes` and glamorous'' `contextTypes`](https://github.com/robinpowered/glamorous/blob/c96f7aaf30b2a7d7910d6cb44f9ba217397f9fd5/src/create-glamorous.js#L135-L145).
+
+**This is has a bit of magic to it 🎩 🐰 , anyone have thoughts for a more straightforward approach?**
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [ ] Documentation
+- [x] Tests
+- [x] Code complete (**pending feedback**)
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","feat(context): add dynamic style context support
+
+context is now the second parameter of dynamic style functions.
+
+BREAKING CHANGE: second argument in dynamic functions is now context. theme is now a property within
+this object.
+
+closes #125
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 3971e62..6a23a12 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -5,6 +5,7 @@ import {render, mount} from 'enzyme'
+ import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
+ import glamorous from '../'
++import {PropTypes} from '../react-compat'
+ 
+ import {CHANNEL} from '../constants'
+ 
+@@ -278,7 +279,7 @@ test('renders a component with theme properties', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   expect(
+     render(<Comp theme={{padding: '10px'}} />),
+@@ -291,7 +292,7 @@ test('in development mode the theme is frozen and cannot be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => {
++    (props, {theme}) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).toThrow()
+@@ -309,7 +310,7 @@ test('in production mode the theme is not frozen and can be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => {
++    (props, {theme}) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).not.toThrow()
+@@ -325,7 +326,7 @@ test('passes an updated theme when theme prop changes', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Comp theme={{padding: 10}} />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -404,3 +405,18 @@ test('can accept classNames instead of style objects', () => {
+   )
+   expect(render(<Comp />)).toMatchSnapshotWithGlamor()
+ })
++
++test('should accept user defined contextTypes', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.fontSize,
++  }))
++  Child.contextTypes = {
++    fontSize: PropTypes.number,
++  }
++
++  const context = {
++    fontSize: 24,
++  }
++
++  expect(render(<Child />, {context})).toMatchSnapshotWithGlamor()
++})
+
+diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index 7576b3e..9266ff6 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -5,6 +5,7 @@ import * as jestGlamorReact from 'jest-glamor-react'
+ import glamorous from '../'
+ import ThemeProvider from '../theme-provider'
+ import {CHANNEL} from '../constants'
++import {PropTypes} from '../react-compat'
+ 
+ expect.extend(jestGlamorReact.matcher)
+ expect.addSnapshotSerializer(jestGlamorReact.serializer)
+@@ -22,7 +23,7 @@ test('renders a component with theme', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   expect(
+     render(
+@@ -51,7 +52,7 @@ test('theme properties updates get propagated down the tree', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Parent />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -60,11 +61,11 @@ test('theme properties updates get propagated down the tree', () => {
+ })
+ 
+ test('merges nested themes', () => {
+-  const One = glamorous.div({}, (props, {padding, margin}) => ({
++  const One = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
+     padding,
+     margin,
+   }))
+-  const Two = glamorous.div({}, (props, {padding, margin}) => ({
++  const Two = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
+     padding,
+     margin,
+   }))
+@@ -109,3 +110,69 @@ test('does nothing when receive same theme via props', () => {
+   wrapper.setProps({theme})
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of margin 2px`)
+ })
++
++test('does not override user defined theme contexts', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.theme.fontSize,
++  }))
++  Child.contextTypes = {
++    theme: PropTypes.object,
++  }
++
++  class Parent extends React.Component {
++    getChildContext() {
++      return {
++        theme: {fontSize: 24},
++      }
++    }
++    render() {
++      return <Child />
++    }
++  }
++
++  Parent.childContextTypes = {
++    theme: PropTypes.object,
++  }
++
++  expect(
++    render(
++      <ThemeProvider theme={{fontSize: 36}}>
++        <Parent />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('monkey-patches `theme` into user defined context', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.theme.fontSize,
++    color: context.userTheme.color,
++  }))
++
++  Child.contextTypes = {
++    userTheme: PropTypes.object,
++  }
++
++  class Parent extends React.Component {
++    getChildContext() {
++      return {
++        userTheme: {color: 'blue'},
++      }
++    }
++    render() {
++      return <Child />
++    }
++  }
++
++  Parent.childContextTypes = {
++    userTheme: PropTypes.object,
++  }
++
++  expect(
++    render(
++      <ThemeProvider theme={{fontSize: 36}}>
++        <Parent />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
+",0,,7,173,2,1,7,173
+128,5ef62f155c5df035c85f06c6109673ac9a176204,5a0a9f3ce0bda4456a18729b1a8afa9039114831,"<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: This is a branch to group breaking changes
+
+<!-- Why are these changes necessary? -->
+**Why**: So we can limit how many major releases we push
+
+<!-- How were these changes implemented? -->
+**How**: Merged a breaking change into `next`.
+
+What else could we do as part of this major release? I'll wait about 24 hours before merging/releasing this.","feat(context): add dynamic style context support (#127)
+
+context is now the second parameter of dynamic style functions.
+
+closes #125
+
+BREAKING CHANGE: second argument in dynamic functions is now context. theme is now a property within this object.","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 3971e62..6a23a12 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -5,6 +5,7 @@ import {render, mount} from 'enzyme'
+ import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
+ import glamorous from '../'
++import {PropTypes} from '../react-compat'
+ 
+ import {CHANNEL} from '../constants'
+ 
+@@ -278,7 +279,7 @@ test('renders a component with theme properties', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   expect(
+     render(<Comp theme={{padding: '10px'}} />),
+@@ -291,7 +292,7 @@ test('in development mode the theme is frozen and cannot be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => {
++    (props, {theme}) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).toThrow()
+@@ -309,7 +310,7 @@ test('in production mode the theme is not frozen and can be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => {
++    (props, {theme}) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).not.toThrow()
+@@ -325,7 +326,7 @@ test('passes an updated theme when theme prop changes', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Comp theme={{padding: 10}} />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -404,3 +405,18 @@ test('can accept classNames instead of style objects', () => {
+   )
+   expect(render(<Comp />)).toMatchSnapshotWithGlamor()
+ })
++
++test('should accept user defined contextTypes', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.fontSize,
++  }))
++  Child.contextTypes = {
++    fontSize: PropTypes.number,
++  }
++
++  const context = {
++    fontSize: 24,
++  }
++
++  expect(render(<Child />, {context})).toMatchSnapshotWithGlamor()
++})
+
+diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index 7576b3e..9266ff6 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -5,6 +5,7 @@ import * as jestGlamorReact from 'jest-glamor-react'
+ import glamorous from '../'
+ import ThemeProvider from '../theme-provider'
+ import {CHANNEL} from '../constants'
++import {PropTypes} from '../react-compat'
+ 
+ expect.extend(jestGlamorReact.matcher)
+ expect.addSnapshotSerializer(jestGlamorReact.serializer)
+@@ -22,7 +23,7 @@ test('renders a component with theme', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   expect(
+     render(
+@@ -51,7 +52,7 @@ test('theme properties updates get propagated down the tree', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    (props, {theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Parent />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -60,11 +61,11 @@ test('theme properties updates get propagated down the tree', () => {
+ })
+ 
+ test('merges nested themes', () => {
+-  const One = glamorous.div({}, (props, {padding, margin}) => ({
++  const One = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
+     padding,
+     margin,
+   }))
+-  const Two = glamorous.div({}, (props, {padding, margin}) => ({
++  const Two = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
+     padding,
+     margin,
+   }))
+@@ -109,3 +110,69 @@ test('does nothing when receive same theme via props', () => {
+   wrapper.setProps({theme})
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of margin 2px`)
+ })
++
++test('does not override user defined theme contexts', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.theme.fontSize,
++  }))
++  Child.contextTypes = {
++    theme: PropTypes.object,
++  }
++
++  class Parent extends React.Component {
++    getChildContext() {
++      return {
++        theme: {fontSize: 24},
++      }
++    }
++    render() {
++      return <Child />
++    }
++  }
++
++  Parent.childContextTypes = {
++    theme: PropTypes.object,
++  }
++
++  expect(
++    render(
++      <ThemeProvider theme={{fontSize: 36}}>
++        <Parent />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('monkey-patches `theme` into user defined context', () => {
++  const Child = glamorous.div((props, context) => ({
++    fontSize: context.theme.fontSize,
++    color: context.userTheme.color,
++  }))
++
++  Child.contextTypes = {
++    userTheme: PropTypes.object,
++  }
++
++  class Parent extends React.Component {
++    getChildContext() {
++      return {
++        userTheme: {color: 'blue'},
++      }
++    }
++    render() {
++      return <Child />
++    }
++  }
++
++  Parent.childContextTypes = {
++    userTheme: PropTypes.object,
++  }
++
++  expect(
++    render(
++      <ThemeProvider theme={{fontSize: 36}}>
++        <Parent />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
+",1,OID=OID,7,173,2,2,5,100
+130,6a25d740cd8ab64b2cdf1fa448dd9b8794e5652a,6a25d740cd8ab64b2cdf1fa448dd9b8794e5652a,"<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Changing the implementation of #128
+
+<!-- Why are these changes necessary? -->
+**Why**: As discussed in #125
+
+<!-- How were these changes implemented? -->
+**How**:
+- Remove/change unnecessary tests
+- Update the implementation to pass both theme and context.
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Code complete
+- [ ] ~~Added myself to contributors table~~ <!-- this is optional, see the contributing guidelines for instructions -->
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","feat(context): move context to a third parameter
+
+Changing the implementation of #128 as discussed in #125
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 6a23a12..6cbedaf 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -279,7 +279,7 @@ test('renders a component with theme properties', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => ({padding: theme.padding}),
++    (props, theme) => ({padding: theme.padding}),
+   )
+   expect(
+     render(<Comp theme={{padding: '10px'}} />),
+@@ -292,7 +292,7 @@ test('in development mode the theme is frozen and cannot be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => {
++    (props, theme) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).toThrow()
+@@ -310,7 +310,7 @@ test('in production mode the theme is not frozen and can be changed', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => {
++    (props, theme) => {
+       expect(() => {
+         theme.foo = 'bar'
+       }).not.toThrow()
+@@ -326,7 +326,7 @@ test('passes an updated theme when theme prop changes', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => ({padding: theme.padding}),
++    (props, theme) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Comp theme={{padding: 10}} />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -407,9 +407,8 @@ test('can accept classNames instead of style objects', () => {
+ })
+ 
+ test('should accept user defined contextTypes', () => {
+-  const Child = glamorous.div((props, context) => ({
+-    fontSize: context.fontSize,
+-  }))
++  const dynamicStyles = jest.fn()
++  const Child = glamorous.div(dynamicStyles)
+   Child.contextTypes = {
+     fontSize: PropTypes.number,
+   }
+@@ -418,5 +417,9 @@ test('should accept user defined contextTypes', () => {
+     fontSize: 24,
+   }
+ 
+-  expect(render(<Child />, {context})).toMatchSnapshotWithGlamor()
++  render(<Child />, {context})
++  expect(dynamicStyles).toHaveBeenCalledTimes(1)
++  const theme = {}
++  const props = {}
++  expect(dynamicStyles).toHaveBeenCalledWith(props, theme, context)
+ })
+
+diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index 9266ff6..7576b3e 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -5,7 +5,6 @@ import * as jestGlamorReact from 'jest-glamor-react'
+ import glamorous from '../'
+ import ThemeProvider from '../theme-provider'
+ import {CHANNEL} from '../constants'
+-import {PropTypes} from '../react-compat'
+ 
+ expect.extend(jestGlamorReact.matcher)
+ expect.addSnapshotSerializer(jestGlamorReact.serializer)
+@@ -23,7 +22,7 @@ test('renders a component with theme', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => ({padding: theme.padding}),
++    (props, theme) => ({padding: theme.padding}),
+   )
+   expect(
+     render(
+@@ -52,7 +51,7 @@ test('theme properties updates get propagated down the tree', () => {
+     {
+       color: 'red',
+     },
+-    (props, {theme}) => ({padding: theme.padding}),
++    (props, theme) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Parent />)
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
+@@ -61,11 +60,11 @@ test('theme properties updates get propagated down the tree', () => {
+ })
+ 
+ test('merges nested themes', () => {
+-  const One = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
++  const One = glamorous.div({}, (props, {padding, margin}) => ({
+     padding,
+     margin,
+   }))
+-  const Two = glamorous.div({}, (props, {theme: {padding, margin}}) => ({
++  const Two = glamorous.div({}, (props, {padding, margin}) => ({
+     padding,
+     margin,
+   }))
+@@ -110,69 +109,3 @@ test('does nothing when receive same theme via props', () => {
+   wrapper.setProps({theme})
+   expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of margin 2px`)
+ })
+-
+-test('does not override user defined theme contexts', () => {
+-  const Child = glamorous.div((props, context) => ({
+-    fontSize: context.theme.fontSize,
+-  }))
+-  Child.contextTypes = {
+-    theme: PropTypes.object,
+-  }
+-
+-  class Parent extends React.Component {
+-    getChildContext() {
+-      return {
+-        theme: {fontSize: 24},
+-      }
+-    }
+-    render() {
+-      return <Child />
+-    }
+-  }
+-
+-  Parent.childContextTypes = {
+-    theme: PropTypes.object,
+-  }
+-
+-  expect(
+-    render(
+-      <ThemeProvider theme={{fontSize: 36}}>
+-        <Parent />
+-      </ThemeProvider>,
+-    ),
+-  ).toMatchSnapshotWithGlamor()
+-})
+-
+-test('monkey-patches `theme` into user defined context', () => {
+-  const Child = glamorous.div((props, context) => ({
+-    fontSize: context.theme.fontSize,
+-    color: context.userTheme.color,
+-  }))
+-
+-  Child.contextTypes = {
+-    userTheme: PropTypes.object,
+-  }
+-
+-  class Parent extends React.Component {
+-    getChildContext() {
+-      return {
+-        userTheme: {color: 'blue'},
+-      }
+-    }
+-    render() {
+-      return <Child />
+-    }
+-  }
+-
+-  Parent.childContextTypes = {
+-    userTheme: PropTypes.object,
+-  }
+-
+-  expect(
+-    render(
+-      <ThemeProvider theme={{fontSize: 36}}>
+-        <Parent />
+-      </ThemeProvider>,
+-    ),
+-  ).toMatchSnapshotWithGlamor()
+-})
+",0,,8,178,2,1,8,178
+138,534080b5acf20f4864c7cdca21db5b38ff1c6434,534080b5acf20f4864c7cdca21db5b38ff1c6434,"<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Closes #137
+
+<!-- Why are these changes necessary? -->
+**Why**: This makes it easier to know which elements map to which glamorous components.
+
+<!-- How were these changes implemented? -->
+**How**:
+- Change the `className` to include the `GlamorousComponent.className`
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Code complete
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","feat(className): add displayName to the className
+
+This makes it easier to know which elements map to which glamorous components.
+
+Closes #137
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 6cbedaf..ac80f80 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -179,9 +179,19 @@ test('falls back to `unknown` if name cannot be inferred', () => {
+ 
+ test('allows you to specify a displayName', () => {
+   const MyComp = glamorous(props => <div {...props} />, {
+-    displayName: 'HiThere',
++    displayName: 'Hi There',
+   })()
+-  expect(MyComp.displayName).toBe('HiThere')
++  expect(MyComp.displayName).toBe('Hi There')
++})
++
++test('can be configured to use the displayName in the className', () => {
++  const original = glamorous.config.useDisplayNameInClassName
++  glamorous.config.useDisplayNameInClassName = true
++  const MyComp = glamorous(props => <div {...props} />, {
++    displayName: 'Hi There',
++  })()
++  expect(render(<MyComp />)).toMatchSnapshotWithGlamor()
++  glamorous.config.useDisplayNameInClassName = original
+ })
+ 
+ test('will not forward `color` to a div', () => {
+",0,,5,112,1,1,5,112
+148,ffc96411ea9e21f6b2af01017810e4ba24a40be2,1724ee65b51cbdb7d39ea9bc2bd8a90dca57c0dd,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**:
+Add support to allow component factory take in functions which return string class names.
+
+<!-- Why are these changes necessary? -->
+**Why**:
+This makes it easier to add some custom string class names to components based on props.
+
+<!-- How were these changes implemented? -->
+**How**:
+Check the type of returned result from style functions to determine the next step of processing.
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Code complete
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","test(className): add test for supporting functions returning string class
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index ac80f80..7473aae 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -404,7 +404,9 @@ test('can accept classNames instead of style objects', () => {
+   // this is to support a babel plugin to pre-compile static styles
+   const className1 = glamor.css({paddingTop: 1, paddingRight: 1}).toString()
+   const styles2 = {paddingRight: 2, paddingBottom: 2}
+-  const className3 = glamor.css({paddingBottom: 3, paddingLeft: 3}).toString()
++  const className3 = glamor
++    .css({paddingBottom: 3, paddingLeft: 3})
++    .toString()
+   const styles4 = {paddingLeft: 4}
+   const Comp = glamorous.div(
+     className1,
+@@ -416,6 +418,13 @@ test('can accept classNames instead of style objects', () => {
+   expect(render(<Comp />)).toMatchSnapshotWithGlamor()
+ })
+ 
++test('can accept functions which return string class names', () => {
++  const styles1 = {paddingRight: 2, paddingBottom: 2}
++  const styles2 = props => (props.active ? 'is-active' : '')
++  const Comp = glamorous.div(styles1, styles2, 'extra-thing')
++  expect(render(<Comp active />)).toMatchSnapshotWithGlamor()
++})
++
+ test('should accept user defined contextTypes', () => {
+   const dynamicStyles = jest.fn()
+   const Child = glamorous.div(dynamicStyles)
+",0,,2,23,1,4,5,63
+168,d9ae37e0850dc7722e71e98feb5e166fc80fac3d,bed71ad5ed779f07f75f662b841adc23d7ba2cc5,"Copied from #159 from @ansumanshah
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Adds withComponent function as discussed in #135 
+
+<!-- Why are these changes necessary? -->
+**Why**: for changing the underlying component that's rendered :)
+
+<!-- How were these changes implemented? -->
+**How**: 
+```js
+function withComponent(newComp, options) {
+  return glamorous(newComp, {
+    ...options,
+    forwardProps: GlamorousComponent.forwardProps,
+  })(GlamorousComponent.styles)
+}
+```
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Code complete
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+
+Closes #135","feat(glamororus): withComponent support
+
+Closes #135
+","diff --git a/src/__tests__/create-glamorous.withComponent.js b/src/__tests__/create-glamorous.withComponent.js
+new file mode 100644
+index 0000000..0b35d60
+--- /dev/null
++++ b/src/__tests__/create-glamorous.withComponent.js
+@@ -0,0 +1,21 @@
++/* eslint func-style:0, react/prop-types:0 */
++import React from 'react'
++import {render} from 'enzyme'
++import * as jestGlamorReact from 'jest-glamor-react'
++import glamorous from '../'
++
++expect.extend(jestGlamorReact.matcher)
++expect.addSnapshotSerializer(jestGlamorReact.serializer)
++
++test('withComponent composes the component with provided styles', () => {
++  const Text = glamorous.span({color: 'red', fontSize: 20})
++  const View = Text.withComponent('div')
++  expect(render(<View />)).toMatchSnapshotWithGlamor()
++})
++
++test('withComponent creates a new component with the provided tag', () => {
++  const Text = glamorous.span({color: 'red', fontSize: 20})
++  const View = Text.withComponent('div')
++  expect(Text.comp).toBe('span')
++  expect(View.comp).toBe('div')
++})
+",1,None=None,5,82,1,2,5,165
+171,d91e9a4c35c67c8fd6413eb10fe0720dbde3bbd6,d91e9a4c35c67c8fd6413eb10fe0720dbde3bbd6,"**What**: Closes #170
+
+**Why**: enables code reuse and potentially ""Ahead of Time compilation""
+
+**How**:
+
+- Reusing the same logic for `cssOverrides` as we use for
+`styles` in `get-glamor-classname.js`. Tiny refactor there.
+- Adding tests to cover all the cases for the API.
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Code complete
+- [ ] Added myself to contributors table N/A
+- [x] Followed the commit message format <!-- this is optional as well, we can fix it for you when we merge your PR, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+
+I also updated deps because I think prettier was messed up.","feat(css): allow the `css` prop to accept fns and strings
+
+**What**: Closes #170
+
+**Why**: enables code reuse and potentially ""Ahead of Time compilation""
+
+**How**:
+
+- Reusing the same logic for `cssOverrides` as we use for
+`styles` in `get-glamor-classname.js`. Tiny refactor there.
+- Adding tests to cover all the cases for the API.
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 7473aae..7f71691 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -25,7 +25,7 @@ test('sanity test', () => {
+   expect(render(<Div />)).toMatchSnapshotWithGlamor()
+ })
+ 
+-test('can use pre-glamorous components with css attributes', () => {
++test('can use pre-built glamorous components with css attributes', () => {
+   expect(
+     render(
+       <glamorous.A
+@@ -39,7 +39,7 @@ test('can use pre-glamorous components with css attributes', () => {
+   ).toMatchSnapshotWithGlamor()
+ })
+ 
+-test('can use pre-glamorous components with css prop', () => {
++test('can use pre-built glamorous components with css prop', () => {
+   const computed = 'background'
+   expect(
+     render(
+@@ -57,6 +57,41 @@ test('can use pre-glamorous components with css prop', () => {
+   ).toMatchSnapshotWithGlamor()
+ })
+ 
++test('the css prop accepts ""GlamorousStyles""', () => {
++  const object = {fontSize: 12}
++  expect(render(<glamorous.Section css={object} />)).toMatchSnapshotWithGlamor(
++    'css prop with an object',
++  )
++
++  const array = [
++    {marginTop: 1, marginRight: 1},
++    {marginRight: 2, marginBottom: 2},
++  ]
++  expect(render(<glamorous.Section css={array} />)).toMatchSnapshotWithGlamor(
++    'css prop with an array',
++  )
++
++  // this one's weird, but could enable some Ahead of Time
++  // compilation in the future
++  const className = `${glamor.css({color: 'red'})} abc-123`
++  expect(
++    render(<glamorous.Section css={className} />),
++  ).toMatchSnapshotWithGlamor('css prop with a className')
++
++  const fn = jest.fn(() => ({padding: 20}))
++  const props = {css: fn, otherThing: 43, theme: {color: 'red'}}
++  expect(render(<glamorous.Section {...props} />)).toMatchSnapshotWithGlamor(
++    'css prop with a function',
++  )
++  expect(fn).toHaveBeenCalledTimes(1)
++  const context = {__glamorous__: undefined}
++  expect(fn).toHaveBeenCalledWith(
++    expect.objectContaining(props),
++    expect.objectContaining(props.theme),
++    expect.objectContaining(context),
++  )
++})
++
+ test('merges composed component styles for reasonable overrides', () => {
+   const Parent = glamorous.div({
+     marginTop: 1,
+@@ -404,9 +439,7 @@ test('can accept classNames instead of style objects', () => {
+   // this is to support a babel plugin to pre-compile static styles
+   const className1 = glamor.css({paddingTop: 1, paddingRight: 1}).toString()
+   const styles2 = {paddingRight: 2, paddingBottom: 2}
+-  const className3 = glamor
+-    .css({paddingBottom: 3, paddingLeft: 3})
+-    .toString()
++  const className3 = glamor.css({paddingBottom: 3, paddingLeft: 3}).toString()
+   const styles4 = {paddingLeft: 4}
+   const Comp = glamorous.div(
+     className1,
+",0,,7,193,1,1,7,193
+181,66abb5bd4aba95e132bd3998960317b6aea2df82,66abb5bd4aba95e132bd3998960317b6aea2df82,"I'm working on fixing a bug I found while making [this](https://codesandbox.io/s/ERNVNoxEv) (notice that the `textAlign=""center""` is not applied to the first user card because the `css` prop is set to a function.
+
+As part of making that an easier fix, I'm refactoring `getGlamorClassName` and I'm not sure why a bunch of the tests are breaking. I've only dug a little ways into it, but now I've got daddy duty. If anyone wants to debug it and figure out what's up, that'd be awesome. At first glance, it appears that the class names are generated properly, but somehow they're not added to glamor's stylesheet which is why they're not appearing in the snapshot???? Weird stuff.","fix(css): improve built-in support with css prop as function
+
+**What**: This refactors things a bit and separates `css` the prop from
+the overrides props.
+
+**Why**: Otherwise, if the `css` prop happens to be a function, the
+`propsAreCssOverrides` would make the props be assigned to the function
+and then they'd never actually be applied. By splitting them from each
+other it allows us to merge both of them.
+
+**How**: Most of the work happened in `get-glamor-classname.js`. I first
+refactored it to simplify things a bit. Then I plugged in the `cssProp`
+and `cssOverrides` into their order of precidence. I also added a bit of
+recursion to the `handleStyles` function which allows you to pass an
+array of functions, this is useful for the `css` prop in particular. So
+you can compose functions together without a `compose` helper.
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 7f71691..7b8cedb 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -78,14 +78,21 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+     render(<glamorous.Section css={className} />),
+   ).toMatchSnapshotWithGlamor('css prop with a className')
+ 
+-  const fn = jest.fn(() => ({padding: 20}))
+-  const props = {css: fn, otherThing: 43, theme: {color: 'red'}}
++  const fn1 = jest.fn(() => ({padding: 20}))
++  const fn2 = jest.fn(() => ({margin: 30}))
++  const props = {css: [fn1, fn2], fontSize: 10, theme: {color: 'red'}}
+   expect(render(<glamorous.Section {...props} />)).toMatchSnapshotWithGlamor(
+     'css prop with a function',
+   )
+-  expect(fn).toHaveBeenCalledTimes(1)
++  expect(fn1).toHaveBeenCalledTimes(1)
++  expect(fn2).toHaveBeenCalledTimes(1)
+   const context = {__glamorous__: undefined}
+-  expect(fn).toHaveBeenCalledWith(
++  expect(fn1).toHaveBeenCalledWith(
++    expect.objectContaining(props),
++    expect.objectContaining(props.theme),
++    expect.objectContaining(context),
++  )
++  expect(fn2).toHaveBeenCalledWith(
+     expect.objectContaining(props),
+     expect.objectContaining(props.theme),
+     expect.objectContaining(context),
+",0,,6,60,1,2,6,95
+214,06975fed0233a6f0bbe5b577a09d8a9226a3ffe6,06975fed0233a6f0bbe5b577a09d8a9226a3ffe6,"BREAKING CHANGE: Glamorous function arguments will no longer be untyped which will break on any code
+that was returning things that are not valid style objects.
+
+closes #212
+
+**What**:
+
+Fixes issue where Partials accept arbitary functions, which resulted in glamorous accepting methods
+of any shape.
+
+**Why**:
+
+Currently there are a number ways to use glamorous with typescript where you have incomplete typesafety.
+
+We've started coming across these with a number of our components and internal glamorous helpers.
+
+**How**:
+
+Updated the typescript typing for glamorous component factories arguments to not accept arbitrary functions.
+
+Also added tests for things that should fail with the typings.
+
+**Checklist**:
+- [ ] Documentation N/A
+- [x] Tests
+- [x] Code complete
+- [ ] Added myself to contributors table N/A
+- [x] Followed the commit message format
+
+As part of tracing down why the tests were passing for invalid things it was a bit hard due to mismatches between namings in the typings and glamorouses own code/documentation.  I ended up refactoring a bunch of that at the same time which I'll put up in it's own pr following this.
+
+Also @kentcdodds I've added a test to the `src/tests` folder which compiles the typescript and expects the failure output to match the snapshotted failures.
+
+I placed this in there to take advantage of the current jest setup, however would be happy to move that alongside the typings if you'd prefer.","fix(typescript): Fixed issue where glamorous accepted invalid functions
+
+Fixes issue where Partials accept arbitary functions, which resulted in glamorous accepting methods
+of any shape.
+
+BREAKING CHANGE: Glamorous function arguments will no longer be untyped which will break on any code
+that was returning things that are not valid style objects.
+
+closes #212
+","diff --git a/src/__tests__/typescript.js b/src/__tests__/typescript.js
+new file mode 100644
+index 0000000..cc590de
+--- /dev/null
++++ b/src/__tests__/typescript.js
+@@ -0,0 +1,15 @@
++import {spawnSync} from 'child_process'
++import rimraf from 'rimraf'
++
++test('Typescript', () => {
++  const typescriptCompilation = spawnSync('./node_modules/.bin/tsc', [
++    '-p',
++    './tsconfig.json',
++  ])
++
++  const output = typescriptCompilation.stdout.toString()
++
++  rimraf.sync('./test-ts')
++
++  expect(output).toMatchSnapshot('Typescript expected failures')
++})
+",0,,6,455,1,1,6,455
+230,5051a576b00fb25a250bf1f5adca37319311f88f,d2360c59c9a1cc971fc58c398ba1eeb59c4a2791,"**What and Why**:
+
+This pr follows on from the work in #214  and the discussion on that pr.
+
+BREAKING CHANGE:
+
+These typings use language features of typescript 2.4+.
+
+This fixes a number of issues with the glamorous component factory
+typings
+
+* style objects can only be sets of css or svg properties
+* style functions can return a string classname or style object
+* glamorous arguments can be a string classname
+* glamorous arguments can be a StyleArray containing classnames, style objects and style functions.
+
+This also improves the developer experience provided by intellisense                     
+with autocomplete once again working.
+
+This closes #212
+
+This also updates the typing for theme to match the new behaviour which landed in #207.
+
+**How**:
+
+Updated the type definitions and the related tests.
+
+**Checklist**:
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged
+- [ ] Added myself to contributors table N/A
+
+<!-- feel free to add additional comments -->
+
+These updated typings still have Theme as a seperate parameter to the glamorous component factory function arguments.  I'll try and update this in a seperate pr sometime in the next few days.
+
+I've also taken liberty in the naming of the following argument types as I was unable to find any language describing them in the glamorous documentation.
+
+StyleObject, StyleFunction, StyleFunctionArray, StyleArray
+
+I'd be happy to update these types if someone has suggestions for better names.
+","chore(typescript): use omit to simplify theme usage and fix factory
+
+Introduces Omit and uses it to simplify Theme usage and correct the
+component factory component argument typing with classname.
+",,0,,7,179,1,7,16,1266
+24,aa3dab10917a2fd3f6fc4bc1ce1b00aba6df8a75,892195415ea8dcd0b94344f4f4c359d5ff77890a,"<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**:
+Theming support 
+
+<!-- Why are these changes necessary? -->
+**Why**:
+It is part of the project roadmap
+
+<!-- How were these changes implemented? -->
+**How**:
+A new component has been added:
+`ThemeProvider`
+It takes a `theme` props that will be propagated down the tree via context.
+
+Context updates will also be propagated to children that return false from `shouldComponentUpdate`.
+This has been achieved using an event emitter implemented with [mitt](https://github.com/developit/mitt) and inspired by https://medium.com/@mweststrate/how-to-safely-use-react-context-b7e343eff076
+
+ThemeProviders can also be nested.
+Inner components will merge outer theme with own.
+
+I had to change `GlamorousComponent` to a class in order to access lifecycle methods.
+
+
+
+<!-- feel free to add additional comments -->
+**TODO**:
+* Adding unit tests (I have no experience with jest, but I'd love to follow your guidance)
+* There is one test that currently fails (see previous point)
+* Documentation
+* Anything else ?
+
+
+An example: 
+```jsx
+import ReactDOM from 'react-dom'
+import React, {Component} from 'react'
+import glamorous, {ThemeProvider} from 'glamorous'
+
+const Text = glamorous.div({
+  color: 'blue',
+},
+(props, theme) => {
+  return {
+    fontSize: theme.fontSize * 100
+  }
+})
+
+class Root extends Component {
+  constructor () {
+    super()
+    this.state = {
+      fontSize: 1
+    }
+    this.tick = this.tick.bind(this)
+  }
+
+  componentDidMount () {
+    this.tick()
+  }
+  tick () {
+    setInterval(() => this.setState({fontSize: Math.random()}), 2000)
+  }
+
+
+  render () {
+    return (
+      <ThemeProvider theme={{fontSize: this.state.fontSize}}>
+          <Text>
+            <ThemeProvider theme={{anotherThemeProperty: 100}}>
+              <div>
+                <Text>My font size will change</Text>
+                <Pure>
+                  <Text>My font size will still change, even if I'm inside a pure component</Text>
+                </Pure>
+              </div>
+            </ThemeProvider>
+          </Text>
+      </ThemeProvider>
+    )
+  }
+}
+
+class Pure extends Component {
+  shouldComponentUpdate() {
+    return false
+  }
+
+  render() {
+    return <Text>{this.props.children}</Text>
+  }
+}
+
+ReactDOM.render(
+  <Root />,
+  document.getElementById('root')
+)
+```
+
+",feat(lib): Add theming support,"diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index ce00345..b52d001 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -1,15 +1,25 @@
+ /* eslint func-style:0 */
+ import React from 'react'
+ import * as glamor from 'glamor'
+-import {render} from 'enzyme'
++import {render, mount} from 'enzyme'
+ import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
++import toJson from 'enzyme-to-json'
+ // eslint-disable-next-line import/default
+ import glamorous from '../'
++import {CHANNEL} from '../theme-provider'
+ 
+ expect.extend(jestGlamorReact.matcher)
+ expect.addSnapshotSerializer(jestGlamorReact.serializer)
+ 
++const getMockedContext = unsubscribe => ({
++  [CHANNEL]: {
++    getState: () => {},
++    setState: () => {},
++    subscribe: () => unsubscribe,
++  },
++})
++
+ test('sanity test', () => {
+   const Div = glamorous.div({marginLeft: 24})
+   expect(render(<Div />)).toMatchSnapshotWithGlamor()
+@@ -146,7 +156,9 @@ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+   })()
+   // no need to pass anything. This will just create be a no-op class,
+   // no problem
+-  const MyWrappedVersionMock = jest.fn(MyWrappedVersion)
++  const MyWrappedVersionMock = jest.fn(props => (
++    <MyWrappedVersion {...props} />
++  ))
+ 
+   // from there we can use our wrapped version and it will function the
+   // same as the original
+@@ -192,3 +204,46 @@ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+   )
+   expect(ui).toMatchSnapshotWithGlamor()
+ })
++
++test('renders a component with theme properties', () => {
++  const Comp = glamorous.div(
++    {
++      color: 'red',
++    },
++    (props, theme) => ({padding: theme.padding}),
++  )
++  expect(
++    render(<Comp theme={{padding: '10px'}} />),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('passes an updated theme when theme prop changes', () => {
++  const Comp = glamorous.div(
++    {
++      color: 'red',
++    },
++    (props, theme) => ({padding: theme.padding}),
++  )
++  const wrapper = mount(<Comp theme={{padding: '10px'}} />)
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++  wrapper.setProps({theme: {padding: '20px'}})
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++})
++
++test('cleans up theme subscription when unmounts', () => {
++  const unsubscribe = jest.fn()
++  const context = getMockedContext(unsubscribe)
++  const Comp = glamorous.div()
++  const wrapper = mount(<Comp />, {context})
++  wrapper.unmount()
++  expect(unsubscribe).toHaveBeenCalled()
++})
++
++test('ignores context if a theme props is passed', () => {
++  const unsubscribe = jest.fn()
++  const context = getMockedContext(unsubscribe)
++  const Comp = glamorous.div()
++  const wrapper = mount(<Comp theme={{}} />, {context})
++  wrapper.unmount()
++  expect(unsubscribe).toHaveBeenCalledTimes(0)
++})
+
+diff --git a/src/__tests__/theme-provider.test.js b/src/__tests__/theme-provider.test.js
+new file mode 100644
+index 0000000..c617a6a
+--- /dev/null
++++ b/src/__tests__/theme-provider.test.js
+@@ -0,0 +1,108 @@
++/* eslint func-style:0 */
++import React, {Component} from 'react'
++import {render, mount} from 'enzyme'
++import * as jestGlamorReact from 'jest-glamor-react'
++import toJson from 'enzyme-to-json'
++// eslint-disable-next-line import/default
++import glamorous from '../'
++import ThemeProvider, {CHANNEL} from '../theme-provider'
++
++expect.extend(jestGlamorReact.matcher)
++expect.addSnapshotSerializer(jestGlamorReact.serializer)
++
++const getMockedContext = unsubscribe => ({
++  [CHANNEL]: {
++    getState: () => {},
++    setState: () => {},
++    subscribe: () => unsubscribe,
++  },
++})
++
++test('renders a component with theme', () => {
++  const Comp = glamorous.div(
++    {
++      color: 'red',
++    },
++    (props, theme) => ({padding: theme.padding}),
++  )
++  expect(
++    render(
++      <ThemeProvider theme={{padding: '10px'}}>
++        <Comp />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('theme properties updates get propagated down the tree', () => {
++  class Parent extends Component {
++    state = {
++      padding: '10px',
++    }
++    setPadding = () => this.setState({padding: '20px'})
++    render() {
++      return (
++        <ThemeProvider theme={{padding: this.state.padding}}>
++          <Child />
++        </ThemeProvider>
++      )
++    }
++  }
++  const Child = glamorous.div(
++    {
++      color: 'red',
++    },
++    (props, theme) => ({padding: theme.padding}),
++  )
++  const wrapper = mount(<Parent />)
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++  wrapper.instance().setPadding()
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++})
++
++test('merges nested themes', () => {
++  const One = glamorous.div({}, (props, themes) => ({padding: themes.padding}))
++  const Two = glamorous.div({}, (props, themes) => {
++    return {padding: themes.padding, margin: themes.margin}
++  })
++  expect(
++    mount(
++      <div>
++        <ThemeProvider theme={{padding: '1px'}}>
++          <div>
++            <One />
++            <ThemeProvider theme={{margin: '2px'}}>
++              <Two />
++            </ThemeProvider>
++          </div>
++        </ThemeProvider>
++      </div>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('renders if children are null', () => {
++  expect(
++    mount(
++      <ThemeProvider theme={{padding: '1px'}}>
++        {false && <div />}
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshotWithGlamor()
++})
++
++test('cleans up outer theme subscription when unmounts', () => {
++  const unsubscribe = jest.fn()
++  const context = getMockedContext(unsubscribe)
++  const wrapper = mount(<ThemeProvider theme={{}} />, {context})
++  wrapper.unmount()
++  expect(unsubscribe).toHaveBeenCalled()
++})
++
++test('does nothing when receive same theme via props', () => {
++  const theme = {margin: '2px'}
++  const wrapper = mount(<ThemeProvider theme={theme} />)
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++  wrapper.setProps({theme})
++  expect(toJson(wrapper)).toMatchSnapshotWithGlamor(`enzyme.mount`)
++})
+",0,,9,546,2,19,15,797
+246,878819d1b7704a0b6c6289ad22eee797e7424c3d,5ff0b0653ace325db1e6244ac51507242276ad1c,"
+<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: This adds a check for whether the given `tagName` is an html tag before saying it's svg
+
+<!-- Why are these changes necessary? -->
+**Why**: closes #245
+
+<!-- How were these changes implemented? -->
+**How**: See the code. Also prettier 😒
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [ ] Documentation N/A
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table N/A <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","fix: some built-in components will now get the right props as CSS
+
+closes #245
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 31cc8ce..53cc823 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -274,15 +274,15 @@ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+   })()
+   // no need to pass anything. This will just create be a no-op class,
+   // no problem
+-  const MyWrappedVersionMock = jest.fn(props => (
+-    <MyWrappedVersion {...props} />
+-  ))
++  const MyWrappedVersionMock = jest.fn(props =>
++    <MyWrappedVersion {...props} />,
++  )
+ 
+   // from there we can use our wrapped version and it will function the
+   // same as the original
+-  const MyMyWrappedVersion = jest.fn(props => (
+-    <MyWrappedVersionMock {...props} />
+-  ))
++  const MyMyWrappedVersion = jest.fn(props =>
++    <MyWrappedVersionMock {...props} />,
++  )
+ 
+   // then if we make a parent glamorous, it will forward props down until
+   // it hits our wrapper at which time it will check whether the prop is
+@@ -389,7 +389,11 @@ test('passes `theme` to the css prop if it is a function', () => {
+   const css = jest.fn()
+   const props = {css}
+   const theme = {color: 'blue'}
+-  mount(<ThemeProvider theme={theme}><Comp {...props} /></ThemeProvider>)
++  mount(
++    <ThemeProvider theme={theme}>
++      <Comp {...props} />
++    </ThemeProvider>,
++  )
+   expect(css).toHaveBeenCalledTimes(1)
+   const context = expect.objectContaining({[CHANNEL]: expect.any(Object)})
+   expect(css).toHaveBeenCalledWith({...props, theme}, theme, context)
+@@ -437,7 +441,9 @@ test('can accept classNames instead of style objects', () => {
+   // this is to support a babel plugin to pre-compile static styles
+   const className1 = glamor.css({paddingTop: 1, paddingRight: 1}).toString()
+   const styles2 = {paddingRight: 2, paddingBottom: 2}
+-  const className3 = glamor.css({paddingBottom: 3, paddingLeft: 3}).toString()
++  const className3 = glamor
++    .css({paddingBottom: 3, paddingLeft: 3})
++    .toString()
+   const styles4 = {paddingLeft: 4}
+   const Comp = glamorous.div(
+     className1,
+",0,,3,47,1,2,15,13484
+247,f74e09a29c8b4ecee40b7a747c051e1f320d95ed,f74e09a29c8b4ecee40b7a747c051e1f320d95ed,"closes #242
+
+BREAKING CHANGE: It is no longer possible to configure anything with glamorous
+
+<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: remove useDisplayNameInClassName and use glamor's built-in `label` instead
+
+<!-- Why are these changes necessary? -->
+**Why**: it's better
+
+<!-- How were these changes implemented? -->
+**How**:
+- Removed docs for config
+- added a `dev.js` to test this feature
+- accept `displayName` in `getGlamorClassName` and add a `{label: displayName}` for every call to glamor's `css` function.
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table N/A <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","fix: remove useDisplayNameInClassName and use glamor's built-in `label`
+
+closes #242
+
+BREAKING CHANGE: It is no longer possible to configure anything with glamorous
+","diff --git a/src/__tests__/dev.js b/src/__tests__/dev.js
+new file mode 100644
+index 0000000..fd53bdb
+--- /dev/null
++++ b/src/__tests__/dev.js
+@@ -0,0 +1,32 @@
++/*
++ * This file is here to test things that glamor does when
++ * NODE_ENV === 'development'
++ *
++ * Because glamor stores the value in the module level of
++ * it's implementation files, we have to do some funny things
++ * to make sure that glamor gets the value we want.
++ */
++import React from 'react'
++import {render} from 'enzyme'
++
++const nodeEnv = process.env.NODE_ENV
++
++beforeEach(() => {
++  process.env.NODE_ENV = 'development'
++  jest.resetModules()
++})
++
++afterEach(() => {
++  process.env.NODE_ENV = nodeEnv
++})
++
++test('can be configured to use the displayName in the className', () => {
++  // eslint-disable-next-line
++  const glamorous = require('../').default
++  const MyComp = glamorous(props => <div {...props} />, {
++    displayName: 'Hi There',
++  })({color: 'red'})
++  const wrapper = render(<MyComp />)
++  expect(wrapper).toMatchSnapshot()
++  expect(wrapper.html()).toMatch(/hi-there/)
++})
+
+diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 742dd85..03a9d3a 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -2,15 +2,11 @@
+ import React from 'react'
+ import * as glamor from 'glamor'
+ import {render, mount} from 'enzyme'
+-import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
+ import glamorous, {ThemeProvider} from '../'
+ import {PropTypes} from '../react-compat'
+ import {CHANNEL} from '../constants'
+ 
+-expect.extend(jestGlamorReact.matcher)
+-expect.addSnapshotSerializer(jestGlamorReact.serializer)
+-
+ const nodeEnv = process.env.NODE_ENV
+ 
+ afterEach(() => {
+@@ -19,7 +15,7 @@ afterEach(() => {
+ 
+ test('sanity test', () => {
+   const Div = glamorous.div({marginLeft: 24})
+-  expect(render(<Div />)).toMatchSnapshotWithGlamor()
++  expect(render(<Div />)).toMatchSnapshot()
+ })
+ 
+ test('can use pre-built glamorous components with css attributes', () => {
+@@ -33,7 +29,7 @@ test('can use pre-built glamorous components with css attributes', () => {
+         className=""is added to classes""
+       />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('can use pre-built glamorous components with css prop', () => {
+@@ -51,12 +47,12 @@ test('can use pre-built glamorous components with css prop', () => {
+         }}
+       />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('the css prop accepts ""GlamorousStyles""', () => {
+   const object = {fontSize: 12}
+-  expect(render(<glamorous.Section css={object} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section css={object} />)).toMatchSnapshot(
+     'css prop with an object',
+   )
+ 
+@@ -64,21 +60,21 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+     {marginTop: 1, marginRight: 1},
+     {marginRight: 2, marginBottom: 2},
+   ]
+-  expect(render(<glamorous.Section css={array} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section css={array} />)).toMatchSnapshot(
+     'css prop with an array',
+   )
+ 
+   // this one's weird, but could enable some Ahead of Time
+   // compilation in the future
+   const className = `${glamor.css({color: 'red'})} abc-123`
+-  expect(
+-    render(<glamorous.Section css={className} />),
+-  ).toMatchSnapshotWithGlamor('css prop with a className')
++  expect(render(<glamorous.Section css={className} />)).toMatchSnapshot(
++    'css prop with a className',
++  )
+ 
+   const fn1 = jest.fn(() => ({padding: 20}))
+   const fn2 = jest.fn(() => ({margin: 30}))
+   const props = {css: [fn1, fn2], fontSize: 10, theme: {color: 'red'}}
+-  expect(render(<glamorous.Section {...props} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section {...props} />)).toMatchSnapshot(
+     'css prop with a function',
+   )
+   expect(fn1).toHaveBeenCalledTimes(1)
+@@ -140,7 +136,7 @@ test('merges composed component styles for reasonable overrides', () => {
+     expect(el.attribs.class).toContain(className)
+   })
+   // still using a snapshot though for good measure
+-  expect(wrapper).toMatchSnapshotWithGlamor()
++  expect(wrapper).toMatchSnapshot()
+ })
+ 
+ test('merges composed component forwardProps', () => {
+@@ -150,14 +146,14 @@ test('merges composed component forwardProps', () => {
+   const Child = glamorous(parent, {forwardProps: ['shouldRender']})()
+   const Grandchild = glamorous(Child)()
+   const wrapper = render(<Grandchild shouldRender={true} />)
+-  expect(wrapper).toMatchSnapshotWithGlamor()
++  expect(wrapper).toMatchSnapshot()
+ })
+ 
+ test('styles can be functions that accept props', () => {
+   const MyDiv = glamorous.div({marginTop: 1}, ({margin}) => ({
+     marginTop: margin,
+   }))
+-  expect(render(<MyDiv margin={2} />)).toMatchSnapshotWithGlamor()
++  expect(render(<MyDiv margin={2} />)).toMatchSnapshot()
+ })
+ 
+ test('style objects can be arrays and glamor will merge those', () => {
+@@ -176,9 +172,7 @@ test('style objects can be arrays and glamor will merge those', () => {
+       return [bigStyles, squareStyles]
+     },
+   )
+-  expect(
+-    render(<MyDiv big={true} square={false} />),
+-  ).toMatchSnapshotWithGlamor()
++  expect(render(<MyDiv big={true} square={false} />)).toMatchSnapshot()
+ })
+ 
+ test('falls back to `name` if displayName cannot be inferred', () => {
+@@ -199,22 +193,12 @@ test('allows you to specify a displayName', () => {
+   expect(MyComp.displayName).toBe('Hi There')
+ })
+ 
+-test('can be configured to use the displayName in the className', () => {
+-  const original = glamorous.config.useDisplayNameInClassName
+-  glamorous.config.useDisplayNameInClassName = true
+-  const MyComp = glamorous(props => <div {...props} />, {
+-    displayName: 'Hi There',
+-  })()
+-  expect(render(<MyComp />)).toMatchSnapshotWithGlamor()
+-  glamorous.config.useDisplayNameInClassName = original
+-})
+-
+ test('will not forward `color` to a div', () => {
+-  expect(render(<glamorous.Div color=""red"" />)).toMatchSnapshotWithGlamor()
++  expect(render(<glamorous.Div color=""red"" />)).toMatchSnapshot()
+ })
+ 
+ test('will forward `color` to an svg', () => {
+-  expect(render(<glamorous.Svg color=""red"" />)).toMatchSnapshotWithGlamor()
++  expect(render(<glamorous.Svg color=""red"" />)).toMatchSnapshot()
+ })
+ 
+ test('allows you to specify the tag rendered by a component', () => {
+@@ -227,7 +211,7 @@ test('allows you to specify the tag rendered by a component', () => {
+     render(
+       <MyStyledSvgComponent height={2} noForward={true} css={{width: 2}} />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+@@ -296,7 +280,7 @@ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+     expect.anything(),
+     expect.anything(),
+   )
+-  expect(ui).toMatchSnapshotWithGlamor()
++  expect(ui).toMatchSnapshot()
+ })
+ 
+ test('renders a component with theme properties', () => {
+@@ -306,9 +290,7 @@ test('renders a component with theme properties', () => {
+     },
+     ({theme}) => ({padding: theme.padding}),
+   )
+-  expect(
+-    render(<Comp theme={{padding: '10px'}} />),
+-  ).toMatchSnapshotWithGlamor()
++  expect(render(<Comp theme={{padding: '10px'}} />)).toMatchSnapshot()
+ })
+ 
+ test('passes an updated theme when theme prop changes', () => {
+@@ -319,9 +301,9 @@ test('passes an updated theme when theme prop changes', () => {
+     ({theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Comp theme={{padding: 10}} />)
+-  expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 10px`)
+   wrapper.setProps({theme: {padding: 20}})
+-  expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 20px`)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 20px`)
+ })
+ 
+ test('passes `theme` to the css prop if it is a function', () => {
+@@ -353,7 +335,7 @@ test('allows you to pass custom props that are allowed', () => {
+     render(
+       <MyStyledComponent shouldRender={true} otherThing={false} id=""hello"" />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+   expect(MyComponent).toHaveBeenCalledTimes(1)
+   expect(MyComponent).toHaveBeenCalledWith(
+     {
+@@ -392,14 +374,14 @@ test('can accept classNames instead of style objects', () => {
+     styles4,
+     'extra-thing',
+   )
+-  expect(render(<Comp />)).toMatchSnapshotWithGlamor()
++  expect(render(<Comp />)).toMatchSnapshot()
+ })
+ 
+ test('can accept functions which return string class names', () => {
+   const styles1 = {paddingRight: 2, paddingBottom: 2}
+   const styles2 = props => (props.active ? 'is-active' : '')
+   const Comp = glamorous.div(styles1, styles2, 'extra-thing')
+-  expect(render(<Comp active />)).toMatchSnapshotWithGlamor()
++  expect(render(<Comp active />)).toMatchSnapshot()
+ })
+ 
+ test('should accept user defined contextTypes', () => {
+",0,,14,240,2,1,14,240
+249,93e11cb50916498992b17d8457e358d7b133cd30,93e11cb50916498992b17d8457e358d7b133cd30,"**What**:
+
+Remove useDisplayNameInClassName and config
+
+**Why**:
+
+Because they are being removed from the glamorous api
+
+https://github.com/paypal/glamorous/pull/247
+
+**How**:
+
+
+**Checklist**:
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged
+- [x] Added myself to contributors table
+
+This also contains a commit which fixes a seperate issue in the `glamorous.test.tsx` which had managed to sneak into the snapshot as well.
+","fix(typescript): fixes incorrectly used ref in glamorous.test.tsx
+",,0,,2,6,1,2,5,44
+251,56ba0e9b3fdd4ace0644902bafbec3f2a49d4fa5,60bf01df9d6a9e44fefb9ba91db82eb3e5a9f1cc,"**What/Why**:
+
+Adds support for https://github.com/paypal/glamorous/pull/250
+
+**How**:
+
+Updated the typing to accept `shouldClassNameUpdate`. 
+
+**Checklist**:
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged
+- [x] Added myself to contributors table
+
+I also fixed an unrelated issue around looseness in the typing of component factories creation where when passed a component glamorous did not automatically work out it's Props as this issue was making it hard to test.
+","task(typescript): add typings for shouldClassNameUpdate
+
+This introduces typescript support for shouldClassNameUpdate.
+
+```ts
+// By default glamorous will grab the props from the component passed
+// to use context you need to pass props and context as generics
+// glamorous<Props, Context>( // ...
+const pureDivFactory = glamorous(Component, {
+  shouldClassNameUpdate: (props, previousProps, context, previousContext) => {
+    if (props.color !== props.color) {
+      return false
+    }
+    return true
+  },
+})
+```
+",,0,,4,101,1,3,8,259
+252,0a8437955b210b9f0479362e48d5cd7a9d00e628,0a8437955b210b9f0479362e48d5cd7a9d00e628,"**What**:
+Provides support for glamorous component factories to be created with dom keys
+https://github.com/paypal/glamorous/tree/6d806889e9991065f1243d4abdce9c0b6cd3a2ae#using-glamorous-composition
+
+ie. `glamorous('div')`
+
+**Why**:
+
+**How**:
+
+Added two new overloads to the `GlamorousInterface` for HTML and SVG tagsthat are typed to provide the same return type as the built-in glamorous component factories.
+
+**Checklist**:
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged
+- [x] Added myself to contributors table
+
+This topic branch is based off https://github.com/paypal/glamorous/pull/251.
+
+https://github.com/luke-john/glamorous/commit/1b4413ce9a90c153a85531c95282ca4722375e7b is the only unique commit
+","feat(typescript): create component factories from dom keys
+
+This introduces typing to be able to create component factories
+from their dom key.  The component createds style arguments return
+types will be typed the same as it's equivalent built-in component.
+
+ie. `glamorous('div')({ /* must be valid div styles */`
+
+```ts
+glamorous('div')({}) // glamorous.div({})
+```
+",,0,,7,119,1,3,7,122
+253,394b74fc4cd719a700c40382927619eccf0bbe72,592346f6e132cefa5dc0adf0bb2be3ff6b03411e,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Release the next breaking change
+
+<!-- Why are these changes necessary? -->
+**Why**: Various reasons, but we want people to get this!
+
+<!-- How were these changes implemented? -->
+**How**: See individual PRs
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table N/A <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+
+**Todo**:
+
+- [x] merge a few PRs to glamorous
+- [x] write blogpost
+- [x] [update algolia](https://github.com/algolia/docsearch-configs/blob/master/configs/glamorous.json)
+- [x] publish glamorous website
+- [x] merge this PR and wait for the autopublish
+- [x] update the release notes to be more complete and nice
+- [ ] publish blogpost","feat(config): change the default of useDisplayNameInClassName (#221)
+
+BREAKING CHANGE: `useDisplayNameInClassName` is now defaulted to `process.env.NODE_ENV !== 'test'`
+
+fix(get-glamor-classname): remove theme argument (#222)
+
+Closes #219
+
+BREAKING CHANGE: theme argument has been removed in favor of getting the `theme` from `props`.
+
+Before:
+
+```javascript
+const MyDiv = glamorous.div((props, theme) => ({
+  fontSize: theme.main.fontSize,
+}))
+```
+
+After:
+
+```js
+const MyDiv = glamorous.div(({theme}) => ({
+  fontSize: theme.main.fontSize,
+}))
+```
+
+fix(typescript): Fixed issue where glamorous accepted invalid functions (#214)
+
+Fixes issue where Partials accept arbitary functions, which resulted in glamorous accepting methods
+of any shape.
+
+closes #212
+
+BREAKING CHANGE: Glamorous function arguments will no longer be untyped which will break on any code that was returning things that are not valid style objects.
+
+fix(typescript): complete glamorous component factories (#230)
+
+fix(typescript): glamorous component factory arguments typing
+
+This pr follows on from the work in #212 and the discussion on that pr.
+
+BREAKING CHANGE: This fixes a number of issues with the glamorous component factory
+typings
+
+* style objects can only be sets of css or svg properties
+* style functions can return a string classname or style object
+* glamorous arguments can be a string classname
+* glamorous arguments can be a StyleArray containing classnames, style objects and style functions.
+
+This also improves the developer experience provided by intellisense
+with autocomplete once again working.
+
+This also includes typing for withComponent and adds typing
+for classname and theme props on GlamorousComponents.
+
+This closes #212
+
+* chore(typescript): update theme typings
+
+This pr updates the typescript typing to pass the theme to glamorous
+component factory function arguments as a key on props rather than
+as the second argument.
+
+* chore(typescript): Update typescript usage documentation
+
+* chore(typescript): use omit to simplify theme usage and fix factory
+
+Introduces Omit and uses it to simplify Theme usage and correct the
+component factory component argument typing with classname.
+
+* chore(typescript): add WithComponent bug to known issues
+
+* chore(typescript): bump typescript version to 2.4.2
+
+chore: fix some things
+
+fix(typescript): remove useDisplayNameInClassName and config (#249)
+
+* task(typescript): remove useDisplayNameInClassName and config
+
+This updates the typings based on https://github.com/paypal/glamorous/pull/247
+
+It also adds tests for the use of displayName.
+
+* fix(typescript): fixes incorrectly used ref in glamorous.test.tsx
+
+fix: remove useDisplayNameInClassName and use glamor's built-in `label` (#247)
+
+closes #242
+
+BREAKING CHANGE: It is no longer possible to configure anything with glamorous
+
+update things
+
+feat: add shouldClassNameUpdate for optimizing glamorous components (#250)
+
+Closes #203
+
+feat(typescript): add shouldClassNameUpdate typing (#251)
+
+* task(typescript): improve glamorous component factory creation
+
+This ensures that when Glamorous component factories are created
+with your own components, the resulting glamorous components are
+correctly typed.
+
+* task(typescript): add typings for shouldClassNameUpdate
+
+This introduces typescript support for shouldClassNameUpdate.
+
+```ts
+// By default glamorous will grab the props from the component passed
+// to use context you need to pass props and context as generics
+// glamorous<Props, Context>( // ...
+const pureDivFactory = glamorous(Component, {
+  shouldClassNameUpdate: (props, previousProps, context, previousContext) => {
+    if (props.color !== props.color) {
+      return false
+    }
+    return true
+  },
+})
+```
+
+* chore(typescript): document shouldClassNameUpdate typescript usage
+
+feat(typescript): create component factories via dom key (#252)
+
+* task(typescript): improve glamorous component factory creation
+
+This ensures that when Glamorous component factories are created
+with your own components, the resulting glamorous components are
+correctly typed.
+
+* task(typescript): add typings for shouldClassNameUpdate
+
+This introduces typescript support for shouldClassNameUpdate.
+
+```ts
+// By default glamorous will grab the props from the component passed
+// to use context you need to pass props and context as generics
+// glamorous<Props, Context>( // ...
+const pureDivFactory = glamorous(Component, {
+  shouldClassNameUpdate: (props, previousProps, context, previousContext) => {
+    if (props.color !== props.color) {
+      return false
+    }
+    return true
+  },
+})
+```
+
+* feat(typescript): create component factories from dom keys
+
+This introduces typing to be able to create component factories
+from their dom key.  The component createds style arguments return
+types will be typed the same as it's equivalent built-in component.
+
+ie. `glamorous('div')({ /* must be valid div styles */`
+
+```ts
+glamorous('div')({}) // glamorous.div({})
+```
+","diff --git a/src/__tests__/dev.js b/src/__tests__/dev.js
+new file mode 100644
+index 0000000..fd53bdb
+--- /dev/null
++++ b/src/__tests__/dev.js
+@@ -0,0 +1,32 @@
++/*
++ * This file is here to test things that glamor does when
++ * NODE_ENV === 'development'
++ *
++ * Because glamor stores the value in the module level of
++ * it's implementation files, we have to do some funny things
++ * to make sure that glamor gets the value we want.
++ */
++import React from 'react'
++import {render} from 'enzyme'
++
++const nodeEnv = process.env.NODE_ENV
++
++beforeEach(() => {
++  process.env.NODE_ENV = 'development'
++  jest.resetModules()
++})
++
++afterEach(() => {
++  process.env.NODE_ENV = nodeEnv
++})
++
++test('can be configured to use the displayName in the className', () => {
++  // eslint-disable-next-line
++  const glamorous = require('../').default
++  const MyComp = glamorous(props => <div {...props} />, {
++    displayName: 'Hi There',
++  })({color: 'red'})
++  const wrapper = render(<MyComp />)
++  expect(wrapper).toMatchSnapshot()
++  expect(wrapper.html()).toMatch(/hi-there/)
++})
+
+diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 32812a7..03a9d3a 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -2,15 +2,11 @@
+ import React from 'react'
+ import * as glamor from 'glamor'
+ import {render, mount} from 'enzyme'
+-import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
+ import glamorous, {ThemeProvider} from '../'
+ import {PropTypes} from '../react-compat'
+ import {CHANNEL} from '../constants'
+ 
+-expect.extend(jestGlamorReact.matcher)
+-expect.addSnapshotSerializer(jestGlamorReact.serializer)
+-
+ const nodeEnv = process.env.NODE_ENV
+ 
+ afterEach(() => {
+@@ -19,7 +15,7 @@ afterEach(() => {
+ 
+ test('sanity test', () => {
+   const Div = glamorous.div({marginLeft: 24})
+-  expect(render(<Div />)).toMatchSnapshotWithGlamor()
++  expect(render(<Div />)).toMatchSnapshot()
+ })
+ 
+ test('can use pre-built glamorous components with css attributes', () => {
+@@ -33,7 +29,7 @@ test('can use pre-built glamorous components with css attributes', () => {
+         className=""is added to classes""
+       />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('can use pre-built glamorous components with css prop', () => {
+@@ -51,12 +47,12 @@ test('can use pre-built glamorous components with css prop', () => {
+         }}
+       />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('the css prop accepts ""GlamorousStyles""', () => {
+   const object = {fontSize: 12}
+-  expect(render(<glamorous.Section css={object} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section css={object} />)).toMatchSnapshot(
+     'css prop with an object',
+   )
+ 
+@@ -64,21 +60,21 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+     {marginTop: 1, marginRight: 1},
+     {marginRight: 2, marginBottom: 2},
+   ]
+-  expect(render(<glamorous.Section css={array} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section css={array} />)).toMatchSnapshot(
+     'css prop with an array',
+   )
+ 
+   // this one's weird, but could enable some Ahead of Time
+   // compilation in the future
+   const className = `${glamor.css({color: 'red'})} abc-123`
+-  expect(
+-    render(<glamorous.Section css={className} />),
+-  ).toMatchSnapshotWithGlamor('css prop with a className')
++  expect(render(<glamorous.Section css={className} />)).toMatchSnapshot(
++    'css prop with a className',
++  )
+ 
+   const fn1 = jest.fn(() => ({padding: 20}))
+   const fn2 = jest.fn(() => ({margin: 30}))
+   const props = {css: [fn1, fn2], fontSize: 10, theme: {color: 'red'}}
+-  expect(render(<glamorous.Section {...props} />)).toMatchSnapshotWithGlamor(
++  expect(render(<glamorous.Section {...props} />)).toMatchSnapshot(
+     'css prop with a function',
+   )
+   expect(fn1).toHaveBeenCalledTimes(1)
+@@ -86,12 +82,10 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+   const context = {__glamorous__: undefined}
+   expect(fn1).toHaveBeenCalledWith(
+     expect.objectContaining(props),
+-    expect.objectContaining(props.theme),
+     expect.objectContaining(context),
+   )
+   expect(fn2).toHaveBeenCalledWith(
+     expect.objectContaining(props),
+-    expect.objectContaining(props.theme),
+     expect.objectContaining(context),
+   )
+ })
+@@ -142,7 +136,7 @@ test('merges composed component styles for reasonable overrides', () => {
+     expect(el.attribs.class).toContain(className)
+   })
+   // still using a snapshot though for good measure
+-  expect(wrapper).toMatchSnapshotWithGlamor()
++  expect(wrapper).toMatchSnapshot()
+ })
+ 
+ test('merges composed component forwardProps', () => {
+@@ -152,14 +146,14 @@ test('merges composed component forwardProps', () => {
+   const Child = glamorous(parent, {forwardProps: ['shouldRender']})()
+   const Grandchild = glamorous(Child)()
+   const wrapper = render(<Grandchild shouldRender={true} />)
+-  expect(wrapper).toMatchSnapshotWithGlamor()
++  expect(wrapper).toMatchSnapshot()
+ })
+ 
+ test('styles can be functions that accept props', () => {
+   const MyDiv = glamorous.div({marginTop: 1}, ({margin}) => ({
+     marginTop: margin,
+   }))
+-  expect(render(<MyDiv margin={2} />)).toMatchSnapshotWithGlamor()
++  expect(render(<MyDiv margin={2} />)).toMatchSnapshot()
+ })
+ 
+ test('style objects can be arrays and glamor will merge those', () => {
+@@ -178,9 +172,7 @@ test('style objects can be arrays and glamor will merge those', () => {
+       return [bigStyles, squareStyles]
+     },
+   )
+-  expect(
+-    render(<MyDiv big={true} square={false} />),
+-  ).toMatchSnapshotWithGlamor()
++  expect(render(<MyDiv big={true} square={false} />)).toMatchSnapshot()
+ })
+ 
+ test('falls back to `name` if displayName cannot be inferred', () => {
+@@ -201,22 +193,12 @@ test('allows you to specify a displayName', () => {
+   expect(MyComp.displayName).toBe('Hi There')
+ })
+ 
+-test('can be configured to use the displayName in the className', () => {
+-  const original = glamorous.config.useDisplayNameInClassName
+-  glamorous.config.useDisplayNameInClassName = true
+-  const MyComp = glamorous(props => <div {...props} />, {
+-    displayName: 'Hi There',
+-  })()
+-  expect(render(<MyComp />)).toMatchSnapshotWithGlamor()
+-  glamorous.config.useDisplayNameInClassName = original
+-})
+-
+ test('will not forward `color` to a div', () => {
+-  expect(render(<glamorous.Div color=""red"" />)).toMatchSnapshotWithGlamor()
++  expect(render(<glamorous.Div color=""red"" />)).toMatchSnapshot()
+ })
+ 
+ test('will forward `color` to an svg', () => {
+-  expect(render(<glamorous.Svg color=""red"" />)).toMatchSnapshotWithGlamor()
++  expect(render(<glamorous.Svg color=""red"" />)).toMatchSnapshot()
+ })
+ 
+ test('allows you to specify the tag rendered by a component', () => {
+@@ -229,7 +211,7 @@ test('allows you to specify the tag rendered by a component', () => {
+     render(
+       <MyStyledSvgComponent height={2} noForward={true} css={{width: 2}} />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+ })
+ 
+ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+@@ -298,7 +280,7 @@ test('forwards props when the GlamorousComponent.rootEl is known', () => {
+     expect.anything(),
+     expect.anything(),
+   )
+-  expect(ui).toMatchSnapshotWithGlamor()
++  expect(ui).toMatchSnapshot()
+ })
+ 
+ test('renders a component with theme properties', () => {
+@@ -306,47 +288,9 @@ test('renders a component with theme properties', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
+-  )
+-  expect(
+-    render(<Comp theme={{padding: '10px'}} />),
+-  ).toMatchSnapshotWithGlamor()
+-})
+-
+-test('in development mode the theme is frozen and cannot be changed', () => {
+-  expect.assertions(1)
+-  process.env.NODE_ENV = 'development'
+-  const Comp = glamorous.div(
+-    {
+-      color: 'red',
+-    },
+-    (props, theme) => {
+-      expect(() => {
+-        theme.foo = 'bar'
+-      }).toThrow()
+-      return {}
+-    },
+-  )
+-  render(<Comp theme={{foo: 'baz'}} />)
+-})
+-
+-test('in production mode the theme is not frozen and can be changed', () => {
+-  const env = process.env.NODE_ENV
+-  process.env.NODE_ENV = 'production'
+-  expect.assertions(1)
+-  const Comp = glamorous.div(
+-    {
+-      color: 'red',
+-    },
+-    (props, theme) => {
+-      expect(() => {
+-        theme.foo = 'bar'
+-      }).not.toThrow()
+-      return {}
+-    },
++    ({theme}) => ({padding: theme.padding}),
+   )
+-  render(<Comp theme={{foo: 'baz'}} />)
+-  process.env.NODE_ENV = env
++  expect(render(<Comp theme={{padding: '10px'}} />)).toMatchSnapshot()
+ })
+ 
+ test('passes an updated theme when theme prop changes', () => {
+@@ -354,12 +298,12 @@ test('passes an updated theme when theme prop changes', () => {
+     {
+       color: 'red',
+     },
+-    (props, theme) => ({padding: theme.padding}),
++    ({theme}) => ({padding: theme.padding}),
+   )
+   const wrapper = mount(<Comp theme={{padding: 10}} />)
+-  expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 10px`)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 10px`)
+   wrapper.setProps({theme: {padding: 20}})
+-  expect(wrapper).toMatchSnapshotWithGlamor(`with theme prop of padding 20px`)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 20px`)
+ })
+ 
+ test('passes `theme` to the css prop if it is a function', () => {
+@@ -374,7 +318,7 @@ test('passes `theme` to the css prop if it is a function', () => {
+   )
+   expect(css).toHaveBeenCalledTimes(1)
+   const context = expect.objectContaining({[CHANNEL]: expect.any(Object)})
+-  expect(css).toHaveBeenCalledWith({...props, theme}, theme, context)
++  expect(css).toHaveBeenCalledWith({...props, theme}, context)
+ })
+ 
+ test('allows you to pass custom props that are allowed', () => {
+@@ -391,7 +335,7 @@ test('allows you to pass custom props that are allowed', () => {
+     render(
+       <MyStyledComponent shouldRender={true} otherThing={false} id=""hello"" />,
+     ),
+-  ).toMatchSnapshotWithGlamor()
++  ).toMatchSnapshot()
+   expect(MyComponent).toHaveBeenCalledTimes(1)
+   expect(MyComponent).toHaveBeenCalledWith(
+     {
+@@ -430,14 +374,14 @@ test('can accept classNames instead of style objects', () => {
+     styles4,
+     'extra-thing',
+   )
+-  expect(render(<Comp />)).toMatchSnapshotWithGlamor()
++  expect(render(<Comp />)).toMatchSnapshot()
+ })
+ 
+ test('can accept functions which return string class names', () => {
+   const styles1 = {paddingRight: 2, paddingBottom: 2}
+   const styles2 = props => (props.active ? 'is-active' : '')
+   const Comp = glamorous.div(styles1, styles2, 'extra-thing')
+-  expect(render(<Comp active />)).toMatchSnapshotWithGlamor()
++  expect(render(<Comp active />)).toMatchSnapshot()
+ })
+ 
+ test('should accept user defined contextTypes', () => {
+@@ -451,5 +395,5 @@ test('should accept user defined contextTypes', () => {
+   expect(dynamicStyles).toHaveBeenCalledTimes(1)
+   const theme = {}
+   const props = {theme}
+-  expect(dynamicStyles).toHaveBeenCalledWith(props, theme, context)
++  expect(dynamicStyles).toHaveBeenCalledWith(props, context)
+ })
+
+diff --git a/src/__tests__/typescript.js b/src/__tests__/typescript.js
+new file mode 100644
+index 0000000..cc590de
+--- /dev/null
++++ b/src/__tests__/typescript.js
+@@ -0,0 +1,15 @@
++import {spawnSync} from 'child_process'
++import rimraf from 'rimraf'
++
++test('Typescript', () => {
++  const typescriptCompilation = spawnSync('./node_modules/.bin/tsc', [
++    '-p',
++    './tsconfig.json',
++  ])
++
++  const output = typescriptCompilation.stdout.toString()
++
++  rimraf.sync('./test-ts')
++
++  expect(output).toMatchSnapshot('Typescript expected failures')
++})
+",0,,31,2125,3,13,39,4019
+255,655d17ad3cceda5554353fab13aba596f0ee02bf,655d17ad3cceda5554353fab13aba596f0ee02bf,"**What**: This adds the `withProps` helper API
+
+<!-- Why are these changes necessary? -->
+**Why**: Closes #133 
+
+<!-- How were these changes implemented? -->
+**How**:
+- Store the `propsToApply` on the `GlamorousComponent`
+- expose a way to create a new glamorous component that combines the `propsToApply` given.
+- When rendering, reduce all the `propsToApply` with the `props` given to a single props object
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+","feat(withProps): add `withProps` helper API
+","diff --git a/src/__tests__/index.with-props.js b/src/__tests__/index.with-props.js
+new file mode 100644
+index 0000000..cd30f20
+--- /dev/null
++++ b/src/__tests__/index.with-props.js
+@@ -0,0 +1,120 @@
++import React from 'react'
++import {render} from 'enzyme'
++import glamorous from '../'
++
++const expectContext = expect.objectContaining({__glamorous__: undefined})
++
++test('allows you to specify props as an object', () => {
++  const withPropsObject = {propA: 'a', propB: 'b'}
++  const dynamicStyles = jest.fn()
++  const MyDiv = glamorous.div(dynamicStyles).withProps(withPropsObject)
++  render(<MyDiv otherProp={true} />)
++  expect(dynamicStyles).toHaveBeenCalledTimes(1)
++  expect(dynamicStyles).toHaveBeenCalledWith(
++    expect.objectContaining({
++      ...withPropsObject,
++      otherProp: true,
++    }),
++    expectContext,
++  )
++})
++
++test('composes well with other glamorous components', () => {
++  const MyDiv = glamorous
++    .div({marginTop: 1}, () => ({fontSize: 1}))
++    .withProps()
++  const MyIdDiv = glamorous(MyDiv)(() => ({fontWeight: 300})).withProps()
++  expect(render(<MyIdDiv />)).toMatchSnapshot()
++})
++
++test('allows you to specify props as a function', () => {
++  const withPropsObject = {propA: 'a', propB: 'b'}
++  const withPropsFunction = jest.fn(() => withPropsObject)
++  const dynamicStyles = jest.fn()
++  const MyDiv = glamorous.div(dynamicStyles).withProps(withPropsFunction)
++  render(<MyDiv otherProp={true} />)
++  expect(withPropsFunction).toHaveBeenCalledTimes(1)
++  expect(withPropsFunction).toHaveBeenCalledWith(
++    expect.objectContaining({
++      otherProp: true,
++    }),
++    expectContext,
++  )
++  expect(dynamicStyles).toHaveBeenCalledTimes(1)
++  expect(dynamicStyles).toHaveBeenCalledWith(
++    expect.objectContaining({
++      ...withPropsObject,
++      otherProp: true,
++    }),
++    expectContext,
++  )
++})
++
++test('allows you to provide any number of arguments for props', () => {
++  // important bits of this test:
++  // 1. props shallowly compose together
++  // 2. composition order (later has greater precedence):
++  //   1. withProps option when createing a glamorousComponentFactory
++  //   2. arguments to withProps (in the same order as Object.assign)
++  //   3. props applied to the element when rendered
++  // 3. composition works as you might expect when wrapping a glamorousComponent
++  const withPropsObject1 = {propA: 1, propB: 1}
++  const withPropsObject2 = {propB: 2, propC: 2}
++  const withPropsObject3 = {propC: 3, propD: 3}
++  const withPropsObject4 = {propD: 4, propE: 4}
++  const withPropsObject5 = {propE: 5, propF: 5}
++  const withPropsObject6 = {propF: 6, propG: 6}
++  const withPropsObject7 = {propG: 7, propH: 7}
++  const propsRendered = {propZ: 99, propA: 99}
++
++  const withPropsFunction2 = jest.fn(() => withPropsObject2)
++  const withPropsFunction4 = jest.fn(() => withPropsObject4)
++  const dynamicStyles = jest.fn()
++  const MyDiv = glamorous('div', {withProps: withPropsObject1})({}).withProps(
++    withPropsFunction2,
++  )
++  const MyComposedDiv = glamorous(MyDiv, {
++    withProps: [withPropsObject3, withPropsFunction4],
++  })(dynamicStyles).withProps(withPropsObject5, [
++    withPropsObject6,
++    withPropsObject7,
++  ])
++  render(<MyComposedDiv {...propsRendered} />)
++
++  expect(withPropsFunction2).toHaveBeenCalledTimes(1)
++  expect(withPropsFunction2).toHaveBeenCalledWith(
++    expect.objectContaining({
++      ...withPropsObject1,
++      ...propsRendered,
++    }),
++    expectContext,
++  )
++
++  expect(withPropsFunction4).toHaveBeenCalledTimes(1)
++  expect(withPropsFunction4).toHaveBeenCalledWith(
++    expect.objectContaining({
++      // this order is important and part of what we're testing here
++      ...withPropsObject1,
++      ...withPropsObject2,
++      ...withPropsObject3,
++      ...propsRendered,
++    }),
++    expectContext,
++  )
++
++  expect(dynamicStyles).toHaveBeenCalledTimes(1)
++  expect(dynamicStyles).toHaveBeenCalledWith(
++    expect.objectContaining({
++      // this order is important and part of what we're testing here
++      ...withPropsObject1,
++      ...withPropsObject2,
++      ...withPropsObject3,
++      ...withPropsObject4,
++      ...withPropsObject5,
++      ...withPropsObject6,
++      ...withPropsObject7,
++      ...propsRendered,
++    }),
++    expectContext,
++  )
++})
+",0,,4,258,1,1,4,258
+257,01b162962c94d8c9233afc9a34e0efe682280f19,01b162962c94d8c9233afc9a34e0efe682280f19,"**What and Why**:
+
+This adds the typing required to use the new `withProps` helper API
+introduced by https://github.com/paypal/glamorous/pull/255/files.
+
+**How**:
+Adding withProps to the GlamorousOptions with a generic type that is also passed to the ComponentFactory allowing the typing to be automatically inferred on usage.
+
+**Checklist**:
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged
+- [x] Added myself to contributors table","feat(typescript): add typing for `withProps` helper APIi
+
+This adds the typing required to use the new `withProps` helper API
+introduced by https://github.com/paypal/glamorous/pull/255/files.
+",,0,,7,232,1,1,7,232
+258,bc76dbf00dd076a62ad34d6f0a5e1f1fd38693f1,bc76dbf00dd076a62ad34d6f0a5e1f1fd38693f1,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: expose `propsAreCssOverrides` and composition
+
+<!-- Why are these changes necessary? -->
+**Why**: Closes #256
+
+<!-- How were these changes implemented? -->
+**How**:
+- adding `propsAreCssOverrides` to the options provided to the `glamorousComponentFactoryFactory` and defaulting that to the `component.propsAreCssOverrides`
+- Testing it
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table N/A <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","feat: expose propsAreCssOverrides and composition
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 03a9d3a..5d1af2e 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -50,6 +50,19 @@ test('can use pre-built glamorous components with css prop', () => {
+   ).toMatchSnapshot()
+ })
+ 
++test('can compose built-in glamorous components', () => {
++  const MyDiv = glamorous(glamorous.Div)({margin: 1, fontSize: 1})
++  expect(render(<MyDiv margin={2} />)).toMatchSnapshot()
++})
++
++test('can create custom built-in glamorous components', () => {
++  const MyDiv = glamorous('div', {propsAreCssOverrides: true})({
++    margin: 1,
++    fontSize: 1,
++  })
++  expect(render(<MyDiv margin={2} />)).toMatchSnapshot()
++})
++
+ test('the css prop accepts ""GlamorousStyles""', () => {
+   const object = {fontSize: 12}
+   expect(render(<glamorous.Section css={object} />)).toMatchSnapshot(
+",0,,4,68,1,1,4,68
+260,618dd38bec45272e633981b8f04dc8164f2ab8fa,618dd38bec45272e633981b8f04dc8164f2ab8fa,"**What**:
+
+Adding typing for styles to accept arrays
+
+**Why**:
+
+As reported in #259 glamor accepts array values and uses them to create fallback values
+
+https://github.com/threepointone/glamor/blob/00349761d9ee56c781dff448b3a9979e3d05e042/docs/howto.md#fallback-values
+
+**How**:
+
+Adding typings and tests.
+
+**Checklist**:
+- [ ] Documentation N/A
+- [x] Tests
+- [x] Ready to be merged
+- [x] Added myself to contributors table
+","feat(typescript): typings accept property arrays for fallbacks
+
+This fixes #259 by adding typing to support array values being
+passed as css property values.
+",,0,,6,174,1,1,6,174
+262,4e4a560c09608d0fad57d7058cc5f1ef36e5aab9,4e4a560c09608d0fad57d7058cc5f1ef36e5aab9,"Noticed the theme was still being passed as a seperate generic when doing a screen capture for the release notes.
+
+https://github.com/paypal/glamorous/pull/230#issuecomment-318878595
+
+This behaviour is left over from when theme was passed as a seperate argument and had already been removed in some of the typing
+
+**What**:
+
+Removing all typings that had Theme as an additional generic to Props 
+
+**Why**:
+
+Simplifies Theme usage
+
+**How**:
+
+Updated the component factory typings to add overloads for components that make use of Theme
+
+**Checklist**:
+- [ ] Documentation N/A
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [ ] Added myself to contributors table N/A
+
+","chore(typescript): standardise theme handling
+
+This pr standardises the approach to typing themes for components.
+
+All places where themes can be on props now just accept the Theme as
+a key the on the Props Generi rather than as a seperate Generic.
+
+Instead of writing `glamorous.div<{}, {color: string}>` you can now
+write `glamorous.div<{theme: {color: string}}>`.
+",,0,,5,301,1,1,5,301
+263,08ff496826fd811c1650e237db9fc04c2eb0b6d9,08ff496826fd811c1650e237db9fc04c2eb0b6d9,"**What and Why**:
+Adds typing for https://github.com/paypal/glamorous/pull/258/files
+
+**How**:
+
+Added overloads to the glamorous interface to use a glamorous component factory typing which adds the Properties on the external when `propsAreCssOverides` is enabled.
+
+**Checklist**:
+- [ ] Documentation N/A
+- [x] Tests
+- [x] Ready to be merged
+","chore(typescript): add typing for propsAreCssOverides
+",,0,,6,236,1,1,6,236
+273,96c6f2194d9776a71568368388b24f748241b7fd,1ae5806b9f247c253cf8dc1f83d094533f0a4cb4,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Support function as theme prop in ThemeProvider
+
+<!-- Why are these changes necessary? -->
+**Why**: More control over themes merging
+
+<!-- How were these changes implemented? -->
+**How**: changed `getTheme` in `ThemeProvider`
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [ ] Documentation
+- [x] Tests
+- [ ] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+It would be better if `glamorous` migrated to `theming` library, but I don't know how to properly handle all this context and `CHANNEL` things","feat(themes): support function as theme prop
+","diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index fda56bf..126194d 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -30,6 +30,57 @@ test('renders a component with theme', () => {
+   ).toMatchSnapshot()
+ })
+ 
++test('renders inverted theme', () => {
++  const Comp = glamorous.div(({theme: {fg, bg}}) => ({
++    backgroundColor: bg,
++    color: fg,
++  }))
++  const theme = {
++    fg: 'palevioletred',
++    bg: 'white',
++  }
++  const invertTheme = ({fg, bg}) => ({
++    fg: bg,
++    bg: fg,
++  })
++  expect(
++    render(
++      <ThemeProvider theme={theme}>
++        <div>
++          <Comp />
++          <ThemeProvider theme={invertTheme}>
++            <Comp />
++          </ThemeProvider>
++        </div>
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshot()
++})
++
++test('throws if inverted theme is not object', () => {
++  const Comp = glamorous.div(({theme: {fg, bg}}) => ({
++    backgroundColor: bg,
++    color: fg,
++  }))
++  const theme = {
++    fg: 'palevioletred',
++    bg: 'white',
++  }
++  const invertTheme = () => 1
++  expect(() =>
++    render(
++      <ThemeProvider theme={theme}>
++        <div>
++          <Comp />
++          <ThemeProvider theme={invertTheme}>
++            <Comp />
++          </ThemeProvider>
++        </div>
++      </ThemeProvider>,
++    ),
++  ).toThrowErrorMatchingSnapshot()
++})
++
+ test('theme properties updates get propagated down the tree', () => {
+   class Parent extends Component {
+     state = {
+",0,,6,104,1,3,6,107
+321,e725ee13ba52d1ce82e7a4d5b6a3597561bd58da,e725ee13ba52d1ce82e7a4d5b6a3597561bd58da,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: Adds out-of-the-box support for `preact`
+
+<!-- Why are these changes necessary? -->
+**Why**: Even though `glamorous` can be used in `preact` project, there are a few issues:
+- there are some component props that are allowed in `preact` but invalid in `react`.
+- React is a peer-dependency of glamorous, which means you get a warning if you don't have it installed.
+-  `preact-compat` is required to be able to use `glamorous`
+<!-- How were these changes implemented? -->
+**How**:
+Build process creates **preact** directory that stores files dedicated for this library. To use them one needs to import glamorous from **glamorous/preact**.
+
+`preact` files differ from normal files in a following way:
+- preact-specific props are added to props list in **./react-props**
+- `PropTypes` are neutralized (`preact` doesn't use them) and `Children` polyfilled in **./react-compat**.
+- All `react` imports are replaced with `preact` (at build time).
+
+Other changes:
+`react` is removed from peerDependencies in **package.json**
+A shim of **package.json** is added to `preact` dir (at build time) to allow for importing files from there.
+`typings` folder is copied to **preact** folder to provide type definitions for `typescript`
+
+closes #85 
+
+<!-- Have you done all of these things?  -->
+**Checklist**:
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+- [x] Documentation
+- [x] Tests
+- [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+- [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","chore(build): upgrade to kcd-scripts
+","diff --git a/other/codemods/theme-move.test.js b/other/codemods/theme-move.test.js
+index 03e63db..5b5d968 100644
+--- a/other/codemods/theme-move.test.js
++++ b/other/codemods/theme-move.test.js
+@@ -1,6 +1,6 @@
+ /* eslint max-len:0 */
+ import path from 'path'
+-import prettierEslint from 'prettier-eslint'
++import prettier from 'prettier'
+ import stripIndent from 'strip-indent'
+ // not sure why, but travis seems to error out
+ // due to this import 🙃
+@@ -167,10 +167,18 @@ function withGlamorousImport(tests) {
+ }
+ 
+ function formatResult(result) {
+-  return prettierEslint({
+-    filePath: __filename,
+-    text: result,
+-  }).trim()
++  return prettier
++    .format(result, {
++      printWidth: 80,
++      tabWidth: 2,
++      useTabs: false,
++      semi: false,
++      singleQuote: true,
++      trailingComma: 'all',
++      bracketSpacing: false,
++      jsxBracketSameLine: false,
++    })
++    .trim()
+ }
+ 
+ /*
+
+diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index 126194d..0944197 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -5,6 +5,8 @@ import glamorous from '../'
+ import ThemeProvider from '../theme-provider'
+ import {CHANNEL} from '../constants'
+ 
++jest.mock('../constants')
++
+ const getMockedContext = () => ({
+   [CHANNEL]: {
+     getState: () => {},
+@@ -135,9 +137,7 @@ test('merges nested themes', () => {
+ test('renders if children are null', () => {
+   expect(
+     mount(
+-      <ThemeProvider theme={{padding: 1}}>
+-        {false && <div />}
+-      </ThemeProvider>,
++      <ThemeProvider theme={{padding: 1}}>{false && <div />}</ThemeProvider>,
+     ),
+   ).toMatchSnapshot()
+ })
+
+diff --git a/src/__tests__/with-theme.js b/src/__tests__/with-theme.js
+index 2803d19..4ca2127 100644
+--- a/src/__tests__/with-theme.js
++++ b/src/__tests__/with-theme.js
+@@ -7,6 +7,8 @@ import ThemeProvider from '../theme-provider'
+ import {CHANNEL} from '../constants'
+ import {PropTypes} from '../react-compat'
+ 
++jest.mock('../constants')
++
+ const getMockedContext = () => ({
+   [CHANNEL]: {
+     getState: () => {},
+@@ -17,9 +19,9 @@ const getMockedContext = () => ({
+ })
+ 
+ test('renders a non-glamorous component with theme', () => {
+-  const CompWithTheme = withTheme(({theme: {padding}}) =>
+-    <div style={{padding}} />,
+-  )
++  const CompWithTheme = withTheme(({theme: {padding}}) => (
++    <div style={{padding}} />
++  ))
+   expect(
+     render(
+       <ThemeProvider theme={{padding: '10px'}}>
+@@ -44,9 +46,7 @@ test('theme properties updates get propagated down the tree', () => {
+     }
+   }
+ 
+-  const Child = withTheme(({theme: {padding}}) =>
+-    <div style={{padding}} />,
+-  )
++  const Child = withTheme(({theme: {padding}}) => <div style={{padding}} />)
+   const wrapper = mount(<Parent />)
+   expect(wrapper).toMatchSnapshot(`with theme prop of padding 10px`)
+   wrapper.setState({padding: 20})
+",0,,43,1350,3,2,41,972
+363,a904c676c39207ffba5983df2bb765576a2272e5,a904c676c39207ffba5983df2bb765576a2272e5,"**What**:
+
+This fixes a bug when having nested `ThemeProvider`s and updating outer theme the change is not reaching the `StyledComponent`
+```jsx
+<ThemeProvider theme={{}}>
+	<ThemeProvider theme={{}}>
+		<StyledComponent>
+	</ThemeProvider>
+</ThemeProvider>
+```
+
+**Why**:
+
+This is a bug fix.
+
+**How**:
+Using publish in the nested `ThemeProvider`s subscriptions.
+
+**Checklist**:
+- [x] Tests
+- [x] Code complete
+
+Repro provided by @mitchellhamilton - https://codesandbox.io/s/6j42qx5z23","Fixed nested themes not being republished on outer theme changes
+","diff --git a/src/__tests__/theme-provider.js b/src/__tests__/theme-provider.js
+index 0944197..34fc33d 100644
+--- a/src/__tests__/theme-provider.js
++++ b/src/__tests__/theme-provider.js
+@@ -134,6 +134,29 @@ test('merges nested themes', () => {
+   ).toMatchSnapshot()
+ })
+ 
++test('propagates theme updates through nested ThemeProviders', () => {
++  const theme = {bg: 'white'}
++  const augment = outerTheme => Object.assign({}, outerTheme, {color: 'red'})
++  const update = {bg: 'black'}
++
++  const Child = glamorous.div(({theme: {bg, color}}) => ({
++    backgroundColor: bg,
++    color,
++  }))
++
++  const wrapper = mount(
++    <ThemeProvider theme={theme}>
++      <ThemeProvider theme={augment}>
++        <Child />
++      </ThemeProvider>
++    </ThemeProvider>,
++  )
++
++  wrapper.setProps({theme: Object.assign({}, theme, update)})
++
++  expect(wrapper).toMatchSnapshot()
++})
++
+ test('renders if children are null', () => {
+   expect(
+     mount(
+",0,,3,57,1,1,3,57
+391,ece832e8324761828baac4a68d7dea7526fccd6f,ece832e8324761828baac4a68d7dea7526fccd6f,"This approach simply unwinds functions until it gets a non-function, then recurses normally.
+
+**What**:
+
+Style function recursion. Closes #390 
+
+**Checklist**:
+
+* [ ] Documentation
+* [x] Tests
+* [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+* [ ] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+
+","Add test
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index cdf7a0d..ce64d6b 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -87,12 +87,16 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+ 
+   const fn1 = jest.fn(() => ({padding: 20}))
+   const fn2 = jest.fn(() => ({margin: 30}))
+-  const props = {css: [fn1, fn2], fontSize: 10, theme: {color: 'red'}}
++  const nestedFn3 = jest.fn(() => ({border: '1px solid pink'}))
++  const fn3 = () => [() => [() => nestedFn3]] // Deeply nested functions
++  const props = {css: [fn1, fn2, fn3], fontSize: 10, theme: {color: 'red'}}
+   expect(render(<glamorous.Section {...props} />)).toMatchSnapshot(
+     'css prop with a function',
+   )
+   expect(fn1).toHaveBeenCalledTimes(1)
+   expect(fn2).toHaveBeenCalledTimes(1)
++  expect(nestedFn3).toHaveBeenCalledTimes(1)
++
+   const context = {__glamorous__: undefined}
+   expect(fn1).toHaveBeenCalledWith(
+     expect.objectContaining(props),
+@@ -102,6 +106,10 @@ test('the css prop accepts ""GlamorousStyles""', () => {
+     expect.objectContaining(props),
+     expect.objectContaining(context),
+   )
++  expect(nestedFn3).toHaveBeenCalledWith(
++    expect.objectContaining(props),
++    expect.objectContaining(context),
++  )
+ })
+ 
+ test('merges composed component styles for reasonable overrides', () => {
+",0,,2,11,1,2,4,26
+415,800b3465653635ec41a2b652908d04b138fa8666,800b3465653635ec41a2b652908d04b138fa8666,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+
+**What**:
+
+Don't attempt to merge class names that aren't from glamor
+
+<!-- Why are these changes necessary? -->
+
+**Why**:
+
+So that if you pass an emotion class name to a glamorous component an error won't be thrown. [this CodeSandbox](https://codesandbox.io/s/43p5y6xw69) shows what happens without this fix
+
+
+
+<!-- How were these changes implemented? -->
+
+**How**:
+
+Check if a class name is on glamor's registered cache before treating it as a glamor class name
+
+<!-- Have you done all of these things?  -->
+
+**Checklist**:
+
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+
+* [ ] Documentation N/A
+* [x] Tests
+* [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+* [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->
+","fix(getGlamorClassName): don't attempt to merge class names that aren't from glamor
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index ce64d6b..d7b3bc5 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -404,3 +404,14 @@ test('should accept user defined contextTypes', () => {
+   const props = {theme}
+   expect(dynamicStyles).toHaveBeenCalledWith(props, context)
+ })
++
++test('does not attempt to merge class names that are not from glamor that begin with css-', () => {
++  const Wrapper = glamorous.div({
++    color: 'hotpink',
++  })
++  const wrapper = render(<Wrapper className=""css-something"" />)
++
++  expect(wrapper[0].attribs.class).toContain('css-something')
++
++  expect(wrapper).toMatchSnapshot()
++})
+",0,,5,42,1,1,5,42
+416,be86ad7b70bf5887bb036ad215d5a9e6aaeeb6bb,2362f06db118b543415c13f3033b3e73c0011796,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+**What**:
+
+These are working typescript types for Preact. What doesn't work is the build.
+To make it work, the `preact/package.json` would need to have an entry for
+typings and the typings would need to be copied to the `preact` folder. Since
+all of this seems it would need to happen in `kcd-scripts` maybe @kentcdodds has
+some time to help with that?
+
+
+``` javascript
+{
+  ""main"": ""dist/glamorous.cjs.js"",
+  ""jsnext:main"": ""dist/glamorous.esm.js"",
+  ""module"": ""dist/glamorous.esm.js"",
+  ""typings"": ""typings/glamorous.d.ts""
+}
+```
+
+**Why**:
+
+There are currently no typescript types for preact
+
+**How**:
+
+I upgraded a medium sized preact-glamorous project.
+
+**Checklist**:
+
+<!-- add ""N/A"" to the end of each line that's irrelevant to your changes -->
+
+<!-- to check an item, place an ""x"" in the box like so: ""- [x] Documentation"" -->
+
+* [ ] Documentation N/A
+* [x] Tests
+* [x] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
+* [x] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
+
+<!-- feel free to add additional comments -->","Add typescript typings for preact
+","diff --git a/src/__tests__/typescript.js b/src/__tests__/typescript.js
+index af1681d..f081e09 100644
+--- a/src/__tests__/typescript.js
++++ b/src/__tests__/typescript.js
+@@ -1,6 +1,6 @@
+ import spawn from 'cross-spawn'
+ 
+-test('Typescript', () => {
++test('Typescript React', () => {
+   const typescriptCompilation = spawn.sync('./node_modules/.bin/tsc', [
+     '-p',
+     './tsconfig.react.json',
+@@ -10,3 +10,14 @@ test('Typescript', () => {
+ 
+   expect(output).toMatchSnapshot('Typescript expected failures')
+ })
++
++test('Typescript Preact', () => {
++  const typescriptCompilation = spawn.sync('./node_modules/.bin/tsc', [
++    '-p',
++    './tsconfig.preact.json',
++  ])
++
++  const output = typescriptCompilation.stdout.toString()
++
++  expect(output).toMatchSnapshot('Typescript expected failures')
++})
+",0,,20,3555,1,5,24,3620
+45,e0758920dafecca44ec3e5feaa2cc6a5172c481b,e0758920dafecca44ec3e5feaa2cc6a5172c481b,"<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**:
+Added a HOC (higher order component) called `withTheme` that exposes theme context as a prop to passed in component.
+
+<!-- Why are these changes necessary? -->
+**Why**:
+It was requested in Issue #41 
+
+<!-- How were these changes implemented? -->
+**How**:
+I first created a new file to contain the HOC, I then added to global exports. I also added tests.
+
+<!-- feel free to add additional comments -->
+There are a few comments in there as some things are unclear still. Mainly, what do we want to do when there is no context found (no ThemeProvider further up the tree). There is also some concern on naming of things. Not sure what you want the exported HOC class name to be.","feat(HOC): add `withTheme` HOC
+","diff --git a/src/__tests__/with-theme.js b/src/__tests__/with-theme.js
+new file mode 100644
+index 0000000..d8be303
+--- /dev/null
++++ b/src/__tests__/with-theme.js
+@@ -0,0 +1,130 @@
++/* eslint func-style:0 */
++import React, {Component} from 'react'
++import {render, mount} from 'enzyme'
++
++import withTheme from '../with-theme'
++import ThemeProvider, {CHANNEL} from '../theme-provider'
++import {PropTypes} from '../react-compat'
++
++const getMockedContext = unsubscribe => ({
++  [CHANNEL]: {
++    getState: () => {},
++    setState: () => {},
++    subscribe: () => unsubscribe,
++  },
++})
++
++test('renders a non-glamorous component with theme', () => {
++  const CompWithTheme = withTheme(({theme: {padding}}) => (
++    <div style={{padding}} />
++  ))
++  expect(
++    render(
++      <ThemeProvider theme={{padding: '10px'}}>
++        <CompWithTheme />
++      </ThemeProvider>,
++    ),
++  ).toMatchSnapshot()
++})
++
++test('theme properties updates get propagated down the tree', () => {
++  class Parent extends Component {
++    state = {
++      padding: 10,
++    }
++
++    render() {
++      return (
++        <ThemeProvider theme={{padding: this.state.padding}}>
++          <Child />
++        </ThemeProvider>
++      )
++    }
++  }
++
++  const Child = withTheme(({theme: {padding}}) => <div style={{padding}} />)
++  const wrapper = mount(<Parent />)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 10px`)
++  wrapper.setState({padding: 20})
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 20px`)
++})
++
++test('works properly with classes', () => {
++  /* eslint-disable react/prefer-stateless-function */
++  class Child extends Component {
++    render() {
++      const {theme: {padding}} = this.props
++      return <div style={{padding}} />
++    }
++  }
++
++  Child.propTypes = {
++    theme: PropTypes.object,
++  }
++
++  const ChildWithTheme = withTheme(Child)
++
++  class Parent extends Component {
++    state = {
++      padding: 10,
++    }
++
++    render() {
++      return (
++        <ThemeProvider theme={{padding: this.state.padding}}>
++          <ChildWithTheme />
++        </ThemeProvider>
++      )
++    }
++  }
++
++  const wrapper = mount(<Parent />)
++  expect(wrapper).toMatchSnapshot(`with theme prop of padding 10px`)
++})
++
++test('pass through when no theme provider found up tree', () => {
++  /* eslint-disable no-console */
++  const originalWarn = console.warn
++  console.warn = jest.fn()
++
++  const Child = withTheme(() => <div />)
++  const Parent = () => <Child />
++  const wrapper = mount(<Parent />)
++
++  expect(wrapper).toMatchSnapshot(`without theme provider`)
++  expect(console.warn).toHaveBeenCalledTimes(1)
++  expect(console.warn).toHaveBeenCalledWith(
++    // eslint-disable-next-line max-len
++    `glamorous warning: Expected component called ""Stateless Function"" which uses withTheme to be within a ThemeProvider but none was found.`,
++  )
++  console.warn = originalWarn
++})
++
++test('does not warn when NODE_ENV is set to `production`', () => {
++  /* eslint-disable no-console */
++  const originalWarn = console.warn
++  console.warn = jest.fn()
++
++  const originalEnv = process.env.NODE_ENV
++  process.env.NODE_ENV = 'production'
++
++  const Child = withTheme(() => <div />)
++  const Parent = () => <Child />
++  mount(<Parent />)
++
++  expect(console.warn).not.toHaveBeenCalled()
++
++  console.warn = originalWarn
++  process.env.NODE_ENV = originalEnv
++})
++
++test('unsubscribes from theme updates on unmount', () => {
++  const Child = withTheme(() => <div />)
++  const unsubscribe = jest.fn()
++  const context = getMockedContext(unsubscribe)
++  const wrapper = mount(<ThemeProvider theme={{}}><Child /></ThemeProvider>, {
++    context,
++  })
++  wrapper.unmount()
++  expect(unsubscribe).toHaveBeenCalled()
++})
+",0,,6,368,1,1,6,368
+53,a806e4a85dd0888acaca144431fdd1955c8cc399,a806e4a85dd0888acaca144431fdd1955c8cc399,"**What**: This adds a `forwardProps` option to the `glamorous` function
+
+**Why**: So if you're wrapping a component in `glamorous`, you can specify some props to forward, regardless of the `rootEl` you define.
+
+**How**: TDD! Also I had to update some dependencies to get rid of annoying warnings from React :)
+","feat(forwardProps): add forwardProps option
+
+**What**: This adds a `forwardProps` option to the `glamorous` function
+
+**Why**: So if you're wrapping a component in `glamorous`, you can
+specify some props to forward, regardless of the `rootEl` you define.
+
+**How**: TDD! Also I had to update some dependencies to get rid of
+annoying warnings from React :)
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 12ceec6..9af4eed 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -1,4 +1,4 @@
+-/* eslint func-style:0 */
++/* eslint func-style:0, react/prop-types:0 */
+ import React from 'react'
+ import * as glamor from 'glamor'
+ import {render, mount} from 'enzyme'
+@@ -245,3 +245,30 @@ test('ignores context if a theme props is passed', () => {
+   wrapper.unmount()
+   expect(unsubscribe).toHaveBeenCalledTimes(0)
+ })
++
++test('allows you to pass custom props that are allowed', () => {
++  const MyComponent = jest.fn(function MyComponent({shouldRender, ...rest}) {
++    return shouldRender ? <div {...rest} /> : null
++  })
++  const MyStyledComponent = glamorous(MyComponent, {
++    forwardProps: ['shouldRender'],
++    rootEl: 'div',
++  })({
++    padding: 1,
++  })
++  expect(
++    render(
++      <MyStyledComponent shouldRender={true} otherThing={false} id=""hello"" />,
++    ),
++  ).toMatchSnapshotWithGlamor()
++  expect(MyComponent).toHaveBeenCalledTimes(1)
++  expect(MyComponent).toHaveBeenCalledWith(
++    {
++      shouldRender: true,
++      id: 'hello',
++      className: expect.any(String),
++    },
++    expect.any(Object),
++    expect.any(Object),
++  )
++})
+",0,,6,245,1,1,6,245
+69,0c4012a87a1ec78876fd7ffee81a01ed96587e96,5194f55f225ff017a7a63c7cefe254becbeff4f0,"<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**:
+This is a refactoring that makes it possible to use a `tiny` glamorous version.
+A first attempt of realizing what discussed in #42 
+
+<!-- Why are these changes necessary? -->
+**Why**:
+Because sometimes size matters 
+
+<!-- How were these changes implemented? -->
+**How**:
+by making `glamorous` configurable.
+
+glamorous is now a factory function that accepts a `splitProps` function.
+In the full fledged glamorous version, it will do as usual.
+In the tiny version it will skip all the prop checks, forwarding everything to the underlying component.
+
+It enables patterns like:
+
+```jsx
+import React from 'react'
+import glamorous from 'glamorous/tiny'
+
+const Comp = glamorous('div')({
+  color: 'red'
+}, (glam) => ({
+  fontSize: glam.big ? 20 : 12
+}))
+const Root = () => (
+  <Comp
+    glam={{big: true}}
+    thisWillBeForwardedAndreactWillWarn
+     >
+    ciao
+  </Comp>
+)
+
+export default Root
+```
+
+and this is the gzipped size of glamorous tiny:
+
+![screen shot 2017-04-19 at 16 56 17](https://cloud.githubusercontent.com/assets/82070/25187513/8422faf0-2523-11e7-818b-425d3b9ab749.png)
+
+✨✨
+
+
+
+<!-- feel free to add additional comments -->
+","chore: fix tests
+","diff --git a/src/__tests__/index.js b/src/__tests__/index.js
+index 8a4417f..671137c 100644
+--- a/src/__tests__/index.js
++++ b/src/__tests__/index.js
+@@ -5,7 +5,9 @@ import {render, mount} from 'enzyme'
+ import * as jestGlamorReact from 'jest-glamor-react'
+ import {oneLine} from 'common-tags'
+ import glamorous from '../'
+-import {CHANNEL} from '../theme-provider'
++import glamorousTiny from '../tiny'
++
++import {CHANNEL} from '../constants'
+ 
+ expect.extend(jestGlamorReact.matcher)
+ expect.addSnapshotSerializer(jestGlamorReact.serializer)
+@@ -316,3 +318,16 @@ test('should recieve inner ref if specified', () => {
+ 
+   expect(getRef).toHaveBeenCalled()
+ })
++
++test('should forward glam prop', () => {
++  const Comp = glamorousTiny('div')(
++    {
++      marginLeft: '24px',
++    },
++    ({big}) => ({
++      fontSize: big ? 20 : 10,
++    }),
++  )
++
++  expect(render(<Comp glam={{big: true}} />)).toMatchSnapshotWithGlamor()
++})
+",0,,4,35,1,6,21,722
+80,2bf346a1bd940c88261c23495a8529d8c517b718,a37fc64bf008ace8060491fc58d43de4f0120bb6,"#63
+
+<!--
+Thanks for your interest in the project. I appreciate bugs filed and PRs submitted!
+
+Please make sure that you are familiar with and follow the Code of Conduct for
+this project (found in the CODE_OF_CONDUCT.md file).
+
+Also, please make sure you're familiar with and follow the instructions in the
+contributing guidelines (found in the CONTRIBUTING.md file).
+
+If you're new to contributing to open source projects, you might find this free
+video course helpful: http://kcd.im/pull-request
+
+Please fill out the information below to expedite the review and (hopefully)
+merge of your pull request!
+-->
+
+<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+**What**: concat forwardProps option metadata
+
+<!-- Why are these changes necessary? -->
+**Why**:  Necessary in order to not have to pass in the same props again. See #63.
+
+<!-- How were these changes implemented? -->
+**How**: Created a function that returns a ternary in order to avoid the eslint complexity rule. Used the function on the `forwardProps` metadata in order to return correct forwardsProps.
+
+
+<!-- feel free to add additional comments -->
+","test: add test for composed component forwardProps
+
+#63
+","diff --git a/src/__tests__/index.test.js b/src/__tests__/index.test.js
+index 78ccdf2..ef31ee0 100644
+--- a/src/__tests__/index.test.js
++++ b/src/__tests__/index.test.js
+@@ -105,6 +105,15 @@ test('merges composed component styles for reasonable overrides', () => {
+   expect(wrapper).toMatchSnapshotWithGlamor()
+ })
+ 
++test('merges composed component forwardProps', () => {
++  const parent = ({shouldRender, ...rest}) =>
++    (shouldRender ? <div {...rest} /> : null)
++  const Child = glamorous(parent)({forwardProps: ['shouldRender']})
++  const Grandchild = glamorous(Child)()
++  const wrapper = render(<Grandchild shouldRender={true} />)
++  expect(wrapper).toMatchSnapshotWithGlamor()
++})
++
+ test('styles can be functions that accept props', () => {
+   const MyDiv = glamorous.div({marginTop: 1}, ({margin}) => ({
+     marginTop: margin,
+",0,,2,20,1,3,5,37
+90,de4f7c111c7999664cf5ee0e56a593f7653bb8f0,de4f7c111c7999664cf5ee0e56a593f7653bb8f0,"
+**What**: `get-glamor-classname.js` was modified to accept strings in the `styles` array and get the glamor styles for the ones that are glamor class names.
+
+<!-- Why are these changes necessary? -->
+**Why**: This will enable [css-in-js-precompiler](https://github.com/kentcdodds/css-in-js-precompiler) to do its job. This is going to be awesome!
+
+<!-- How were these changes implemented? -->
+**How**: I'm never really sure how to answer this question TBH :) See the code changes :)
+
+Ref #43 ","feat: allow users to specify a custom class
+
+This will enable [css-in-js-precompiler](https://github.com/kentcdodds/css-in-js-precompiler)
+to do its job. This is going to be awesome!
+","diff --git a/src/__tests__/index.test.js b/src/__tests__/index.test.js
+index df0ea5b..50373a7 100644
+--- a/src/__tests__/index.test.js
++++ b/src/__tests__/index.test.js
+@@ -344,3 +344,19 @@ test('should recieve inner ref if specified', () => {
+ 
+   expect(getRef).toHaveBeenCalled()
+ })
++
++test('can accept classNames instead of style objects', () => {
++  // this is to support a babel plugin to pre-compile static styles
++  const className1 = glamor.css({paddingTop: 1, paddingRight: 1}).toString()
++  const styles2 = {paddingRight: 2, paddingBottom: 2}
++  const className3 = glamor.css({paddingBottom: 3, paddingLeft: 3}).toString()
++  const styles4 = {paddingLeft: 4}
++  const Comp = glamorous.div(
++    className1,
++    styles2,
++    className3,
++    styles4,
++    'extra-thing',
++  )
++  expect(render(<Comp />)).toMatchSnapshotWithGlamor()
++})
+",0,,4,85,1,1,4,85

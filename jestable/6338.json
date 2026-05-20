@@ -1,0 +1,125 @@
+{
+    "id": 6251494,
+    "name": "apsl/react-native-button",
+    "isFork": false,
+    "commits": 76,
+    "branches": 14,
+    "releases": 10,
+    "forks": 129,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 749,
+    "contributors": 10,
+    "size": 965,
+    "createdAt": "2015-08-27T03:28:01",
+    "pushedAt": "2022-12-03T03:36:22",
+    "updatedAt": "2022-12-08T08:28:30",
+    "totalIssues": 39,
+    "openIssues": 12,
+    "totalPullRequests": 57,
+    "openPullRequests": 20,
+    "blankLines": 179,
+    "codeLines": 1341,
+    "commentLines": 186,
+    "metrics": [
+        {
+            "blankLines": 10,
+            "language": "Java",
+            "commentLines": 4,
+            "codeLines": 36
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 13,
+            "language": "ProGuard",
+            "commentLines": 23,
+            "codeLines": 30
+        },
+        {
+            "blankLines": 19,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 65
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 24,
+            "codeLines": 76
+        },
+        {
+            "blankLines": 35,
+            "language": "Gradle",
+            "commentLines": 91,
+            "codeLines": 146
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 119
+        },
+        {
+            "blankLines": 23,
+            "language": "JavaScript",
+            "commentLines": 10,
+            "codeLines": 416
+        },
+        {
+            "blankLines": 20,
+            "language": "Bourne Again Shell",
+            "commentLines": 21,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 8,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 5,
+            "language": "XML",
+            "commentLines": 3,
+            "codeLines": 259
+        }
+    ],
+    "lastCommit": "2018-04-24T09:56:34",
+    "lastCommitSHA": "8c75828df75282f71a80eededd761eb9b4ff05b1",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 11086,
+        "Objective-C": 4448,
+        "Python": 1498,
+        "Java": 1228
+    },
+    "labels": [
+        "android",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

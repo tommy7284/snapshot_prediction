@@ -1,0 +1,134 @@
+{
+    "id": 6610164,
+    "name": "mcnamee/react-native-starter-kit",
+    "isFork": false,
+    "commits": 59,
+    "branches": 14,
+    "releases": 10,
+    "forks": 879,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 120,
+    "stargazers": 3238,
+    "contributors": 1,
+    "size": 14200,
+    "createdAt": "2015-10-13T07:48:50",
+    "pushedAt": "2023-01-07T04:07:29",
+    "updatedAt": "2023-01-22T06:32:19",
+    "totalIssues": 201,
+    "openIssues": 3,
+    "totalPullRequests": 65,
+    "openPullRequests": 10,
+    "blankLines": 748,
+    "codeLines": 6422,
+    "commentLines": 531,
+    "metrics": [
+        {
+            "blankLines": 96,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 280
+        },
+        {
+            "blankLines": 24,
+            "language": "Gradle",
+            "commentLines": 117,
+            "codeLines": 119
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 3,
+            "language": "C/C++ Header",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 6,
+            "language": "XML",
+            "commentLines": 3,
+            "codeLines": 335
+        },
+        {
+            "blankLines": 2,
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 31,
+            "language": "Bourne Shell",
+            "commentLines": 40,
+            "codeLines": 140
+        },
+        {
+            "blankLines": 16,
+            "language": "Java",
+            "commentLines": 26,
+            "codeLines": 133
+        },
+        {
+            "blankLines": 519,
+            "language": "JavaScript",
+            "commentLines": 333,
+            "codeLines": 5035
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 112
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 155
+        },
+        {
+            "blankLines": 21,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 66
+        },
+        {
+            "blankLines": 1,
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0
+        }
+    ],
+    "lastCommit": "2021-09-06T01:11:19",
+    "lastCommitSHA": "494dd1beab9be570b9027091b3b6d85409b69d8b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 150475,
+        "Java": 6520,
+        "Objective-C": 4587,
+        "Ruby": 2126,
+        "Shell": 905,
+        "Starlark": 602
+    },
+    "labels": [
+        "awaiting response",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "related to another repo",
+        "wontfix"
+    ],
+    "topics": []
+}

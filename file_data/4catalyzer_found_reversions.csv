@@ -1,0 +1,1583 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+1066,834bde557b4c9c414ae70892281626d41291a1e0,ad7a141b938ff37b5cdcb9bff9f1a275e8f5fc6c,test/__snapshots__/makeRouteConfig.test.jsx.snap,test/makeRouteConfig.test.jsx,"Updates everything in prep to properly support react 19
+
+Number of breaking changes here
+
+- Simplify Babel config and stop using runtime, everything we depend on has been in browsers for 6+ years
+- `Link` no longer supports `as` or `activePropName`, use the function child version for that
+- `new Redirect()` -> `createRedirect()`
+- All JSX components have moved under `found/jsx` to differentiate them and remove a bunch of TS hacks
+- Removed a bunch of old support for React class component Proxy libraries","update to RTL
+","diff --git a/test/makeRouteConfig.test.jsx b/test/makeRouteConfig.test.jsx
+new file mode 100644
+index 0000000..47dcf71
+--- /dev/null
++++ b/test/makeRouteConfig.test.jsx
+@@ -0,0 +1,262 @@
++import React from 'react';
++import { describe, expect, it } from 'vitest';
++
++import Redirect from '../src/Redirect';
++import RedirectException from '../src/RedirectException';
++import Route from '../src/Route';
++import makeRouteConfig from '../src/makeRouteConfig';
++
++describe('makeRouteConfig', () => {
++  const AppPage = () => {};
++
++  const MainPage = () => {};
++  const FooPage = () => {};
++  const BarPage = () => {};
++  const BazPage = () => {};
++
++  const FooNav = () => {};
++  const FooA = () => {};
++  const FooB = () => {};
++  const BarNav = () => {};
++  const BarMain = () => {};
++
++  it('should work with a route', () => {
++    expect(makeRouteConfig(<Route path=""/"" Component={AppPage} />)).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++      }),
++    ]);
++  });
++
++  it('should work with nested routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          {/* This comment should be ignored. */}
++          <Route path=""foo"" Component={FooPage}>
++            <Route path=""bar"" Component={BarPage} />
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Route({
++            Component: MainPage,
++          }),
++          new Route({
++            path: 'foo',
++            Component: FooPage,
++            children: [
++              new Route({
++                path: 'bar',
++                Component: BarPage,
++              }),
++            ],
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with fragments', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          <>
++            <Route path=""foo"" Component={FooPage} />
++            <Route path=""bar"" Component={BarPage} />
++          </>
++          <Route path=""baz"" Component={BazPage} />
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Route({
++            Component: MainPage,
++          }),
++          new Route({
++            path: 'foo',
++            Component: FooPage,
++          }),
++          new Route({
++            path: 'bar',
++            Component: BarPage,
++          }),
++          new Route({
++            path: 'baz',
++            Component: BazPage,
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with <Redirect>', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Redirect from=""widget/:widgetId"" to=""/widgets/:widgetId"" />
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Redirect({
++            from: 'widget/:widgetId',
++            to: '/widgets/:widgetId',
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with named child routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route path=""foo"">
++            {{
++              nav: <Route path=""(.*)?"" Component={FooNav} />,
++              main: [
++                <Route path=""a"" Component={FooA} />,
++                <Route path=""b"" Component={FooB} />,
++              ],
++            }}
++          </Route>
++          <Route path=""bar"">
++            {{
++              nav: <Route path=""(.*)?"" Component={BarNav} />,
++              main: <Route Component={BarMain} />,
++            }}
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'foo',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: FooNav,
++                },
++              ],
++              main: [
++                {
++                  path: 'a',
++                  Component: FooA,
++                },
++                {
++                  path: 'b',
++                  Component: FooB,
++                },
++              ],
++            },
++          },
++          {
++            path: 'bar',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: BarNav,
++                },
++              ],
++              main: [
++                {
++                  Component: BarMain,
++                },
++              ],
++            },
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should error on non-element children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {/* The comma below will fail the invariant. */}
++          <Route path=""foo"" Component={FooPage} />,
++          <Route path=""bar"" Component={BarPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  it('should allow empty children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {false}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).not.toThrow();
++  });
++
++  it('should error on other falsy children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {0}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  ['react-proxy', 'react-stand-in'].forEach((packageName) => {
++    it(`should work with proxies from ${packageName}`, () => {
++      // eslint-disable-next-line global-require, import/no-dynamic-require
++      const createProxy = require(packageName).default;
++
++      const ProxiedRedirect = createProxy(Redirect).get();
++      const redirect = makeRouteConfig(
++        <ProxiedRedirect from=""/foo"" to=""/bar"" />,
++      )[0];
++
++      expect(Object.getPrototypeOf(redirect)).toBe(Redirect.prototype);
++
++      expect(redirect.path).toBe('/foo');
++      expect(redirect.to).toBe('/bar');
++      expect(redirect.render).toBeTruthy();
++
++      let redirectException;
++
++      try {
++        redirect.render({
++          match: {
++            router: {
++              matcher: {
++                format: (to) => to,
++              },
++            },
++          },
++        });
++      } catch (error) {
++        redirectException = error;
++      }
++
++      expect(redirectException).toBeInstanceOf(RedirectException);
++      // expect(redirectException.url).toBe('/bar');
++    });
++  });
++});
+",0,
+1066,834bde557b4c9c414ae70892281626d41291a1e0,5db77a4b9ed6af6460902dfa46dcf20dee896c07,test/__snapshots__/makeRouteConfig.test.tsx.snap,test/makeRouteConfig.test.tsx,"Updates everything in prep to properly support react 19
+
+Number of breaking changes here
+
+- Simplify Babel config and stop using runtime, everything we depend on has been in browsers for 6+ years
+- `Link` no longer supports `as` or `activePropName`, use the function child version for that
+- `new Redirect()` -> `createRedirect()`
+- All JSX components have moved under `found/jsx` to differentiate them and remove a bunch of TS hacks
+- Removed a bunch of old support for React class component Proxy libraries","Update jsx config and add createRoute
+","diff --git a/test/makeRouteConfig.test.tsx b/test/makeRouteConfig.test.tsx
+new file mode 100644
+index 0000000..573b610
+--- /dev/null
++++ b/test/makeRouteConfig.test.tsx
+@@ -0,0 +1,224 @@
++import { describe, expect, it } from 'vitest';
++
++import { Route, Redirect, makeRouteConfig } from '../src/jsx';
++import createRedirect from '../src/createRedirect';
++
++describe('makeRouteConfig', () => {
++  const AppPage = () => null;
++  const MainPage = () => null;
++  const FooPage = () => null;
++  const BarPage = () => null;
++  const BazPage = () => null;
++  const FooNav = () => null;
++  const FooA = () => null;
++  const FooB = () => null;
++  const BarNav = () => null;
++  const BarMain = () => null;
++
++  it('should work with a route', () => {
++    expect(makeRouteConfig(<Route path=""/"" Component={AppPage} />)).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++      },
++    ]);
++  });
++
++  it('should work with nested routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          {/* This comment should be ignored. */}
++          <Route path=""foo"" Component={FooPage}>
++            <Route path=""bar"" Component={BarPage} />
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            Component: MainPage,
++          },
++          {
++            path: 'foo',
++            Component: FooPage,
++            children: [
++              {
++                path: 'bar',
++                Component: BarPage,
++              },
++            ],
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with fragments', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          <>
++            <Route path=""foo"" Component={FooPage} />
++            <Route path=""bar"" Component={BarPage} />
++          </>
++          <Route path=""baz"" Component={BazPage} />
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            Component: MainPage,
++          },
++          {
++            path: 'foo',
++            Component: FooPage,
++          },
++          {
++            path: 'bar',
++            Component: BarPage,
++          },
++          {
++            path: 'baz',
++            Component: BazPage,
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with <Redirect>', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Redirect from=""widget/:widgetId"" to=""/widgets/:widgetId"" />
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'widget/:widgetId',
++            to: '/widgets/:widgetId',
++            status: undefined,
++            render: expect.any(Function),
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with named child routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route path=""foo"">
++            {{
++              nav: <Route path=""(.*)?"" Component={FooNav} />,
++              main: (
++                <>
++                  <Route path=""a"" Component={FooA} />
++                  <Route path=""b"" Component={FooB} />
++                </>
++              ),
++            }}
++          </Route>
++          <Route path=""bar"">
++            {{
++              nav: <Route path=""(.*)?"" Component={BarNav} />,
++              main: <Route Component={BarMain} />,
++            }}
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'foo',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: FooNav,
++                },
++              ],
++              main: [
++                {
++                  path: 'a',
++                  Component: FooA,
++                },
++                {
++                  path: 'b',
++                  Component: FooB,
++                },
++              ],
++            },
++          },
++          {
++            path: 'bar',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: BarNav,
++                },
++              ],
++              main: [
++                {
++                  Component: BarMain,
++                },
++              ],
++            },
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should error on non-element children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {/* The comma below will fail the invariant. */}
++          <Route path=""foo"" Component={FooPage} />,
++          <Route path=""bar"" Component={BarPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  it('should allow empty children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {false}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).not.toThrow();
++  });
++
++  it('should error on other falsy children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {0}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++});
+",0,
+1066,834bde557b4c9c414ae70892281626d41291a1e0,ad7a141b938ff37b5cdcb9bff9f1a275e8f5fc6c,test/__snapshots__/makeRouteConfig.test.jsx.snap,test/makeRouteConfig.test.jsx,"Updates everything in prep to properly support react 19
+
+Number of breaking changes here
+
+- Simplify Babel config and stop using runtime, everything we depend on has been in browsers for 6+ years
+- `Link` no longer supports `as` or `activePropName`, use the function child version for that
+- `new Redirect()` -> `createRedirect()`
+- All JSX components have moved under `found/jsx` to differentiate them and remove a bunch of TS hacks
+- Removed a bunch of old support for React class component Proxy libraries","update to RTL
+","diff --git a/test/makeRouteConfig.test.jsx b/test/makeRouteConfig.test.jsx
+new file mode 100644
+index 0000000..47dcf71
+--- /dev/null
++++ b/test/makeRouteConfig.test.jsx
+@@ -0,0 +1,262 @@
++import React from 'react';
++import { describe, expect, it } from 'vitest';
++
++import Redirect from '../src/Redirect';
++import RedirectException from '../src/RedirectException';
++import Route from '../src/Route';
++import makeRouteConfig from '../src/makeRouteConfig';
++
++describe('makeRouteConfig', () => {
++  const AppPage = () => {};
++
++  const MainPage = () => {};
++  const FooPage = () => {};
++  const BarPage = () => {};
++  const BazPage = () => {};
++
++  const FooNav = () => {};
++  const FooA = () => {};
++  const FooB = () => {};
++  const BarNav = () => {};
++  const BarMain = () => {};
++
++  it('should work with a route', () => {
++    expect(makeRouteConfig(<Route path=""/"" Component={AppPage} />)).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++      }),
++    ]);
++  });
++
++  it('should work with nested routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          {/* This comment should be ignored. */}
++          <Route path=""foo"" Component={FooPage}>
++            <Route path=""bar"" Component={BarPage} />
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Route({
++            Component: MainPage,
++          }),
++          new Route({
++            path: 'foo',
++            Component: FooPage,
++            children: [
++              new Route({
++                path: 'bar',
++                Component: BarPage,
++              }),
++            ],
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with fragments', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          <>
++            <Route path=""foo"" Component={FooPage} />
++            <Route path=""bar"" Component={BarPage} />
++          </>
++          <Route path=""baz"" Component={BazPage} />
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Route({
++            Component: MainPage,
++          }),
++          new Route({
++            path: 'foo',
++            Component: FooPage,
++          }),
++          new Route({
++            path: 'bar',
++            Component: BarPage,
++          }),
++          new Route({
++            path: 'baz',
++            Component: BazPage,
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with <Redirect>', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Redirect from=""widget/:widgetId"" to=""/widgets/:widgetId"" />
++        </Route>,
++      ),
++    ).toEqual([
++      new Route({
++        path: '/',
++        Component: AppPage,
++        children: [
++          new Redirect({
++            from: 'widget/:widgetId',
++            to: '/widgets/:widgetId',
++          }),
++        ],
++      }),
++    ]);
++  });
++
++  it('should work with named child routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route path=""foo"">
++            {{
++              nav: <Route path=""(.*)?"" Component={FooNav} />,
++              main: [
++                <Route path=""a"" Component={FooA} />,
++                <Route path=""b"" Component={FooB} />,
++              ],
++            }}
++          </Route>
++          <Route path=""bar"">
++            {{
++              nav: <Route path=""(.*)?"" Component={BarNav} />,
++              main: <Route Component={BarMain} />,
++            }}
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'foo',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: FooNav,
++                },
++              ],
++              main: [
++                {
++                  path: 'a',
++                  Component: FooA,
++                },
++                {
++                  path: 'b',
++                  Component: FooB,
++                },
++              ],
++            },
++          },
++          {
++            path: 'bar',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: BarNav,
++                },
++              ],
++              main: [
++                {
++                  Component: BarMain,
++                },
++              ],
++            },
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should error on non-element children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {/* The comma below will fail the invariant. */}
++          <Route path=""foo"" Component={FooPage} />,
++          <Route path=""bar"" Component={BarPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  it('should allow empty children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {false}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).not.toThrow();
++  });
++
++  it('should error on other falsy children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {0}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  ['react-proxy', 'react-stand-in'].forEach((packageName) => {
++    it(`should work with proxies from ${packageName}`, () => {
++      // eslint-disable-next-line global-require, import/no-dynamic-require
++      const createProxy = require(packageName).default;
++
++      const ProxiedRedirect = createProxy(Redirect).get();
++      const redirect = makeRouteConfig(
++        <ProxiedRedirect from=""/foo"" to=""/bar"" />,
++      )[0];
++
++      expect(Object.getPrototypeOf(redirect)).toBe(Redirect.prototype);
++
++      expect(redirect.path).toBe('/foo');
++      expect(redirect.to).toBe('/bar');
++      expect(redirect.render).toBeTruthy();
++
++      let redirectException;
++
++      try {
++        redirect.render({
++          match: {
++            router: {
++              matcher: {
++                format: (to) => to,
++              },
++            },
++          },
++        });
++      } catch (error) {
++        redirectException = error;
++      }
++
++      expect(redirectException).toBeInstanceOf(RedirectException);
++      // expect(redirectException.url).toBe('/bar');
++    });
++  });
++});
+",0,
+1066,834bde557b4c9c414ae70892281626d41291a1e0,5db77a4b9ed6af6460902dfa46dcf20dee896c07,test/__snapshots__/makeRouteConfig.test.tsx.snap,test/makeRouteConfig.test.tsx,"Updates everything in prep to properly support react 19
+
+Number of breaking changes here
+
+- Simplify Babel config and stop using runtime, everything we depend on has been in browsers for 6+ years
+- `Link` no longer supports `as` or `activePropName`, use the function child version for that
+- `new Redirect()` -> `createRedirect()`
+- All JSX components have moved under `found/jsx` to differentiate them and remove a bunch of TS hacks
+- Removed a bunch of old support for React class component Proxy libraries","Update jsx config and add createRoute
+","diff --git a/test/makeRouteConfig.test.tsx b/test/makeRouteConfig.test.tsx
+new file mode 100644
+index 0000000..573b610
+--- /dev/null
++++ b/test/makeRouteConfig.test.tsx
+@@ -0,0 +1,224 @@
++import { describe, expect, it } from 'vitest';
++
++import { Route, Redirect, makeRouteConfig } from '../src/jsx';
++import createRedirect from '../src/createRedirect';
++
++describe('makeRouteConfig', () => {
++  const AppPage = () => null;
++  const MainPage = () => null;
++  const FooPage = () => null;
++  const BarPage = () => null;
++  const BazPage = () => null;
++  const FooNav = () => null;
++  const FooA = () => null;
++  const FooB = () => null;
++  const BarNav = () => null;
++  const BarMain = () => null;
++
++  it('should work with a route', () => {
++    expect(makeRouteConfig(<Route path=""/"" Component={AppPage} />)).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++      },
++    ]);
++  });
++
++  it('should work with nested routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          {/* This comment should be ignored. */}
++          <Route path=""foo"" Component={FooPage}>
++            <Route path=""bar"" Component={BarPage} />
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            Component: MainPage,
++          },
++          {
++            path: 'foo',
++            Component: FooPage,
++            children: [
++              {
++                path: 'bar',
++                Component: BarPage,
++              },
++            ],
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with fragments', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route Component={MainPage} />
++          <>
++            <Route path=""foo"" Component={FooPage} />
++            <Route path=""bar"" Component={BarPage} />
++          </>
++          <Route path=""baz"" Component={BazPage} />
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            Component: MainPage,
++          },
++          {
++            path: 'foo',
++            Component: FooPage,
++          },
++          {
++            path: 'bar',
++            Component: BarPage,
++          },
++          {
++            path: 'baz',
++            Component: BazPage,
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with <Redirect>', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Redirect from=""widget/:widgetId"" to=""/widgets/:widgetId"" />
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'widget/:widgetId',
++            to: '/widgets/:widgetId',
++            status: undefined,
++            render: expect.any(Function),
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should work with named child routes', () => {
++    expect(
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          <Route path=""foo"">
++            {{
++              nav: <Route path=""(.*)?"" Component={FooNav} />,
++              main: (
++                <>
++                  <Route path=""a"" Component={FooA} />
++                  <Route path=""b"" Component={FooB} />
++                </>
++              ),
++            }}
++          </Route>
++          <Route path=""bar"">
++            {{
++              nav: <Route path=""(.*)?"" Component={BarNav} />,
++              main: <Route Component={BarMain} />,
++            }}
++          </Route>
++        </Route>,
++      ),
++    ).toEqual([
++      {
++        path: '/',
++        Component: AppPage,
++        children: [
++          {
++            path: 'foo',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: FooNav,
++                },
++              ],
++              main: [
++                {
++                  path: 'a',
++                  Component: FooA,
++                },
++                {
++                  path: 'b',
++                  Component: FooB,
++                },
++              ],
++            },
++          },
++          {
++            path: 'bar',
++            children: {
++              nav: [
++                {
++                  path: '(.*)?',
++                  Component: BarNav,
++                },
++              ],
++              main: [
++                {
++                  Component: BarMain,
++                },
++              ],
++            },
++          },
++        ],
++      },
++    ]);
++  });
++
++  it('should error on non-element children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {/* The comma below will fail the invariant. */}
++          <Route path=""foo"" Component={FooPage} />,
++          <Route path=""bar"" Component={BarPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++
++  it('should allow empty children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {false}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).not.toThrow();
++  });
++
++  it('should error on other falsy children', () => {
++    expect(() => {
++      makeRouteConfig(
++        <Route path=""/"" Component={AppPage}>
++          {0}
++          <Route path=""foo"" Component={FooPage} />
++        </Route>,
++      );
++    }).toThrowErrorMatchingSnapshot();
++  });
++});
+",0,
+514,e175132235d89ba31021209ed5e59ae2ce19f0b2,e175132235d89ba31021209ed5e59ae2ce19f0b2,test/server/__snapshots__/getFarceResult.test.js.snap,test/server/getFarceResult.test.js,"Bumps [react-redux](https://github.com/reduxjs/react-redux) from 7.1.0 to 7.1.1.
+<details>
+<summary>Release notes</summary>
+
+*Sourced from [react-redux's releases](https://github.com/reduxjs/react-redux/releases).*
+
+> ## v7.1.1
+> _**This release is sponsored by [Deft](http://deft.services/), providing technical teams to high-growth SaaS companies with the processes they need to scale successfully. Please reach out to see how we can help with your software development, systems architecture, and infrastructure design needs.**_
+> 
+> ---
+> 
+> This release includes some new APIs for those that want to use a custom React Context with our Hooks API, a small memory optimization, and has a fix for when the `store` changes on a `Provider` with incompatible `children`.
+> 
+> ## [Changes](https://github.com/reduxjs/react-redux/compare/v7.1.0...v7.1.1)
+> 
+> - Add `create*Hook` factory APIs ([#1309](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1309) by [@&#8203;ryaninvents](https://github.com/ryaninvents))
+> - Free resources (free detached nodes from memory) ([#1380](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1380) by [@&#8203;MosheZemah](https://github.com/MosheZemah))
+> - Convert Provider into function component with hooks ([#1377](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1377) by [@&#8203;mpeyper](https://github.com/mpeyper)) 
+> 
+> P.S. On the sponsorship section above, it's a thing we're trying out to see how it feels and if it causes any problems for your workflows. (Don't worry, no ads are coming to your npm installs!) The idea for future releases is to let those that contributed to that release have the opportunity to sponsor that release. We don't need donations, but we definitely do need PRs! Hopefully, it's a fair way to encourage them. Please let us know if it's a problem in any way.
+</details>
+<details>
+<summary>Commits</summary>
+
+- [`65d7935`](https://github.com/reduxjs/react-redux/commit/65d7935fa051449be1b553eb8eab1816787d593c) 7.1.1
+- [`66c3833`](https://github.com/reduxjs/react-redux/commit/66c3833c39eb85334b9b6fdd41d8107c17754164) Upgrade stuff as far as we can get without errors.
+- [`07dbe01`](https://github.com/reduxjs/react-redux/commit/07dbe01d11892ff95ede9890b6c5b589b4529dd6) Fix a eslint@6 error
+- [`0c5f764`](https://github.com/reduxjs/react-redux/commit/0c5f7646f600e635e1caf62863ad61350011f3e7) Convert Provider into function component with hooks ([#1377](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1377))
+- [`b6b4799`](https://github.com/reduxjs/react-redux/commit/b6b47995acfb8c1ff5d04a31c14aa75f112a47ab) Free resources (free detached nodes from memory) ([#1380](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1380))
+- [`4b9cece`](https://github.com/reduxjs/react-redux/commit/4b9cecefde7b3e4c6344d3277c46ad0471c4bbfe) Docs: update license section ([#1368](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1368))
+- [`5e6205a`](https://github.com/reduxjs/react-redux/commit/5e6205a2f9bb18e1f8b0163382bc29230ea7d3d3) feat: implement `create*Hook` APIs ([#1309](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1309))
+- [`4cded48`](https://github.com/reduxjs/react-redux/commit/4cded48b758c4761b2d98a98747e04f9044116d4) Revert ""fix(docs): remove `mapDispatchToProps` invalid use case"" ([#1365](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1365))
+- [`ae6f033`](https://github.com/reduxjs/react-redux/commit/ae6f033357ddfebbc44b1fae16b348b89d832f6c) fix(docs): remove `mapDispatchToProps` untruthy use case ([#1364](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1364))
+- [`8a1bb58`](https://github.com/reduxjs/react-redux/commit/8a1bb5805497d2ca000ccb693bca72b327c4e8b4) Fix typo ([#1355](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1355))
+- Additional commits viewable in [compare view](https://github.com/reduxjs/react-redux/compare/v7.1.0...v7.1.1)
+</details>
+<br />
+
+[![Dependabot compatibility score](https://api.dependabot.com/badges/compatibility_score?dependency-name=react-redux&package-manager=npm_and_yarn&previous-version=7.1.0&new-version=7.1.1)](https://dependabot.com/compatibility-score.html?dependency-name=react-redux&package-manager=npm_and_yarn&previous-version=7.1.0&new-version=7.1.1)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+If all status checks pass Dependabot will automatically merge this pull request.
+
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot use these labels` will set the current labels as the default for future PRs for this repo and language
+- `@dependabot use these reviewers` will set the current reviewers as the default for future PRs for this repo and language
+- `@dependabot use these assignees` will set the current assignees as the default for future PRs for this repo and language
+- `@dependabot use this milestone` will set the current milestone as the default for future PRs for this repo and language
+- `@dependabot badge me` will comment on this PR with code to add a ""Dependabot enabled"" badge to your readme
+
+Additionally, you can set the following in your Dependabot [dashboard](https://app.dependabot.com):
+- Update frequency (including time of day and day of week)
+- Automerge options (never/patch/minor, and dev/runtime dependencies)
+- Pull request limits (per update run and/or open at any time)
+- Out-of-range updates (receive only lockfile updates, if desired)
+- Security updates (receive only security updates, if desired)
+
+Finally, you can contact us by mentioning @dependabot.
+
+</details>","fix tests
+","diff --git a/test/server/getFarceResult.test.js b/test/server/getFarceResult.test.js
+index 77660bf..19c6edf 100644
+--- a/test/server/getFarceResult.test.js
++++ b/test/server/getFarceResult.test.js
+@@ -1,101 +1,81 @@
+ import React from 'react';
+-import ReactTestUtils from 'react-dom/test-utils';
++import ReactDOMServer from 'react-dom/server';
+ 
+ import createRender from '../../src/createRender';
+ import getFarceResult from '../../src/server/getFarceResult';
+ 
+-async function render(url, routeConfig) {
++async function renderToString(url, routeConfig) {
+   const { element } = await getFarceResult({
+     url,
+     routeConfig,
+     render: createRender({}),
+   });
+ 
+-  return ReactTestUtils.renderIntoDocument(element);
++  return ReactDOMServer.renderToString(element);
+ }
+ 
+ describe('getFarceResult', () => {
+   it('should support nested routes', async () => {
+-    const instance = await render('/foo/baz/a', [
+-      {
+-        path: 'foo',
+-        Component: ({ children }) => <div className=""foo"">{children}</div>,
+-        children: [
+-          {
+-            path: 'bar',
+-            Component: () => <div className=""bar"" />,
+-          },
+-          {
+-            path: 'baz/:qux',
+-            Component: ({ match }) => (
+-              <div className=""baz"">{match.params.qux}</div>
+-            ),
+-          },
+-        ],
+-      },
+-    ]);
+-
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+     expect(
+-      ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'bar'),
+-    ).toHaveLength(0);
+-
+-    const bazNode = ReactTestUtils.findRenderedDOMComponentWithClass(
+-      instance,
+-      'baz',
+-    );
+-    expect(bazNode.textContent).toBe('a');
++      await renderToString('/foo/baz/a', [
++        {
++          path: 'foo',
++          Component: ({ children }) => <div className=""foo"">{children}</div>,
++          children: [
++            {
++              path: 'bar',
++              Component: () => <div className=""bar"" />,
++            },
++            {
++              path: 'baz/:qux',
++              Component: ({ match }) => (
++                <div className=""baz"">{match.params.qux}</div>
++              ),
++            },
++          ],
++        },
++      ]),
++    ).toMatchSnapshot();
+   });
+ 
+   it('should support named child routes', async () => {
+-    const instance = await render('/foo/bar/qux/a', [
+-      {
+-        path: 'foo',
+-        Component: ({ nav, main }) => (
+-          <div className=""foo"">
+-            {nav}
+-            {main}
+-          </div>
+-        ),
+-        children: [
+-          {
+-            path: 'bar',
+-            children: {
+-              nav: [
+-                {
+-                  path: '(.*)?',
+-                  Component: () => <div className=""bar-nav"" />,
+-                },
+-              ],
+-              main: [
+-                {
+-                  path: 'baz',
+-                  Component: () => <div className=""baz"" />,
+-                },
+-                {
+-                  path: 'qux/:quux',
+-                  Component: ({ match }) => (
+-                    <div className=""qux"">{match.params.quux}</div>
+-                  ),
+-                },
+-              ],
+-            },
+-          },
+-        ],
+-      },
+-    ]);
+-
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'bar-nav');
+-
+     expect(
+-      ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'baz'),
+-    ).toHaveLength(0);
+-
+-    const quxNode = ReactTestUtils.findRenderedDOMComponentWithClass(
+-      instance,
+-      'qux',
+-    );
+-    expect(quxNode.textContent).toBe('a');
++      await renderToString('/foo/bar/qux/a', [
++        {
++          path: 'foo',
++          Component: ({ nav, main }) => (
++            <div className=""foo"">
++              {nav}
++              {main}
++            </div>
++          ),
++          children: [
++            {
++              path: 'bar',
++              children: {
++                nav: [
++                  {
++                    path: '(.*)?',
++                    Component: () => <div className=""bar-nav"" />,
++                  },
++                ],
++                main: [
++                  {
++                    path: 'baz',
++                    Component: () => <div className=""baz"" />,
++                  },
++                  {
++                    path: 'qux/:quux',
++                    Component: ({ match }) => (
++                      <div className=""qux"">{match.params.quux}</div>
++                    ),
++                  },
++                ],
++              },
++            },
++          ],
++        },
++      ]),
++    ).toMatchSnapshot();
+   });
+ });
+",0,
+514,e175132235d89ba31021209ed5e59ae2ce19f0b2,e175132235d89ba31021209ed5e59ae2ce19f0b2,test/server/__snapshots__/getFarceResult.test.js.snap,test/server/getFarceResult.test.js,"Bumps [react-redux](https://github.com/reduxjs/react-redux) from 7.1.0 to 7.1.1.
+<details>
+<summary>Release notes</summary>
+
+*Sourced from [react-redux's releases](https://github.com/reduxjs/react-redux/releases).*
+
+> ## v7.1.1
+> _**This release is sponsored by [Deft](http://deft.services/), providing technical teams to high-growth SaaS companies with the processes they need to scale successfully. Please reach out to see how we can help with your software development, systems architecture, and infrastructure design needs.**_
+> 
+> ---
+> 
+> This release includes some new APIs for those that want to use a custom React Context with our Hooks API, a small memory optimization, and has a fix for when the `store` changes on a `Provider` with incompatible `children`.
+> 
+> ## [Changes](https://github.com/reduxjs/react-redux/compare/v7.1.0...v7.1.1)
+> 
+> - Add `create*Hook` factory APIs ([#1309](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1309) by [@&#8203;ryaninvents](https://github.com/ryaninvents))
+> - Free resources (free detached nodes from memory) ([#1380](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1380) by [@&#8203;MosheZemah](https://github.com/MosheZemah))
+> - Convert Provider into function component with hooks ([#1377](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1377) by [@&#8203;mpeyper](https://github.com/mpeyper)) 
+> 
+> P.S. On the sponsorship section above, it's a thing we're trying out to see how it feels and if it causes any problems for your workflows. (Don't worry, no ads are coming to your npm installs!) The idea for future releases is to let those that contributed to that release have the opportunity to sponsor that release. We don't need donations, but we definitely do need PRs! Hopefully, it's a fair way to encourage them. Please let us know if it's a problem in any way.
+</details>
+<details>
+<summary>Commits</summary>
+
+- [`65d7935`](https://github.com/reduxjs/react-redux/commit/65d7935fa051449be1b553eb8eab1816787d593c) 7.1.1
+- [`66c3833`](https://github.com/reduxjs/react-redux/commit/66c3833c39eb85334b9b6fdd41d8107c17754164) Upgrade stuff as far as we can get without errors.
+- [`07dbe01`](https://github.com/reduxjs/react-redux/commit/07dbe01d11892ff95ede9890b6c5b589b4529dd6) Fix a eslint@6 error
+- [`0c5f764`](https://github.com/reduxjs/react-redux/commit/0c5f7646f600e635e1caf62863ad61350011f3e7) Convert Provider into function component with hooks ([#1377](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1377))
+- [`b6b4799`](https://github.com/reduxjs/react-redux/commit/b6b47995acfb8c1ff5d04a31c14aa75f112a47ab) Free resources (free detached nodes from memory) ([#1380](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1380))
+- [`4b9cece`](https://github.com/reduxjs/react-redux/commit/4b9cecefde7b3e4c6344d3277c46ad0471c4bbfe) Docs: update license section ([#1368](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1368))
+- [`5e6205a`](https://github.com/reduxjs/react-redux/commit/5e6205a2f9bb18e1f8b0163382bc29230ea7d3d3) feat: implement `create*Hook` APIs ([#1309](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1309))
+- [`4cded48`](https://github.com/reduxjs/react-redux/commit/4cded48b758c4761b2d98a98747e04f9044116d4) Revert ""fix(docs): remove `mapDispatchToProps` invalid use case"" ([#1365](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1365))
+- [`ae6f033`](https://github.com/reduxjs/react-redux/commit/ae6f033357ddfebbc44b1fae16b348b89d832f6c) fix(docs): remove `mapDispatchToProps` untruthy use case ([#1364](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1364))
+- [`8a1bb58`](https://github.com/reduxjs/react-redux/commit/8a1bb5805497d2ca000ccb693bca72b327c4e8b4) Fix typo ([#1355](https://github-redirect.dependabot.com/reduxjs/react-redux/issues/1355))
+- Additional commits viewable in [compare view](https://github.com/reduxjs/react-redux/compare/v7.1.0...v7.1.1)
+</details>
+<br />
+
+[![Dependabot compatibility score](https://api.dependabot.com/badges/compatibility_score?dependency-name=react-redux&package-manager=npm_and_yarn&previous-version=7.1.0&new-version=7.1.1)](https://dependabot.com/compatibility-score.html?dependency-name=react-redux&package-manager=npm_and_yarn&previous-version=7.1.0&new-version=7.1.1)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+If all status checks pass Dependabot will automatically merge this pull request.
+
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot use these labels` will set the current labels as the default for future PRs for this repo and language
+- `@dependabot use these reviewers` will set the current reviewers as the default for future PRs for this repo and language
+- `@dependabot use these assignees` will set the current assignees as the default for future PRs for this repo and language
+- `@dependabot use this milestone` will set the current milestone as the default for future PRs for this repo and language
+- `@dependabot badge me` will comment on this PR with code to add a ""Dependabot enabled"" badge to your readme
+
+Additionally, you can set the following in your Dependabot [dashboard](https://app.dependabot.com):
+- Update frequency (including time of day and day of week)
+- Automerge options (never/patch/minor, and dev/runtime dependencies)
+- Pull request limits (per update run and/or open at any time)
+- Out-of-range updates (receive only lockfile updates, if desired)
+- Security updates (receive only security updates, if desired)
+
+Finally, you can contact us by mentioning @dependabot.
+
+</details>","fix tests
+","diff --git a/test/server/getFarceResult.test.js b/test/server/getFarceResult.test.js
+index 77660bf..19c6edf 100644
+--- a/test/server/getFarceResult.test.js
++++ b/test/server/getFarceResult.test.js
+@@ -1,101 +1,81 @@
+ import React from 'react';
+-import ReactTestUtils from 'react-dom/test-utils';
++import ReactDOMServer from 'react-dom/server';
+ 
+ import createRender from '../../src/createRender';
+ import getFarceResult from '../../src/server/getFarceResult';
+ 
+-async function render(url, routeConfig) {
++async function renderToString(url, routeConfig) {
+   const { element } = await getFarceResult({
+     url,
+     routeConfig,
+     render: createRender({}),
+   });
+ 
+-  return ReactTestUtils.renderIntoDocument(element);
++  return ReactDOMServer.renderToString(element);
+ }
+ 
+ describe('getFarceResult', () => {
+   it('should support nested routes', async () => {
+-    const instance = await render('/foo/baz/a', [
+-      {
+-        path: 'foo',
+-        Component: ({ children }) => <div className=""foo"">{children}</div>,
+-        children: [
+-          {
+-            path: 'bar',
+-            Component: () => <div className=""bar"" />,
+-          },
+-          {
+-            path: 'baz/:qux',
+-            Component: ({ match }) => (
+-              <div className=""baz"">{match.params.qux}</div>
+-            ),
+-          },
+-        ],
+-      },
+-    ]);
+-
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+     expect(
+-      ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'bar'),
+-    ).toHaveLength(0);
+-
+-    const bazNode = ReactTestUtils.findRenderedDOMComponentWithClass(
+-      instance,
+-      'baz',
+-    );
+-    expect(bazNode.textContent).toBe('a');
++      await renderToString('/foo/baz/a', [
++        {
++          path: 'foo',
++          Component: ({ children }) => <div className=""foo"">{children}</div>,
++          children: [
++            {
++              path: 'bar',
++              Component: () => <div className=""bar"" />,
++            },
++            {
++              path: 'baz/:qux',
++              Component: ({ match }) => (
++                <div className=""baz"">{match.params.qux}</div>
++              ),
++            },
++          ],
++        },
++      ]),
++    ).toMatchSnapshot();
+   });
+ 
+   it('should support named child routes', async () => {
+-    const instance = await render('/foo/bar/qux/a', [
+-      {
+-        path: 'foo',
+-        Component: ({ nav, main }) => (
+-          <div className=""foo"">
+-            {nav}
+-            {main}
+-          </div>
+-        ),
+-        children: [
+-          {
+-            path: 'bar',
+-            children: {
+-              nav: [
+-                {
+-                  path: '(.*)?',
+-                  Component: () => <div className=""bar-nav"" />,
+-                },
+-              ],
+-              main: [
+-                {
+-                  path: 'baz',
+-                  Component: () => <div className=""baz"" />,
+-                },
+-                {
+-                  path: 'qux/:quux',
+-                  Component: ({ match }) => (
+-                    <div className=""qux"">{match.params.quux}</div>
+-                  ),
+-                },
+-              ],
+-            },
+-          },
+-        ],
+-      },
+-    ]);
+-
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+-    ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'bar-nav');
+-
+     expect(
+-      ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'baz'),
+-    ).toHaveLength(0);
+-
+-    const quxNode = ReactTestUtils.findRenderedDOMComponentWithClass(
+-      instance,
+-      'qux',
+-    );
+-    expect(quxNode.textContent).toBe('a');
++      await renderToString('/foo/bar/qux/a', [
++        {
++          path: 'foo',
++          Component: ({ nav, main }) => (
++            <div className=""foo"">
++              {nav}
++              {main}
++            </div>
++          ),
++          children: [
++            {
++              path: 'bar',
++              children: {
++                nav: [
++                  {
++                    path: '(.*)?',
++                    Component: () => <div className=""bar-nav"" />,
++                  },
++                ],
++                main: [
++                  {
++                    path: 'baz',
++                    Component: () => <div className=""baz"" />,
++                  },
++                  {
++                    path: 'qux/:quux',
++                    Component: ({ match }) => (
++                      <div className=""qux"">{match.params.quux}</div>
++                    ),
++                  },
++                ],
++              },
++            },
++          ],
++        },
++      ]),
++    ).toMatchSnapshot();
+   });
+ });
+",0,
+517,0b8b16015400df7c8b44df3ea4bed0c605836a85,0b8b16015400df7c8b44df3ea4bed0c605836a85,test/server/__snapshots__/getFarceResult.test.js.snap,test/server/getFarceResult.test.js,,"refactor: Drop React test utils
+","diff --git a/test/server/getFarceResult.test.js b/test/server/getFarceResult.test.js
+index 19c6edf..f2d8d65 100644
+--- a/test/server/getFarceResult.test.js
++++ b/test/server/getFarceResult.test.js
+@@ -35,7 +35,9 @@ describe('getFarceResult', () => {
+           ],
+         },
+       ]),
+-    ).toMatchSnapshot();
++    ).toMatchInlineSnapshot(
++      `""<div class=\\""foo\\""><div class=\\""baz\\"">a</div></div>""`,
++    );
+   });
+ 
+   it('should support named child routes', async () => {
+@@ -76,6 +78,8 @@ describe('getFarceResult', () => {
+           ],
+         },
+       ]),
+-    ).toMatchSnapshot();
++    ).toMatchInlineSnapshot(
++      `""<div class=\\""foo\\""><div class=\\""bar-nav\\""></div><div class=\\""qux\\"">a</div></div>""`,
++    );
+   });
+ });
+",0,
+517,0b8b16015400df7c8b44df3ea4bed0c605836a85,0b8b16015400df7c8b44df3ea4bed0c605836a85,test/server/__snapshots__/getFarceResult.test.js.snap,test/server/getFarceResult.test.js,,"refactor: Drop React test utils
+","diff --git a/test/server/getFarceResult.test.js b/test/server/getFarceResult.test.js
+index 19c6edf..f2d8d65 100644
+--- a/test/server/getFarceResult.test.js
++++ b/test/server/getFarceResult.test.js
+@@ -35,7 +35,9 @@ describe('getFarceResult', () => {
+           ],
+         },
+       ]),
+-    ).toMatchSnapshot();
++    ).toMatchInlineSnapshot(
++      `""<div class=\\""foo\\""><div class=\\""baz\\"">a</div></div>""`,
++    );
+   });
+ 
+   it('should support named child routes', async () => {
+@@ -76,6 +78,8 @@ describe('getFarceResult', () => {
+           ],
+         },
+       ]),
+-    ).toMatchSnapshot();
++    ).toMatchInlineSnapshot(
++      `""<div class=\\""foo\\""><div class=\\""bar-nav\\""></div><div class=\\""qux\\"">a</div></div>""`,
++    );
+   });
+ });
+",0,

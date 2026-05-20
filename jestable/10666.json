@@ -1,0 +1,101 @@
+{
+    "id": 7471850,
+    "name": "carloscuesta/gitmoji-cli",
+    "isFork": false,
+    "commits": 1061,
+    "branches": 11,
+    "releases": 112,
+    "forks": 204,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://www.npmjs.com/package/gitmoji-cli",
+    "watchers": 23,
+    "stargazers": 4482,
+    "contributors": 52,
+    "size": 5184,
+    "createdAt": "2016-11-17T09:40:32",
+    "pushedAt": "2024-04-04T08:33:45",
+    "updatedAt": "2024-04-03T08:22:05",
+    "totalIssues": 219,
+    "openIssues": 9,
+    "totalPullRequests": 1069,
+    "openPullRequests": 11,
+    "blankLines": 546,
+    "codeLines": 3331,
+    "commentLines": 56,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 25,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 179
+        },
+        {
+            "blankLines": 418,
+            "language": "JavaScript",
+            "commentLines": 53,
+            "codeLines": 2437
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 258
+        },
+        {
+            "blankLines": 96,
+            "language": "Markdown",
+            "commentLines": 3,
+            "codeLines": 221
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 220
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        }
+    ],
+    "lastCommit": "2024-04-04T08:33:45",
+    "lastCommitSHA": "4de63bd7e34ff6abb3e3795cf10e21079c08c491",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 81771,
+        "TypeScript": 3755,
+        "Shell": 132
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "feature",
+        "github_actions",
+        "hacktoberfest",
+        "help wanted",
+        "javascript",
+        "maintenance",
+        "needs info",
+        "question",
+        "security"
+    ],
+    "topics": [
+        "cli",
+        "emoji",
+        "gitmoji",
+        "gitmoji-cli"
+    ]
+}

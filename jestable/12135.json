@@ -1,0 +1,108 @@
+{
+    "id": 67275190,
+    "name": "tanstack/react-table",
+    "isFork": false,
+    "commits": 1500,
+    "branches": 3,
+    "releases": 50,
+    "forks": 2344,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "alpha",
+    "license": "MIT License",
+    "homepage": "https://react-table.tanstack.com",
+    "watchers": 155,
+    "stargazers": 16754,
+    "contributors": 254,
+    "size": 18288,
+    "createdAt": "2016-10-20T05:25:08",
+    "pushedAt": "2022-04-13T09:34:58",
+    "updatedAt": "2022-04-16T01:01:29",
+    "totalIssues": 1988,
+    "openIssues": 1,
+    "totalPullRequests": 677,
+    "openPullRequests": 5,
+    "blankLines": 4476,
+    "codeLines": 35072,
+    "commentLines": 1157,
+    "metrics": [
+        {
+            "blankLines": 118,
+            "language": "Vuejs Component",
+            "commentLines": 4,
+            "codeLines": 1365
+        },
+        {
+            "blankLines": 12,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 208
+        },
+        {
+            "blankLines": 57,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 283
+        },
+        {
+            "blankLines": 5,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 70
+        },
+        {
+            "blankLines": 54,
+            "language": "Svelte",
+            "commentLines": 0,
+            "codeLines": 1296
+        },
+        {
+            "blankLines": 1928,
+            "language": "TypeScript",
+            "commentLines": 796,
+            "codeLines": 17940
+        },
+        {
+            "blankLines": 697,
+            "language": "JavaScript",
+            "commentLines": 336,
+            "codeLines": 7610
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 2846
+        },
+        {
+            "blankLines": 1605,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3454
+        }
+    ],
+    "lastCommit": "2022-04-09T05:50:55",
+    "lastCommitSHA": "bd8e89abb35be7c1a4daf51fa2c0b97f3b8c8737",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 242884,
+        "JavaScript": 69842
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "priority:high",
+        "priority:low",
+        "released",
+        "types",
+        "v6",
+        "v8",
+        "wontfix"
+    ],
+    "topics": []
+}

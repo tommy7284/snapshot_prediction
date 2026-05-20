@@ -1,0 +1,88 @@
+{
+    "id": 6161356,
+    "name": "azz/styled-css-grid",
+    "isFork": false,
+    "commits": 60,
+    "branches": 5,
+    "releases": 21,
+    "forks": 48,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://styled-css-grid.js.org/",
+    "watchers": 11,
+    "stargazers": 606,
+    "contributors": 13,
+    "size": 357,
+    "createdAt": "2017-07-27T06:38:24",
+    "pushedAt": "2022-01-15T04:09:41",
+    "updatedAt": "2022-01-17T10:57:09",
+    "totalIssues": 26,
+    "openIssues": 9,
+    "totalPullRequests": 46,
+    "openPullRequests": 5,
+    "blankLines": 179,
+    "codeLines": 1329,
+    "commentLines": 4,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 23
+        },
+        {
+            "blankLines": 6,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 98
+        },
+        {
+            "blankLines": 30,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 82
+        },
+        {
+            "blankLines": 6,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 38
+        },
+        {
+            "blankLines": 137,
+            "language": "JavaScript",
+            "commentLines": 1,
+            "codeLines": 1059
+        }
+    ],
+    "lastCommit": "2019-05-28T10:20:37",
+    "lastCommitSHA": "b1426fcb5ae27d8555b14035c849be4b75a92a86",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 31710,
+        "HTML": 1149
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "feature",
+        "help wanted",
+        "invalid",
+        "needs information",
+        "question",
+        "website",
+        "wontfix"
+    ],
+    "topics": []
+}

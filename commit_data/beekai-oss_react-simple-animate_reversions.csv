@@ -1,0 +1,1372 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+100,827e4ec9257ddfd76e25b8ea45695c19c2d19472,7cad4551193e3be3af6260b31896bc9281355da5,,"fix(createTag.test): fix createStyles's default import mock error
+","diff --git a/src/logic/createTag.test.ts b/src/logic/createTag.test.ts
+index 158b329..5cba511 100644
+--- a/src/logic/createTag.test.ts
++++ b/src/logic/createTag.test.ts
+@@ -1,6 +1,8 @@
+ import createTag from './createTag';
+ 
+-jest.mock('./createStyle', () => () => 'test');
++jest.mock('./createStyle', () => ({
++  default: () => '.test {}',
++}));
+ 
+ const documentCreateOriginal = document.createElement;
+ const appendChildOriginal = document.head.appendChild;
+@@ -19,7 +21,10 @@ describe('createTag', () => {
+   it('should the tag and total length of css rules', () => {
+     const insertRule = jest.fn();
+     // @ts-ignore
+-    document.createElement.mockReturnValue({ sheet: { cssRules: [1, 2], insertRule }, setAttribute: () => {} });
++    document.createElement.mockReturnValue({
++      sheet: { cssRules: [1, 2], insertRule },
++      setAttribute: () => {},
++    });
+     // @ts-ignore
+     const output = createTag({ keyframes: {}, animationName: 'test' });
+ 
+@@ -31,7 +36,10 @@ describe('createTag', () => {
+       throw new Error('failed');
+     };
+     // @ts-ignore
+-    document.createElement.mockReturnValue({ sheet: { cssRules: [1, 2], insertRule }, setAttribute: () => {} });
++    document.createElement.mockReturnValue({
++      sheet: { cssRules: [1, 2], insertRule },
++      setAttribute: () => {},
++    });
+     // @ts-ignore
+     const output = createTag({ keyframes: '', animationName: 'test' });
+ 
+",0,,2,29,1,9,15,237
+12,ee0324dcc16191327398f211602089df4bfe9dcd,05521e6ac48fd3f3042b064afb91b6bc542f3449,,"support custom tag
+","diff --git a/test/animate.test.js b/test/animate.test.js
+index 9d044fe..6fff3ac 100644
+--- a/test/animate.test.js
++++ b/test/animate.test.js
+@@ -22,11 +22,18 @@ describe('Animate', () => {
+     expect(tree).toMatchSnapshot();
+   });
+ 
++  it('should render custome tag correctly', () => {
++    const tree = renderer.create(<Animate {...{ ...props, tag: 'l' }} />);
++
++    expect(tree).toMatchSnapshot();
++  });
++
+   describe('when animation is ready and delay have been set', () => {
+     it('should trigger animation delay ended', () => {
+       const tree = mount(
+         <Animate {...{ ...props, delaySeconds: 1 }}>test</Animate>,
+       );
++
+       jest.runAllTimers();
+       expect(tree.state().delayWillEnd).toEqual(true);
+     });
+@@ -45,9 +52,11 @@ describe('Animate', () => {
+           test
+         </Animate>,
+       );
++
+       tree.setProps({
+         startAnimation: true,
+       });
++
+       jest.runAllTimers();
+       expect(tree.state().animationWillEnd).toEqual(true);
+     });
+",0,,3,50,1,6,5,69
+34,e3cbfae4a1912d657107d413ea895b0f1406e43a,d31b81cc90e33d4c8cbad0b7e573f170cc0f8dd7,,"support render props
+","diff --git a/test/animate.test.js b/test/animate.test.js
+index 2f8cd82..6c3cbda 100644
+--- a/test/animate.test.js
++++ b/test/animate.test.js
+@@ -25,12 +25,14 @@ describe('Animate', () => {
+     expect(tree).toMatchSnapshot();
+   });
+ 
++  it('should render correctly with render props', () => {
++    const tree = renderer.create(<Animate render={attributes => <div {...attributes}>what</div>} {...props} />);
++
++    expect(tree).toMatchSnapshot();
++  });
++
+   it('should render correctly for children', () => {
+-    const tree = renderer.create(
+-      <Animate {...props}>
+-        {[1, 2].map(item => <div key={item}>test{item}</div>)}
+-      </Animate>,
+-    );
++    const tree = renderer.create(<Animate {...props}>{[1, 2].map(item => <div key={item}>test{item}</div>)}</Animate>);
+ 
+     expect(tree).toMatchSnapshot();
+   });
+@@ -69,9 +71,7 @@ describe('Animate', () => {
+ 
+   describe('when animation is ready and delay have been set', () => {
+     it('should play animation with delay', () => {
+-      const tree = mount(
+-        <Animate {...{ ...props, delaySeconds: 1 }}>test</Animate>,
+-      );
++      const tree = mount(<Animate {...{ ...props, delaySeconds: 1 }}>test</Animate>);
+ 
+       jest.runAllTimers();
+       expect(tree.state().willEnd).toEqual(true);
+@@ -102,11 +102,7 @@ describe('Animate', () => {
+   });
+ 
+   it('should update component when animation is ready', () => {
+-    const tree = shallow(
+-      <Animate {...{ ...props, startAnimation: false, endStyle }}>
+-        test
+-      </Animate>,
+-    );
++    const tree = shallow(<Animate {...{ ...props, startAnimation: false, endStyle }}>test</Animate>);
+ 
+     const state = {
+       willEnd: false,
+@@ -123,11 +119,7 @@ describe('Animate', () => {
+   });
+ 
+   it('should not update component when animation already played', () => {
+-    const tree = shallow(
+-      <Animate {...{ ...props, startAnimation: false, endStyle }}>
+-        test
+-      </Animate>,
+-    );
++    const tree = shallow(<Animate {...{ ...props, startAnimation: false, endStyle }}>test</Animate>);
+ 
+     const state = defaultState;
+ 
+@@ -147,18 +139,12 @@ describe('Animate', () => {
+       ),
+     ).toEqual(true);
+ 
+-    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(
+-      false,
+-    );
++    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(false);
+   });
+ 
+   it('should update component when animation is about to end or delay animation about to end ', () => {
+     const tree = shallow(
+-      <Animate
+-        {...{ ...props, startAnimation: false, endStyle: { display: 'block' } }}
+-      >
+-        test
+-      </Animate>,
++      <Animate {...{ ...props, startAnimation: false, endStyle: { display: 'block' } }}>test</Animate>,
+     );
+ 
+     let state = {
+@@ -169,17 +155,13 @@ describe('Animate', () => {
+       startAnimation: false,
+     };
+ 
+-    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(
+-      true,
+-    );
++    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(true);
+ 
+     state = {
+       willEnd: false,
+     };
+ 
+-    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(
+-      true,
+-    );
++    expect(tree.instance().shouldComponentUpdate(nextProps, state)).toEqual(true);
+   });
+ 
+   describe('When animation complete style has been set', () => {
+@@ -305,9 +287,7 @@ describe('Animate', () => {
+ 
+       const nextState = { willEnd: false };
+ 
+-      expect(
+-        tree.instance().shouldComponentUpdate(nextProps, nextState),
+-      ).toEqual(true);
++      expect(tree.instance().shouldComponentUpdate(nextProps, nextState)).toEqual(true);
+     });
+   });
+ 
+@@ -334,9 +314,7 @@ describe('Animate', () => {
+ 
+       const nextState = { willEnd: false };
+ 
+-      expect(
+-        tree.instance().shouldComponentUpdate(nextProps, nextState),
+-      ).toEqual(true);
++      expect(tree.instance().shouldComponentUpdate(nextProps, nextState)).toEqual(true);
+     });
+   });
+ 
+",0,,5,125,1,3,6,132
+35,5b78fb92a55659726d500e9b8391987429c7ed27,a7a7283182fdb5374f6cb128295337c7f3b61b11,"New feature and improvement:
+
+1. Animation with sequences
+2. Ready for react 17 support
+3. Old code base clean up
+
+
+usage example
+
+```
+<AnimateGroup>
+    <Animate sequenceIndex={0} />
+    <Animate sequenceIndex={1} />
+    <Animate sequenceIndex={2} />
+</AnimateGroup>
+```","delete all unit tests
+","diff --git a/test/animate.test.js b/test/animate.test.js
+deleted file mode 100644
+index f3362ca..0000000
+--- a/test/animate.test.js
++++ /dev/null
+@@ -1,313 +0,0 @@
+-import React from 'react';
+-import Animate, { defaultState } from '../src/animate';
+-import { mount, shallow } from 'enzyme';
+-import renderer from 'react-test-renderer';
+-
+-jest.useFakeTimers();
+-
+-const props = {
+-  startAnimation: true,
+-  startStyle: {},
+-  endStyle: {},
+-  durationSeconds: 1,
+-  className: 'test',
+-  animateOnAddRemove: false,
+-};
+-
+-const startStyle = { display: 'inline-block' };
+-const endStyle = { display: 'block' };
+-const transition = '1s all linear';
+-
+-describe('Animate', () => {
+-  it('should render correctly', () => {
+-    const tree = renderer.create(<Animate {...props}>test</Animate>);
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly with render props', () => {
+-    const tree = renderer.create(<Animate render={attributes => <div {...attributes}>what</div>} {...props} />);
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly for children', () => {
+-    const tree = renderer.create(<Animate {...props}>{[1, 2].map(item => <div key={item}>test{item}</div>)}</Animate>);
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('when animate on add or remove enabled', () => {
+-    it('should render correctly for children', () => {
+-      const tree = renderer.create(
+-        <Animate {...{ ...props, animateOnAddRemove: true }}>
+-          {[1, 2].map(item => <div key={item}>test{item}</div>)}
+-        </Animate>,
+-      );
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-
+-    it('should render correctly for Animate children', () => {
+-      const tree = renderer.create(
+-        <Animate {...{ ...props, animateOnAddRemove: true }}>
+-          {[1, 2].map(item => (
+-            <Animate key={item}>
+-              <div>test{item}</div>
+-            </Animate>
+-          ))}
+-        </Animate>,
+-      );
+-
+-      expect(tree).toMatchSnapshot();
+-    });
+-  });
+-
+-  it('should render custome tag correctly', () => {
+-    const tree = renderer.create(<Animate {...{ ...props, tag: 'l' }} />);
+-
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  describe('when animation is ready and delay have been set', () => {
+-    it('should play animation with delay', () => {
+-      const tree = mount(<Animate {...{ ...props, delaySeconds: 1 }}>test</Animate>);
+-
+-      jest.runAllTimers();
+-      expect(tree.state().willEnd).toEqual(true);
+-    });
+-  });
+-
+-  describe('when animate end style is defined and ready to animate', () => {
+-    it('should update animation will end state to true', () => {
+-      const tree = mount(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: false,
+-            onCompleteStyle: endStyle,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      tree.setProps({
+-        startAnimation: true,
+-      });
+-
+-      jest.runAllTimers();
+-      expect(tree.state().willComplete).toEqual(true);
+-    });
+-  });
+-
+-  describe('When animation complete style has been set', () => {
+-    it('should update the style', () => {
+-      const onCompleteStyle = {
+-        display: 'block',
+-      };
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: false,
+-            onCompleteStyle,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      tree.setState({
+-        willComplete: true,
+-      });
+-
+-      // tree.setProps({
+-      //   startAnimation: true,
+-      // });
+-
+-      jest.runAllTimers();
+-
+-      expect(tree.find('div').props().style).toEqual({
+-        ...onCompleteStyle,
+-        transition: null,
+-      });
+-    });
+-  });
+-
+-  describe('when animation about to end', () => {
+-    it('should update the style', () => {
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: true,
+-            delaySeconds: 0,
+-            endStyle,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      expect(tree.find('div').props().style).toEqual({
+-        ...endStyle,
+-        transition: '1s all linear',
+-      });
+-    });
+-  });
+-
+-  describe('when delay animation about to end', () => {
+-    it('should update the style', () => {
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            delaySeconds: 1,
+-            endStyle,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      tree.setState({
+-        willEnd: true,
+-      });
+-
+-      expect(tree.find('div').props().style).toEqual({
+-        ...endStyle,
+-        transition: '1s all linear',
+-      });
+-    });
+-  });
+-
+-  describe('when is animate prop value get changed', () => {
+-    it('should trigger state reset and clear all timers', () => {
+-      const clearAllTimers = jest.fn();
+-      const tree = mount(
+-        <Animate
+-          {...{
+-            ...props,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      tree.setState({
+-        willEnd: true,
+-      });
+-
+-      tree.setProps({
+-        startAnimation: false,
+-      });
+-
+-      expect(tree.state()).toEqual({
+-        ...defaultState,
+-        startAnimation: false,
+-        toggledAnimation: true,
+-        played: true,
+-        childrenStoreInState: 'test',
+-      });
+-    });
+-  });
+-
+-  describe('when transition have been passed down', () => {
+-    it('should overwrite the transition style', () => {
+-      const transition = '1s opacity';
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            transition,
+-          }}
+-        />,
+-      );
+-
+-      expect(tree.find('div').props().style).toEqual({ transition });
+-    });
+-  });
+-
+-  describe('when reverse animation with delay has been set', () => {
+-    it('should delay animation on reversing', () => {
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: true,
+-            reverseDelaySeconds: 0.5,
+-            startStyle,
+-            endStyle,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      expect(tree.find('div').props().style).toEqual({
+-        ...endStyle,
+-        transition,
+-      });
+-
+-      tree.setProps({
+-        startAnimation: false,
+-      });
+-
+-      jest.runAllTimers();
+-
+-      tree.update();
+-
+-      expect(tree.find('div').props().style).toEqual({
+-        ...startStyle,
+-        transition,
+-      });
+-    });
+-  });
+-
+-  describe('When animation finished and onComplete function is supplied', () => {
+-    it('should run the onComplete function', () => {
+-      const onCompleteFunction = jest.fn();
+-      const tree = mount(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: true,
+-            reverseDelaySeconds: 0.5,
+-            startStyle,
+-            endStyle,
+-            onComplete: onCompleteFunction,
+-          }}
+-        >
+-          test
+-        </Animate>,
+-      );
+-
+-      jest.runAllTimers();
+-
+-      expect(onCompleteFunction).toBeCalledWith();
+-    });
+-  });
+-
+-  describe('When children remmoved the component', () => {
+-    it('should remain the same', () => {
+-      const tree = shallow(
+-        <Animate
+-          {...{
+-            ...props,
+-            startAnimation: true,
+-            reverseDelaySeconds: 0.5,
+-            startStyle,
+-            endStyle,
+-          }}
+-        >
+-          <div key={0}>test</div>
+-        </Animate>,
+-      );
+-
+-      tree.setProps({
+-        children: [0, 1].map(i => <div key={i}>test</div>),
+-      });
+-    });
+-  });
+-});
+
+diff --git a/test/utils/filterMountOrUnMount.test.js b/test/utils/filterMountOrUnMount.test.js
+deleted file mode 100644
+index bed6268..0000000
+--- a/test/utils/filterMountOrUnMount.test.js
++++ /dev/null
+@@ -1,57 +0,0 @@
+-import filterMountOrUnMount from '../../src/utils/filterMountOrUnmount';
+-
+-describe('filterMountOrUnMount', () => {
+-  it('should mark child is about to be unMount', () => {
+-    const elements = [
+-      {
+-        key: 1,
+-      },
+-      {
+-        key: 2,
+-      },
+-    ];
+-    const children = [
+-      {
+-        key: 1,
+-      },
+-    ];
+-
+-    expect(filterMountOrUnMount(elements, children)).toMatchSnapshot();
+-  });
+-
+-  it('should append new children', () => {
+-    const elements = [
+-      {
+-        key: 1,
+-      },
+-      {
+-        key: 2,
+-      },
+-      {
+-        key: 3,
+-      },
+-    ];
+-    const children = [
+-      {
+-        key: 0,
+-      },
+-      {
+-        key: 1,
+-      },
+-      {
+-        key: 4,
+-      },
+-      {
+-        key: 6,
+-      },
+-      {
+-        key: 3,
+-      },
+-      {
+-        key: 5,
+-      },
+-    ];
+-
+-    expect(filterMountOrUnMount(elements, children)).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/test/utils/mapChildren.test.js b/test/utils/mapChildren.test.js
+deleted file mode 100644
+index fb5afac..0000000
+--- a/test/utils/mapChildren.test.js
++++ /dev/null
+@@ -1,127 +0,0 @@
+-import mapChildren from '../../src/utils/mapChildren';
+-import Animate from '../../src/animate';
+-import React from 'react';
+-
+-describe('mapChildren', () => {
+-  it('should return null when childrenStoreInState is null', () => {
+-    expect(
+-      mapChildren(
+-        {
+-          children: null,
+-        },
+-        {
+-          childrenStoreInState: null,
+-        },
+-      ),
+-    ).toBe(null);
+-  });
+-
+-  describe('when willLeave set to true', () => {
+-    it('should filter out components which will unmont', () => {
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            willLeave: true,
+-            childrenStoreInState: [
+-              {
+-                willUnmount: true,
+-              },
+-            ],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('when willLeave set to false', () => {
+-    it('should not filter components', () => {
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            willLeave: false,
+-            childrenStoreInState: [
+-              {
+-                willUnmount: true,
+-              },
+-            ],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-    });
+-  });
+-
+-  describe('when children is Animate component', () => {
+-    const animateComponent = <Animate />;
+-
+-    it('should apply startAnimation', () => {
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            childrenStoreInState: [{ ...animateComponent }],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-    });
+-
+-    it('should apply startAnimation according to willEnter state', () => {
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            willEnter: false,
+-            childrenStoreInState: [{ ...animateComponent, willMount: true }],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-
+-      expect(
+-        mapChildren(
+-          {
+-            children: [{ ...animateComponent, willMount: true }],
+-          },
+-          {
+-            willEnter: true,
+-            childrenStoreInState: [{ ...animateComponent, willMount: true }],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-    });
+-
+-    it('should apply startAnimation according to willLeave state', () => {
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            willLeave: false,
+-            childrenStoreInState: [{ ...animateComponent, willUnmount: true }],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-
+-      expect(
+-        mapChildren(
+-          {
+-            children: [],
+-          },
+-          {
+-            willLeave: true,
+-            childrenStoreInState: [{ ...animateComponent, willUnmount: true }],
+-          },
+-        ),
+-      ).toMatchSnapshot();
+-    });
+-  });
+-});
+",1,None=None,8,922,3,59,35,3240
+36,f99d74666786b8c796872e0e833e501da890e5e3,facc53b62c969543fa62b394c45882a3b3ac8472,new component support key frames animation,"create new animateKeyframes component
+","diff --git a/test/style/createStyle.test.js b/test/style/createStyle.test.js
+index 2ef8118..ec7bd09 100644
+--- a/test/style/createStyle.test.js
++++ b/test/style/createStyle.test.js
+@@ -1,11 +1,11 @@
+ import createStyle from '../../src/style/createStyle';
+ 
+-describe('test', () => {
+-  it('test', () => {
+-    const output = createStyle({
+-      keyframes: ['opacty: 0', 'opacity: 1', 'opacyt: 2', 'opacity: 3'],
++describe('createStyle', () => {
++  it('should create correct style', () => {
++    expect(createStyle({
++      keyframes: ['opacity: 0', 'opacity: 1', 'opacity: 2', 'opacity: 3'],
+       animationName: 'test',
+       className: 'bill',
+-    });
++    })).toMatchSnapshot();
+   });
+ });
+",0,,7,163,1,31,27,20841
+45,3ab41344ab640a1523fad516ab604d12c52ae43a,6d6e26a3341673e0013942d86e3641e1629d77e5,"working in progress with v3 (fully hook)
+
+- better performance
+- smaller 4.4k -> 2.4k
+- simpler API
+- build with hook
+- the improved hook API usage
+- build with typescript
+
+**break changes:** 
+-------------------------------------
+
+* remove all setTimeout for delay animation
+* remove all those reverse props, which user can do the same by toggle play
+
+Pros name change
+
+- startStyle -> start
+- endStyle -> end
+- durationSeconds -> duration
+- delaySeconds -> delay
+- completeStyle -> complete
+- overlaySeconds -> overlay
+","remove all unit tests
+","diff --git a/test/animate.test.js b/test/animate.test.js
+deleted file mode 100644
+index 6eaa535..0000000
+--- a/test/animate.test.js
++++ /dev/null
+@@ -1,112 +0,0 @@
+-import React from 'react';
+-import { shallow } from 'enzyme';
+-import renderer from 'react-test-renderer';
+-import AnimateWrapper, { AnimateChild } from 'src/animate';
+-
+-jest.mock('../src/utils/attributesGenerator', () => props => props);
+-jest.useFakeTimers();
+-
+-const endStyle = { display: 'block' };
+-const props = {
+-  play: false,
+-  endStyle,
+-};
+-
+-describe('AnimateWrapper', () => {
+-  it('should render correctly with minimum props', () => {
+-    const tree = renderer.create(<AnimateWrapper {...props}>test</AnimateWrapper>);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly by start animation with minimum props', () => {
+-    const tree = renderer.create(<AnimateWrapper {...{ ...props, play: true }}>test</AnimateWrapper>);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly with render props', () => {
+-    const tree = renderer.create(<AnimateWrapper render={attributes => <div {...attributes}>what</div>} {...props} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render custome tag correctly', () => {
+-    const tree = renderer.create(<AnimateWrapper {...{ ...props, tag: 'li' }} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-});
+-
+-describe('Animate', () => {
+-  it('should update play state after played', () => {
+-    const tree = shallow(<AnimateChild {...{ ...props, play: true, endStyle }}>test</AnimateChild>);
+-    expect(tree.state('play')).toEqual(true);
+-  });
+-
+-  it('should update play if animation states contains the sequence index id', () => {
+-    const tree = shallow(
+-      <AnimateChild
+-        {...{
+-          ...props,
+-          sequenceIndex: 1,
+-          animationStates: { 1: { play: true } },
+-          play: true,
+-          endStyle,
+-        }}
+-      >
+-        test
+-      </AnimateChild>,
+-    );
+-    expect(tree.state('play')).toEqual(true);
+-  });
+-
+-  it('should update play if animation states contains the sequence id', () => {
+-    const tree = shallow(
+-      <AnimateChild
+-        {...{
+-          ...props,
+-          sequenceId: 'test',
+-          animationStates: { test: { play: true } },
+-          play: true,
+-          endStyle,
+-        }}
+-      >
+-        test
+-      </AnimateChild>,
+-    );
+-    expect(tree.state('play')).toEqual(true);
+-  });
+-
+-  it('should reset willComplete when animation start play', () => {
+-    const tree = shallow(
+-      <AnimateChild {...{ ...props, play: false, onCompleteStyle: {}, endStyle }}>test</AnimateChild>,
+-    );
+-    expect(tree.state('willComplete')).toEqual(false);
+-    tree.setProps({ play: true });
+-    expect(tree.state('willComplete')).toEqual(false);
+-    jest.runAllTimers();
+-    expect(tree.state('willComplete')).toEqual(true);
+-  });
+-
+-  it('should call on complete function when animation is completed', () => {
+-    const onComplete = jest.fn();
+-    const tree = shallow(<AnimateChild {...{ ...props, play: false, onComplete }} />);
+-    tree.setProps({
+-      play: true,
+-    });
+-    jest.runAllTimers();
+-    expect(tree.state('willComplete')).toBeTruthy();
+-    expect(onComplete).toBeCalled();
+-  });
+-
+-  it('should clear all timers with component unmount', () => {
+-    const tree = shallow(<AnimateChild {...{ ...props, play: false }} />);
+-    const instance = tree.instance();
+-    window.clearTimeout = jest.fn();
+-    instance.completeTimeout = 1;
+-    instance.unMountTimeout = 2;
+-    instance.initialPlayTimer = 3;
+-    instance.componentWillUnmount();
+-
+-    expect(window.clearTimeout).toBeCalledWith(1);
+-    expect(window.clearTimeout).toBeCalledWith(2);
+-    expect(window.clearTimeout).toBeCalledWith(3);
+-  });
+-});
+
+diff --git a/test/animateGroup.test.js b/test/animateGroup.test.js
+deleted file mode 100644
+index cc81b85..0000000
+--- a/test/animateGroup.test.js
++++ /dev/null
+@@ -1,136 +0,0 @@
+-import React from 'react';
+-import renderer from 'react-test-renderer';
+-import { shallow } from 'enzyme';
+-import AnimateGroup from 'src/animateGroup';
+-
+-jest.mock('../src/utils/calculateTotalDuration', () => () => 1);
+-
+-jest.useFakeTimers();
+-
+-describe('AnimateGroup', () => {
+-  it('should render correctly', () => {
+-    const tree = renderer.create(<AnimateGroup>Test</AnimateGroup>);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should register animation with id or index', () => {
+-    const tree = shallow(<AnimateGroup>Test</AnimateGroup>);
+-    tree.instance().register({
+-      sequenceIndex: 0,
+-    });
+-    tree.instance().register({
+-      sequenceIndex: 2,
+-    });
+-
+-    expect(tree.instance().animations).toEqual({
+-      0: { sequenceIndex: 0 },
+-      2: { sequenceIndex: 2 },
+-    });
+-
+-    // tree.instance().register({
+-    //   sequenceId: 'test',
+-    // });
+-    // tree.instance().register({
+-    //   sequenceId: 'test1',
+-    // });
+-
+-    // expect(tree.instance().animations).toEqual({
+-    //   0: { sequenceIndex: 0 },
+-    //   2: { sequenceIndex: 2 },
+-    //   test: { sequenceId: 'test' },
+-    //   test1: { sequenceId: 'test1' },
+-    // });
+-  });
+-
+-  it('should not called calculateSequences when component did mount and play is false', () => {
+-    const calculateSequences = jest.fn();
+-    const tree = shallow(<AnimateGroup>Test</AnimateGroup>);
+-    tree.instance().calculateSequences = calculateSequences;
+-    tree.instance().componentDidMount();
+-    expect(calculateSequences).not.toBeCalled();
+-  });
+-
+-  it('should called calculateSequences when component did mount and play is true', () => {
+-    const calculateSequences = jest.fn();
+-    const tree = shallow(<AnimateGroup play>Test</AnimateGroup>);
+-    tree.instance().calculateSequences = calculateSequences;
+-    tree.instance().componentDidMount();
+-    expect(calculateSequences).toBeCalled();
+-  });
+-
+-  it('should called calculateSequences when component update from play false to true', () => {
+-    const calculateSequences = jest.fn();
+-    const tree = shallow(<AnimateGroup>Test</AnimateGroup>);
+-    tree.instance().calculateSequences = calculateSequences;
+-    tree.setProps({
+-      play: true,
+-    });
+-    expect(calculateSequences).toBeCalled();
+-  });
+-
+-  describe('calculateSequences', () => {
+-    it('should accumulate the duration', () => {
+-      const tree = shallow(<AnimateGroup sequences={[{}, {}]}>Test</AnimateGroup>);
+-      expect(tree.instance().calculateSequences()).toEqual(2);
+-    });
+-
+-    it('should accumulate the duration without sequences instead with animations', () => {
+-      const tree = shallow(<AnimateGroup>Test</AnimateGroup>);
+-      tree.instance().animations = {
+-        test: 'test',
+-        test1: 'test1',
+-      };
+-      expect(tree.instance().calculateSequences()).toEqual(2);
+-    });
+-
+-    it('should register timers according to the order of animation sequences', () => {
+-      const tree = shallow(<AnimateGroup play>Test</AnimateGroup>);
+-      tree.instance().animations = {
+-        1: {
+-          test: 'test1',
+-          play: false,
+-        },
+-        0: {
+-          test: 'test0',
+-          play: false,
+-        },
+-        234: {
+-          test: 'test234',
+-          play: false,
+-        },
+-        2: {
+-          test: 'test2',
+-          play: false,
+-        },
+-      };
+-      tree.instance().calculateSequences();
+-      jest.runAllTimers();
+-      expect(tree.state('animationStates')).toMatchSnapshot();
+-    });
+-  });
+-
+-  it('should register timers according to the reverse order of animation sequences', () => {
+-    const tree = shallow(<AnimateGroup>Test</AnimateGroup>);
+-    tree.instance().animations = {
+-      1: {
+-        test: 'test1',
+-        play: false,
+-      },
+-      0: {
+-        test: 'test0',
+-        play: false,
+-      },
+-      234: {
+-        test: 'test234',
+-        play: false,
+-      },
+-      2: {
+-        test: 'test2',
+-        play: false,
+-      },
+-    };
+-    tree.instance().calculateSequences();
+-    jest.runAllTimers();
+-    expect(tree.state('animationStates')).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/test/animateKeyframes.test.js b/test/animateKeyframes.test.js
+deleted file mode 100644
+index 2752bbb..0000000
+--- a/test/animateKeyframes.test.js
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import renderer from 'react-test-renderer';
+-import React from 'react';
+-import { shallow } from 'enzyme';
+-import AnimateKeyframes, { AnimateKeyframesChild } from 'src/animateKeyframes';
+-import deleteRule from 'src/logic/deleteRules';
+-
+-jest.mock('../src/style/deleteRules');
+-jest.mock('../src/style/createTag', () => () => 'createTag');
+-jest.mock('../src/utils/createRandomName', () => () => 'RSI-4dtcsgvdy');
+-
+-describe('AnimateKeyframesChild', () => {
+-  const props = {
+-    keyframes: [],
+-    play: false,
+-    animationStates: [],
+-  };
+-
+-  it('should render correctly', () => {
+-    const tree = renderer.create(<AnimateKeyframes {...props} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly with AnimateKeyframesChild', () => {
+-    const tree = renderer.create(<AnimateKeyframesChild {...props} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when render props is supplied', () => {
+-    const tree = renderer.create(<AnimateKeyframesChild {...{ ...props, render: () => <div /> }} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should render correctly when play set true', () => {
+-    const tree = renderer.create(<AnimateKeyframesChild {...{ ...props, play: true }} />);
+-    expect(tree).toMatchSnapshot();
+-  });
+-
+-  it('should update state correctly when animationStates is in the prop', () => {
+-    const tree = shallow(<AnimateKeyframesChild {...{ ...props, sequenceIndex: 1, play: false }} />);
+-    tree.setProps({ animationStates: { 1: { play: true } }, play: true });
+-    expect(tree.state('play')).toBeTruthy();
+-  });
+-
+-  it('should remove rules when component is unmount', () => {
+-    const tree = shallow(<AnimateKeyframesChild {...{ ...props, sequenceIndex: 1, play: false }} />);
+-    const instance = tree.instance();
+-    instance.styleTag = {
+-      sheet: '',
+-    };
+-    instance.animationName = '';
+-    instance.componentWillUnmount();
+-    expect(deleteRule).toBeCalled();
+-  });
+-
+-  it('should call register when component mount', () => {
+-    const register = jest.fn();
+-    shallow(<AnimateKeyframesChild {...{ ...props, register }} />);
+-    expect(register).toBeCalled();
+-  });
+-});
+
+diff --git a/test/style/createStyle.test.js b/test/style/createStyle.test.js
+deleted file mode 100644
+index 63dc658..0000000
+--- a/test/style/createStyle.test.js
++++ /dev/null
+@@ -1,23 +0,0 @@
+-import createStyle from 'src/logic/createStyle';
+-
+-describe('createStyle', () => {
+-  it('should create correct style', () => {
+-    expect(
+-      createStyle({
+-        keyframes: ['opacity: 0;', 'opacity: 1;', 'opacity: 2;', 'opacity: 3;'],
+-        animationName: 'test',
+-        className: 'bill',
+-      }),
+-    ).toMatchSnapshot();
+-  });
+-
+-  it('should create correct style with object', () => {
+-    expect(
+-      createStyle({
+-        keyframes: [{ 0: 'opacity: 0;' }, { 25: 'opacity: 1;' }, { 75: 'opacity: 2;' }, { 100: 'opacity: 3;' }],
+-        animationName: 'test',
+-        className: 'bill',
+-      }),
+-    ).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/test/style/createTag.test.js b/test/style/createTag.test.js
+deleted file mode 100644
+index 95813b2..0000000
+--- a/test/style/createTag.test.js
++++ /dev/null
+@@ -1,37 +0,0 @@
+-import createTag from 'src/logic/createTag';
+-
+-jest.mock('../../src/style/createStyle', () => () => 'test');
+-
+-const documentCreateOriginal = document.createElement;
+-const appendChildOriginal = document.head.appendChild;
+-
+-describe('createTag', () => {
+-  beforeEach(() => {
+-    document.createElement = jest.fn();
+-    document.head.appendChild = jest.fn();
+-  });
+-
+-  afterEach(() => {
+-    document.createElement = documentCreateOriginal;
+-    document.head.appendChild = appendChildOriginal;
+-  });
+-
+-  it('should the tag and total length of css rules', () => {
+-    const insertRule = jest.fn();
+-    document.createElement.mockReturnValue({ sheet: { cssRules: [1, 2], insertRule }, setAttribute: () => {} });
+-    const output = createTag({ keyframes: '', animationName: 'test' });
+-
+-    expect(insertRule).toBeCalled();
+-    expect(output).toMatchSnapshot();
+-  });
+-
+-  it('should still return tag and index even insertRule thow error', () => {
+-    const insertRule = () => {
+-      throw new Error('failed');
+-    };
+-    document.createElement.mockReturnValue({ sheet: { cssRules: [1, 2], insertRule }, setAttribute: () => {} });
+-    const output = createTag({ keyframes: '', animationName: 'test' });
+-
+-    expect(output).toMatchSnapshot();
+-  });
+-});
+
+diff --git a/test/utils/attributesGenerator.test.js b/test/utils/attributesGenerator.test.js
+deleted file mode 100644
+index d448ce4..0000000
+--- a/test/utils/attributesGenerator.test.js
++++ /dev/null
+@@ -1,105 +0,0 @@
+-import attributesGenerator from '../../src/utils/attributesGenerator';
+-
+-jest.mock('../../src/utils/mapSequenceOverProps', () => props => props);
+-
+-describe('attributesGenerator', () => {
+-  const state = {
+-    willComplete: false,
+-  };
+-
+-  const props = {
+-    startStyle: {
+-      display: 'none',
+-    },
+-    endStyle: {
+-      display: 'block',
+-    },
+-    easeType: 'ease',
+-    play: false,
+-  };
+-
+-  const startStyleWithTransition = {
+-    ...props.startStyle,
+-    transition: 'all 0.3s ease 0s',
+-  };
+-
+-  const endStyleWithTransition = {
+-    ...props.endStyle,
+-    transition: 'all 0.3s ease 0s',
+-  };
+-
+-  it('should generate startStyle', () => {
+-    expect(attributesGenerator(props, state).style).toEqual(startStyleWithTransition);
+-  });
+-
+-  describe('when animation is set to true', () => {
+-    it('should generate endStyle', () => {
+-      expect(attributesGenerator({ ...props, play: true }, state).style).toEqual(endStyleWithTransition);
+-    });
+-  });
+-
+-  describe('when animation reverseDelaySeconds has been set', () => {
+-    it('should render the end style', () => {
+-      expect(attributesGenerator({ ...props, play: false, reverseDelaySeconds: 0.3 }, state).style).toEqual({
+-        ...startStyleWithTransition,
+-        transition: 'all 0.3s ease 0.3s',
+-      });
+-    });
+-  });
+-
+-  it('should render start style when delay second is set and animation about to start', () => {
+-    expect(attributesGenerator({ ...props, play: true, delaySeconds: 0.3 }, state).style).toEqual({
+-      ...endStyleWithTransition,
+-      transition: 'all 0.3s ease 0.3s',
+-    });
+-  });
+-
+-  it('should apply onComplete style', () => {
+-    expect(
+-      attributesGenerator(
+-        { ...props, play: true, delaySeconds: 0.3, onCompleteStyle: { display: 'inline' } },
+-        { willComplete: true },
+-      ).style,
+-    ).toEqual({
+-      display: 'inline',
+-      transition: '',
+-    });
+-  });
+-
+-  it('should apply end style when animationStates is set with play', () => {
+-    expect(
+-      attributesGenerator(
+-        {
+-          ...props,
+-          animationStates: { test: { play: true } },
+-          sequenceId: 'test',
+-        },
+-        state,
+-      ).style,
+-    ).toEqual(endStyleWithTransition);
+-
+-    expect(
+-      attributesGenerator(
+-        {
+-          ...props,
+-          animationStates: { 1: { play: true } },
+-          sequenceIndex: 1,
+-        },
+-        state,
+-      ).style,
+-    ).toEqual(endStyleWithTransition);
+-  });
+-
+-  it('should set up refCallback if it is part of the prop', () => {
+-    const refCallback = jest.fn();
+-
+-    expect(
+-      attributesGenerator(
+-        {
+-          refCallback,
+-        },
+-        state,
+-      ),
+-    ).toMatchSnapshot();
+-  });
+-});
+",0,,23,805,6,33,67,7498
+59,d830c9f2928911a11adc1a0d14947508f99e92f7,b8094f738d00b76fc0721c03b34ce63d2ae73102,"Feature required here: https://github.com/bluebill1049/react-simple-animate/issues/57
+
+","Add test cases for support style object in keyframes
+","diff --git a/src/logic/createStyle.test.ts b/src/logic/createStyle.test.ts
+index e424ed4..be74c07 100644
+--- a/src/logic/createStyle.test.ts
++++ b/src/logic/createStyle.test.ts
+@@ -13,7 +13,27 @@ describe('createStyle', () => {
+   it('should create correct style with object', () => {
+     expect(
+       createStyle({
+-        keyframes: [{ 0: 'opacity: 0;' }, { 25: 'opacity: 1;' }, { 75: 'opacity: 2;' }, { 100: 'opacity: 3;' }],
++        keyframes: [
++          { 0: 'opacity: 0;' },
++          { 25: 'opacity: 1;' },
++          { 75: 'opacity: 2;' },
++          { 100: 'opacity: 3;' },
++        ],
++        animationName: 'test',
++      }),
++    ).toMatchSnapshot();
++  });
++
++  it('should create correct style  keyframe object', () => {
++    expect(
++      createStyle({
++        keyframes: [
++          { opacity: 0 },
++          { opacity: 0.25 },
++          { opacity: 0.5 },
++          { opacity: 0.75 },
++          { opacity: 1 },
++        ],
+         animationName: 'test',
+       }),
+     ).toMatchSnapshot();
+",0,,5,33,1,3,7,85
+7,98a622fa624b15b7eab348af448a9450036e2693,ad9764ef1c057a3fabc08ce2870876e12fdfaf7a,,"update readme and two more new props
+","diff --git a/test/animate.test.js b/test/animate.test.js
+index fd756d6..4fefcf7 100644
+--- a/test/animate.test.js
++++ b/test/animate.test.js
+@@ -10,6 +10,7 @@ const props = {
+   startStyle: {},
+   endStyle: {},
+   durationSeconds: 1,
++  className: 'test',
+ };
+ 
+ describe('Animate', () => {
+@@ -271,4 +272,20 @@ describe('Animate', () => {
+       ).toEqual(true);
+     });
+   });
++
++  describe.only('when transition have been passed down', () => {
++    it('should overwrite the transition style', () => {
++      const transition = '1s opacity';
++      const tree = shallow(
++        <Animate
++          {...{
++            ...props,
++            transition,
++          }}
++        />,
++      );
++
++      expect(tree.find('div').props().style).toEqual({ transition });
++    });
++  });
+ });
+",0,,4,42,1,3,7,90

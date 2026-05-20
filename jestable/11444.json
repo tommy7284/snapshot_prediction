@@ -1,0 +1,118 @@
+{
+    "id": 7914402,
+    "name": "hiroppy/fusuma",
+    "isFork": false,
+    "commits": 1077,
+    "branches": 71,
+    "releases": 32,
+    "forks": 193,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://hiroppy.github.io/fusuma",
+    "watchers": 40,
+    "stargazers": 5369,
+    "contributors": 14,
+    "size": 86180,
+    "createdAt": "2018-04-26T01:04:48",
+    "pushedAt": "2024-04-23T10:20:53",
+    "updatedAt": "2024-04-24T09:39:29",
+    "totalIssues": 92,
+    "openIssues": 23,
+    "totalPullRequests": 594,
+    "openPullRequests": 66,
+    "blankLines": 3141,
+    "codeLines": 33108,
+    "commentLines": 202,
+    "metrics": [
+        {
+            "blankLines": 1,
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 35
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 3,
+            "language": "Dockerfile",
+            "commentLines": 0,
+            "codeLines": 7
+        },
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 209
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 25299
+        },
+        {
+            "blankLines": 655,
+            "language": "JavaScript",
+            "commentLines": 138,
+            "codeLines": 4069
+        },
+        {
+            "blankLines": 2288,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 2500
+        },
+        {
+            "blankLines": 7,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 181,
+            "language": "CSS",
+            "commentLines": 63,
+            "codeLines": 959
+        }
+    ],
+    "lastCommit": "2021-12-01T06:05:48",
+    "lastCommitSHA": "b27ba013331ac572c648981b5d567a2db2cb2268",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 127598,
+        "EJS": 1475,
+        "Shell": 652,
+        "Dockerfile": 148
+    },
+    "labels": [
+        "approved",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "renovate",
+        "wontfix"
+    ],
+    "topics": [
+        "a11y",
+        "keynote",
+        "markdown",
+        "mdx",
+        "presentation",
+        "react",
+        "seo",
+        "slides"
+    ]
+}

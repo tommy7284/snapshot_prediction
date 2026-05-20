@@ -1,0 +1,86 @@
+{
+    "id": 4039197,
+    "name": "skevy/wobble",
+    "isFork": false,
+    "commits": 95,
+    "branches": 27,
+    "releases": 1,
+    "forks": 21,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "develop",
+    "license": "MIT License",
+    "homepage": "https://wobble-demos.now.sh",
+    "watchers": 8,
+    "stargazers": 801,
+    "contributors": 5,
+    "size": 1244,
+    "createdAt": "2017-08-05T06:21:58",
+    "pushedAt": "2023-02-10T02:28:49",
+    "updatedAt": "2023-01-28T09:10:19",
+    "totalIssues": 8,
+    "openIssues": 3,
+    "totalPullRequests": 41,
+    "openPullRequests": 26,
+    "blankLines": 273,
+    "codeLines": 1205,
+    "commentLines": 162,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 150,
+            "blankLines": 98
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 26,
+            "blankLines": 0
+        },
+        {
+            "language": "YAML",
+            "commentLines": 46,
+            "codeLines": 61,
+            "blankLines": 11
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 109,
+            "codeLines": 633,
+            "blankLines": 150
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 7,
+            "codeLines": 122,
+            "blankLines": 14
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 213,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2022-08-31T11:02:34",
+    "lastCommitSHA": "142d649f6351cae53c0eaa113bab7bac3e7e83fc",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 22506,
+        "JavaScript": 3270
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

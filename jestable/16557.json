@@ -1,0 +1,196 @@
+{
+    "id": 6892007,
+    "name": "kong/httpsnippet",
+    "isFork": false,
+    "commits": 542,
+    "branches": 5,
+    "releases": 40,
+    "forks": 220,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 1110,
+    "contributors": 47,
+    "size": 1191,
+    "createdAt": "2015-02-04T11:44:13",
+    "pushedAt": "2024-04-09T10:25:48",
+    "updatedAt": "2024-04-10T04:58:05",
+    "totalIssues": 135,
+    "openIssues": 26,
+    "totalPullRequests": 200,
+    "openPullRequests": 22,
+    "blankLines": 2731,
+    "codeLines": 21979,
+    "commentLines": 739,
+    "metrics": [
+        {
+            "language": "Clojure",
+            "commentLines": 0,
+            "codeLines": 56,
+            "blankLines": 16
+        },
+        {
+            "language": "Swift",
+            "commentLines": 0,
+            "codeLines": 447,
+            "blankLines": 86
+        },
+        {
+            "language": "C#",
+            "commentLines": 0,
+            "codeLines": 409,
+            "blankLines": 0
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 437,
+            "blankLines": 63
+        },
+        {
+            "language": "C",
+            "commentLines": 0,
+            "codeLines": 115,
+            "blankLines": 56
+        },
+        {
+            "language": "Python",
+            "commentLines": 0,
+            "codeLines": 253,
+            "blankLines": 164
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 9206,
+            "blankLines": 0
+        },
+        {
+            "language": "Go",
+            "commentLines": 0,
+            "codeLines": 395,
+            "blankLines": 204
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 705,
+            "codeLines": 5432,
+            "blankLines": 950
+        },
+        {
+            "language": "R",
+            "commentLines": 0,
+            "codeLines": 107,
+            "blankLines": 77
+        },
+        {
+            "language": "OCaml",
+            "commentLines": 17,
+            "codeLines": 131,
+            "blankLines": 34
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 1,
+            "codeLines": 6,
+            "blankLines": 2
+        },
+        {
+            "language": "Ruby",
+            "commentLines": 0,
+            "codeLines": 159,
+            "blankLines": 73
+        },
+        {
+            "language": "Kotlin",
+            "commentLines": 0,
+            "codeLines": 136,
+            "blankLines": 34
+        },
+        {
+            "language": "PowerShell",
+            "commentLines": 0,
+            "codeLines": 163,
+            "blankLines": 10
+        },
+        {
+            "language": "Java",
+            "commentLines": 0,
+            "codeLines": 457,
+            "blankLines": 51
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 399,
+            "blankLines": 140
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 307,
+            "blankLines": 5
+        },
+        {
+            "language": "YAML",
+            "commentLines": 12,
+            "codeLines": 68,
+            "blankLines": 18
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 2187,
+            "blankLines": 447
+        },
+        {
+            "language": "PHP",
+            "commentLines": 0,
+            "codeLines": 1109,
+            "blankLines": 301
+        }
+    ],
+    "lastCommit": "2024-01-23T04:25:15",
+    "lastCommitSHA": "7efd8e0f9ac6fb922e4be4f21cd658010d17c9ce",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 202879,
+        "JavaScript": 51808,
+        "Objective-C": 30379,
+        "PHP": 27935,
+        "Java": 22243,
+        "Swift": 17805,
+        "C#": 14587,
+        "Shell": 10862,
+        "Go": 10171,
+        "Python": 9054,
+        "PowerShell": 8866,
+        "C": 6736,
+        "Ruby": 5819,
+        "OCaml": 5806,
+        "Kotlin": 5688,
+        "R": 4566,
+        "Clojure": 3409,
+        "Dockerfile": 224,
+        "Smalltalk": 20
+    },
+    "labels": [
+        "bug",
+        "chore",
+        "dependencies",
+        "help wanted",
+        "improvement",
+        "needs review",
+        "new target",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "hacktoberfest"
+    ]
+}

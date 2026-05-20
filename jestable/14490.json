@@ -1,0 +1,100 @@
+{
+    "id": 4050358,
+    "name": "mathiasgilson/tailwind-styled-component",
+    "isFork": false,
+    "commits": 198,
+    "branches": 2,
+    "releases": 0,
+    "forks": 44,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 4,
+    "stargazers": 768,
+    "contributors": 5,
+    "size": 578,
+    "createdAt": "2020-11-12T05:58:50",
+    "pushedAt": "2023-10-22T06:37:57",
+    "updatedAt": "2023-11-09T05:30:05",
+    "totalIssues": 85,
+    "openIssues": 28,
+    "totalPullRequests": 15,
+    "openPullRequests": 1,
+    "blankLines": 233,
+    "codeLines": 1350,
+    "commentLines": 121,
+    "metrics": [
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 209,
+            "blankLines": 78
+        },
+        {
+            "language": "HTML",
+            "commentLines": 1,
+            "codeLines": 12,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 11,
+            "codeLines": 53,
+            "blankLines": 12
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 185,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 107,
+            "codeLines": 843,
+            "blankLines": 136
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 2,
+            "codeLines": 48,
+            "blankLines": 6
+        }
+    ],
+    "lastCommit": "2022-08-26T01:26:49",
+    "lastCommitSHA": "25e24e62c667208be7504ea4a73ab519544dee95",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 33641,
+        "JavaScript": 1321,
+        "HTML": 407
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "pr welcome",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "css",
+        "css-in-js",
+        "react",
+        "styled-components",
+        "tailwind",
+        "tailwind-css",
+        "tailwindcss",
+        "tailwindcss-plugin",
+        "tailwindcss-ui",
+        "typescript"
+    ]
+}

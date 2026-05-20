@@ -1,0 +1,191 @@
+{
+    "id": 6849525,
+    "name": "react-native-datetimepicker/datetimepicker",
+    "isFork": false,
+    "commits": 507,
+    "branches": 6,
+    "releases": 81,
+    "forks": 380,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 22,
+    "stargazers": 2340,
+    "contributors": 74,
+    "size": 6081,
+    "createdAt": "2019-05-17T01:56:57",
+    "pushedAt": "2024-04-25T07:48:27",
+    "updatedAt": "2024-04-25T07:48:30",
+    "totalIssues": 589,
+    "openIssues": 57,
+    "totalPullRequests": 300,
+    "openPullRequests": 7,
+    "blankLines": 1391,
+    "codeLines": 7426,
+    "commentLines": 1180,
+    "metrics": [
+        {
+            "blankLines": 50,
+            "language": "Objective-C++",
+            "commentLines": 25,
+            "codeLines": 225
+        },
+        {
+            "blankLines": 4,
+            "language": "Ruby",
+            "commentLines": 0,
+            "codeLines": 21
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 160
+        },
+        {
+            "blankLines": 34,
+            "language": "TypeScript",
+            "commentLines": 83,
+            "codeLines": 111
+        },
+        {
+            "blankLines": 7,
+            "language": "XML",
+            "commentLines": 10,
+            "codeLines": 284
+        },
+        {
+            "blankLines": 61,
+            "language": "Objective-C",
+            "commentLines": 21,
+            "codeLines": 272
+        },
+        {
+            "blankLines": 0,
+            "language": "Diff",
+            "commentLines": 14,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 20,
+            "language": "YAML",
+            "commentLines": 27,
+            "codeLines": 217
+        },
+        {
+            "blankLines": 20,
+            "language": "Gradle",
+            "commentLines": 9,
+            "codeLines": 135
+        },
+        {
+            "blankLines": 334,
+            "language": "Markdown",
+            "commentLines": 11,
+            "codeLines": 843
+        },
+        {
+            "blankLines": 90,
+            "language": "C/C++ Header",
+            "commentLines": 59,
+            "codeLines": 211
+        },
+        {
+            "blankLines": 86,
+            "language": "C++",
+            "commentLines": 36,
+            "codeLines": 358
+        },
+        {
+            "blankLines": 10,
+            "language": "Properties",
+            "commentLines": 38,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 28,
+            "language": "Bourne Shell",
+            "commentLines": 116,
+            "codeLines": 105
+        },
+        {
+            "blankLines": 1,
+            "language": "Visual Studio Solution",
+            "commentLines": 1,
+            "codeLines": 197
+        },
+        {
+            "blankLines": 230,
+            "language": "Java",
+            "commentLines": 209,
+            "codeLines": 1201
+        },
+        {
+            "blankLines": 0,
+            "language": "Windows Module Definition",
+            "commentLines": 0,
+            "codeLines": 3
+        },
+        {
+            "blankLines": 21,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 69
+        },
+        {
+            "blankLines": 4,
+            "language": "IDL",
+            "commentLines": 0,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 387,
+            "language": "JavaScript",
+            "commentLines": 519,
+            "codeLines": 2935
+        },
+        {
+            "blankLines": 4,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 11
+        }
+    ],
+    "lastCommit": "2024-04-25T07:48:26",
+    "lastCommitSHA": "6858d3c23d4904ebaa0fa38a30ca5251033ef871",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 86539,
+        "Java": 59547,
+        "C++": 28355,
+        "Objective-C": 12041,
+        "Objective-C++": 10588,
+        "Starlark": 1910,
+        "Ruby": 1824,
+        "C": 546
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "repro-required",
+        "semantic-release",
+        "windows",
+        "wontfix"
+    ],
+    "topics": [
+        "datetimepicker",
+        "hacktoberfest",
+        "react-native"
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "id": 6151943,
+    "name": "wsmd/react-use-form-state",
+    "isFork": false,
+    "commits": 94,
+    "branches": 14,
+    "releases": 20,
+    "forks": 55,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://react-use-form-state.now.sh",
+    "watchers": 17,
+    "stargazers": 940,
+    "contributors": 16,
+    "size": 917,
+    "createdAt": "2018-10-30T12:54:57",
+    "pushedAt": "2023-01-04T09:38:48",
+    "updatedAt": "2022-12-31T06:51:15",
+    "totalIssues": 80,
+    "openIssues": 13,
+    "totalPullRequests": 84,
+    "openPullRequests": 18,
+    "blankLines": 446,
+    "codeLines": 2815,
+    "commentLines": 127,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 18
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 12
+        },
+        {
+            "blankLines": 159,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 591
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 90
+        },
+        {
+            "blankLines": 61,
+            "language": "TypeScript",
+            "commentLines": 21,
+            "codeLines": 371
+        },
+        {
+            "blankLines": 226,
+            "language": "JavaScript",
+            "commentLines": 106,
+            "codeLines": 1733
+        }
+    ],
+    "lastCommit": "2020-10-04T06:46:23",
+    "lastCommitSHA": "ec7ad7d704229b70cd86c1bf2d842b341edd7419",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 64164,
+        "TypeScript": 7028
+    },
+    "labels": [
+        "bug",
+        "bug report",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "future idea",
+        "good first issue",
+        "help wanted",
+        "in progress",
+        "invalid",
+        "needs repro",
+        "question",
+        "under review",
+        "\u00af\\_(\u30c4)_/\u00af"
+    ],
+    "topics": []
+}

@@ -1,0 +1,101 @@
+{
+    "id": 6893210,
+    "name": "johanholmerin/style9",
+    "isFork": false,
+    "commits": 260,
+    "branches": 11,
+    "releases": 0,
+    "forks": 28,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 8,
+    "stargazers": 572,
+    "contributors": 12,
+    "size": 1171,
+    "createdAt": "2020-01-31T02:33:17",
+    "pushedAt": "2023-12-05T10:39:06",
+    "updatedAt": "2024-01-04T04:41:48",
+    "totalIssues": 42,
+    "openIssues": 1,
+    "totalPullRequests": 44,
+    "openPullRequests": 3,
+    "blankLines": 764,
+    "codeLines": 5424,
+    "commentLines": 193,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 382
+        },
+        {
+            "blankLines": 54,
+            "language": "TypeScript",
+            "commentLines": 33,
+            "codeLines": 409
+        },
+        {
+            "blankLines": 479,
+            "language": "JavaScript",
+            "commentLines": 160,
+            "codeLines": 3884
+        },
+        {
+            "blankLines": 219,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 669
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 10,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 37
+        }
+    ],
+    "lastCommit": "2023-12-05T10:38:52",
+    "lastCommitSHA": "b0657ddb3cd24434a6a59db9c2e22cbedf5e6f42",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 104179,
+        "TypeScript": 2207,
+        "Shell": 123
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "babel-plugin",
+        "compiled-css-in-js",
+        "css",
+        "css-in-js",
+        "typescript",
+        "webpack"
+    ]
+}

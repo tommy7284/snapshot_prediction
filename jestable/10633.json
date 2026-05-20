@@ -1,0 +1,133 @@
+{
+    "id": 6942661,
+    "name": "ankurk91/vue-toast-notification",
+    "isFork": false,
+    "commits": 120,
+    "branches": 3,
+    "releases": 0,
+    "forks": 70,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://ankurk91.github.io/vue-toast-notification",
+    "watchers": 11,
+    "stargazers": 576,
+    "contributors": 9,
+    "size": 1354,
+    "createdAt": "2018-11-11T06:37:40",
+    "pushedAt": "2024-03-10T04:40:10",
+    "updatedAt": "2024-03-07T01:53:38",
+    "totalIssues": 67,
+    "openIssues": 3,
+    "totalPullRequests": 20,
+    "openPullRequests": 0,
+    "blankLines": 1057,
+    "codeLines": 7175,
+    "commentLines": 35,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 787,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5612
+        },
+        {
+            "blankLines": 27,
+            "language": "SCSS",
+            "commentLines": 8,
+            "codeLines": 174
+        },
+        {
+            "blankLines": 121,
+            "language": "Markdown",
+            "commentLines": 9,
+            "codeLines": 241
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 17,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 43
+        },
+        {
+            "blankLines": 37,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 466
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 27,
+            "language": "Sass",
+            "commentLines": 5,
+            "codeLines": 177
+        },
+        {
+            "blankLines": 29,
+            "language": "Vuejs Component",
+            "commentLines": 9,
+            "codeLines": 318
+        },
+        {
+            "blankLines": 4,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 17
+        }
+    ],
+    "lastCommit": "2024-03-10T04:39:30",
+    "lastCommitSHA": "4116b16f1c4f96c167e7c3be002435a351fb51d7",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 10643,
+        "Vue": 4758,
+        "SCSS": 3727
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "need-more-info",
+        "pr-welcome",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "hacktoberfest",
+        "notification",
+        "notify",
+        "toast",
+        "vue",
+        "vue-toast"
+    ]
+}

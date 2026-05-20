@@ -1,0 +1,66 @@
+{
+    "id": 5584323,
+    "name": "hyperline/hyperline",
+    "isFork": false,
+    "commits": 278,
+    "branches": 2,
+    "releases": 0,
+    "forks": 122,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 15,
+    "stargazers": 617,
+    "contributors": 20,
+    "size": 419,
+    "createdAt": "2016-07-16T08:54:46",
+    "pushedAt": "2024-04-06T10:54:47",
+    "updatedAt": "2024-04-06T10:57:21",
+    "totalIssues": 121,
+    "openIssues": 34,
+    "totalPullRequests": 87,
+    "openPullRequests": 12,
+    "blankLines": 209,
+    "codeLines": 11581,
+    "commentLines": 106,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 10330
+        },
+        {
+            "blankLines": 187,
+            "language": "JavaScript",
+            "commentLines": 106,
+            "codeLines": 1199
+        },
+        {
+            "blankLines": 22,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 52
+        }
+    ],
+    "lastCommit": "2018-05-14T09:52:58",
+    "lastCommitSHA": "b4e275e6b399abff1540400d719f1169a77e3b30",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 43470
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

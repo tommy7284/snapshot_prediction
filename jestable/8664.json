@@ -1,0 +1,99 @@
+{
+    "id": 6767780,
+    "name": "casesandberg/react-color",
+    "isFork": false,
+    "commits": 679,
+    "branches": 15,
+    "releases": 12,
+    "forks": 951,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://casesandberg.github.io/react-color/",
+    "watchers": 81,
+    "stargazers": 11745,
+    "contributors": 78,
+    "size": 5947,
+    "createdAt": "2015-08-09T06:45:30",
+    "pushedAt": "2024-01-12T11:19:54",
+    "updatedAt": "2024-01-13T12:38:26",
+    "totalIssues": 541,
+    "openIssues": 176,
+    "totalPullRequests": 355,
+    "openPullRequests": 39,
+    "blankLines": 6294,
+    "codeLines": 34440,
+    "commentLines": 9035,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 271
+        },
+        {
+            "blankLines": 6186,
+            "language": "JavaScript",
+            "commentLines": 9014,
+            "codeLines": 33701
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 95,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 377
+        },
+        {
+            "blankLines": 13,
+            "language": "HTML",
+            "commentLines": 20,
+            "codeLines": 49
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 32
+        }
+    ],
+    "lastCommit": "2020-11-17T09:05:57",
+    "lastCommitSHA": "bc9a0e1dc5d11b06c511a8e02a95bd85c7129f4b",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 159833
+    },
+    "labels": [
+        "bug",
+        "can't reproduce",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "hacktoberfest",
+        "help wanted",
+        "in progress",
+        "invalid",
+        "need more info",
+        "needs author update",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "chrome",
+        "color-picker",
+        "inline-styles",
+        "photoshop",
+        "react",
+        "react-component",
+        "sketch"
+    ]
+}

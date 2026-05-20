@@ -1,0 +1,142 @@
+{
+    "id": 6782751,
+    "name": "supasate/connected-react-router",
+    "isFork": false,
+    "commits": 485,
+    "branches": 24,
+    "releases": 47,
+    "forks": 600,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 41,
+    "stargazers": 4731,
+    "contributors": 73,
+    "size": 3617,
+    "createdAt": "2016-12-12T11:49:25",
+    "pushedAt": "2023-03-02T12:55:02",
+    "updatedAt": "2023-03-25T04:22:13",
+    "totalIssues": 314,
+    "openIssues": 146,
+    "totalPullRequests": 300,
+    "openPullRequests": 29,
+    "blankLines": 654,
+    "codeLines": 13479,
+    "commentLines": 354,
+    "metrics": [
+        {
+            "blankLines": 7,
+            "language": "XML",
+            "commentLines": 2,
+            "codeLines": 505
+        },
+        {
+            "blankLines": 322,
+            "language": "JavaScript",
+            "commentLines": 124,
+            "codeLines": 2011
+        },
+        {
+            "blankLines": 135,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 553
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 6,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 22,
+            "language": "Bourne Shell",
+            "commentLines": 37,
+            "codeLines": 129
+        },
+        {
+            "blankLines": 12,
+            "language": "YAML",
+            "commentLines": 30,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 2,
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16
+        },
+        {
+            "blankLines": 60,
+            "language": "TypeScript",
+            "commentLines": 6,
+            "codeLines": 302
+        },
+        {
+            "blankLines": 6,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 9591
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 74
+        },
+        {
+            "blankLines": 1,
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 18,
+            "codeLines": 82
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 12,
+            "language": "Java",
+            "commentLines": 6,
+            "codeLines": 46
+        },
+        {
+            "blankLines": 21,
+            "language": "Gradle",
+            "commentLines": 113,
+            "codeLines": 117
+        }
+    ],
+    "lastCommit": "2022-07-11T03:19:48",
+    "lastCommitSHA": "5d4c197043deb89238f9b380a6a1ef4d909f14a7",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 51195
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "feature",
+        "help wanted",
+        "invalid",
+        "question",
+        "triage",
+        "wontfix"
+    ],
+    "topics": []
+}

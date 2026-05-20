@@ -1,0 +1,96 @@
+{
+    "id": 6890751,
+    "name": "testing-library/dom-testing-library",
+    "isFork": false,
+    "commits": 644,
+    "branches": 3,
+    "releases": 307,
+    "forks": 454,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://testing-library.com/dom",
+    "watchers": 33,
+    "stargazers": 3227,
+    "contributors": 179,
+    "size": 1758,
+    "createdAt": "2018-04-06T01:08:11",
+    "pushedAt": "2024-04-18T05:37:41",
+    "updatedAt": "2024-04-16T08:28:09",
+    "totalIssues": 576,
+    "openIssues": 69,
+    "totalPullRequests": 689,
+    "openPullRequests": 22,
+    "blankLines": 1425,
+    "codeLines": 10072,
+    "commentLines": 661,
+    "metrics": [
+        {
+            "blankLines": 16,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 113
+        },
+        {
+            "blankLines": 203,
+            "language": "Markdown",
+            "commentLines": 125,
+            "codeLines": 624
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 139
+        },
+        {
+            "blankLines": 276,
+            "language": "TypeScript",
+            "commentLines": 220,
+            "codeLines": 2667
+        },
+        {
+            "blankLines": 930,
+            "language": "JavaScript",
+            "commentLines": 310,
+            "codeLines": 6529
+        }
+    ],
+    "lastCommit": "2024-04-18T05:37:41",
+    "lastCommitSHA": "791735855b0922fedc1bafd4efbdb9c76457c4fd",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 229505,
+        "TypeScript": 68296
+    },
+    "labels": [
+        "aria-query",
+        "breaking change",
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "jsdom",
+        "needs discussion",
+        "needs investigation",
+        "needs more information",
+        "packaging",
+        "question",
+        "released",
+        "released on @alpha",
+        "released on @beta",
+        "released on @next",
+        "semantic-release",
+        "typescript",
+        "wontfix"
+    ],
+    "topics": [
+        "javascript",
+        "testing"
+    ]
+}

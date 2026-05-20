@@ -1,0 +1,81 @@
+{
+    "id": 6860478,
+    "name": "taion/graphql-type-json",
+    "isFork": false,
+    "commits": 292,
+    "branches": 28,
+    "releases": 13,
+    "forks": 61,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 12,
+    "stargazers": 973,
+    "contributors": 10,
+    "size": 1484,
+    "createdAt": "2016-04-28T07:48:07",
+    "pushedAt": "2024-02-01T06:02:51",
+    "updatedAt": "2024-02-02T04:47:25",
+    "totalIssues": 42,
+    "openIssues": 9,
+    "totalPullRequests": 317,
+    "openPullRequests": 28,
+    "blankLines": 63,
+    "codeLines": 596,
+    "commentLines": 7,
+    "metrics": [
+        {
+            "blankLines": 24,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 55
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 97
+        },
+        {
+            "blankLines": 4,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 32,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 428
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 12
+        }
+    ],
+    "lastCommit": "2021-02-08T02:52:19",
+    "lastCommitSHA": "10418fa03875947140d1c0bd8b8de51926252e35",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 11415
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "renovatebot",
+        "security",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,1365 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+1127,189144e8512b19ee370665428c8f6399ef6304ae,189144e8512b19ee370665428c8f6399ef6304ae,src/DataTable/__tests__/__snapshots__/Pagination.test.tsx.snap,src/DataTable/__tests__/Pagination.test.tsx,"Fixed an issue were the noRowsPerPage configuration option wasn't being respected on smaller screens.
+
+fixes #1080 ","Fixed an issue where noRowsPerPage option wasn't being respected on smaller screensizes
+","diff --git a/src/DataTable/__tests__/Pagination.test.tsx b/src/DataTable/__tests__/Pagination.test.tsx
+index 6fab578..7e4b851 100644
+--- a/src/DataTable/__tests__/Pagination.test.tsx
++++ b/src/DataTable/__tests__/Pagination.test.tsx
+@@ -210,3 +210,23 @@ describe('when clicking the Previous Page button', () => {
+ 		expect(onChangeRowsPerPageMock).toBeCalledWith(20, 2);
+ 	});
+ });
++
++describe('when the screensize is small', () => {
++	test('paginationComponentOption noRowsPerPage should be respected', () => {
++		global.innerWidth = 500;
++		const { container } = renderWithTheme(
++			<Pagination
++				currentPage={1}
++				rowsPerPage={10}
++				rowCount={40}
++				onChangePage={jest.fn()}
++				onChangeRowsPerPage={jest.fn()}
++				paginationComponentOptions={{
++					noRowsPerPage: true,
++				}}
++			/>,
++		);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++});
+",0,
+1127,189144e8512b19ee370665428c8f6399ef6304ae,189144e8512b19ee370665428c8f6399ef6304ae,src/DataTable/__tests__/__snapshots__/Pagination.test.tsx.snap,src/DataTable/__tests__/Pagination.test.tsx,"Fixed an issue were the noRowsPerPage configuration option wasn't being respected on smaller screens.
+
+fixes #1080 ","Fixed an issue where noRowsPerPage option wasn't being respected on smaller screensizes
+","diff --git a/src/DataTable/__tests__/Pagination.test.tsx b/src/DataTable/__tests__/Pagination.test.tsx
+index 6fab578..7e4b851 100644
+--- a/src/DataTable/__tests__/Pagination.test.tsx
++++ b/src/DataTable/__tests__/Pagination.test.tsx
+@@ -210,3 +210,23 @@ describe('when clicking the Previous Page button', () => {
+ 		expect(onChangeRowsPerPageMock).toBeCalledWith(20, 2);
+ 	});
+ });
++
++describe('when the screensize is small', () => {
++	test('paginationComponentOption noRowsPerPage should be respected', () => {
++		global.innerWidth = 500;
++		const { container } = renderWithTheme(
++			<Pagination
++				currentPage={1}
++				rowsPerPage={10}
++				rowCount={40}
++				onChangePage={jest.fn()}
++				onChangeRowsPerPage={jest.fn()}
++				paginationComponentOptions={{
++					noRowsPerPage: true,
++				}}
++			/>,
++		);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++});
+",0,
+1273,0cbf382b6e5c726b8f7f6d8123b2c3af50388e5f,11070474f413bdfeb1f65b914cfd2022ae3b84b0,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"### Why
+
+Screen readers and accessibility tools do not inherently have context about the meaning or purpose of the table itself.
+
+I opened a feature request for this https://github.com/jbetancur/react-data-table-component/issues/1272 and had some time to work on it.
+
+### What
+
+This PR adds an optional `ariaLabel` string property to the table component.  This property sets the `aria-label` attribute, providing context for screen readers.  If `ariaLabel` is not provided, the `aria-label` attribute will not be added.  
+
+This change has no visual impact, just useful for accessibility.
+
+","support table aria-label
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index a386497..72d9192 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -2214,6 +2214,38 @@ describe('DataTable::dense', () => {
+ 	});
+ });
+ 
++describe('DataTable::ariaLabel', () => {
++	test('should render correctly when ariaLabel', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} ariaLabel=""Test Table"" />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should render correctly when not ariaLabel', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should render with aria-label when ariaLabel', () => {
++		const mock = dataMock();
++		const { getByRole } = render(<DataTable data={mock.data} columns={mock.columns} ariaLabel=""Test Table"" />);
++
++		const table = getByRole('table');
++		expect(table.getAttribute('aria-label')).toBe('Test Table');
++	});
++
++	test('should not render with aria-label when not ariaLabel', () => {
++		const mock = dataMock();
++		const { getByRole } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		const table = getByRole('table');
++		expect(table.getAttribute('aria-label')).toBeNull();
++	});
++});
++
+ describe('DataTable::Theming', () => {
+ 	test('should render correctly when a custom style is applied', () => {
+ 		const mock = dataMock();
+",0,
+1273,0cbf382b6e5c726b8f7f6d8123b2c3af50388e5f,11070474f413bdfeb1f65b914cfd2022ae3b84b0,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"### Why
+
+Screen readers and accessibility tools do not inherently have context about the meaning or purpose of the table itself.
+
+I opened a feature request for this https://github.com/jbetancur/react-data-table-component/issues/1272 and had some time to work on it.
+
+### What
+
+This PR adds an optional `ariaLabel` string property to the table component.  This property sets the `aria-label` attribute, providing context for screen readers.  If `ariaLabel` is not provided, the `aria-label` attribute will not be added.  
+
+This change has no visual impact, just useful for accessibility.
+
+","support table aria-label
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index a386497..72d9192 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -2214,6 +2214,38 @@ describe('DataTable::dense', () => {
+ 	});
+ });
+ 
++describe('DataTable::ariaLabel', () => {
++	test('should render correctly when ariaLabel', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} ariaLabel=""Test Table"" />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should render correctly when not ariaLabel', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should render with aria-label when ariaLabel', () => {
++		const mock = dataMock();
++		const { getByRole } = render(<DataTable data={mock.data} columns={mock.columns} ariaLabel=""Test Table"" />);
++
++		const table = getByRole('table');
++		expect(table.getAttribute('aria-label')).toBe('Test Table');
++	});
++
++	test('should not render with aria-label when not ariaLabel', () => {
++		const mock = dataMock();
++		const { getByRole } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		const table = getByRole('table');
++		expect(table.getAttribute('aria-label')).toBeNull();
++	});
++});
++
+ describe('DataTable::Theming', () => {
+ 	test('should render correctly when a custom style is applied', () => {
+ 		const mock = dataMock();
+",0,
+414,da2d58fbbb83f0049d96532eed841f278283dcc4,da2d58fbbb83f0049d96532eed841f278283dcc4,src/DataTable/__tests__/__snapshots__/DataTable.test.js.snap,src/DataTable/__tests__/DataTable.test.js,* Closes #326 ,"feature: highlight on selected
+","diff --git a/src/DataTable/__tests__/DataTable.test.js b/src/DataTable/__tests__/DataTable.test.js
+index 2a0f1de..e4bbf86 100644
+--- a/src/DataTable/__tests__/DataTable.test.js
++++ b/src/DataTable/__tests__/DataTable.test.js
+@@ -1089,6 +1089,22 @@ describe('DataTable::selectableRows', () => {
+     expect(container.firstChild).toMatchSnapshot();
+   });
+ 
++  test('should render correctly when selectableRowsHighlight is true and a row is selected', () => {
++    const mock = dataMock();
++    const { container } = render(
++      <DataTable
++        data={mock.data}
++        columns={mock.columns}
++        selectableRows
++        selectableRowsHighlight
++      />,
++    );
++
++    fireEvent.click(container.querySelector('input[name=""select-row-1""]'));
++
++    expect(container.firstChild).toMatchSnapshot();
++  });
++
+   test('should not render a select all checkbox when selectableRowsNoSelectAll is true', () => {
+     const mock = dataMock();
+     const { container } = render(
+",0,
+414,da2d58fbbb83f0049d96532eed841f278283dcc4,da2d58fbbb83f0049d96532eed841f278283dcc4,src/DataTable/__tests__/__snapshots__/DataTable.test.js.snap,src/DataTable/__tests__/DataTable.test.js,* Closes #326 ,"feature: highlight on selected
+","diff --git a/src/DataTable/__tests__/DataTable.test.js b/src/DataTable/__tests__/DataTable.test.js
+index 2a0f1de..e4bbf86 100644
+--- a/src/DataTable/__tests__/DataTable.test.js
++++ b/src/DataTable/__tests__/DataTable.test.js
+@@ -1089,6 +1089,22 @@ describe('DataTable::selectableRows', () => {
+     expect(container.firstChild).toMatchSnapshot();
+   });
+ 
++  test('should render correctly when selectableRowsHighlight is true and a row is selected', () => {
++    const mock = dataMock();
++    const { container } = render(
++      <DataTable
++        data={mock.data}
++        columns={mock.columns}
++        selectableRows
++        selectableRowsHighlight
++      />,
++    );
++
++    fireEvent.click(container.querySelector('input[name=""select-row-1""]'));
++
++    expect(container.firstChild).toMatchSnapshot();
++  });
++
+   test('should not render a select all checkbox when selectableRowsNoSelectAll is true', () => {
+     const mock = dataMock();
+     const { container } = render(
+",0,
+416,2e8cf784f85ed4360597fb21252666f0752a47ba,2e8cf784f85ed4360597fb21252666f0752a47ba,src/DataTable/__tests__/__snapshots__/DataTable.test.js.snap,src/DataTable/__tests__/DataTable.test.js,* Closes #394 ,"Allow conditionalRowStyles to be applied to Expander rows
+","diff --git a/src/DataTable/__tests__/DataTable.test.js b/src/DataTable/__tests__/DataTable.test.js
+index e4bbf86..afefbf8 100644
+--- a/src/DataTable/__tests__/DataTable.test.js
++++ b/src/DataTable/__tests__/DataTable.test.js
+@@ -2243,6 +2243,38 @@ describe('DataTable::conditionalRowStyles', () => {
+   });
+ });
+ 
++test('should render correctly when conditionalRowStyles is used with an expandableRows an expandableInheritConditionalStyles', () => {
++  const mock = dataMock();
++  mock.data[0].completed = true;
++  const conditionalRowStyles = [
++    {
++      when: row => row.completed,
++      style: {
++        backgroundColor: 'rgba(63, 195, 128, 0.9)',
++        color: 'white',
++        '&:hover': {
++          cursor: 'pointer',
++        },
++      },
++    },
++  ];
++
++  const { container, getByTestId } = render(
++    <DataTable
++      data={mock.data}
++      columns={mock.columns}
++      conditionalRowStyles={conditionalRowStyles}
++      expandableRows
++      expandableInheritConditionalStyles
++    />,
++  );
++
++  fireEvent.click(getByTestId('expander-button-1'));
++
++  expect(container.firstChild).toMatchSnapshot();
++});
++
++
+ describe('DataTable::column.style', () => {
+   test('should render correctly when a style is set on a column', () => {
+     const mock = dataMock();
+",0,
+416,2e8cf784f85ed4360597fb21252666f0752a47ba,2e8cf784f85ed4360597fb21252666f0752a47ba,src/DataTable/__tests__/__snapshots__/DataTable.test.js.snap,src/DataTable/__tests__/DataTable.test.js,* Closes #394 ,"Allow conditionalRowStyles to be applied to Expander rows
+","diff --git a/src/DataTable/__tests__/DataTable.test.js b/src/DataTable/__tests__/DataTable.test.js
+index e4bbf86..afefbf8 100644
+--- a/src/DataTable/__tests__/DataTable.test.js
++++ b/src/DataTable/__tests__/DataTable.test.js
+@@ -2243,6 +2243,38 @@ describe('DataTable::conditionalRowStyles', () => {
+   });
+ });
+ 
++test('should render correctly when conditionalRowStyles is used with an expandableRows an expandableInheritConditionalStyles', () => {
++  const mock = dataMock();
++  mock.data[0].completed = true;
++  const conditionalRowStyles = [
++    {
++      when: row => row.completed,
++      style: {
++        backgroundColor: 'rgba(63, 195, 128, 0.9)',
++        color: 'white',
++        '&:hover': {
++          cursor: 'pointer',
++        },
++      },
++    },
++  ];
++
++  const { container, getByTestId } = render(
++    <DataTable
++      data={mock.data}
++      columns={mock.columns}
++      conditionalRowStyles={conditionalRowStyles}
++      expandableRows
++      expandableInheritConditionalStyles
++    />,
++  );
++
++  fireEvent.click(getByTestId('expander-button-1'));
++
++  expect(container.firstChild).toMatchSnapshot();
++});
++
++
+ describe('DataTable::column.style', () => {
+   test('should render correctly when a style is set on a column', () => {
+     const mock = dataMock();
+",0,
+760,5d325d875f587ee2cb713acd0085e5f0fac97f07,5d325d875f587ee2cb713acd0085e5f0fac97f07,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"- Implements #756 
+- Fix initial row render","implements #756 | fixes row initial render
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index 990301b..6d2d8f5 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -1853,6 +1853,13 @@ describe('DataTable::Header', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
++	test('header should not display with no title', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
+ 	test('should render header actions when they are provided', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+",0,
+760,5d325d875f587ee2cb713acd0085e5f0fac97f07,5d325d875f587ee2cb713acd0085e5f0fac97f07,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"- Implements #756 
+- Fix initial row render","implements #756 | fixes row initial render
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index 990301b..6d2d8f5 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -1853,6 +1853,13 @@ describe('DataTable::Header', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
++	test('header should not display with no title', () => {
++		const mock = dataMock();
++		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
++
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
+ 	test('should render header actions when they are provided', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+",0,
+821,d781e59671f6969801641d398cba8ac7221ba930,d781e59671f6969801641d398cba8ac7221ba930,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,closes #497 ,"implement single row selection
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index cb2685f..a038eb8 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -844,6 +844,38 @@ describe('DataTable::selectableRows', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
++	test('should only select a single row when selectableRowsSingle is true and a row is selected', () => {
++		const mock = dataMock();
++		const { container } = render(
++			<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />,
++		);
++
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++		fireEvent.click(rowCheck2);
++
++		expect(rowCheck1.checked).toBe(false);
++		expect(rowCheck2.checked).toBe(true);
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should clear all rows selectableRowsSingle is changed', () => {
++		const mock = dataMock();
++		const { container, rerender } = render(<DataTable data={mock.data} columns={mock.columns} selectableRows />);
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++		fireEvent.click(rowCheck2);
++
++		rerender(<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />);
++
++		expect(rowCheck1.checked).toBe(false);
++		expect(rowCheck2.checked).toBe(false);
++	});
++
+ 	test('should not render a select all checkbox when selectableRowsNoSelectAll is true', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+",0,
+821,d781e59671f6969801641d398cba8ac7221ba930,d781e59671f6969801641d398cba8ac7221ba930,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,closes #497 ,"implement single row selection
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index cb2685f..a038eb8 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -844,6 +844,38 @@ describe('DataTable::selectableRows', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
++	test('should only select a single row when selectableRowsSingle is true and a row is selected', () => {
++		const mock = dataMock();
++		const { container } = render(
++			<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />,
++		);
++
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++		fireEvent.click(rowCheck2);
++
++		expect(rowCheck1.checked).toBe(false);
++		expect(rowCheck2.checked).toBe(true);
++		expect(container.firstChild).toMatchSnapshot();
++	});
++
++	test('should clear all rows selectableRowsSingle is changed', () => {
++		const mock = dataMock();
++		const { container, rerender } = render(<DataTable data={mock.data} columns={mock.columns} selectableRows />);
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++		fireEvent.click(rowCheck2);
++
++		rerender(<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />);
++
++		expect(rowCheck1.checked).toBe(false);
++		expect(rowCheck2.checked).toBe(false);
++	});
++
+ 	test('should not render a select all checkbox when selectableRowsNoSelectAll is true', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+",0,
+823,c27f78ed53f7616091d3fae01e35cd7969f81af4,c27f78ed53f7616091d3fae01e35cd7969f81af4,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,fixes #805 ,"refactor init sort data
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index 9bc434e..fa8f3d6 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -21,7 +21,7 @@ interface Data {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ const dataMock = (colProps?: any) => {
+ 	return {
+-		columns: [{ name: 'Test', selector: 'some.name', ...colProps }],
++		columns: [{ name: 'Test', selector: (row: { name: string }[]) => row.some.name, ...colProps }],
+ 		data: [
+ 			{
+ 				id: 1,
+@@ -614,7 +614,9 @@ describe('DataTable::sorting', () => {
+ 
+ 	test('should render correctly and bypass internal sort when sortServer = true and desc sort', () => {
+ 		const mock = dataMock({ sortable: true });
+-		const { container } = render(<DataTable data={mock.data} columns={mock.columns} sortServer />);
++		const { container } = render(
++			<DataTable data={mock.data} columns={mock.columns} sortServer defaultSortFieldId={1} />,
++		);
+ 
+ 		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+ 		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+",0,
+823,c27f78ed53f7616091d3fae01e35cd7969f81af4,c27f78ed53f7616091d3fae01e35cd7969f81af4,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,fixes #805 ,"refactor init sort data
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index 9bc434e..fa8f3d6 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -21,7 +21,7 @@ interface Data {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ const dataMock = (colProps?: any) => {
+ 	return {
+-		columns: [{ name: 'Test', selector: 'some.name', ...colProps }],
++		columns: [{ name: 'Test', selector: (row: { name: string }[]) => row.some.name, ...colProps }],
+ 		data: [
+ 			{
+ 				id: 1,
+@@ -614,7 +614,9 @@ describe('DataTable::sorting', () => {
+ 
+ 	test('should render correctly and bypass internal sort when sortServer = true and desc sort', () => {
+ 		const mock = dataMock({ sortable: true });
+-		const { container } = render(<DataTable data={mock.data} columns={mock.columns} sortServer />);
++		const { container } = render(
++			<DataTable data={mock.data} columns={mock.columns} sortServer defaultSortFieldId={1} />,
++		);
+ 
+ 		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+ 		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+",0,
+838,922333c4751968f0e2fd479dfb94e873b64cdf76,922333c4751968f0e2fd479dfb94e873b64cdf76,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,fixes #837 ,"fixes single select state for onSelectedRowsChange | refactor
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index be05fc8..aecd823 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -166,6 +166,98 @@ describe('DataTable::onSelectedRowsChange', () => {
+ 			selectedRows: [mock.data[0]],
+ 		});
+ 	});
++
++	test('should call onSelectedRowsChange with the correct values when a row is selected when selectableRowsSingle is true', () => {
++		const onSelectedRowsChange = jest.fn();
++		const mock = dataMock();
++		const { container } = render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowsSingle
++				onSelectedRowsChange={onSelectedRowsChange}
++			/>,
++		);
++
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: false,
++				},
++			],
++		});
++
++		fireEvent.click(rowCheck2);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 2,
++					some: {
++						name: 'Zuchinni',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: false,
++				},
++			],
++		});
++	});
++
++	test('should call onSelectedRowsChange when a row is preselected using selectableRowSelected', () => {
++		const mock = dataMock();
++		mock.data[0].selected = true;
++
++		const onSelectedRowsChange = jest.fn();
++
++		render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowSelected={row => row.selected}
++				onSelectedRowsChange={onSelectedRowsChange}
++			/>,
++		);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: true,
++				},
++			],
++		});
++	});
+ });
+ 
+ describe('data prop changes', () => {
+@@ -850,7 +942,7 @@ describe('DataTable::selectableRows', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
+-	test('should only select a single row when selectableRowsSingle is true and a row is selected', () => {
++	test('should only select a single row when and a row is selected', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+ 			<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />,
+@@ -1551,6 +1643,46 @@ describe('DataTable::Pagination', () => {
+ 		});
+ 	});
+ 
++	test('should call onSelectedRowsChange when using paginationServer, selectedRows, and persistSelectedOnSort', () => {
++		const mock = dataMock();
++		mock.data[0].selected = true;
++
++		const onSelectedRowsChange = jest.fn();
++
++		render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowSelected={row => row.selected}
++				onSelectedRowsChange={onSelectedRowsChange}
++				pagination
++				paginationServer
++				paginationServerOptions={{ persistSelectedOnSort: true }}
++				paginationPerPage={1}
++				paginationRowsPerPageOptions={[1, 2]}
++			/>,
++		);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: true,
++				},
++			],
++		});
++	});
++
+ 	test('should call onSelectedRowsChange the correct amount of times when using paginationServer, selectedRows, and persistSelectedOnSort and all rows un-checked', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const onSelectedRowsChange = jest.fn();
+@@ -1630,47 +1762,6 @@ describe('DataTable::Pagination', () => {
+ 		});
+ 	});
+ 
+-	test('should call onSelectedRowsChange the correct amount of times when using paginationServer, selectedRows, and persistSelectedOnSort and a row is preselected using selectableRowSelected', () => {
+-		const mock = dataMock();
+-		mock.data[0].selected = true;
+-		const onSelectedRowsChange = jest.fn();
+-
+-		const { container } = render(
+-			<DataTable
+-				data={mock.data}
+-				columns={mock.columns}
+-				pagination
+-				paginationServer
+-				paginationServerOptions={{ persistSelectedOnSort: true }}
+-				paginationPerPage={1}
+-				paginationRowsPerPageOptions={[1, 2]}
+-				selectableRows
+-				selectableRowSelected={row => row.selected}
+-				onSelectedRowsChange={onSelectedRowsChange}
+-			/>,
+-		);
+-
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+-		expect(onSelectedRowsChange).toBeCalledTimes(1);
+-		expect(onSelectedRowsChange).toBeCalledWith({
+-			allSelected: false,
+-			selectedCount: 1,
+-			selectedRows: [
+-				{
+-					id: 1,
+-					selected: true,
+-					some: {
+-						name: 'Apple',
+-					},
+-					completed: false,
+-					defaultExpanded: false,
+-					disabled: false,
+-					isSpecial: false,
+-				},
+-			],
+-		});
+-	});
+-
+ 	test('should deselect all rows if using pagination && paginationServer and selectedRows and the table is sorted', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(
+",0,
+838,922333c4751968f0e2fd479dfb94e873b64cdf76,922333c4751968f0e2fd479dfb94e873b64cdf76,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,fixes #837 ,"fixes single select state for onSelectedRowsChange | refactor
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index be05fc8..aecd823 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -166,6 +166,98 @@ describe('DataTable::onSelectedRowsChange', () => {
+ 			selectedRows: [mock.data[0]],
+ 		});
+ 	});
++
++	test('should call onSelectedRowsChange with the correct values when a row is selected when selectableRowsSingle is true', () => {
++		const onSelectedRowsChange = jest.fn();
++		const mock = dataMock();
++		const { container } = render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowsSingle
++				onSelectedRowsChange={onSelectedRowsChange}
++			/>,
++		);
++
++		const rowCheck1 = container.querySelector('input[name=""select-row-1""]') as HTMLInputElement;
++		const rowCheck2 = container.querySelector('input[name=""select-row-2""]') as HTMLInputElement;
++
++		fireEvent.click(rowCheck1);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: false,
++				},
++			],
++		});
++
++		fireEvent.click(rowCheck2);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 2,
++					some: {
++						name: 'Zuchinni',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: false,
++				},
++			],
++		});
++	});
++
++	test('should call onSelectedRowsChange when a row is preselected using selectableRowSelected', () => {
++		const mock = dataMock();
++		mock.data[0].selected = true;
++
++		const onSelectedRowsChange = jest.fn();
++
++		render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowSelected={row => row.selected}
++				onSelectedRowsChange={onSelectedRowsChange}
++			/>,
++		);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: true,
++				},
++			],
++		});
++	});
+ });
+ 
+ describe('data prop changes', () => {
+@@ -850,7 +942,7 @@ describe('DataTable::selectableRows', () => {
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+ 
+-	test('should only select a single row when selectableRowsSingle is true and a row is selected', () => {
++	test('should only select a single row when and a row is selected', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(
+ 			<DataTable data={mock.data} columns={mock.columns} selectableRows selectableRowsSingle />,
+@@ -1551,6 +1643,46 @@ describe('DataTable::Pagination', () => {
+ 		});
+ 	});
+ 
++	test('should call onSelectedRowsChange when using paginationServer, selectedRows, and persistSelectedOnSort', () => {
++		const mock = dataMock();
++		mock.data[0].selected = true;
++
++		const onSelectedRowsChange = jest.fn();
++
++		render(
++			<DataTable
++				data={mock.data}
++				columns={mock.columns}
++				selectableRows
++				selectableRowSelected={row => row.selected}
++				onSelectedRowsChange={onSelectedRowsChange}
++				pagination
++				paginationServer
++				paginationServerOptions={{ persistSelectedOnSort: true }}
++				paginationPerPage={1}
++				paginationRowsPerPageOptions={[1, 2]}
++			/>,
++		);
++
++		expect(onSelectedRowsChange).toBeCalledWith({
++			allSelected: false,
++			selectedCount: 1,
++			selectedRows: [
++				{
++					id: 1,
++					some: {
++						name: 'Apple',
++					},
++					completed: false,
++					defaultExpanded: false,
++					disabled: false,
++					isSpecial: false,
++					selected: true,
++				},
++			],
++		});
++	});
++
+ 	test('should call onSelectedRowsChange the correct amount of times when using paginationServer, selectedRows, and persistSelectedOnSort and all rows un-checked', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const onSelectedRowsChange = jest.fn();
+@@ -1630,47 +1762,6 @@ describe('DataTable::Pagination', () => {
+ 		});
+ 	});
+ 
+-	test('should call onSelectedRowsChange the correct amount of times when using paginationServer, selectedRows, and persistSelectedOnSort and a row is preselected using selectableRowSelected', () => {
+-		const mock = dataMock();
+-		mock.data[0].selected = true;
+-		const onSelectedRowsChange = jest.fn();
+-
+-		const { container } = render(
+-			<DataTable
+-				data={mock.data}
+-				columns={mock.columns}
+-				pagination
+-				paginationServer
+-				paginationServerOptions={{ persistSelectedOnSort: true }}
+-				paginationPerPage={1}
+-				paginationRowsPerPageOptions={[1, 2]}
+-				selectableRows
+-				selectableRowSelected={row => row.selected}
+-				onSelectedRowsChange={onSelectedRowsChange}
+-			/>,
+-		);
+-
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+-		expect(onSelectedRowsChange).toBeCalledTimes(1);
+-		expect(onSelectedRowsChange).toBeCalledWith({
+-			allSelected: false,
+-			selectedCount: 1,
+-			selectedRows: [
+-				{
+-					id: 1,
+-					selected: true,
+-					some: {
+-						name: 'Apple',
+-					},
+-					completed: false,
+-					defaultExpanded: false,
+-					disabled: false,
+-					isSpecial: false,
+-				},
+-			],
+-		});
+-	});
+-
+ 	test('should deselect all rows if using pagination && paginationServer and selectedRows and the table is sorted', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(
+",0,
+866,36096a3e975e5fdb57db12985c797f45821c4080,36096a3e975e5fdb57db12985c797f45821c4080,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"closes #356 
+closes #846 ","implement column reorder
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index aecd823..d59b6c2 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -579,7 +579,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: false });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(onSortMock).not.toBeCalled();
+ 	});
+@@ -602,7 +602,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -611,7 +611,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -621,11 +621,11 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort asc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort desc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -635,11 +635,11 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort asc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort desc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -649,9 +649,9 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// press enter
+-		fireEvent.keyPress(container.querySelector('div[id=""column-1""]') as HTMLElement, { keyCode: 13 });
++		fireEvent.keyPress(container.querySelector('div[data-sort-id=""1""]') as HTMLElement, { keyCode: 13 });
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -661,7 +661,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'asc');
+ 	});
+@@ -671,10 +671,10 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'asc');
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'desc');
+ 	});
+ 
+@@ -703,7 +703,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} sortServer />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// note row order should not change, but sort arrows should
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -714,8 +714,8 @@ describe('DataTable::sorting', () => {
+ 			<DataTable data={mock.data} columns={mock.columns} sortServer defaultSortFieldId={1} />,
+ 		);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// note row order should not change, but sort arrows should
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -1327,7 +1327,7 @@ describe('DataTable::Pagination', () => {
+ 		);
+ 
+ 		fireEvent.click(container.querySelector('button#pagination-next-page') as HTMLButtonElement);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 		expect(container.querySelector('div[id=""row-1""]')).not.toBeNull();
+@@ -1606,7 +1606,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-all-rows""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLButtonElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLButtonElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(2);
+ 	});
+@@ -1633,7 +1633,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-all-rows""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 		expect(onSelectedRowsChange).toBeCalledWith({
+@@ -1707,7 +1707,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(allCheck);
+ 		// uncheck select all
+ 		fireEvent.click(allCheck);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLInputElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLInputElement);
+ 
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(2);
+@@ -1740,7 +1740,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-row-1""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 		expect(onSelectedRowsChange).toBeCalledWith({
+@@ -1780,7 +1780,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(allCheck);
+ 		expect(allCheck.checked).toBe(true);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(allCheck.checked).toBe(false);
+ 	});
+ 
+",0,
+866,36096a3e975e5fdb57db12985c797f45821c4080,36096a3e975e5fdb57db12985c797f45821c4080,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"closes #356 
+closes #846 ","implement column reorder
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index aecd823..d59b6c2 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -579,7 +579,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: false });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(onSortMock).not.toBeCalled();
+ 	});
+@@ -602,7 +602,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock();
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -611,7 +611,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -621,11 +621,11 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort asc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort desc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -635,11 +635,11 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort asc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// sort desc
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -649,9 +649,9 @@ describe('DataTable::sorting', () => {
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} />);
+ 
+ 		// select the column to sort
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// press enter
+-		fireEvent.keyPress(container.querySelector('div[id=""column-1""]') as HTMLElement, { keyCode: 13 });
++		fireEvent.keyPress(container.querySelector('div[data-sort-id=""1""]') as HTMLElement, { keyCode: 13 });
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -661,7 +661,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'asc');
+ 	});
+@@ -671,10 +671,10 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} onSort={onSortMock} />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'asc');
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalledWith({ id: 1, ...mock.columns[0] }, 'desc');
+ 	});
+ 
+@@ -703,7 +703,7 @@ describe('DataTable::sorting', () => {
+ 		const mock = dataMock({ sortable: true });
+ 		const { container } = render(<DataTable data={mock.data} columns={mock.columns} sortServer />);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// note row order should not change, but sort arrows should
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -714,8 +714,8 @@ describe('DataTable::sorting', () => {
+ 			<DataTable data={mock.data} columns={mock.columns} sortServer defaultSortFieldId={1} />,
+ 		);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		// note row order should not change, but sort arrows should
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+@@ -1327,7 +1327,7 @@ describe('DataTable::Pagination', () => {
+ 		);
+ 
+ 		fireEvent.click(container.querySelector('button#pagination-next-page') as HTMLButtonElement);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 		expect(container.querySelector('div[id=""row-1""]')).not.toBeNull();
+@@ -1606,7 +1606,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-all-rows""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLButtonElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLButtonElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(2);
+ 	});
+@@ -1633,7 +1633,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-all-rows""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 		expect(onSelectedRowsChange).toBeCalledWith({
+@@ -1707,7 +1707,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(allCheck);
+ 		// uncheck select all
+ 		fireEvent.click(allCheck);
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLInputElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLInputElement);
+ 
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(2);
+@@ -1740,7 +1740,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(container.querySelector('input[name=""select-row-1""]') as HTMLInputElement);
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(onSortMock).toBeCalled();
+ 		expect(onSelectedRowsChange).toBeCalledTimes(1);
+ 		expect(onSelectedRowsChange).toBeCalledWith({
+@@ -1780,7 +1780,7 @@ describe('DataTable::Pagination', () => {
+ 		fireEvent.click(allCheck);
+ 		expect(allCheck.checked).toBe(true);
+ 
+-		fireEvent.click(container.querySelector('div[id=""column-1""]') as HTMLElement);
++		fireEvent.click(container.querySelector('div[data-sort-id=""1""]') as HTMLElement);
+ 		expect(allCheck.checked).toBe(false);
+ 	});
+ 
+",0,
+874,f7e9f4e1384b32b10aeb0592b266857caf094c27,f7e9f4e1384b32b10aeb0592b266857caf094c27,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"- fixes #422 
+- This also removes some legacy code that allows offsetting non smart positioned menus. Basically, moving the responsibility to the developer and away from RDT since 99% of UI libraries already solve this.","refactor fixedHeader
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index d59b6c2..021d8d2 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -562,15 +562,6 @@ describe('DataTable::responsive', () => {
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+-
+-	test('should not apply overFlowY without an overflowYOffset or not responsive', () => {
+-		const mock = dataMock();
+-		const { container } = render(
+-			<DataTable data={mock.data} columns={mock.columns} responsive overflowY overflowYOffset=""250px"" />,
+-		);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+ });
+ 
+ describe('DataTable::sorting', () => {
+@@ -2142,22 +2133,6 @@ describe('DataTable::fixedHeader', () => {
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+-
+-	test('should render correctly when fixedHeader with an offset', () => {
+-		const mock = dataMock();
+-		const { container } = render(<DataTable data={mock.data} columns={mock.columns} fixedHeader overflowY />);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+-
+-	test('should render correctly when fixedHeader with an offset with a value', () => {
+-		const mock = dataMock();
+-		const { container } = render(
+-			<DataTable data={mock.data} columns={mock.columns} fixedHeader overflowY offset=""100px"" />,
+-		);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+ });
+ 
+ describe('DataTable::striped', () => {
+",0,
+874,f7e9f4e1384b32b10aeb0592b266857caf094c27,f7e9f4e1384b32b10aeb0592b266857caf094c27,src/DataTable/__tests__/__snapshots__/DataTable.test.tsx.snap,src/DataTable/__tests__/DataTable.test.tsx,"- fixes #422 
+- This also removes some legacy code that allows offsetting non smart positioned menus. Basically, moving the responsibility to the developer and away from RDT since 99% of UI libraries already solve this.","refactor fixedHeader
+","diff --git a/src/DataTable/__tests__/DataTable.test.tsx b/src/DataTable/__tests__/DataTable.test.tsx
+index d59b6c2..021d8d2 100644
+--- a/src/DataTable/__tests__/DataTable.test.tsx
++++ b/src/DataTable/__tests__/DataTable.test.tsx
+@@ -562,15 +562,6 @@ describe('DataTable::responsive', () => {
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+-
+-	test('should not apply overFlowY without an overflowYOffset or not responsive', () => {
+-		const mock = dataMock();
+-		const { container } = render(
+-			<DataTable data={mock.data} columns={mock.columns} responsive overflowY overflowYOffset=""250px"" />,
+-		);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+ });
+ 
+ describe('DataTable::sorting', () => {
+@@ -2142,22 +2133,6 @@ describe('DataTable::fixedHeader', () => {
+ 
+ 		expect(container.firstChild).toMatchSnapshot();
+ 	});
+-
+-	test('should render correctly when fixedHeader with an offset', () => {
+-		const mock = dataMock();
+-		const { container } = render(<DataTable data={mock.data} columns={mock.columns} fixedHeader overflowY />);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+-
+-	test('should render correctly when fixedHeader with an offset with a value', () => {
+-		const mock = dataMock();
+-		const { container } = render(
+-			<DataTable data={mock.data} columns={mock.columns} fixedHeader overflowY offset=""100px"" />,
+-		);
+-
+-		expect(container.firstChild).toMatchSnapshot();
+-	});
+ });
+ 
+ describe('DataTable::striped', () => {
+",0,

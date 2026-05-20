@@ -1,0 +1,89 @@
+{
+    "id": 6137478,
+    "name": "oscarmorrison/md-page",
+    "isFork": false,
+    "commits": 82,
+    "branches": 6,
+    "releases": 0,
+    "forks": 94,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://oscarmorrison.github.io/md-page/",
+    "watchers": 24,
+    "stargazers": 1261,
+    "contributors": 12,
+    "size": 261,
+    "createdAt": "2018-10-05T01:06:43",
+    "pushedAt": "2024-01-31T11:15:01",
+    "updatedAt": "2024-01-31T11:14:29",
+    "totalIssues": 40,
+    "openIssues": 2,
+    "totalPullRequests": 29,
+    "openPullRequests": 1,
+    "blankLines": 653,
+    "codeLines": 3975,
+    "commentLines": 791,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 30
+        },
+        {
+            "blankLines": 94,
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 328
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 516,
+            "language": "JavaScript",
+            "commentLines": 788,
+            "codeLines": 3522
+        },
+        {
+            "blankLines": 38,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 62
+        }
+    ],
+    "lastCommit": "2024-01-31T11:15:01",
+    "lastCommitSHA": "36eef73bbbd35124269f5a8fea3b5117cd7a91a3",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 187385,
+        "HTML": 2010
+    },
+    "labels": [
+        "bug",
+        "devops",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "idea",
+        "invalid",
+        "locale-language",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "html",
+        "markdown",
+        "onepagewebsite",
+        "simple"
+    ]
+}

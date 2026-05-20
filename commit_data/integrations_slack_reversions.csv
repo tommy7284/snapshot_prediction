@@ -1,0 +1,454 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+905,18185fc08646171b05c4f3ce50e997fe2c43adbb,18185fc08646171b05c4f3ce50e997fe2c43adbb,"I noticed, that one of the most flaky tests is the snapshot match for oauth verification.
+See [this bug tracking issue](https://github.com/integrations/slack/issues/903#issuecomment-519888747) for details.
+The core problem is that we are combining `matchesSnapshot` with `times(x)`.
+Combining these requires a ordered or sequential execution of the requests
+that are performed. But for `signout` those are executed in parallel,
+making the order unpredictable which causes snapshot mismatches.
+See https://github.com/integrations/slack/blob/b5cf9306a26e93bcf0be59cd84eda97865566e33/lib/github/oauth.js#L128-L140 for the implementation.
+
+This PR removes the snapshot match, which is not reliable and is not
+as important as the remaining `expect` clauses that validate the actual
+removal.","Remove snapshot match from oauth revocation
+
+I noticed, that one of the most flaky tests is the snapshot match for oauth verification.
+See [this bug tracking issue](https://github.com/integrations/slack/issues/903#issuecomment-519888747) for details.
+The core problem is that we are combining `machtesSnapshot` with `times(x)`.
+Combining these requires a ordered or sequential execution of the requests
+that are performed. But for `signout` those are executed in parallel,
+making the order unpredictable which causes snapshot mismatches.
+See https://github.com/integrations/slack/blob/b5cf9306a26e93bcf0be59cd84eda97865566e33/lib/github/oauth.js#L128-L140 for the implementation.
+
+This PR removes the snapshot match, which is not reliable and is not
+as important as the remaining `expect` clauses that validate the actual
+removal.
+","diff --git a/test/integration/github-app-authorization-revoked.test.js b/test/integration/github-app-authorization-revoked.test.js
+index d243278..4069eb0 100644
+--- a/test/integration/github-app-authorization-revoked.test.js
++++ b/test/integration/github-app-authorization-revoked.test.js
+@@ -89,10 +89,7 @@ describe('Integration: github_app_authorization.revoked', async () => {
+       full_name: 'integrations/slack',
+     });
+ 
+-    nock('https://slack.com').post('/api/chat.postMessage', (body) => {
+-      expect(body).toMatchSnapshot();
+-      return true;
+-    }).times(2).reply(200, { ok: true });
++    nock('https://slack.com').post('/api/chat.postMessage').times(2).reply(200, { ok: true });
+ 
+     await probot.receive({
+       name: 'github_app_authorization',
+@@ -142,10 +139,7 @@ describe('Integration: github_app_authorization.revoked', async () => {
+       full_name: 'integrations/slack',
+     });
+ 
+-    nock('https://slack.com').post('/api/chat.postMessage', (body) => {
+-      expect(body).toMatchSnapshot();
+-      return true;
+-    }).times(4).reply(200, { ok: true });
++    nock('https://slack.com').post('/api/chat.postMessage').times(4).reply(200, { ok: true });
+ 
+     await probot.receive({
+       name: 'github_app_authorization',
+",0,,2,59,1,1,2,59
+906,bff939cec8c75967a6f3a2bb4970a35c9bbf2354,de5cc96ffe70c14cf310c97f0059960f16ab5123,"Concurrent unfurl bodies are tested in a non-deterministic way, by
+running it in combination with `times`. This In most cases the
+first unfurl will be a little bit earlier so that in more than 50% of
+the time, the current snapshot will match. However, if the second
+request happens earlier (depends on scheduler timing), both snapshots
+comparisons will fail, because the first is compared to the second and
+visa Versa. For a full explanation see: https://github.com/integrations/slack/issues/903#issuecomment-520333620
+
+Refs: #903","Makes unfurl snapshot test deterministic
+
+Concurrent unfurl bodies are tested in a non depterministic way, by
+running it in combination with `times`. This In most cases the
+first unfurl will be a little bit earlier, so that in more than 50% of
+the time, the current snapshot will match. However, if the second
+request happens earlier (depends on scheduler timing), both snapshots
+comparisons will fail, because the first is compared to the second and
+visa versa. For a full explanation see: https://github.com/integrations/slack/issues/903#issuecomment-520333620
+
+Refs: #903
+","diff --git a/test/integration/unfurl.test.js b/test/integration/unfurl.test.js
+index 591c880..46b635b 100644
+--- a/test/integration/unfurl.test.js
++++ b/test/integration/unfurl.test.js
+@@ -79,11 +79,14 @@ describe('Integration: unfurls', () => {
+       nock('https://api.github.com').get('/repos/atom/atom').times(2).reply(200, fixtures.repo);
+       nock('https://api.github.com').get('/repos/atom/atom/issues/16292').reply(200, fixtures.issue);
+ 
++      const unfurlRequests = [];
+       nock('https://slack.com').post('/api/chat.unfurl', (req) => {
+-        // Test that the body posted to the unfurl matches the snapshot
+-        expect(req).toMatchSnapshot();
++        unfurlRequests.push(req);
++
++        // verify the there is no text for condensed unfurls
+         const unfurls = JSON.parse(req.unfurls);
+         expect(unfurls[Object.keys(unfurls)[0]].text).toBe(undefined);
++
+         return true;
+       }).times(2).reply(200, { ok: true });
+ 
+@@ -96,6 +99,9 @@ describe('Integration: unfurls', () => {
+ 
+       await request(probot.server).post('/slack/events').send(body).expect(200);
+ 
++      // check the recorded unfurl request bodies.
++      expect(unfurlRequests.sort()).toMatchSnapshot();
++
+       const unfurls = await Unfurl.findAll();
+       expect(unfurls.length).toBe(2);
+ 
+",0,,2,41,1,2,4,59
+907,bf10893cd5d1689829af3099fbaef4613b070e70,bf10893cd5d1689829af3099fbaef4613b070e70,"The asset URL changed, causing a 404 for the currently used icon.
+This PR fixes the icon URL.
+
+Before:
+![Screenshot 2019-08-13 at 12 52 25](https://user-images.githubusercontent.com/3408791/62936210-8214fb00-bdc9-11e9-853a-329926b0f745.png)
+
+After:
+![Screenshot 2019-08-13 at 12 52 39](https://user-images.githubusercontent.com/3408791/62936213-84775500-bdc9-11e9-926d-71a6aa971ae2.png)
+","Disable flaky integration test
+
+The issue-comment test is failing almost all the time on CI.
+I decided to add it to this PR instead of a dedicated PR, because
+it is blocking shipping this feature.
+For tracking the problem and to make sure it will be enabled again,
+refer to this issue: https://github.com/integrations/slack/issues/903#issuecomment-521535017
+
+I also fixed the way we sort entries in the unfurl test.
+","diff --git a/test/integration/notifications.test.js b/test/integration/notifications.test.js
+index 6fbb376..250d330 100644
+--- a/test/integration/notifications.test.js
++++ b/test/integration/notifications.test.js
+@@ -862,55 +862,55 @@ describe('Integration: notifications', () => {
+       });
+     });
+ 
+-    test('comments are updated when edited', async () => {
+-      const commentPayload = fixtures.github.webhooks.issue_comment;
+-
+-      await Subscription.subscribe({
+-        githubId: commentPayload.repository.id,
+-        channelId: 'C002',
+-        slackWorkspaceId: workspace.id,
+-        installationId: installation.id,
+-        creatorId: slackUser.id,
+-        type: 'repo',
+-        settings: ['comments'], // Turn on comments
+-      });
+-
+-      nock('https://slack.com').post('/api/chat.postMessage').reply(200, { ok: true });
+-
+-      nock('https://api.github.com')
+-        .get(`/repositories/${commentPayload.repository.id}`)
+-        .reply(200, commentPayload.repository);
+-
+-      nock('https://api.github.com')
+-        .get(`/repos/github-slack/test/issues/comments/${commentPayload.comment.id}`)
+-        .reply(200, { ...commentPayload.comment, body_html: 'rendered html' });
+-
+-      await probot.receive({
+-        name: 'issue_comment',
+-        payload: commentPayload,
+-      });
+-
+-      nock('https://api.github.com')
+-        .get(`/repos/github-slack/test/issues/comments/${commentPayload.comment.id}`)
+-        .reply(200, { ...commentPayload.comment, body_html: 'edited html' });
+-
+-      nock('https://slack.com').post('/api/chat.update', (body) => {
+-        expect(body).toMatchSnapshot();
+-        return true;
+-      }).reply(200, { ok: true });
+-
+-      await probot.receive({
+-        name: 'issue_comment',
+-        payload: {
+-          ...commentPayload,
+-          action: 'edited',
+-          comment: {
+-            ...commentPayload.comment,
+-            body: 'an edit',
+-          },
+-        },
+-      });
+-    });
++    // test('comments are updated when edited', async () => {
++    //   const commentPayload = fixtures.github.webhooks.issue_comment;
++
++    //   await Subscription.subscribe({
++    //     githubId: commentPayload.repository.id,
++    //     channelId: 'C002',
++    //     slackWorkspaceId: workspace.id,
++    //     installationId: installation.id,
++    //     creatorId: slackUser.id,
++    //     type: 'repo',
++    //     settings: ['comments'], // Turn on comments
++    //   });
++
++    //   nock('https://slack.com').post('/api/chat.postMessage').reply(200, { ok: true });
++
++    //   nock('https://api.github.com')
++    //     .get(`/repositories/${commentPayload.repository.id}`)
++    //     .reply(200, commentPayload.repository);
++
++    //   nock('https://api.github.com')
++    //     .get(`/repos/github-slack/test/issues/comments/${commentPayload.comment.id}`)
++    //     .reply(200, { ...commentPayload.comment, body_html: 'rendered html' });
++
++    //   await probot.receive({
++    //     name: 'issue_comment',
++    //     payload: commentPayload,
++    //   });
++
++    //   nock('https://api.github.com')
++    //     .get(`/repos/github-slack/test/issues/comments/${commentPayload.comment.id}`)
++    //     .reply(200, { ...commentPayload.comment, body_html: 'edited html' });
++
++    //   nock('https://slack.com').post('/api/chat.update', (body) => {
++    //     expect(body).toMatchSnapshot();
++    //     return true;
++    //   }).reply(200, { ok: true });
++
++    //   await probot.receive({
++    //     name: 'issue_comment',
++    //     payload: {
++    //       ...commentPayload,
++    //       action: 'edited',
++    //       comment: {
++    //         ...commentPayload.comment,
++    //         body: 'an edit',
++    //       },
++    //     },
++    //   });
++    // });
+ 
+     test('does not deliver pushes on non-default branch if not explicitly enabled', async () => {
+       nock('https://api.github.com').get(`/repositories/${pushNonDefaultBranchPayload.repository.id}`).reply(200);
+
+diff --git a/test/integration/slack-uninstall.test.js b/test/integration/slack-uninstall.test.js
+index 14433be..f6322e4 100644
+--- a/test/integration/slack-uninstall.test.js
++++ b/test/integration/slack-uninstall.test.js
+@@ -70,7 +70,7 @@ describe('Uninstalling the slack app', () => {
+       .expect(200);
+ 
+     expect(await Subscription.count()).toBe(0);
+-    const deletedSubscriptions = await DeletedSubscription.findAll({ where: { reason: 'slack app uninstalled' }, order: ['channelId'] });
++    const deletedSubscriptions = await DeletedSubscription.findAll({ where: { reason: 'slack app uninstalled' }, order: ['githubId'] });
+     expect(deletedSubscriptions).toHaveLength(3);
+     expect(deletedSubscriptions[0].dataValues).toMatchSnapshot({
+       createdAt: expect.any(Date),
+
+diff --git a/test/integration/unfurl.test.js b/test/integration/unfurl.test.js
+index 46b635b..bf9aa57 100644
+--- a/test/integration/unfurl.test.js
++++ b/test/integration/unfurl.test.js
+@@ -80,6 +80,11 @@ describe('Integration: unfurls', () => {
+       nock('https://api.github.com').get('/repos/atom/atom/issues/16292').reply(200, fixtures.issue);
+ 
+       const unfurlRequests = [];
++      function sortUnfurlRequest(a, b) {
++        return (Object.keys(JSON.parse(a.unfurls))[0] >
++                Object.keys(JSON.parse(b.unfurls))[0] ? 1 : -1);
++      }
++
+       nock('https://slack.com').post('/api/chat.unfurl', (req) => {
+         unfurlRequests.push(req);
+ 
+@@ -100,7 +105,8 @@ describe('Integration: unfurls', () => {
+       await request(probot.server).post('/slack/events').send(body).expect(200);
+ 
+       // check the recorded unfurl request bodies.
+-      expect(unfurlRequests.sort()).toMatchSnapshot();
++      const sortedRequests = unfurlRequests.sort(sortUnfurlRequest);
++      expect(sortedRequests).toMatchSnapshot();
+ 
+       const unfurls = await Unfurl.findAll();
+       expect(unfurls.length).toBe(2);
+",0,,6,158,3,2,26,352
+915,f87d8eac0c448605d133f662b28f41a40caf6cc4,93348de5400ea7160b94342c8b9a6fcb00741f35,"## Summary
+
+When the integrator that created the deployment status provided a ref,
+that is different from the commit sha, that ref is now displayed instead
+of the short sha.
+This addresses the issue discussed in #98 and #85.
+I think the next step would be doing an actual API request to fetch the
+branches, but his change is a 0-cost improvement and (almost) 0-effort
+improvement that allows us to gather metrics about custom ref adoption
+and maybe this already solves the problem.
+
+## Screenshots
+
+Before
+
+![depoyment-status-before](https://user-images.githubusercontent.com/3408791/63428128-165d0e80-c417-11e9-972a-30c285b509ad.png)
+
+After
+
+![deployment-status-after](https://user-images.githubusercontent.com/3408791/63428137-19f09580-c417-11e9-8e6f-057785ae7017.png)
+
+Closes #85, #98","Use deployment-status ref instead of sha
+
+When the integrator that created the deployment status provided a ref,
+that is different from the commit sha, that ref is now displayed instead
+of the short sha.
+This addresses the issue discussed in #98 and #85.
+I think the next step would be doing an actual API request to fetch the
+branches, but his change is a 0-cost improvement and (almost) 0-effort
+improvement that allows us to gather metrics about custom ref adoption
+and maybe this already solves the problem.
+
+Refs #85, #98
+","diff --git a/test/messages/deployment-status.test.js b/test/messages/deployment-status.test.js
+index 7a5da61..739fc50 100644
+--- a/test/messages/deployment-status.test.js
++++ b/test/messages/deployment-status.test.js
+@@ -80,4 +80,34 @@ describe('Deployment status rendering', () => {
+     });
+     expect(deploymentStatusMessage.toJSON()).toMatchSnapshot();
+   });
++  test('uses ref instead of sha, when ref is not the sha', () => {
++    const deployment = {
++      ...deploymentStatusSuccessFixture.deployment,
++      ref: 'master',
++    };
++    const deploymentStatusMessage = new DeploymentStatus({
++      deploymentStatus: deploymentStatusSuccessFixture.deployment_status,
++      deployment: deployment,
++      repository: deploymentStatusSuccessFixture.repository,
++    });
++
++    const message = deploymentStatusMessage.toJSON().attachments[0].text;
++    expect(message).toMatch(/successfully deployed.*master.*/i);
++    expect(deploymentStatusMessage.toJSON()).toMatchSnapshot();
++  });
++  test('uses short sha if ref is unequal but null', () => {
++    const deployment = {
++      ...deploymentStatusSuccessFixture.deployment,
++      ref: null,
++    };
++    const deploymentStatusMessage = new DeploymentStatus({
++      deploymentStatus: deploymentStatusSuccessFixture.deployment_status,
++      deployment: deployment,
++      repository: deploymentStatusSuccessFixture.repository,
++    });
++
++    const message = deploymentStatusMessage.toJSON().attachments[0].text;
++    expect(message).toMatch(/successfully deployed.*3dce5c8.*/i);
++    expect(deploymentStatusMessage.toJSON()).toMatchSnapshot();
++  });
+ });
+",0,,4,91,1,3,4,96
+929,dce6de270308e4e5089470a18d992f631b3785b1,73cf4b50f563191f1aafc675ff884108f4b3f2d7,"Closes #928
+
+## Problem
+This commit fixes unfurling of private and public issue comments.
+When the `octokit/rest.js` changed [their routing arguments](https://github.com/octokit/rest.js/commit/c62b2bcb2c4f66d93ecff1563df7f7d8e8431788) from `id` to `<resource>_id`, unfurling issue comments stopped working.
+
+## Solution
+
+This PR adjusts the argument name and thus fixes the problem.
+
+## Example (from linked issue)
+
+**URL**: `https://github.com/rust-lang/rust/issues/63997#issuecomment-526118914`
+**Error**:
+```
+8:56:48.513Z ERROR http: Empty value for parameter 'comment_id': undefined (id=86b1ba8d-141f-40e9-9eef-ebc87e5f0be3)
+  HttpError: Empty value for parameter 'comment_id': undefined
+      at values.forEach (/Users/.../slack/node_modules/@octokit/rest/plugins/validate/validate.js:66:15)
+      at Array.forEach (<anonymous>)
+      at Object.keys.forEach.parameterName (/Users/.../slack/node_modules/@octokit/rest/plugins/validate/validate.js:38:12)
+      at Array.forEach (<anonymous>)
+      at validate (/Users/...s/slack/node_modules/@octokit/rest/plugins/validate/validate.js:15:23)
+      at process._tickCallback (internal/process/next_tick.js:68:7)
+```
+**Offending code**:
+We are passing `id: id` (shorthand version) instead of `comment_id: id`.
+
+https://github.com/integrations/slack/blob/8aa8e7b8763a404db96781d114abd8f3f58e8bbd/lib/unfurls/comment.js#L8-L13
+
+## Additional fixtures
+
+In addition, I added new fixtures to allow tests that have less context.
+This should make it clear, that for public unfurls, the user of the repo
+and the comment does not matter and it decouples the fixture and
+subscription setup.
+This was mainly helpful to me to make sure the tests only require, what they should require.
+
+ℹ️ These fixtures are very similar to the existing ones and can be ignored during the review if that helps.
+
+","Fix issue comment unfurl
+
+Closes #928
+
+This commmit fixes unfurling of private and public issue comments.
+When the `octokit/rest.js` changed [their rounting
+arguments](https://github.com/octokit/rest.js/commit/c62b2bcb2c4f66d93ecff1563df7f7d8e8431788)
+from `id` to `<resource>_id`, unfurling issue comments stopped working.
+
+This PR adjusts the argument name and thus fixes the problem.
+
+In addition I added new fixtures to allow tests that have less context.
+This should make it clear, that for public unfurls, the user of the repo
+and the comment does not matter and it decouples the fixture and
+subscription setup.
+This was mainly helpful to myself to make sure the tests only require,
+what they should require.
+","diff --git a/test/integration/unfurl.test.js b/test/integration/unfurl.test.js
+index f31f359..37cc3de 100644
+--- a/test/integration/unfurl.test.js
++++ b/test/integration/unfurl.test.js
+@@ -53,6 +53,47 @@ describe('Integration: unfurls', () => {
+         .expect(200);
+     });
+ 
++    test('issue comments', async () => {
++      // nock the repo for the isPrivate check
++      nock('https://api.github.com').get('/repos/rust-lang/rust')
++        .reply(200, { ...fixtures.repoRust });
++
++      // nock the repo's issue for the fetching comments
++      nock('https://api.github.com').get('/repos/rust-lang/rust/issues/63997')
++        .reply(200, {});
++
++      // nock fetching the actual comment
++      nock('https://api.github.com')
++        .get('/repos/rust-lang/rust/issues/comments/526118914')
++        .reply(200, { ...fixtures.commentRust });
++
++      // nock the repo again, becasue we re-fetch it in the issueComment :/
++      nock('https://api.github.com').get('/repos/rust-lang/rust')
++        .reply(200, { ...fixtures.repo_rust });
++
++      nock('https://slack.com')
++        .post('/api/chat.unfurl')
++        .reply(200, { ok: true });
++
++
++      const issueCommentEvent = {
++        ...fixtures.slack.link_shared().event,
++        links: [
++          {
++            url: 'https://github.com/rust-lang/rust/issues/63997#issuecomment-526118914',
++            domain: 'github.com',
++          },
++        ],
++      };
++
++      const response = await request(probot.server).post('/slack/events').send({
++        ...fixtures.slack.link_shared(),
++        event: issueCommentEvent,
++      });
++      expect(response.status).toEqual(200);
++    });
++
++
+     test('only unfurls link first time a link is shared', async () => {
+       nock('https://api.github.com').get('/repos/bkeepers/dotenv').times(2).reply(
+         200,
+",0,,8,341,1,2,8,339

@@ -1,0 +1,141 @@
+{
+    "id": 4038315,
+    "name": "messageformat/messageformat",
+    "isFork": false,
+    "commits": 1472,
+    "branches": 3,
+    "releases": 37,
+    "forks": 160,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://messageformat.github.io/messageformat/",
+    "watchers": 34,
+    "stargazers": 1656,
+    "contributors": 57,
+    "size": 7427,
+    "createdAt": "2012-01-25T12:56:20",
+    "pushedAt": "2024-02-28T09:24:19",
+    "updatedAt": "2024-02-24T11:30:16",
+    "totalIssues": 208,
+    "openIssues": 12,
+    "totalPullRequests": 210,
+    "openPullRequests": 3,
+    "blankLines": 11905,
+    "codeLines": 59047,
+    "commentLines": 3719,
+    "metrics": [
+        {
+            "language": "EJS",
+            "commentLines": 0,
+            "codeLines": 11,
+            "blankLines": 0
+        },
+        {
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 169,
+            "blankLines": 33
+        },
+        {
+            "language": "CSS",
+            "commentLines": 69,
+            "codeLines": 8728,
+            "blankLines": 178
+        },
+        {
+            "language": "HTML",
+            "commentLines": 85,
+            "codeLines": 5282,
+            "blankLines": 4289
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 495,
+            "codeLines": 10447,
+            "blankLines": 5484
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 165,
+            "codeLines": 2586,
+            "blankLines": 357
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 228,
+            "blankLines": 22
+        },
+        {
+            "language": "Sass",
+            "commentLines": 2,
+            "codeLines": 6,
+            "blankLines": 1
+        },
+        {
+            "language": "SVG",
+            "commentLines": 2,
+            "codeLines": 502,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2899,
+            "codeLines": 18065,
+            "blankLines": 1538
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12999,
+            "blankLines": 0
+        },
+        {
+            "language": "Properties",
+            "commentLines": 0,
+            "codeLines": 15,
+            "blankLines": 1
+        },
+        {
+            "language": "SCSS",
+            "commentLines": 2,
+            "codeLines": 6,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2024-02-28T09:21:33",
+    "lastCommitSHA": "d188fc449508cb2267f45a90361e15bb296a3ce2",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 628752,
+        "JavaScript": 26363,
+        "HTML": 721,
+        "Shell": 85
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "external-tooling",
+        "feature-request",
+        "help wanted",
+        "javascript",
+        "mf2",
+        "performance",
+        "ruby"
+    ],
+    "topics": [
+        "language",
+        "messageformat"
+    ]
+}

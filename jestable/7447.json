@@ -1,0 +1,113 @@
+{
+    "id": 6632997,
+    "name": "denisraslov/react-spreadsheet-grid",
+    "isFork": false,
+    "commits": 256,
+    "branches": 13,
+    "releases": 14,
+    "forks": 64,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://denisraslov.github.io/grid",
+    "watchers": 15,
+    "stargazers": 1125,
+    "contributors": 7,
+    "size": 7070,
+    "createdAt": "2017-10-12T07:54:49",
+    "pushedAt": "2024-03-17T10:19:42",
+    "updatedAt": "2024-03-12T04:33:49",
+    "totalIssues": 36,
+    "openIssues": 8,
+    "totalPullRequests": 39,
+    "openPullRequests": 7,
+    "blankLines": 456,
+    "codeLines": 14252,
+    "commentLines": 17,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 11738
+        },
+        {
+            "blankLines": 6,
+            "language": "TypeScript",
+            "commentLines": 2,
+            "codeLines": 46
+        },
+        {
+            "blankLines": 264,
+            "language": "JavaScript",
+            "commentLines": 15,
+            "codeLines": 1758
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 14
+        },
+        {
+            "blankLines": 27,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 207
+        },
+        {
+            "blankLines": 157,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 474
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 4
+        }
+    ],
+    "lastCommit": "2022-08-06T11:55:42",
+    "lastCommitSHA": "ae003a4b59577ae822674513b1b15ca2dec2adb9",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 48733,
+        "CSS": 4347,
+        "HTML": 142,
+        "Shell": 77
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "faq",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "version 2",
+        "wontfix"
+    ],
+    "topics": [
+        "data-grid",
+        "excel",
+        "grid",
+        "grid-component",
+        "javascript",
+        "keyboard",
+        "react",
+        "spreadsheet",
+        "table"
+    ]
+}

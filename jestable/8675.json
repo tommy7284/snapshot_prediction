@@ -1,0 +1,81 @@
+{
+    "id": 6767917,
+    "name": "faceyspacey/redux-first-router",
+    "isFork": false,
+    "commits": 646,
+    "branches": 26,
+    "releases": 79,
+    "forks": 167,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 35,
+    "stargazers": 1559,
+    "contributors": 42,
+    "size": 6410,
+    "createdAt": "2017-05-02T05:30:22",
+    "pushedAt": "2022-12-07T06:14:48",
+    "updatedAt": "2022-12-17T03:08:17",
+    "totalIssues": 227,
+    "openIssues": 16,
+    "totalPullRequests": 265,
+    "openPullRequests": 5,
+    "blankLines": 1811,
+    "codeLines": 8079,
+    "commentLines": 790,
+    "metrics": [
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 60
+        },
+        {
+            "blankLines": 553,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1520
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 127
+        },
+        {
+            "blankLines": 1236,
+            "language": "JavaScript",
+            "commentLines": 737,
+            "codeLines": 6214
+        },
+        {
+            "blankLines": 19,
+            "language": "Diff",
+            "commentLines": 53,
+            "codeLines": 158
+        }
+    ],
+    "lastCommit": "2022-07-11T08:12:31",
+    "lastCommitSHA": "124daec212ad4593431bbb582fe41c980c12a4f2",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 105746
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "semantic-release",
+        "wontfix"
+    ],
+    "topics": []
+}

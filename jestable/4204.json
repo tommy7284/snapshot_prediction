@@ -1,0 +1,75 @@
+{
+    "id": 5533160,
+    "name": "emotion-js/facepaint",
+    "isFork": false,
+    "commits": 45,
+    "branches": 7,
+    "releases": 8,
+    "forks": 15,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 522,
+    "contributors": 5,
+    "size": 45,
+    "createdAt": "2017-10-22T05:03:56",
+    "pushedAt": "2020-07-21T12:35:44",
+    "updatedAt": "2021-02-06T01:18:50",
+    "totalIssues": 13,
+    "openIssues": 7,
+    "totalPullRequests": 11,
+    "openPullRequests": 2,
+    "blankLines": 154,
+    "codeLines": 868,
+    "commentLines": 11,
+    "metrics": [
+        {
+            "blankLines": 5,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 11
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 117
+        },
+        {
+            "blankLines": 100,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 348
+        },
+        {
+            "blankLines": 49,
+            "language": "JavaScript",
+            "commentLines": 11,
+            "codeLines": 392
+        }
+    ],
+    "lastCommit": "2018-11-08T04:31:03",
+    "lastCommitSHA": "a0166db7f781d57d48367759d085a0c401572fa1",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 11687
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

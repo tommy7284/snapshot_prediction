@@ -1,0 +1,128 @@
+{
+    "id": 6848357,
+    "name": "immerjs/immer",
+    "isFork": false,
+    "commits": 1393,
+    "branches": 42,
+    "releases": 107,
+    "forks": 837,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://immerjs.github.io/immer/",
+    "watchers": 156,
+    "stargazers": 26918,
+    "contributors": 180,
+    "size": 6226,
+    "createdAt": "2017-12-29T12:25:47",
+    "pushedAt": "2024-04-21T07:08:17",
+    "updatedAt": "2024-04-22T02:32:49",
+    "totalIssues": 642,
+    "openIssues": 22,
+    "totalPullRequests": 473,
+    "openPullRequests": 14,
+    "blankLines": 1997,
+    "codeLines": 47014,
+    "commentLines": 687,
+    "metrics": [
+        {
+            "blankLines": 21,
+            "language": "CSS",
+            "commentLines": 6,
+            "codeLines": 85
+        },
+        {
+            "blankLines": 18,
+            "language": "YAML",
+            "commentLines": 22,
+            "codeLines": 85
+        },
+        {
+            "blankLines": 848,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 3240
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 8
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 33859
+        },
+        {
+            "blankLines": 402,
+            "language": "TypeScript",
+            "commentLines": 486,
+            "codeLines": 3060
+        },
+        {
+            "blankLines": 651,
+            "language": "JavaScript",
+            "commentLines": 173,
+            "codeLines": 5520
+        },
+        {
+            "blankLines": 57,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 1157
+        }
+    ],
+    "lastCommit": "2024-03-26T08:34:27",
+    "lastCommitSHA": "10971031f61286d634f24cba6374016cc27c37b8",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 139334,
+        "TypeScript": 97282,
+        "MDX": 82270,
+        "HTML": 38507,
+        "CSS": 1564
+    },
+    "labels": [
+        "breaking change",
+        "bug",
+        "cannot reproduce",
+        "complexity-easy",
+        "complexity-hard",
+        "complexity-medium",
+        "dependencies",
+        "docs",
+        "duplicate",
+        "good first issue",
+        "has pr",
+        "help wanted",
+        "invalid",
+        "issue-lacks-relevant-information",
+        "legacy",
+        "multi-frame",
+        "pr welcome",
+        "proposal",
+        "question",
+        "released",
+        "semantic-release",
+        "should-be-fixed-by-immer-7",
+        "solution to be discussed",
+        "support",
+        "typescript",
+        "unconfirmed",
+        "untested",
+        "wontfix",
+        "work in progress"
+    ],
+    "topics": [
+        "immutable",
+        "immutables",
+        "reducer",
+        "redux",
+        "state-tree"
+    ]
+}

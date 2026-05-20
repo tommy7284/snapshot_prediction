@@ -1,0 +1,95 @@
+{
+    "id": 71481065,
+    "name": "causaly/zod-validation-error",
+    "isFork": false,
+    "commits": 335,
+    "branches": 30,
+    "releases": 24,
+    "forks": 11,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 10,
+    "stargazers": 680,
+    "contributors": 12,
+    "size": 1509,
+    "createdAt": "2022-08-30T09:06:34",
+    "pushedAt": "2024-05-10T06:29:49",
+    "updatedAt": "2024-05-10T02:41:35",
+    "totalIssues": 21,
+    "openIssues": 1,
+    "totalPullRequests": 288,
+    "openPullRequests": 0,
+    "blankLines": 387,
+    "codeLines": 21201,
+    "commentLines": 36,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 5,
+            "codeLines": 121,
+            "blankLines": 23
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 404,
+            "blankLines": 215
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 7,
+            "blankLines": 1
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 19554,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 31,
+            "codeLines": 1103,
+            "blankLines": 146
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6,
+            "blankLines": 2
+        }
+    ],
+    "lastCommit": "2024-05-10T06:29:12",
+    "lastCommitSHA": "9e6291d51fea5034e345dcbe7db1d607ee6f4044",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 36147,
+        "JavaScript": 205,
+        "Shell": 165
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

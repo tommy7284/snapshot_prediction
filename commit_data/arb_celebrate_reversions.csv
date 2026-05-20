@@ -1,0 +1,2532 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+105,0264711a3464d1db6378fba2ff2d57e7b550ee0f,7fa9f9ac707409136822266ec0d394311ddb8173,"Closes #100
+
+Added new option to `celebrate` to pass in `celebrate` specific options. Updated
+tests. Updated README. Cleaned up more type definitions.","Request Context
+
+Closes #100
+
+Added new option to `celebrate` to pass in `celebrate` specific options. Updated
+tests. Updated README. Cleaned up more type definitions.
+","diff --git a/test/integration.test.js b/test/integration.test.js
+index a7c5d46..e16a29d 100644
+--- a/test/integration.test.js
++++ b/test/integration.test.js
+@@ -269,4 +269,66 @@ describe('express integration', () => {
+       }, () => done());
+     });
+   });
++  describe('reqContext', () => {
++    it('passes req as Joi context during validation', (done) => {
++      expect.assertions(2);
++      const server = Server();
++
++      server.post('/:userId', celebrate({
++        body: {
++          id: Joi.number().only(Joi.ref('$params.userId')),
++        },
++        params: {
++          userId: Joi.number().integer().required(),
++        },
++      }, null, {
++        reqContext: true,
++      }), (req, res) => {
++        expect(req.body.id).toEqual(req.params.userId);
++        res.send();
++      });
++
++      server.inject({
++        method: 'POST',
++        url: '/12345',
++        payload: {
++          id: 12345,
++        },
++      }, (res) => {
++        expect(res.statusCode).toBe(200);
++        done();
++      });
++    });
++    it('fails validation based on req values', (done) => {
++      expect.assertions(2);
++      const server = Server();
++
++      server.post('/:userId', celebrate({
++        body: {
++          id: Joi.number().only(Joi.ref('$params.userId')),
++        },
++        params: {
++          userId: Joi.number().integer().required(),
++        },
++      }, null, {
++        reqContext: true,
++      }), (req, res) => {
++        res.send();
++      });
++
++      server.use(errors());
++
++      server.inject({
++        method: 'POST',
++        url: '/123',
++        payload: {
++          id: 12345,
++        },
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++  });
+ });
+",0,,8,221,1,3,12,6310
+126,6f7cc34b03dcb59830311040b5c02a4822eb8c88,6f7cc34b03dcb59830311040b5c02a4822eb8c88,,"Update Tests
+
+Closes #124
+
+Updated tests to use teamwork. Removed side-effect testing of errors(). Used
+""test"" intead of ""it"" where it made sense.
+","diff --git a/test/integration.test.js b/test/integration.test.js
+index e16a29d..f6a94aa 100644
+--- a/test/integration.test.js
++++ b/test/integration.test.js
+@@ -1,5 +1,4 @@
+ 
+-
+ /* eslint-env jest */
+ const Express = require('express');
+ const Artificial = require('artificial');
+@@ -7,10 +6,10 @@ const BodyParser = require('body-parser');
+ const CookieParser = require('cookie-parser');
+ const signature = require('cookie-signature');
+ const { random } = require('faker');
++const Teamwork = require('@hapi/teamwork');
+ const {
+   celebrate,
+   Joi,
+-  errors,
+ } = require('../lib');
+ 
+ const Server = () => {
+@@ -21,314 +20,338 @@ const Server = () => {
+   return server;
+ };
+ 
+-describe('express integration', () => {
+-  describe('validations', () => {
+-    it('req.headers', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-
+-      server.get('/', celebrate({
+-        headers: {
+-          accept: Joi.string().regex(/xml/),
+-        },
+-      }, {
+-        allowUnknown: true,
+-      }));
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        method: 'GET',
+-        url: '/',
+-        headers: {
+-          accept: 'application/json',
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
+-    });
+ 
+-    it('req.params', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-      server.get('/user/:id', celebrate({
+-        params: {
+-          id: Joi.string().token(),
+-        },
+-      }));
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        method: 'get',
+-        url: '/user/@@',
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
+-    });
++describe('validations', () => {
++  test('req.headers', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.get('/', celebrate({
++      headers: {
++        accept: Joi.string().regex(/xml/),
++      },
++    }, {
++      allowUnknown: true,
++    }), next);
++
++    server.inject({
++      method: 'GET',
++      url: '/',
++      headers: {
++        accept: 'application/json',
++      },
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
++
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++
++  test('req.params', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.get('/user/:id', celebrate({
++      params: {
++        id: Joi.string().token(),
++      },
++    }), next);
++
++    server.inject({
++      method: 'get',
++      url: '/user/@@',
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
++
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++
++  test('req.query', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.get('/', celebrate({
++      query: Joi.object().keys({
++        start: Joi.date(),
++      }),
++    }), next);
++
++    server.inject({
++      url: '/?end=celebrate',
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
++
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++
++  test('req.cookies', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.post('/', celebrate({
++      cookies: {
++        state: Joi.number().required(),
++      },
++    }), next);
++
++    server.inject({
++      url: '/',
++      method: 'post',
++      headers: {
++        Cookie: 'state=notanumber',
++      },
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
++
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++
++  test('req.signedCookies', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.get('/', celebrate({
++      signedCookies: {
++        secureState: Joi.number().required(),
++      },
++    }), next);
++
++    const val = signature.sign('notanumber', 'secret');
++
++    server.inject({
++      url: '/',
++      method: 'get',
++      headers: {
++        Cookie: `state=s:${val}`,
++      },
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
+ 
+-    it('req.query', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-
+-      server.get('/', celebrate({
+-        query: Joi.object().keys({
+-          start: Joi.date(),
+-        }),
+-      }));
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        url: '/?end=celebrate',
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++
++  test('req.body', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.post('/', celebrate({
++      body: {
++        first: Joi.string().required(),
++        last: Joi.string(),
++        role: Joi.number().integer(),
++      },
++    }), next);
++
++    server.inject({
++      url: '/',
++      method: 'post',
++      payload: {
++        first: 'john',
++        last: 123,
++      },
++    }, team.attend.bind(team));
++
++    const { statusCode } = await team.work;
++
++    expect(statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
++  });
++});
++
++describe('update req values', () => {
++  test('req.headers', async () => {
++    expect.assertions(1);
++    const server = Server();
++    const team = new Teamwork();
++
++    server.get('/', celebrate({
++      headers: {
++        accept: Joi.string().regex(/json/),
++        'secret-header': Joi.string().default('@@@@@@'),
++      },
++    }, {
++      allowUnknown: true,
++    }), (req) => {
++      delete req.headers.host; // this can change computer to computer, so just remove it
++      team.attend(req);
+     });
+ 
+-    it('req.cookies', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-      server.post('/', celebrate({
+-        cookies: {
+-          state: Joi.number().required(),
+-        },
+-      }));
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        url: '/',
+-        method: 'post',
+-        headers: {
+-          Cookie: 'state=notanumber',
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
++    server.inject({
++      method: 'GET',
++      url: '/',
++      headers: {
++        accept: 'application/json',
++      },
+     });
+ 
+-    it('req.signedCookies', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-      server.get('/', celebrate({
+-        signedCookies: {
+-          secureState: Joi.number().required(),
+-        },
+-      }));
+-
+-      server.use(errors());
+-
+-      const val = signature.sign('notanumber', 'secret');
+-
+-      server.inject({
+-        url: '/',
+-        method: 'get',
+-        headers: {
+-          Cookie: `state=s:${val}`,
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
++    const { headers } = await team.work;
++
++    expect(headers).toEqual({
++      accept: 'application/json',
++      'user-agent': 'shot',
++      'secret-header': '@@@@@@',
+     });
++  });
++
++  test('req.params', async () => {
++    expect.assertions(1);
++    const server = Server();
++    const team = new Teamwork();
++
++    server.get('/user/:id', celebrate({
++      params: {
++        id: Joi.string().uppercase(),
++      },
++    }), team.attend.bind(team));
+ 
+-    it('req.body', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-      server.post('/', celebrate({
+-        body: {
+-          first: Joi.string().required(),
+-          last: Joi.string(),
+-          role: Joi.number().integer(),
+-        },
+-      }));
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        url: '/',
+-        method: 'post',
+-        payload: {
+-          first: 'john',
+-          last: 123,
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
++    server.inject({
++      method: 'get',
++      url: '/user/adam',
+     });
++
++    const { params } = await team.work;
++
++    expect(params.id).toBe('ADAM');
+   });
+-  describe('update req values', () => {
+-    it('req.headers', (done) => {
+-      expect.assertions(1);
+-      const server = Server();
+-
+-      server.get('/', celebrate({
+-        headers: {
+-          accept: Joi.string().regex(/json/),
+-          'secret-header': Joi.string().default('@@@@@@'),
+-        },
+-      }, {
+-        allowUnknown: true,
+-      }), (req, res) => {
+-        delete req.headers.host; // this can change computer to computer, so just remove it
+-        expect(req.headers).toEqual({
+-          accept: 'application/json',
+-          'user-agent': 'shot',
+-          'secret-header': '@@@@@@',
+-        });
+-        res.send();
+-      });
+-
+-      server.inject({
+-        method: 'GET',
+-        url: '/',
+-        headers: {
+-          accept: 'application/json',
+-        },
+-      }, () => done());
++
++  test('req.query', async () => {
++    expect.assertions(1);
++    const server = Server();
++    const team = new Teamwork();
++
++    server.get('/', celebrate({
++      query: Joi.object().keys({
++        name: Joi.string().uppercase(),
++        page: Joi.number().default(1),
++      }),
++    }), team.attend.bind(team));
++
++
++    server.inject({
++      url: '/?name=john',
+     });
+ 
+-    it('req.params', (done) => {
+-      expect.assertions(1);
+-      const server = Server();
+-      server.get('/user/:id', celebrate({
+-        params: {
+-          id: Joi.string().uppercase(),
+-        },
+-      }), (req, res) => {
+-        expect(req.params.id).toBe('ADAM');
+-        res.send();
+-      });
+-
+-      server.inject({
+-        method: 'get',
+-        url: '/user/adam',
+-      }, () => done());
++    const { query } = await team.work;
++
++    expect(query).toEqual({
++      name: 'JOHN',
++      page: 1,
+     });
++  });
+ 
+-    it('req.query', (done) => {
+-      expect.assertions(1);
+-      const server = Server();
+-
+-      server.get('/', celebrate({
+-        query: Joi.object().keys({
+-          name: Joi.string().uppercase(),
+-          page: Joi.number().default(1),
+-        }),
+-      }), (req, res) => {
+-        expect(req.query).toBe({
+-          name: 'JOHN',
+-          page: 1,
+-        });
+-        res.send();
+-      });
+-
+-
+-      server.inject({
+-        url: '/?name=john',
+-      }, () => done());
++  test('req.body', async () => {
++    expect.assertions(1);
++    const server = Server();
++    const team = new Teamwork();
++
++    server.post('/', celebrate({
++      body: {
++        first: Joi.string().required(),
++        last: Joi.string().default('Smith'),
++        role: Joi.string().uppercase(),
++      },
++    }), team.attend.bind(team));
++
++    server.inject({
++      url: '/',
++      method: 'post',
++      payload: {
++        first: 'john',
++        role: 'admin',
++      },
+     });
+ 
+-    it('req.body', (done) => {
+-      expect.assertions(1);
+-      const server = Server();
+-      server.post('/', celebrate({
+-        body: {
+-          first: Joi.string().required(),
+-          last: Joi.string().default('Smith'),
+-          role: Joi.string().uppercase(),
+-        },
+-      }), (req, res) => {
+-        expect(req.body).toEqual({
+-          first: 'john',
+-          role: 'ADMIN',
+-          last: 'Smith',
+-        });
+-        res.send();
+-      });
+-
+-      server.inject({
+-        url: '/',
+-        method: 'post',
+-        payload: {
+-          first: 'john',
+-          role: 'admin',
+-        },
+-      }, () => done());
++    const { body } = await team.work;
++    expect(body).toEqual({
++      first: 'john',
++      role: 'ADMIN',
++      last: 'Smith',
+     });
+   });
+-  describe('reqContext', () => {
+-    it('passes req as Joi context during validation', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-
+-      server.post('/:userId', celebrate({
+-        body: {
+-          id: Joi.number().only(Joi.ref('$params.userId')),
+-        },
+-        params: {
+-          userId: Joi.number().integer().required(),
+-        },
+-      }, null, {
+-        reqContext: true,
+-      }), (req, res) => {
+-        expect(req.body.id).toEqual(req.params.userId);
+-        res.send();
+-      });
+-
+-      server.inject({
+-        method: 'POST',
+-        url: '/12345',
+-        payload: {
+-          id: 12345,
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(200);
+-        done();
+-      });
+-    });
+-    it('fails validation based on req values', (done) => {
+-      expect.assertions(2);
+-      const server = Server();
+-
+-      server.post('/:userId', celebrate({
+-        body: {
+-          id: Joi.number().only(Joi.ref('$params.userId')),
+-        },
+-        params: {
+-          userId: Joi.number().integer().required(),
+-        },
+-      }, null, {
+-        reqContext: true,
+-      }), (req, res) => {
+-        res.send();
+-      });
+-
+-      server.use(errors());
+-
+-      server.inject({
+-        method: 'POST',
+-        url: '/123',
+-        payload: {
+-          id: 12345,
+-        },
+-      }, (res) => {
+-        expect(res.statusCode).toBe(400);
+-        expect(JSON.parse(res.payload)).toMatchSnapshot();
+-        done();
+-      });
++});
++
++describe('reqContext', () => {
++  test('passes req as Joi context during validation', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork({ meetings: 2 });
++
++    server.post('/:userId', celebrate({
++      body: {
++        id: Joi.number().only(Joi.ref('$params.userId')),
++      },
++      params: {
++        userId: Joi.number().integer().required(),
++      },
++    }, null, {
++      reqContext: true,
++    }), (req, res) => {
++      team.attend(req);
++      res.send();
+     });
++
++    server.inject({
++      method: 'POST',
++      url: '/12345',
++      payload: {
++        id: 12345,
++      },
++    }, team.attend.bind(team));
++
++    const [req, res] = await team.work;
++    expect(req.body.id).toEqual(req.params.userId);
++    expect(res.statusCode).toBe(200);
++  });
++
++  test('fails validation based on req values', async () => {
++    expect.assertions(2);
++    const server = Server();
++    const team = new Teamwork();
++    const next = jest.fn();
++
++    server.post('/:userId', celebrate({
++      body: {
++        id: Joi.number().only(Joi.ref('$params.userId')),
++      },
++      params: {
++        userId: Joi.number().integer().required(),
++      },
++    }, null, {
++      reqContext: true,
++    }), next);
++
++    server.inject({
++      method: 'POST',
++      url: '/123',
++      payload: {
++        id: 12345,
++      },
++    }, team.attend.bind(team));
++
++    const res = await team.work;
++
++    expect(res.statusCode).toBe(500);
++    expect(next).not.toHaveBeenCalled();
+   });
+ });
+",0,,3,710,1,2,5,4383
+129,0923077255626824e92dc3b49f4164a4598eabdb,012fd76244d2649f17ba550f43a85242a2643343,"Closes #118
+
+Adds a format function that can be used to format any Joi error to the same
+shape as errors coming from the `celebrate` middleware.","Adds format function
+
+Closes #118
+
+Adds a format function that can be used to format any Joi error to the same
+shape as errors coming from the `celebrate` middleware.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index 4ab93e4..a8a7e43 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -6,6 +6,7 @@ const {
+   Joi,
+   errors,
+   isCelebrate,
++  format,
+ } = require('../lib');
+ 
+ 
+@@ -346,7 +347,7 @@ describe('errors()', () => {
+   });
+ });
+ 
+-describe('isCelebrate', () => {
++describe('isCelebrate()', () => {
+   describe.each`
+         value | expected
+         ${Error()} | ${false}
+@@ -355,7 +356,7 @@ describe('isCelebrate', () => {
+         ${[0, 1]} | ${false}
+         ${null} | ${false}
+         ${undefined} | ${false}
+-      `('$value', ({ value, expected }) => {
++      `('isCelebrate($value)', ({ value, expected }) => {
+   it(`returns ${expected}`, () => {
+     expect.assertions(1);
+     expect(isCelebrate(value)).toBe(expected);
+@@ -379,3 +380,35 @@ describe('isCelebrate', () => {
+     });
+   });
+ });
++
++describe('format()', () => {
++  // Need a real Joi error to use in a few places for these tests
++  const result = Joi.validate(null, Joi.string().valid('foo'));
++  describe.each`
++    value
++    ${null}
++    ${undefined}
++    ${Error()}
++    `('format($value)', ({ value }) => {
++  it('throws an error', () => {
++    expect.assertions(1);
++    expect(() => format(value)).toThrow();
++  });
++});
++  it('throws an error if the source is not a valid string', () => {
++    expect.assertions(1);
++    expect(() => format(result, 'foo')).toThrow(Joi.ValidationError);
++  });
++  it('throws an error if the option arguments is incorrect', () => {
++    expect.assertions(1);
++    expect(() => format(result, 'body', false)).toThrow(Joi.ValidationError);
++  });
++  it('returns a formatted error object without options', () => {
++    expect.assertions(1);
++    expect(format(result, 'body')).toMatchSnapshot();
++  });
++  it('returns a formatted error object with options', () => {
++    expect.assertions(1);
++    expect(format(result, 'body', { celebrated: true })).toMatchSnapshot();
++  });
++});
+",0,,8,346,1,2,8,347
+136,fe9793ef3a8df92ba7f56127714abe0cea1b4c33,4993949974b5c50012b1c96afd7186a8510b58a2,"Mega PR
+
+- Updates Joi to 16
+- Added `abortEarly` test
+","Added test for abort early false
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index a8a7e43..493012b 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -345,6 +345,40 @@ describe('errors()', () => {
+       handler(err, undefined, res, next);
+     });
+   });
++
++  it('includes more information when abourtEarly is false', () => {
++    expect.assertions(3);
++    const middleware = celebrate({
++      query: {
++        role: Joi.number().required().integer().min(4),
++        name: Joi.string().required(),
++      },
++    }, {
++      abortEarly: false,
++    });
++    const handler = errors();
++    const next = jest.fn();
++    const res = {
++      status(statusCode) {
++        expect(statusCode).toBe(400);
++        return {
++          send(err) {
++            expect(err).toMatchSnapshot();
++            expect(next).not.toHaveBeenCalled();
++          },
++        };
++      },
++    };
++
++    middleware({
++      query: {
++        role: random.number({ min: 0, max: 3 }),
++      },
++      method: 'GET',
++    }, null, (err) => {
++      handler(err, undefined, res, next);
++    });
++  });
+ });
+ 
+ describe('isCelebrate()', () => {
+",0,,2,49,1,9,9,508
+140,c3b8ffc0f2b95e1ce05d509b39ee5c40d882ff3e,74dbfe20ee25b3dbd1a838e84ff01f04deb847fb,"Closes #139
+
+Change the arguments to format() to accomodate both sync and async validations.
+Also exposed `Segments` enum to help consumers and docs.","Update format + exposes Segments
+
+Closes #139
+
+Change the arguments to format() to accomodate both sync and async validations.
+Also exposed `Segments` enum to help consumers and docs.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index b97beb9..be13e69 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -7,6 +7,7 @@ const {
+   errors,
+   isCelebrate,
+   format,
++  Segments,
+ } = require('../lib');
+ 
+ 
+@@ -16,7 +17,7 @@ describe('celebrate()', () => {
+     ${false}
+     ${undefined}
+     ${{}}
+-    ${{ query: { name: Joi.string(), age: Joi.number() }, foo: Joi.string() }}
++    ${{ [Segments.QUERY]: { name: Joi.string(), age: Joi.number() }, foo: Joi.string() }}
+     `('celebrate($schema)', ({ schema }) => {
+   it('throws an error', () => {
+     expect(() => {
+@@ -27,12 +28,12 @@ describe('celebrate()', () => {
+ 
+   describe.each`
+     segment | schema | req | message
+-    ${'headers'} | ${{ headers: { accept: Joi.string().regex(/xml/) } }} | ${{ headers: { accept: 'application/json' } }} | ${'""accept"" with value ""application/json"" fails to match the required pattern: /xml/'}
+-    ${'params'} | ${{ params: { id: Joi.string().token() } }} | ${{ params: { id: '@@@' } }} | ${'""id"" must only contain alpha-numeric and underscore characters'}
+-    ${'query'} | ${{ query: Joi.object().keys({ start: Joi.date() }) }} | ${{ query: { end: random.number() } }} | ${'""end"" is not allowed'}
+-    ${'body'} | ${{ body: { first: Joi.string().required(), last: Joi.string(), role: Joi.number().integer() } }} | ${{ body: { first: name.firstName(), last: random.number() }, method: 'POST' }} | ${'""last"" must be a string'}
+-    ${'cookies'} | ${{ cookies: { state: Joi.string().required() } }} | ${{ cookies: { state: random.number() } }} | ${'""state"" must be a string'}
+-    ${'signedCookies'} | ${{ signedCookies: { uid: Joi.string().required() } }} | ${{ signedCookies: { uid: random.number() } }} | ${'""uid"" must be a string'}
++    ${Segments.HEADERS} | ${{ [Segments.HEADERS]: { accept: Joi.string().regex(/xml/) } }} | ${{ [Segments.HEADERS]: { accept: 'application/json' } }} | ${'""accept"" with value ""application/json"" fails to match the required pattern: /xml/'}
++    ${Segments.PARAMS} | ${{ [Segments.PARAMS]: { id: Joi.string().token() } }} | ${{ [Segments.PARAMS]: { id: '@@@' } }} | ${'""id"" must only contain alpha-numeric and underscore characters'}
++    ${Segments.QUERY} | ${{ [Segments.QUERY]: Joi.object().keys({ start: Joi.date() }) }} | ${{ [Segments.QUERY]: { end: random.number() } }} | ${'""end"" is not allowed'}
++    ${Segments.BODY} | ${{ [Segments.BODY]: { first: Joi.string().required(), last: Joi.string(), role: Joi.number().integer() } }} | ${{ [Segments.BODY]: { first: name.firstName(), last: random.number() }, method: 'POST' }} | ${'""last"" must be a string'}
++    ${Segments.COOKIES} | ${{ [Segments.COOKIES]: { state: Joi.string().required() } }} | ${{ [Segments.COOKIES]: { state: random.number() } }} | ${'""state"" must be a string'}
++    ${Segments.SIGNEDCOOKIES} | ${{ [Segments.SIGNEDCOOKIES]: { uid: Joi.string().required() } }} | ${{ [Segments.SIGNEDCOOKIES]: { uid: random.number() } }} | ${'""uid"" must be a string'}
+     `('celebate middleware', ({
+   schema, req, message, segment,
+ }) => {
+@@ -51,13 +52,13 @@ describe('celebrate()', () => {
+   it('errors on the first validation problem (params, query, body)', () => {
+     expect.assertions(3);
+     const middleware = celebrate({
+-      params: {
++      [Segments.PARAMS]: {
+         id: Joi.string().required(),
+       },
+-      query: Joi.object().keys({
++      [Segments.QUERY]: Joi.object().keys({
+         start: Joi.date(),
+       }),
+-      body: {
++      [Segments.BODY]: {
+         first: Joi.string().required(),
+         last: Joi.string(),
+         role: Joi.number().integer(),
+@@ -65,20 +66,20 @@ describe('celebrate()', () => {
+     });
+ 
+     return middleware({
+-      params: {
++      [Segments.PARAMS]: {
+         id: random.alphaNumeric(10),
+       },
+-      query: {
++      [Segments.QUERY]: {
+         end: random.boolean(),
+       },
+-      body: {
++      [Segments.BODY]: {
+         first: name.firstName(),
+         last: name.lastName(),
+       },
+     }, null, (err) => {
+       expect(isCelebrate(err)).toBe(true);
+       expect(err.joi.details[0].message).toBe('""end"" is not allowed');
+-      expect(err.meta.source).toBe('query');
++      expect(err.meta.source).toBe(Segments.QUERY);
+     });
+   });
+ 
+@@ -87,20 +88,20 @@ describe('celebrate()', () => {
+     const last = name.lastName();
+     const role = name.jobTitle();
+     const req = {
+-      body: {
++      [Segments.BODY]: {
+         first,
+         last,
+       },
+-      query: undefined,
++      [Segments.QUERY]: undefined,
+       method: 'POST',
+     };
+     const middleware = celebrate({
+-      body: {
++      [Segments.BODY]: {
+         first: Joi.string().required(),
+         last: Joi.string(),
+         role: Joi.number().integer().default(role),
+       },
+-      query: Joi.number(),
++      [Segments.QUERY]: Joi.number(),
+     });
+ 
+     return middleware(req, null, (err) => {
+@@ -117,7 +118,7 @@ describe('celebrate()', () => {
+   it('does not validate req.body if the method is ""GET"" or ""HEAD""', () => {
+     expect.assertions(1);
+     const middleware = celebrate({
+-      body: {
++      [Segments.BODY]: {
+         first: Joi.string().required(),
+         last: Joi.string(),
+         role: Joi.number().integer(),
+@@ -125,7 +126,7 @@ describe('celebrate()', () => {
+     });
+ 
+     return middleware({
+-      body: {
++      [Segments.BODY]: {
+         first: name.firstName(),
+         last: name.lastName(),
+       },
+@@ -152,14 +153,14 @@ describe('celebrate()', () => {
+     }));
+ 
+     const middleware = celebrate({
+-      body: {
++      [Segments.BODY]: {
+         first: f.john(),
+         role: f.number().integer(),
+       },
+     });
+ 
+     return middleware({
+-      body: {
++      [Segments.BODY]: {
+         first: name.firstName(),
+         role: random.number(),
+       },
+@@ -173,12 +174,12 @@ describe('celebrate()', () => {
+   it('uses the supplied the Joi options', () => {
+     expect.assertions(2);
+     const middleware = celebrate({
+-      query: Joi.object().keys({
++      [Segments.QUERY]: Joi.object().keys({
+         page: Joi.number(),
+       }),
+     }, { stripUnknown: true });
+     const req = {
+-      query: {
++      [Segments.QUERY]: {
+         start: date.recent(),
+         page: 1,
+       },
+@@ -194,13 +195,13 @@ describe('celebrate()', () => {
+   it('honors the escapeHtml Joi option', () => {
+     expect.assertions(2);
+     const middleware = celebrate({
+-      headers: {
++      [Segments.HEADERS]: {
+         accept: Joi.string().regex(/xml/),
+       },
+     }, { escapeHtml: false });
+ 
+     return middleware({
+-      headers: {
++      [Segments.HEADERS]: {
+         accept: 'application/json',
+       },
+     }, null, (err) => {
+@@ -212,7 +213,7 @@ describe('celebrate()', () => {
+   it('supports static reference', () => {
+     expect.assertions(2);
+     const middleware = celebrate({
+-      body: {
++      [Segments.BODY]: {
+         id: Joi.number().valid(Joi.ref('$id')),
+       },
+     }, {
+@@ -223,7 +224,7 @@ describe('celebrate()', () => {
+ 
+     return middleware({
+       method: 'POST',
+-      body: {
++      [Segments.BODY]: {
+         id: random.number({ min: 1, max: 99 }),
+       },
+     }, null, (err) => {
+@@ -235,10 +236,10 @@ describe('celebrate()', () => {
+   it('supports a request reference', () => {
+     expect.assertions(2);
+     const middleware = celebrate({
+-      params: {
++      [Segments.PARAMS]: {
+         userId: Joi.number().integer().required(),
+       },
+-      body: {
++      [Segments.BODY]: {
+         id: Joi.number().valid(Joi.ref('$params.userId')),
+       },
+     }, null, {
+@@ -247,10 +248,10 @@ describe('celebrate()', () => {
+ 
+     return middleware({
+       method: 'POST',
+-      params: {
++      [Segments.PARAMS]: {
+         userId: 10,
+       },
+-      body: {
++      [Segments.BODY]: {
+         id: random.number({ min: 1, max: 9 }),
+       },
+     }, null, (err) => {
+@@ -264,7 +265,7 @@ describe('errors()', () => {
+   it('responds with a joi error from celebrate middleware', () => {
+     expect.assertions(3);
+     const middleware = celebrate({
+-      query: {
++      [Segments.QUERY]: {
+         role: Joi.number().integer().min(4),
+       },
+     });
+@@ -283,7 +284,7 @@ describe('errors()', () => {
+     };
+ 
+     return middleware({
+-      query: {
++      [Segments.QUERY]: {
+         role: random.number({ min: 0, max: 3 }),
+       },
+       method: 'GET',
+@@ -316,7 +317,7 @@ describe('errors()', () => {
+   it('only includes key values if joi returns details', () => {
+     expect.assertions(3);
+     const middleware = celebrate({
+-      body: {
++      [Segments.BODY]: {
+         first: Joi.string().required(),
+       },
+     });
+@@ -335,7 +336,7 @@ describe('errors()', () => {
+     };
+ 
+     return middleware({
+-      body: {
++      [Segments.BODY]: {
+         role: random.word(),
+       },
+       method: 'POST',
+@@ -348,7 +349,7 @@ describe('errors()', () => {
+   it('includes more information when abourtEarly is false', () => {
+     expect.assertions(3);
+     const middleware = celebrate({
+-      query: {
++      [Segments.QUERY]: {
+         role: Joi.number().required().integer().min(4),
+         name: Joi.string().required(),
+       },
+@@ -370,7 +371,7 @@ describe('errors()', () => {
+     };
+ 
+     return middleware({
+-      query: {
++      [Segments.QUERY]: {
+         role: random.number({ min: 0, max: 3 }),
+       },
+       method: 'GET',
+@@ -399,13 +400,13 @@ describe('isCelebrate()', () => {
+   it('returns true if the error object came from celebrate', () => {
+     expect.assertions(1);
+     const middleware = celebrate({
+-      headers: {
++      [Segments.HEADERS]: {
+         accept: Joi.string().regex(/xml/),
+       },
+     });
+ 
+     return middleware({
+-      headers: {
++      [Segments.HEADERS]: {
+         accept: random.number(),
+       },
+     }, null, (err) => {
+@@ -415,13 +416,15 @@ describe('isCelebrate()', () => {
+ });
+ 
+ describe('format()', () => {
++  const schema = Joi.string().valid('foo');
+   // Need a real Joi error to use in a few places for these tests
+-  const result = Joi.string().valid('foo').validate(null);
++  const result = schema.validate(null);
+   describe.each`
+     value
+     ${null}
+     ${undefined}
+     ${Error()}
++    ${{}}
+     `('format($value)', ({ value }) => {
+   it('throws an error', () => {
+     expect.assertions(1);
+@@ -430,18 +433,24 @@ describe('format()', () => {
+ });
+   it('throws an error if the source is not a valid string', () => {
+     expect.assertions(1);
+-    expect(() => format(result, 'foo')).toThrow();
++    expect(() => format(result.error, 'foo')).toThrow();
+   });
+   it('throws an error if the option arguments is incorrect', () => {
+     expect.assertions(1);
+-    expect(() => format(result, 'body', false)).toThrow();
++    expect(() => format(result.error, 'body', false)).toThrow();
+   });
+-  it('returns a formatted error object without options', () => {
++  it('returns a formatted error object with options', () => {
+     expect.assertions(1);
+-    expect(format(result, 'body')).toMatchSnapshot();
++    expect(format(result.error, 'body', { celebrated: true })).toMatchSnapshot();
+   });
+-  it('returns a formatted error object with options', () => {
++  it('[sync] returns a formatted error object without options', () => {
+     expect.assertions(1);
+-    expect(format(result, 'body', { celebrated: true })).toMatchSnapshot();
++    expect(format(result.error, 'body')).toMatchSnapshot();
++  });
++  it('[async] returns a formatted error object without options', () => {
++    expect.assertions(1);
++    return schema.validateAsync(null).catch((e) => {
++      expect(format(e, 'body')).toMatchSnapshot();
++    });
+   });
+ });
+",0,,9,254,1,3,9,302
+144,94ac8104fecae1cad60408af7219a81e04ce7ce1,94ac8104fecae1cad60408af7219a81e04ce7ce1,"Closes #138
+
+We now use error objects that extend the base `Error` object. Removed
+`format` in favor of calling `CelebrateError()` directly. This way we
+are always using ""real"" Error objects. This can be handy for things
+outside of this library that want all Error objects to extend the
+built in one.","Use CelebrateError object instead of POJO
+
+Closes #138
+
+We now use error objects that extend the base `Error` object. Removed
+`format` in favor of calling `CelebrateError()` directly. This way we
+are always using ""real"" Error objects. This can be handy for things
+outside of this library that want all Error objects to extend the
+built in one.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index be13e69..0aec245 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -6,11 +6,10 @@ const {
+   Joi,
+   errors,
+   isCelebrate,
+-  format,
++  CelebrateError,
+   Segments,
+ } = require('../lib');
+ 
+-
+ describe('celebrate()', () => {
+   describe.each`
+     schema
+@@ -415,7 +414,7 @@ describe('isCelebrate()', () => {
+   });
+ });
+ 
+-describe('format()', () => {
++describe('CelebrateError()', () => {
+   const schema = Joi.string().valid('foo');
+   // Need a real Joi error to use in a few places for these tests
+   const result = schema.validate(null);
+@@ -425,32 +424,50 @@ describe('format()', () => {
+     ${undefined}
+     ${Error()}
+     ${{}}
+-    `('format($value)', ({ value }) => {
++    `('CelebrateError($value)', ({ value }) => {
+   it('throws an error', () => {
+     expect.assertions(1);
+-    expect(() => format(value)).toThrow();
++    expect(() => CelebrateError(value)).toThrow();
+   });
+ });
+   it('throws an error if the source is not a valid string', () => {
+     expect.assertions(1);
+-    expect(() => format(result.error, 'foo')).toThrow();
++    expect(() => CelebrateError(result.error, 'foo')).toThrow();
+   });
+   it('throws an error if the option arguments is incorrect', () => {
+     expect.assertions(1);
+-    expect(() => format(result.error, 'body', false)).toThrow();
++    expect(() => CelebrateError(result.error, 'body', false)).toThrow();
+   });
+   it('returns a formatted error object with options', () => {
+-    expect.assertions(1);
+-    expect(format(result.error, 'body', { celebrated: true })).toMatchSnapshot();
++    expect.assertions(2);
++    const err = CelebrateError(result.error, 'body', { celebrated: true });
++    expect(err).toMatchObject({
++      joi: expect.any(Joi.ValidationError),
++      meta: { source: 'body' },
++      message: expect.any(String),
++    });
++    expect(isCelebrate(err)).toBe(true);
+   });
+-  it('[sync] returns a formatted error object without options', () => {
+-    expect.assertions(1);
+-    expect(format(result.error, 'body')).toMatchSnapshot();
++  it('[sync] returns a CelebrateError object without options', () => {
++    expect.assertions(2);
++    const err = CelebrateError(result.error, 'body');
++    expect(err).toMatchObject({
++      joi: expect.any(Joi.ValidationError),
++      meta: { source: 'body' },
++      message: expect.any(String),
++    });
++    expect(isCelebrate(err)).toBe(false);
+   });
+-  it('[async] returns a formatted error object without options', () => {
+-    expect.assertions(1);
++  it('[async] returns a CelebrateError object without options', () => {
++    expect.assertions(2);
+     return schema.validateAsync(null).catch((e) => {
+-      expect(format(e, 'body')).toMatchSnapshot();
++      const err = CelebrateError(e, 'body');
++      expect(err).toMatchObject({
++        joi: expect.any(Joi.ValidationError),
++        meta: { source: 'body' },
++        message: expect.any(String),
++      });
++      expect(isCelebrate(err)).toBe(false);
+     });
+   });
+ });
+",0,,5,161,1,1,5,161
+174,8afabfb7a186894a45a98d73a6308fdcb0af4556,b675551930303fbc790610d93b1c3a99726b9520,"Add a config object argument to `errors()`. Right now, this only
+lets users tune the status code response.
+
+Updated engine value and travis test matrix for node 12 and ""node"" to match what the bundled version of Joi does.","Adds Configuration Options to errors
+
+Closes #173
+
+Add a config object argument to `errors()`. Right now, this only
+lets users tune the status code response.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index a9fc402..d0297fe 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -390,6 +390,44 @@ describe('errors()', () => {
+       handler(err, undefined, res, next);
+     });
+   });
++
++  it('honors the configuration options', () => {
++    expect.assertions(4);
++    const middleware = celebrate({
++      [Segments.QUERY]: {
++        role: Joi.number().integer().min(4),
++      },
++    });
++    const statusCode = 409;
++    const handler = errors({ statusCode });
++    const next = jest.fn();
++    const res = {
++      status(code) {
++        expect(code).toBe(statusCode);
++        return {
++          send(err) {
++            expect(err).toHaveProperty('statusCode', 409);
++            expect(err).toMatchSnapshot();
++            expect(next).not.toHaveBeenCalled();
++          },
++        };
++      },
++    };
++
++    return middleware({
++      [Segments.QUERY]: {
++        role: random.number({ min: 0, max: 3 }),
++      },
++      method: 'GET',
++    }, null, (err) => {
++      handler(err, undefined, res, next);
++    });
++  });
++
++  it('throws an error for goofy satus codes', () => {
++    expect(() => errors({ statusCode: 499 })).toThrow(Joi.ValidationError);
++    expect(() => errors({ statusCode: 200 })).toThrow(Joi.ValidationError);
++  });
+ });
+ 
+ describe('isCelebrate()', () => {
+",0,,6,142,1,2,8,145
+185,73e0e98454ea67a42ae9868abfd37744e28977d0,7b2e6e7b988a7bfe76ec59f08e8a04b17f4365ae,"Started adding ability to validate the full request object. Still
+need to finish fixing failing tests, updating docs.","Fixed up CelebrateError changes.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index a04d095..c72d083 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -368,38 +368,6 @@ describe('errors()', () => {
+     });
+   });
+ 
+-  it('only includes key values if joi returns details', () => {
+-    expect.assertions(3);
+-    const middleware = celebrate({
+-      [Segments.BODY]: {
+-        first: Joi.string().required(),
+-      },
+-    });
+-    const handler = errors();
+-    const next = jest.fn();
+-    const res = {
+-      status(statusCode) {
+-        expect(statusCode).toBe(400);
+-        return {
+-          send(err) {
+-            expect(err).toMatchSnapshot();
+-            expect(next).not.toHaveBeenCalled();
+-          },
+-        };
+-      },
+-    };
+-
+-    return middleware({
+-      [Segments.BODY]: {
+-        role: random.word(),
+-      },
+-      method: 'POST',
+-    }, null, (err) => {
+-      err.joi.details = null; // eslint-disable-line no-param-reassign
+-      handler(err, undefined, res, next);
+-    });
+-  });
+-
+   it('includes more information when abourtEarly is false', () => {
+     expect.assertions(3);
+     const middleware = celebrate({
+@@ -507,58 +475,42 @@ describe('isCelebrate()', () => {
+   });
+ });
+ 
+-describe.skip('CelebrateError()', () => {
++describe('CelebrateError()', () => {
+   const schema = Joi.string().valid('foo');
+   // Need a real Joi error to use in a few places for these tests
+   const result = schema.validate(null);
+-  describe.each`
+-    value
+-    ${null}
+-    ${undefined}
+-    ${Error()}
+-    ${{}}
+-    `('CelebrateError($value)', ({ value }) => {
+-  it('throws an error', () => {
+-    expect.assertions(1);
+-    expect(() => CelebrateError(value)).toThrow('""error"" must be a Joi error');
+-  });
+-});
+-  it('throws an error if the source is not a valid string', () => {
+-    expect.assertions(1);
+-    expect(() => CelebrateError(result.error, 'foo')).toThrow(Joi.ValidationError);
+-  });
+-  it('throws an error if the option arguments is incorrect', () => {
+-    expect.assertions(1);
+-    expect(() => CelebrateError(result.error, 'body', false)).toThrow(Joi.ValidationError);
+-  });
+   it('returns a formatted error object with options', () => {
+     expect.assertions(2);
+-    const err = CelebrateError(result.error, 'body', { celebrated: true });
++    const err = new CelebrateError(undefined, { celebrated: true });
++    err.add(Segments.BODY, result);
++
+     expect(err).toMatchObject({
+-      joi: expect.any(Joi.ValidationError),
+-      meta: { source: 'body' },
+-      message: expect.any(String),
++      message: 'celebrate request validation failed',
++      details: new Map([[Segments.BODY, result]]),
+     });
+     expect(isCelebrate(err)).toBe(true);
+   });
+-  it('[sync] returns a CelebrateError object without options', () => {
++  it('[sync] returns a CelebrateError object with custom message', () => {
+     expect.assertions(2);
+-    const err = CelebrateError(result.error, 'body');
++    const message = 'my custom error message';
++    const err = new CelebrateError(message);
++    err.add(Segments.BODY, result);
++
+     expect(err).toMatchObject({
+-      joi: expect.any(Joi.ValidationError),
+-      meta: { source: 'body' },
+-      message: expect.any(String),
++      message,
++      details: new Map([[Segments.BODY, result]]),
+     });
+     expect(isCelebrate(err)).toBe(false);
+   });
+   it('[async] returns a CelebrateError object without options', () => {
+     expect.assertions(2);
+     return schema.validateAsync(null).catch((e) => {
+-      const err = CelebrateError(e, 'body');
++      const err = new CelebrateError();
++      err.add(Segments.QUERY, e);
++
+       expect(err).toMatchObject({
+-        joi: expect.any(Joi.ValidationError),
+-        meta: { source: 'body' },
+-        message: expect.any(String),
++        message: 'celebrate request validation failed',
++        details: new Map([[Segments.QUERY, e]]),
+       });
+       expect(isCelebrate(err)).toBe(false);
+     });
+",0,,3,152,1,7,10,852
+220,ed764ad46ce55601b319d3cf96d7c0010f41fd58,4ba8127f087a2d7ee03030fdb7213f5bf9ed6d93,"Adds additional `message` value to the options argument to `errors()`. Also,
+changed the default `message` value of CelebrateError to 'Validation failed'.","Closes #219
+
+Adds additional `message` value to the options argument to `errors()`. Also,
+changed the default `message` value of CelebrateError to 'Validation failed'.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index 3f348c9..3546120 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -446,21 +446,23 @@ describe('errors()', () => {
+   });
+ 
+   it('honors the configuration options', () => {
+-    expect.assertions(4);
++    expect.assertions(5);
+     const middleware = celebrate({
+       [Segments.QUERY]: {
+         role: Joi.number().integer().min(4),
+       },
+     });
+     const statusCode = 409;
+-    const handler = errors({ statusCode });
++    const message = 'your request is bad and you should feel bad';
++    const handler = errors({ statusCode, message });
+     const next = jest.fn();
+     const res = {
+       status(code) {
+         expect(code).toBe(statusCode);
+         return {
+           send(err) {
+-            expect(err).toHaveProperty('statusCode', 409);
++            expect(err).toHaveProperty('statusCode', statusCode);
++            expect(err).toHaveProperty('message', message);
+             expect(err).toMatchSnapshot();
+             expect(next).not.toHaveBeenCalled();
+           },
+@@ -527,7 +529,7 @@ describe('CelebrateError()', () => {
+     const err = new CelebrateError(undefined, { celebrated: true });
+     err.details.set(Segments.BODY, result.error);
+ 
+-    expect(err).toHaveProperty('message', 'celebrate request validation failed');
++    expect(err).toHaveProperty('message', 'Validation failed');
+     expect(err.details.get(Segments.BODY)).toBe(result.error);
+     expect(isCelebrateError(err)).toBe(true);
+   });
+@@ -547,7 +549,7 @@ describe('CelebrateError()', () => {
+       const err = new CelebrateError();
+       err.details.set(Segments.QUERY, e);
+ 
+-      expect(err).toHaveProperty('message', 'celebrate request validation failed');
++      expect(err).toHaveProperty('message', 'Validation failed');
+       expect(err.details.get(Segments.QUERY)).toBe(e);
+       expect(isCelebrateError(err)).toBe(false);
+     });
+",0,,7,31,1,3,7,33
+48,705e6aff3033fa71bbbe35374c18c7e6e0cb0da5,705e6aff3033fa71bbbe35374c18c7e6e0cb0da5,"Closes #45
+
+Adds integration tests aginst actual running express servers.
+
+Adds some additional logic to set the validated values back to req.","Integration tests
+
+Closes #45
+
+Adds integration tests aginst actual running express servers.
+
+Adds some additional logic to set the validated values back to req.
+","diff --git a/test/integration.test.js b/test/integration.test.js
+new file mode 100644
+index 0000000..07b4533
+--- /dev/null
++++ b/test/integration.test.js
+@@ -0,0 +1,213 @@
++const Express = require('express');
++const Artificial = require('artificial');
++const BodyParser = require('body-parser');
++const Celebrate = require('../lib');
++const Joi = Celebrate.Joi
++const errors = Celebrate.errors;
++
++const Server = () => {
++  const server = Express();
++  server.use(BodyParser.json());
++  Artificial(server);
++  return server;
++}
++
++describe('express integration', () => {
++  describe('validations', () => {
++    it('req.headers', (done) => {
++      expect.assertions(2);
++      const server = Server();
++  
++      server.get('/', Celebrate({
++        headers: {
++          accept: Joi.string().regex(/xml/)
++        }
++      }, {
++        allowUnknown: true,
++      }));
++  
++      server.use(errors());  
++   
++      server.inject({ 
++        method: 'GET', 
++        url: '/',
++        headers: {
++          accept: 'application/json'
++        }
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++  
++    it('req.params', (done) => {
++      expect.assertions(2);
++      const server = Server();
++      server.get('/user/:id', Celebrate({
++        params: {
++          id: Joi.string().token()
++        }
++      }));
++  
++      server.use(errors());
++  
++      server.inject({
++        method: 'get',
++        url: '/user/@@',
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++  
++    it('req.query', (done) => {
++      expect.assertions(2);
++      const server = Server();
++  
++      server.get('/', Celebrate({
++        query: Joi.object().keys({
++          start: Joi.date()
++        })
++      }));
++  
++      server.use(errors());
++  
++      server.inject({
++        url: '/?end=celebrate',
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++  
++    it('req.body', (done) => {
++      expect.assertions(2);
++      const server = Server();
++      server.post('/', Celebrate({
++        body: {
++          first: Joi.string().required(),
++          last: Joi.string(),
++          role: Joi.number().integer()
++        }
++      }));
++  
++      server.use(errors());
++  
++      server.inject({
++        url: '/',
++        method: 'post',
++        payload: {
++          first: 'john',
++          last: 123
++        }
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++  });
++  describe('update req values', () => {
++    it('req.headers', (done) => {
++      expect.assertions(1);
++      const server = Server();
++  
++      server.get('/', Celebrate({
++        headers: {
++          accept: Joi.string().regex(/json/),
++          ['secret-header']: Joi.string().default('@@@@@@')
++        }
++      }, {
++        allowUnknown: true,
++      }), (req, res) => {
++        delete req.headers.host; // this can change computer to computer, so just remove it
++        expect(req.headers).toEqual({ 
++          accept: 'application/json',
++          'user-agent': 'shot',
++          'secret-header': '@@@@@@'
++        });
++        res.send();
++      });
++     
++      server.inject({ 
++        method: 'GET', 
++        url: '/',
++        headers: {
++          accept: 'application/json'
++        }
++      }, () => done());
++    });
++
++    it('req.params', (done) => {
++      expect.assertions(1);
++      const server = Server();
++      server.get('/user/:id', Celebrate({
++        params: {
++          id: Joi.string().uppercase()
++        }
++      }), (req, res) => {
++        expect(req.params.id).toBe('ADAM');
++        res.send();
++      });
++
++      server.inject({
++        method: 'get',
++        url: '/user/adam',
++      }, () => done());
++    });
++
++    it('req.query', (done) => {
++      expect.assertions(1);
++      const server = Server();
++  
++      server.get('/', Celebrate({
++        query: Joi.object().keys({
++          name: Joi.string().uppercase(),
++          page: Joi.number().default(1),
++        })
++      }), (req, res) => {
++        expect(req.query).toBe({
++          name: 'JOHN',
++          page:1
++        });
++        res.send();
++      });
++  
++  
++      server.inject({
++        url: '/?name=john',
++      }, () => done());
++    });
++
++    it('req.body', (done) => {
++      expect.assertions(1);
++      const server = Server();
++      server.post('/', Celebrate({
++        body: {
++          first: Joi.string().required(),
++          last: Joi.string().default('Smith'),
++          role: Joi.string().uppercase(),
++        }
++      }), (req, res) => {
++        expect(req.body).toEqual({ 
++          first: 'john', 
++          role: 'ADMIN', 
++          last: 'Smith' 
++        });
++        res.send();
++      });
++  
++      server.inject({
++        url: '/',
++        method: 'post',
++        payload: {
++          first: 'john',
++          role: 'admin'
++        }
++      }, () => done());
++    });
++  });
++});
+\ No newline at end of file
+",0,,6,305,1,1,6,305
+49,69f382671e26f1c2b80a38fc1d92fd894c4faa1b,69f382671e26f1c2b80a38fc1d92fd894c4faa1b,"# Issue
+
+- `node` version - 6
+- `celebrate` version - 4.0.3
+- `joi` version (via `npm ls --depth=0 | grep joi`) - 10.6.0
+
+The issue I am having with `celebrate` is:
+
+I am working on an application that uses Joi for other validation as well as using celebrate. When next is called with any Joi error, the celebrate error handler intercepts it, and if it is not from celebrate it throws the following error:.
+
+```
+TypeError: Cannot read property 'source' of undefined
+    at /usr/src/app/node_modules/celebrate/lib/index.js:71:28
+```
+
+The celebrate errors middleware should ignore any errors not from celebrate, so maybe as well as setting `err._meta = { source }` it should set `err._isCelebrate = true` and use this instead of `err.isJoi`?
+
+Will happily raise a PR if you agree with this approach.
+
+# Resolution
+
+- Add ""isCelebrate"" Symbol to the Joi error before passing it through next in middleware
+- When passing through the error handler check err has ""isCelebrate"" Symbol instead of err.isJoi
+- Update tests for error handler to use the celebrate middleware to generate errors that should be handled","Only act on celebrate errors in the error handler
+
+- Add ""isCelebrate"" Symbol to the Joi error before passing it through next in middleware
+- Test err has ""isCelebrate"" Symbol instead of err.isJoi
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index 73a5f49..ace1747 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -261,58 +261,66 @@ describe('Celebrate Middleware', () => {
+   });
+ 
+   describe('errors()', () => {
+-    it('responds with a joi error', () => {
+-      expect.assertions(3);
+-      const handler = Celebrate.errors();
+-      const next = jest.fn();
+-      const res = {
+-        status (statusCode) {
+-          expect(statusCode).toBe(400);
+-          return {
+-            send (err) {
+-              expect(err).toMatchSnapshot();
+-              expect(next).not.toHaveBeenCalled();
+-            }
+-          };
+-        }
+-      };
+-
+-      const schema = Joi.object({
+-        first: Joi.string().required(),
+-        last: Joi.string().required(),
+-        role: Joi.number().integer().min(4)
+-      });
+-
+-      Joi.validate({ role: '0' }, schema, { abortEarly: false, convert: false }, (err) => {
+-        err._meta = { source: 'query' };
+-        handler(err, undefined, res, next);
+-      });
++    it('responds with a joi error from celebrate middleware', () => {
++        expect.assertions(3);
++        const middleware = Celebrate({
++          query: {
++            role: Joi.number().integer().min(4)
++          }
++        });
++        const handler = Celebrate.errors();
++        const next = jest.fn();
++        const res = {
++          status (statusCode) {
++            expect(statusCode).toBe(400);
++            return {
++              send (err) {
++                expect(err).toMatchSnapshot();
++                expect(next).not.toHaveBeenCalled();
++              }
++            };
++          }
++        };
++
++        middleware({
++          query: {
++            role: '0'
++          },
++          method: 'GET'
++        }, null, (err) => {
++            handler(err, undefined, res, next);
++        });
+     });
+ 
+-    it('passes the error through next if not a joi error', () => {
+-      const handler = Celebrate.errors();
+-      const res = {
+-        status (statusCode) {
+-          Code.fail('status called');
+-        }
+-      };
+-      const next = (err) => {
+-        expect(err).toEqual({
+-          isBoom: true,
+-          message: 'Not Found',
+-          statusCode: 404
++    it('passes the error through next if not a joi error from celebrate middleware', () => {
++        let errorDirectlyFromJoi = null;
++        const handler = Celebrate.errors();
++        const res = {
++          status (statusCode) {
++            Code.fail('status called');
++          }
++        };
++        const next = (err) => {
++          expect(err).toEqual(errorDirectlyFromJoi);
++        };
++
++        const schema = Joi.object({
++          role: Joi.number().integer().min(4)
+         });
+-      };
+ 
+-      handler({
+-        isBoom: true,
+-        message: 'Not Found',
+-        statusCode: 404
+-      }, undefined, res, next);
++        Joi.validate({ role: '0' }, schema, { abortEarly: false, convert: false }, (err) => {
++          errorDirectlyFromJoi = err;
++          handler(err, undefined, res, next);
++        });
+     });
+ 
+     it('only includes key values if joi returns details', () => {
+       expect.assertions(3);
++      const middleware = Celebrate({
++        body: {
++          first: Joi.string().required()
++        }
++      });
+       const handler = Celebrate.errors();
+       const next = jest.fn();
+       const res = {
+@@ -327,14 +335,14 @@ describe('Celebrate Middleware', () => {
+         }
+       };
+ 
+-      const schema = Joi.object({
+-        first: Joi.string().required()
+-      });
+-
+-      Joi.validate({ role: '0' }, schema, (err) => {
+-        err._meta = { source: 'body' };
+-        err.details = null;
+-        handler(err, undefined, res, next);
++      middleware({
++        body: {
++          role: '0'
++      },
++      method: 'POST'
++      }, null, (err) => {
++          err.details = null;
++          handler(err, undefined, res, next);
+       });
+     });
+   });
+",0,,3,123,1,1,3,123
+52,442248284f2bf160e38736e777acb3c5299f1b51,442248284f2bf160e38736e777acb3c5299f1b51,"Closes #51
+
+Expose an ""isCelebrate"" method to allow custom error middleware handlers a reliable way to check
+to see if in incomming error came from celebrate or not.","Added type checks for error object in isCelebrate.
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index 52b9abe..0362417 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -6,8 +6,9 @@ const Celebrate = require('../lib');
+ const celebrate = Celebrate.celebrate;
+ const Joi = Celebrate.Joi;
+ const errors = Celebrate.errors;
++const isCelebrate = Celebrate.isCelebrate;
+ 
+-describe('Celebrate Middleware', () => {
++describe('Celebrate', () => {
+   it('throws an error if using an invalid schema', () => {
+     expect.assertions(3);
+     expect(() => {
+@@ -42,7 +43,7 @@ describe('Celebrate Middleware', () => {
+         accept: 'application/json'
+       }
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""accept"" with value ""application&#x2f;json"" fails to match the required pattern: /xml/');
+     });
+   });
+@@ -60,7 +61,7 @@ describe('Celebrate Middleware', () => {
+         id: '@@@'
+       }
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""id"" must only contain alpha-numeric and underscore characters');
+     });
+   });
+@@ -78,7 +79,7 @@ describe('Celebrate Middleware', () => {
+         end: 1
+       }
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""end"" is not allowed');
+     });
+   });
+@@ -100,7 +101,7 @@ describe('Celebrate Middleware', () => {
+       },
+       method: 'POST'
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""last"" must be a string');
+     });
+   });
+@@ -133,7 +134,7 @@ describe('Celebrate Middleware', () => {
+         last: 123
+       }
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""end"" is not allowed');
+     });
+   });
+@@ -219,7 +220,7 @@ describe('Celebrate Middleware', () => {
+       },
+       method: 'POST'
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""first"" must equal ""john""');
+     });
+   });
+@@ -258,7 +259,7 @@ describe('Celebrate Middleware', () => {
+         accept: 'application/json'
+       }
+     }, null, (err) => {
+-      expect(err.isJoi).toBe(true);
++      expect(isCelebrate(err)).toBe(true);
+       expect(err.details[0].message).toBe('""accept"" with value ""application/json"" fails to match the required pattern: /xml/');
+     });
+   });
+@@ -349,4 +350,41 @@ describe('Celebrate Middleware', () => {
+       });
+     });
+   });
++
++  describe('isCelebrate', () => {
++    it('returns false if the error object did not originate from celebrate', () => {
++      expect.assertions(1);
++      expect(isCelebrate(Error())).toBe(false);
++    });
++    
++    it('returns false if the error object is not an object', () => {
++      expect.assertions(3);
++      expect(isCelebrate('errr')).toBe(false);
++      expect(isCelebrate(0)).toBe(false);
++      expect(isCelebrate([1,2])).toBe(false);
++    });
++
++    it('returns false if the error object is fasly', () => {
++      expect.assertions(2);
++      expect(isCelebrate(null)).toBe(false);
++      expect(isCelebrate(undefined)).toBe(false);
++    });
++
++    it('returns true if the error object came from celebrate', () => {
++        expect.assertions(1);
++        const middleware = celebrate({
++          headers: {
++            accept: Joi.string().regex(/xml/)
++          }
++        });
++    
++        middleware({
++          headers: {
++            accept: 'application/json'
++          }
++        }, null, (err) => {
++          expect(isCelebrate(err)).toBe(true);
++        });
++    });
++  });
+ });
+",0,,4,67,1,2,4,81
+84,1b142219192c13f92b6166db12fbabcb63f34844,1b142219192c13f92b6166db12fbabcb63f34844,"Closes #81
+
+Migrated to jest 23. Updated a bunch of tests to use describe.each","Upgrade jest
+
+Closes #81
+
+Migrated to jest 23. Updated a bunch of tests to use describe.each
+","diff --git a/test/celebrate.test.js b/test/celebrate.test.js
+index 12c04b9..24479a5 100644
+--- a/test/celebrate.test.js
++++ b/test/celebrate.test.js
+@@ -7,103 +7,39 @@ const {
+   isCelebrate,
+ } = require('../lib');
+ 
+-describe('Celebrate', () => {
+-  it('throws an error if using an invalid schema', () => {
+-    expect.assertions(3);
+-    expect(() => {
+-      celebrate({
+-        query: {
+-          name: Joi.string(),
+-          age: Joi.number(),
+-        },
+-        foo: Joi.string(),
+-      });
+-    }).toThrow('""foo"" is not allowed');
+-
++describe('celebrate()', () => {
++  describe.each`
++    schema | expected
++    ${false} | ${'""value"" must have at least 1 children'}
++    ${undefined} | ${'""value"" must have at least 1 children'}
++    ${{ query: { name: Joi.string(), age: Joi.number() }, foo: Joi.string() }} | ${'""foo"" is not allowed'}
++    `('celebrate(schema)', ({ schema, expected }) => {
++  it(`throws an error with ${expected}`, () => {
+     expect(() => {
+-      celebrate();
+-    }).toThrow('""value"" must have at least 1 children');
+-
+-    expect(() => {
+-      celebrate(false);
+-    }).toThrow('""value"" must have at least 1 children');
+-  });
+-
+-  it('validates req.headers', () => {
+-    expect.assertions(2);
+-    const middleware = celebrate({
+-      headers: {
+-        accept: Joi.string().regex(/xml/),
+-      },
+-    });
+-
+-    middleware({
+-      headers: {
+-        accept: 'application/json',
+-      },
+-    }, null, (err) => {
+-      expect(isCelebrate(err)).toBe(true);
+-      expect(err.details[0].message).toBe('""accept"" with value ""application&#x2f;json"" fails to match the required pattern: /xml/');
+-    });
+-  });
+-
+-  it('validates req.params', () => {
+-    expect.assertions(2);
+-    const middleware = celebrate({
+-      params: {
+-        id: Joi.string().token(),
+-      },
+-    });
+-
+-    middleware({
+-      params: {
+-        id: '@@@',
+-      },
+-    }, null, (err) => {
+-      expect(isCelebrate(err)).toBe(true);
+-      expect(err.details[0].message).toBe('""id"" must only contain alpha-numeric and underscore characters');
+-    });
+-  });
+-
+-  it('validates req.query', () => {
+-    expect.assertions(2);
+-    const middleware = celebrate({
+-      query: Joi.object().keys({
+-        start: Joi.date(),
+-      }),
+-    });
+-
+-    middleware({
+-      query: {
+-        end: 1,
+-      },
+-    }, null, (err) => {
+-      expect(isCelebrate(err)).toBe(true);
+-      expect(err.details[0].message).toBe('""end"" is not allowed');
+-    });
++      celebrate(schema);
++    }).toThrow(expected);
+   });
++});
+ 
+-  it('validates req.body', () => {
++  describe.each`
++    name | schema | req | message
++    ${'req.headers'} | ${{ headers: { accept: Joi.string().regex(/xml/) } }} | ${{ headers: { accept: 'application/json' } }} | ${'""accept"" with value ""application&#x2f;json"" fails to match the required pattern: /xml/'}
++    ${'req.params'} | ${{ params: { id: Joi.string().token() } }} | ${{ params: { id: '@@@' } }} | ${'""id"" must only contain alpha-numeric and underscore characters'}
++    ${'req.query'} | ${{ query: Joi.object().keys({ start: Joi.date() }) }} | ${{ query: { end: 1 } }} | ${'""end"" is not allowed'}
++    ${'req.body'} | ${{ body: { first: Joi.string().required(), last: Joi.string(), role: Joi.number().integer() } }} | ${{ body: { first: 'john', last: 123 }, method: 'POST' }} | ${'""last"" must be a string'}
++    `('celebate middleware', ({
++  schema, req, message, name,
++}) => {
++  it(`validates ${name}`, () => {
+     expect.assertions(2);
+-    const middleware = celebrate({
+-      body: {
+-        first: Joi.string().required(),
+-        last: Joi.string(),
+-        role: Joi.number().integer(),
+-      },
+-    });
++    const middleware = celebrate(schema);
+ 
+-    middleware({
+-      body: {
+-        first: 'john',
+-        last: 123,
+-      },
+-      method: 'POST',
+-    }, null, (err) => {
++    middleware(req, null, (err) => {
+       expect(isCelebrate(err)).toBe(true);
+-      expect(err.details[0].message).toBe('""last"" must be a string');
++      expect(err.details[0].message).toBe(message);
+     });
+   });
++});
+ 
+   it('errors on the first validation problem (params, query, body)', () => {
+     expect.assertions(2);
+@@ -263,128 +199,125 @@ describe('Celebrate', () => {
+       expect(err.details[0].message).toBe('""accept"" with value ""application/json"" fails to match the required pattern: /xml/');
+     });
+   });
++});
+ 
+-  describe('errors()', () => {
+-    it('responds with a joi error from celebrate middleware', () => {
+-      expect.assertions(3);
+-      const middleware = celebrate({
+-        query: {
+-          role: Joi.number().integer().min(4),
+-        },
+-      });
+-      const handler = errors();
+-      const next = jest.fn();
+-      const res = {
+-        status(statusCode) {
+-          expect(statusCode).toBe(400);
+-          return {
+-            send(err) {
+-              expect(err).toMatchSnapshot();
+-              expect(next).not.toHaveBeenCalled();
+-            },
+-          };
+-        },
+-      };
+-
+-      middleware({
+-        query: {
+-          role: '0',
+-        },
+-        method: 'GET',
+-      }, null, (err) => {
+-        handler(err, undefined, res, next);
+-      });
++describe('errors()', () => {
++  it('responds with a joi error from celebrate middleware', () => {
++    expect.assertions(3);
++    const middleware = celebrate({
++      query: {
++        role: Joi.number().integer().min(4),
++      },
+     });
++    const handler = errors();
++    const next = jest.fn();
++    const res = {
++      status(statusCode) {
++        expect(statusCode).toBe(400);
++        return {
++          send(err) {
++            expect(err).toMatchSnapshot();
++            expect(next).not.toHaveBeenCalled();
++          },
++        };
++      },
++    };
+ 
+-    it('passes the error through next if not a joi error from celebrate middleware', () => {
+-      let errorDirectlyFromJoi = null;
+-      const handler = errors();
+-      const res = {
+-        status() {
+-          throw Error('status called');
+-        },
+-      };
+-      const next = (err) => {
+-        expect(err).toEqual(errorDirectlyFromJoi);
+-      };
++    middleware({
++      query: {
++        role: '0',
++      },
++      method: 'GET',
++    }, null, (err) => {
++      handler(err, undefined, res, next);
++    });
++  });
+ 
+-      const schema = Joi.object({
+-        role: Joi.number().integer().min(4),
+-      });
++  it('passes the error through next if not a joi error from celebrate middleware', () => {
++    let errorDirectlyFromJoi = null;
++    const handler = errors();
++    const res = {
++      status() {
++        throw Error('status called');
++      },
++    };
++    const next = (err) => {
++      expect(err).toEqual(errorDirectlyFromJoi);
++    };
+ 
+-      Joi.validate({ role: '0' }, schema, { abortEarly: false, convert: false }, (err) => {
+-        errorDirectlyFromJoi = err;
+-        handler(err, undefined, res, next);
+-      });
++    const schema = Joi.object({
++      role: Joi.number().integer().min(4),
+     });
+ 
+-    it('only includes key values if joi returns details', () => {
+-      expect.assertions(3);
+-      const middleware = celebrate({
+-        body: {
+-          first: Joi.string().required(),
+-        },
+-      });
+-      const handler = errors();
+-      const next = jest.fn();
+-      const res = {
+-        status(statusCode) {
+-          expect(statusCode).toBe(400);
+-          return {
+-            send(err) {
+-              expect(err).toMatchSnapshot();
+-              expect(next).not.toHaveBeenCalled();
+-            },
+-          };
+-        },
+-      };
+-
+-      middleware({
+-        body: {
+-          role: '0',
+-        },
+-        method: 'POST',
+-      }, null, (err) => {
+-        err.details = null; // eslint-disable-line no-param-reassign
+-        handler(err, undefined, res, next);
+-      });
++    Joi.validate({ role: '0' }, schema, { abortEarly: false, convert: false }, (err) => {
++      errorDirectlyFromJoi = err;
++      handler(err, undefined, res, next);
+     });
+   });
+ 
+-  describe('isCelebrate', () => {
+-    it('returns false if the error object did not originate from celebrate', () => {
+-      expect.assertions(1);
+-      expect(isCelebrate(Error())).toBe(false);
++  it('only includes key values if joi returns details', () => {
++    expect.assertions(3);
++    const middleware = celebrate({
++      body: {
++        first: Joi.string().required(),
++      },
+     });
++    const handler = errors();
++    const next = jest.fn();
++    const res = {
++      status(statusCode) {
++        expect(statusCode).toBe(400);
++        return {
++          send(err) {
++            expect(err).toMatchSnapshot();
++            expect(next).not.toHaveBeenCalled();
++          },
++        };
++      },
++    };
+ 
+-    it('returns false if the error object is not an object', () => {
+-      expect.assertions(3);
+-      expect(isCelebrate('errr')).toBe(false);
+-      expect(isCelebrate(0)).toBe(false);
+-      expect(isCelebrate([1, 2])).toBe(false);
++    middleware({
++      body: {
++        role: '0',
++      },
++      method: 'POST',
++    }, null, (err) => {
++      err.details = null; // eslint-disable-line no-param-reassign
++      handler(err, undefined, res, next);
+     });
++  });
++});
+ 
+-    it('returns false if the error object is fasly', () => {
+-      expect.assertions(2);
+-      expect(isCelebrate(null)).toBe(false);
+-      expect(isCelebrate(undefined)).toBe(false);
+-    });
++describe('isCelebrate', () => {
++  describe.each`
++        value | expected
++        ${Error()} | ${false}
++        ${'errr'} | ${false}
++        ${0} | ${false}
++        ${[0, 1]} | ${false}
++        ${null} | ${false}
++        ${undefined} | ${false}
++      `('$value', ({ value, expected }) => {
++  it(`returns ${expected}`, () => {
++    expect.assertions(1);
++    expect(isCelebrate(value)).toBe(expected);
++  });
++});
+ 
+-    it('returns true if the error object came from celebrate', () => {
+-      expect.assertions(1);
+-      const middleware = celebrate({
+-        headers: {
+-          accept: Joi.string().regex(/xml/),
+-        },
+-      });
++  it('returns true if the error object came from celebrate', () => {
++    expect.assertions(1);
++    const middleware = celebrate({
++      headers: {
++        accept: Joi.string().regex(/xml/),
++      },
++    });
+ 
+-      middleware({
+-        headers: {
+-          accept: 'application/json',
+-        },
+-      }, null, (err) => {
+-        expect(isCelebrate(err)).toBe(true);
+-      });
++    middleware({
++      headers: {
++        accept: 'application/json',
++      },
++    }, null, (err) => {
++      expect(isCelebrate(err)).toBe(true);
+     });
+   });
+ });
+",0,,3,331,1,1,3,331
+99,67adad5358ac923a15a79d4f0f9d61fa52239062,ac0ee5add13acc6f8af3943b781dbe8333148df0,"Added support for [cookie-parser](https://expressjs.com/en/resources/middleware/cookie-parser.html) middleware
+
+PS: 🥂to how cleanly your code is written.","add support for cookie-parser
+","diff --git a/test/integration.test.js b/test/integration.test.js
+index d2d9876..1e032df 100644
+--- a/test/integration.test.js
++++ b/test/integration.test.js
+@@ -4,6 +4,8 @@
+ const Express = require('express');
+ const Artificial = require('artificial');
+ const BodyParser = require('body-parser');
++const CookieParser = require('cookie-parser');
++const signature = require('cookie-signature');
+ const {
+   celebrate,
+   Joi,
+@@ -12,6 +14,7 @@ const {
+ 
+ const Server = () => {
+   const server = Express();
++  server.use(CookieParser('secret'));
+   server.use(BodyParser.json());
+   Artificial(server);
+   return server;
+@@ -88,6 +91,56 @@ describe('express integration', () => {
+       });
+     });
+ 
++    it('req.cookies', (done) => {
++      expect.assertions(2);
++      const server = Server();
++      server.post('/', celebrate({
++        cookies: {
++          state: Joi.number().required(),
++        },
++      }));
++
++      server.use(errors());
++
++      server.inject({
++        url: '/',
++        method: 'post',
++        headers: {
++          Cookie: 'state=notanumber',
++        },
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++
++    it('req.signedCookies', (done) => {
++      expect.assertions(2);
++      const server = Server();
++      server.get('/', celebrate({
++        signedCookies: {
++          secureState: Joi.number().required(),
++        },
++      }));
++
++      server.use(errors());
++
++      const val = signature.sign('notanumber', 'secret');
++
++      server.inject({
++        url: '/',
++        method: 'get',
++        headers: {
++          Cookie: `state=s:${val}`,
++        },
++      }, (res) => {
++        expect(res.statusCode).toBe(400);
++        expect(JSON.parse(res.payload)).toMatchSnapshot();
++        done();
++      });
++    });
++
+     it('req.body', (done) => {
+       expect.assertions(2);
+       const server = Server();
+",0,,7,93,1,2,8,131

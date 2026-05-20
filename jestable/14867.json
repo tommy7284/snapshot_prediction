@@ -1,0 +1,88 @@
+{
+    "id": 4055015,
+    "name": "prettier/tslint-config-prettier",
+    "isFork": false,
+    "commits": 396,
+    "branches": 25,
+    "releases": 19,
+    "forks": 42,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 12,
+    "stargazers": 1227,
+    "contributors": 16,
+    "size": 2059,
+    "createdAt": "2017-06-07T10:14:02",
+    "pushedAt": "2023-01-03T04:36:41",
+    "updatedAt": "2023-01-09T10:11:27",
+    "totalIssues": 53,
+    "openIssues": 2,
+    "totalPullRequests": 527,
+    "openPullRequests": 21,
+    "blankLines": 93,
+    "codeLines": 999,
+    "commentLines": 5,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 83,
+            "blankLines": 38
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 541,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 5,
+            "codeLines": 354,
+            "blankLines": 55
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 2,
+            "blankLines": 0
+        }
+    ],
+    "lastCommit": "2021-05-30T01:13:50",
+    "lastCommitSHA": "dba2b6c555877cbeb828ae940a49c68fbd778066",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 9813,
+        "JavaScript": 76
+    },
+    "labels": [
+        "bug",
+        "dependabot-paused",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "external",
+        "greenkeeper",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "security",
+        "semantic-release",
+        "wip",
+        "wontfix"
+    ],
+    "topics": []
+}

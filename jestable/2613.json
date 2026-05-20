@@ -1,0 +1,86 @@
+{
+    "id": 5152399,
+    "name": "nachos-ui/nachos-ui",
+    "isFork": false,
+    "commits": 58,
+    "branches": 3,
+    "releases": 0,
+    "forks": 135,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://avocode.com/nachos-ui/",
+    "watchers": 36,
+    "stargazers": 2010,
+    "contributors": 9,
+    "size": 1507,
+    "createdAt": "2017-01-30T02:22:09",
+    "pushedAt": "2019-06-28T01:28:00",
+    "updatedAt": "2021-02-05T07:21:47",
+    "totalIssues": 47,
+    "openIssues": 14,
+    "totalPullRequests": 13,
+    "openPullRequests": 0,
+    "blankLines": 505,
+    "codeLines": 11980,
+    "commentLines": 57,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 17
+        },
+        {
+            "blankLines": 106,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 274
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 2
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7306
+        },
+        {
+            "blankLines": 399,
+            "language": "JavaScript",
+            "commentLines": 51,
+            "codeLines": 4381
+        }
+    ],
+    "lastCommit": "2018-08-15T07:47:46",
+    "lastCommitSHA": "d45b4113dc3fb7cb4da6ef94a2c552876c250106",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 120423,
+        "HTML": 92
+    },
+    "labels": [
+        "0.2.0",
+        "0.3.0",
+        "bug",
+        "duplicate",
+        "enhancement",
+        "feedback requested",
+        "greenkeeper",
+        "help wanted",
+        "high priority!!!",
+        "invalid",
+        "question",
+        "researching...",
+        "web",
+        "wontfix"
+    ],
+    "topics": []
+}

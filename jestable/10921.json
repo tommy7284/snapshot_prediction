@@ -1,0 +1,130 @@
+{
+    "id": 7511684,
+    "name": "documentationjs/documentation",
+    "isFork": false,
+    "commits": 1370,
+    "branches": 17,
+    "releases": 19,
+    "forks": 482,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Other",
+    "homepage": "http://documentation.js.org/",
+    "watchers": 60,
+    "stargazers": 5761,
+    "contributors": 120,
+    "size": 7569,
+    "createdAt": "2015-03-10T03:34:09",
+    "pushedAt": "2024-04-15T10:08:17",
+    "updatedAt": "2024-04-16T12:36:34",
+    "totalIssues": 797,
+    "openIssues": 195,
+    "totalPullRequests": 838,
+    "openPullRequests": 11,
+    "blankLines": 2821,
+    "codeLines": 35806,
+    "commentLines": 3086,
+    "metrics": [
+        {
+            "blankLines": 8,
+            "language": "Vuejs Component",
+            "commentLines": 8,
+            "codeLines": 20
+        },
+        {
+            "blankLines": 0,
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 1
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 21625
+        },
+        {
+            "blankLines": 0,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 1633,
+            "language": "JavaScript",
+            "commentLines": 3062,
+            "codeLines": 11595
+        },
+        {
+            "blankLines": 19,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 75
+        },
+        {
+            "blankLines": 16,
+            "language": "YAML",
+            "commentLines": 8,
+            "codeLines": 113
+        },
+        {
+            "blankLines": 977,
+            "language": "Markdown",
+            "commentLines": 4,
+            "codeLines": 1677
+        },
+        {
+            "blankLines": 167,
+            "language": "CSS",
+            "commentLines": 4,
+            "codeLines": 693
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3
+        }
+    ],
+    "lastCommit": "2024-02-01T02:45:43",
+    "lastCommitSHA": "b4088dbf99523333a45cb88cc93f698cc8699906",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 402766,
+        "CSS": 16862,
+        "Vue": 374,
+        "Shell": 72
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "evaluating",
+        "github_actions",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "javascript",
+        "jsdoc-extension",
+        "jsdoc-specification-issue",
+        "needs-testcase",
+        "question",
+        "refactor",
+        "requires-detail",
+        "support",
+        "upstream",
+        "upstream-regression",
+        "wontfix"
+    ],
+    "topics": [
+        "babel",
+        "documentation",
+        "documentation-tool",
+        "javascript",
+        "jsdoc"
+    ]
+}

@@ -1,0 +1,95 @@
+{
+    "id": 6903418,
+    "name": "shoutem/ui",
+    "isFork": false,
+    "commits": 1308,
+    "branches": 16,
+    "releases": 84,
+    "forks": 456,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "develop",
+    "license": "Other",
+    "homepage": null,
+    "watchers": 92,
+    "stargazers": 4877,
+    "contributors": 32,
+    "size": 9506,
+    "createdAt": "2016-08-08T03:26:08",
+    "pushedAt": "2024-04-25T09:27:51",
+    "updatedAt": "2024-04-25T09:26:14",
+    "totalIssues": 319,
+    "openIssues": 103,
+    "totalPullRequests": 503,
+    "openPullRequests": 15,
+    "blankLines": 1617,
+    "codeLines": 39392,
+    "commentLines": 942,
+    "metrics": [
+        {
+            "blankLines": 45,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 126
+        },
+        {
+            "blankLines": 17,
+            "language": "Text",
+            "commentLines": 0,
+            "codeLines": 75
+        },
+        {
+            "blankLines": 6,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 96,
+            "codeLines": 540
+        },
+        {
+            "blankLines": 1549,
+            "language": "JavaScript",
+            "commentLines": 846,
+            "codeLines": 9405
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 29221
+        }
+    ],
+    "lastCommit": "2024-04-25T09:26:09",
+    "lastCommitSHA": "977e26825d7095974b68138802af30f5dfe20629",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 313852
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "don't merge",
+        "duplicate",
+        "feature request",
+        "hacktoberfest",
+        "help wanted",
+        "info missing",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "android",
+        "ios",
+        "native-components",
+        "react-native",
+        "shoutem",
+        "shoutem-ui"
+    ]
+}

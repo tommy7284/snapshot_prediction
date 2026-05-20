@@ -1,0 +1,543 @@
+pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
+140,05af8954d2cc362fc6c09462453110394e928934,41c619d38ca04172d4a27ef5ea43168b9ce87401,src/__tests__/__snapshots__/schema.test.ts.snap,src/__tests__/schema.test.ts,"GraphQL v16 has been released recently so this PR does the following changes for the compatibility;
+
+- [x] Type resolvers no longer returns type itself but the name of the type because this no longer supported in v16
+- [x] Update TS version because v16 doesn't support existing version
+- [x] Add tests for both v15 and v16
+- [x] Use the custom implementation of `collectFields` in `json.ts` because it has been changed in v16
+- [x] Fix typing issues
+- [x] Use isSubType instead of isPossibleType because it has been removed in v16
+- [x] Replace `toEqual` with `toMatchObject` to compare results because `GraphQLError` is no longer serialized like JSO
+- [x] Remove Node 10 from CI because v16 doesn't support it and it has been no longer maintained.
+- [x] Update TS version to support latest changes and v16
+- [x] Migrate to ESlint and update Prettier to support new TypeScript ESLint plugin","GraphQL v16 compatibility
+","diff --git a/src/__tests__/schema.test.ts b/src/__tests__/schema.test.ts
+index 141c782..8a4a1fb 100644
+--- a/src/__tests__/schema.test.ts
++++ b/src/__tests__/schema.test.ts
+@@ -2,9 +2,11 @@
+  * Based on https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/schema-test.js
+  */
+ 
+-/* tslint:disable:no-big-function */
++/* eslint-disable max-lines-per-function */
+ import {
++  buildClientSchema,
+   DocumentNode,
++  ExecutionResult,
+   getIntrospectionQuery,
+   GraphQLBoolean,
+   GraphQLID,
+@@ -14,7 +16,10 @@ import {
+   GraphQLObjectType,
+   GraphQLSchema,
+   GraphQLString,
+-  parse
++  IntrospectionQuery,
++  parse,
++  printSchema,
++  versionInfo
+ } from ""graphql"";
+ import { compileQuery, isCompiledQuery } from ""../index"";
+ 
+@@ -57,7 +62,7 @@ const BlogArticle: GraphQLObjectType = new GraphQLObjectType({
+     author: { type: BlogAuthor },
+     title: {
+       type: GraphQLString,
+-      resolve: article => Promise.resolve(article && article.title)
++      resolve: (article) => Promise.resolve(article && article.title)
+     },
+     body: { type: GraphQLString },
+     keywords: { type: new GraphQLList(GraphQLString) }
+@@ -398,7 +403,14 @@ describe(""Execute: Handles execution with a complex schema"", () => {
+ 
+   test(""executes IntrospectionQuery"", () => {
+     const queryAST = parse(getIntrospectionQuery({ descriptions: true }));
+-    const result = executeQuery(BlogSchema, queryAST);
+-    expect(result).toMatchSnapshot();
++    const result = executeQuery(
++      BlogSchema,
++      queryAST
++    ) as ExecutionResult<IntrospectionQuery>;
++    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
++    const schemaFromIntrospection = buildClientSchema(result.data!);
++    expect(printSchema(schemaFromIntrospection)).toEqual(
++      printSchema(BlogSchema)
++    );
+   });
+ });
+",0,
+140,05af8954d2cc362fc6c09462453110394e928934,41c619d38ca04172d4a27ef5ea43168b9ce87401,src/__tests__/__snapshots__/schema.test.ts.snap,src/__tests__/schema.test.ts,"GraphQL v16 has been released recently so this PR does the following changes for the compatibility;
+
+- [x] Type resolvers no longer returns type itself but the name of the type because this no longer supported in v16
+- [x] Update TS version because v16 doesn't support existing version
+- [x] Add tests for both v15 and v16
+- [x] Use the custom implementation of `collectFields` in `json.ts` because it has been changed in v16
+- [x] Fix typing issues
+- [x] Use isSubType instead of isPossibleType because it has been removed in v16
+- [x] Replace `toEqual` with `toMatchObject` to compare results because `GraphQLError` is no longer serialized like JSO
+- [x] Remove Node 10 from CI because v16 doesn't support it and it has been no longer maintained.
+- [x] Update TS version to support latest changes and v16
+- [x] Migrate to ESlint and update Prettier to support new TypeScript ESLint plugin","GraphQL v16 compatibility
+","diff --git a/src/__tests__/schema.test.ts b/src/__tests__/schema.test.ts
+index 141c782..8a4a1fb 100644
+--- a/src/__tests__/schema.test.ts
++++ b/src/__tests__/schema.test.ts
+@@ -2,9 +2,11 @@
+  * Based on https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/schema-test.js
+  */
+ 
+-/* tslint:disable:no-big-function */
++/* eslint-disable max-lines-per-function */
+ import {
++  buildClientSchema,
+   DocumentNode,
++  ExecutionResult,
+   getIntrospectionQuery,
+   GraphQLBoolean,
+   GraphQLID,
+@@ -14,7 +16,10 @@ import {
+   GraphQLObjectType,
+   GraphQLSchema,
+   GraphQLString,
+-  parse
++  IntrospectionQuery,
++  parse,
++  printSchema,
++  versionInfo
+ } from ""graphql"";
+ import { compileQuery, isCompiledQuery } from ""../index"";
+ 
+@@ -57,7 +62,7 @@ const BlogArticle: GraphQLObjectType = new GraphQLObjectType({
+     author: { type: BlogAuthor },
+     title: {
+       type: GraphQLString,
+-      resolve: article => Promise.resolve(article && article.title)
++      resolve: (article) => Promise.resolve(article && article.title)
+     },
+     body: { type: GraphQLString },
+     keywords: { type: new GraphQLList(GraphQLString) }
+@@ -398,7 +403,14 @@ describe(""Execute: Handles execution with a complex schema"", () => {
+ 
+   test(""executes IntrospectionQuery"", () => {
+     const queryAST = parse(getIntrospectionQuery({ descriptions: true }));
+-    const result = executeQuery(BlogSchema, queryAST);
+-    expect(result).toMatchSnapshot();
++    const result = executeQuery(
++      BlogSchema,
++      queryAST
++    ) as ExecutionResult<IntrospectionQuery>;
++    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
++    const schemaFromIntrospection = buildClientSchema(result.data!);
++    expect(printSchema(schemaFromIntrospection)).toEqual(
++      printSchema(BlogSchema)
++    );
+   });
+ });
+",0,
+191,1483f06475652251fb5a11e3312e708c0d399151,1483f06475652251fb5a11e3312e708c0d399151,src/__tests__/__snapshots__/json.test.ts.snap,src/__tests__/json.test.ts,Added test case to cover the `isAbstractType` branch in json.ts.,"Add test case to json.test.ts
+
+Added test case to cover the `isAbstractType` branch in json.ts.
+","diff --git a/src/__tests__/json.test.ts b/src/__tests__/json.test.ts
+index 6ac6eb1..72c51a4 100644
+--- a/src/__tests__/json.test.ts
++++ b/src/__tests__/json.test.ts
+@@ -17,6 +17,7 @@ import {
+ import { buildExecutionContext } from ""graphql/execution/execute"";
+ import { compileQuery } from ""../index"";
+ import { queryToJSONSchema } from ""../json"";
++import { makeExecutableSchema } from ""@graphql-tools/schema"";
+ 
+ describe(""json schema creator"", () => {
+   const BlogAuthor = new GraphQLObjectType({
+@@ -168,3 +169,54 @@ describe(""json schema creator"", () => {
+     });
+   });
+ });
++
++describe(""JSON schema creation with abstract types"", () => {
++  let inf: any;
++  const schema = makeExecutableSchema({
++    typeDefs: `
++        type Query {
++          foo: Foo
++          u: U
++        }
++        union U = Foo | Bar
++
++        type Foo {
++          a: String
++          b: Int
++          c: Boolean!
++          d: Bar
++        }
++        type Bar {
++          e: String!
++          f: Boolean!
++        }
++      `,
++    resolvers: {
++      Query: {
++        foo(_: any, _1: any, _2: any, info: any) {
++          inf = info;
++        },
++        u(_: any, _1: any, _2: any, info: any) {
++          inf = info;
++        }
++      }
++    }
++  });
++  const document = parse(/* GraphQL */ `
++    {
++      u
++    }
++  `);
++  const context: any =
++    versionInfo.major > 15
++      ? (buildExecutionContext as any)({
++          schema,
++          document
++        })
++      : (buildExecutionContext as any)(schema, document);
++
++  const jsonSchema = queryToJSONSchema(context);
++  test(""json schema creation"", () => {
++    expect(jsonSchema).toMatchSnapshot();
++  });
++});
+",0,
+191,1483f06475652251fb5a11e3312e708c0d399151,1483f06475652251fb5a11e3312e708c0d399151,src/__tests__/__snapshots__/json.test.ts.snap,src/__tests__/json.test.ts,Added test case to cover the `isAbstractType` branch in json.ts.,"Add test case to json.test.ts
+
+Added test case to cover the `isAbstractType` branch in json.ts.
+","diff --git a/src/__tests__/json.test.ts b/src/__tests__/json.test.ts
+index 6ac6eb1..72c51a4 100644
+--- a/src/__tests__/json.test.ts
++++ b/src/__tests__/json.test.ts
+@@ -17,6 +17,7 @@ import {
+ import { buildExecutionContext } from ""graphql/execution/execute"";
+ import { compileQuery } from ""../index"";
+ import { queryToJSONSchema } from ""../json"";
++import { makeExecutableSchema } from ""@graphql-tools/schema"";
+ 
+ describe(""json schema creator"", () => {
+   const BlogAuthor = new GraphQLObjectType({
+@@ -168,3 +169,54 @@ describe(""json schema creator"", () => {
+     });
+   });
+ });
++
++describe(""JSON schema creation with abstract types"", () => {
++  let inf: any;
++  const schema = makeExecutableSchema({
++    typeDefs: `
++        type Query {
++          foo: Foo
++          u: U
++        }
++        union U = Foo | Bar
++
++        type Foo {
++          a: String
++          b: Int
++          c: Boolean!
++          d: Bar
++        }
++        type Bar {
++          e: String!
++          f: Boolean!
++        }
++      `,
++    resolvers: {
++      Query: {
++        foo(_: any, _1: any, _2: any, info: any) {
++          inf = info;
++        },
++        u(_: any, _1: any, _2: any, info: any) {
++          inf = info;
++        }
++      }
++    }
++  });
++  const document = parse(/* GraphQL */ `
++    {
++      u
++    }
++  `);
++  const context: any =
++    versionInfo.major > 15
++      ? (buildExecutionContext as any)({
++          schema,
++          document
++        })
++      : (buildExecutionContext as any)(schema, document);
++
++  const jsonSchema = queryToJSONSchema(context);
++  test(""json schema creation"", () => {
++    expect(jsonSchema).toMatchSnapshot();
++  });
++});
+",0,
+22,54078da3305f1eaacb2bc92bc49baf296a4d6f0c,9e0b7d3d840a69b329480998718b6ad7305bf1be,src/__tests__/__snapshots__/json.test.ts.snap,src/__tests__/json.test.ts,"The PR computes a representation of the fields in the Query to a tree form with all the fragments expanded. This is done at the compilation time and this info is useful at runtime to get the fields requested for a node in the graph. 
+Shape of the result:
+
+```ts
+interface GraphQLJitResolveInfo extends GraphQLResolveInfo {
+  fieldExpansion: FieldExpansion;
+}
+interface FieldExpansion {
+  [returnType: string]: TypeExpansion
+}
+interface TypeExpansion {
+  [fieldName: string]: FieldExpansion | { [LeafField]: true }
+}
+```
+
+This is a helper for quick access to the list of fields selected at the current level. This is useful for transformations into queries to corresponding backends that can accept a list of fields for optimizing the amount of data and other computations.
+
+Example:
+
+```graphql
+type Query {
+  iBar: IBar
+}
+interface IBar {
+  id: ID!
+  title: String
+}
+type Bar1 implements IBar {
+  id: ID!
+  title: String
+  b1: Int!
+}
+type Bar2 implements IBar {
+  id: ID!
+  title: String
+  b2: Boolean!
+}
+```
+
+and the query
+
+```graphql
+query {
+  iBar {
+    id
+    title
+    ... on Bar1 {
+      b1
+    }
+    ... on Bar2 {
+      b2
+    }
+  }
+}
+```
+
+the `resolveInfo` at `iBar` would contain the following `fieldExpansion`: 
+
+```
+Object {
+  ""Bar1"": Object {
+    ""b1"": true,
+    ""id"": true,
+    ""title"": true,
+  },
+  ""Bar2"": Object {
+    ""b2"": true,
+    ""id"": true,
+    ""title"": true,
+  },
+  ""IBar"": Object {
+    ""id"": true,
+    ""title"": true,
+  },
+}
+```
+
+### Advantages
+
+This way, at runtime, we do get a list of fields that we can use to query the provider of `iBar` in the above example and it saves us in the following way -
+
+1. response time of Provider
+1. amount of data transfer
+1. Deserialization time (say, JSON.parse time) - which are cpu bound.
+","fix bugs in implementation and fix tests
+","diff --git a/src/__tests__/json.test.ts b/src/__tests__/json.test.ts
+index ca64eb5..c316f58 100644
+--- a/src/__tests__/json.test.ts
++++ b/src/__tests__/json.test.ts
+@@ -9,7 +9,9 @@ import {
+   GraphQLObjectType,
+   GraphQLSchema,
+   GraphQLString,
+-  parse
++  parse,
++  GraphQLInt,
++  GraphQLScalarType
+ } from ""graphql"";
+ import { buildExecutionContext } from ""graphql/execution/execute"";
+ import { compileQuery } from ""../index"";
+@@ -20,7 +22,20 @@ describe(""json schema creator"", () => {
+     name: ""Author"",
+     fields: () => ({
+       id: { type: new GraphQLNonNull(GraphQLID) },
+-      name: { type: GraphQLString }
++      name: { type: GraphQLString },
++      pic: {
++        type: new GraphQLObjectType({
++          name: ""Pic"",
++          fields: {
++            width: { type: GraphQLInt },
++            height: { type: GraphQLInt },
++            url: { type: GraphQLString }
++          }
++        })
++      },
++      recentArticle: {
++        type: BlogArticle
++      }
+     })
+   });
+ 
+@@ -139,7 +154,7 @@ describe(""json schema creator"", () => {
+       expect(prepared.stringify).not.toBe(JSON.stringify);
+       expect(prepared.stringify(response)).toEqual(JSON.stringify(response));
+     });
+-    test(""valid response serialization"", async () => {
++    test(""valid response serialization 2"", async () => {
+       const prepared: any = compileQuery(blogSchema, parse(query), """", {
+         customJSONSerializer: false
+       });
+",0,
+22,54078da3305f1eaacb2bc92bc49baf296a4d6f0c,9e0b7d3d840a69b329480998718b6ad7305bf1be,src/__tests__/__snapshots__/json.test.ts.snap,src/__tests__/json.test.ts,"The PR computes a representation of the fields in the Query to a tree form with all the fragments expanded. This is done at the compilation time and this info is useful at runtime to get the fields requested for a node in the graph. 
+Shape of the result:
+
+```ts
+interface GraphQLJitResolveInfo extends GraphQLResolveInfo {
+  fieldExpansion: FieldExpansion;
+}
+interface FieldExpansion {
+  [returnType: string]: TypeExpansion
+}
+interface TypeExpansion {
+  [fieldName: string]: FieldExpansion | { [LeafField]: true }
+}
+```
+
+This is a helper for quick access to the list of fields selected at the current level. This is useful for transformations into queries to corresponding backends that can accept a list of fields for optimizing the amount of data and other computations.
+
+Example:
+
+```graphql
+type Query {
+  iBar: IBar
+}
+interface IBar {
+  id: ID!
+  title: String
+}
+type Bar1 implements IBar {
+  id: ID!
+  title: String
+  b1: Int!
+}
+type Bar2 implements IBar {
+  id: ID!
+  title: String
+  b2: Boolean!
+}
+```
+
+and the query
+
+```graphql
+query {
+  iBar {
+    id
+    title
+    ... on Bar1 {
+      b1
+    }
+    ... on Bar2 {
+      b2
+    }
+  }
+}
+```
+
+the `resolveInfo` at `iBar` would contain the following `fieldExpansion`: 
+
+```
+Object {
+  ""Bar1"": Object {
+    ""b1"": true,
+    ""id"": true,
+    ""title"": true,
+  },
+  ""Bar2"": Object {
+    ""b2"": true,
+    ""id"": true,
+    ""title"": true,
+  },
+  ""IBar"": Object {
+    ""id"": true,
+    ""title"": true,
+  },
+}
+```
+
+### Advantages
+
+This way, at runtime, we do get a list of fields that we can use to query the provider of `iBar` in the above example and it saves us in the following way -
+
+1. response time of Provider
+1. amount of data transfer
+1. Deserialization time (say, JSON.parse time) - which are cpu bound.
+","fix bugs in implementation and fix tests
+","diff --git a/src/__tests__/json.test.ts b/src/__tests__/json.test.ts
+index ca64eb5..c316f58 100644
+--- a/src/__tests__/json.test.ts
++++ b/src/__tests__/json.test.ts
+@@ -9,7 +9,9 @@ import {
+   GraphQLObjectType,
+   GraphQLSchema,
+   GraphQLString,
+-  parse
++  parse,
++  GraphQLInt,
++  GraphQLScalarType
+ } from ""graphql"";
+ import { buildExecutionContext } from ""graphql/execution/execute"";
+ import { compileQuery } from ""../index"";
+@@ -20,7 +22,20 @@ describe(""json schema creator"", () => {
+     name: ""Author"",
+     fields: () => ({
+       id: { type: new GraphQLNonNull(GraphQLID) },
+-      name: { type: GraphQLString }
++      name: { type: GraphQLString },
++      pic: {
++        type: new GraphQLObjectType({
++          name: ""Pic"",
++          fields: {
++            width: { type: GraphQLInt },
++            height: { type: GraphQLInt },
++            url: { type: GraphQLString }
++          }
++        })
++      },
++      recentArticle: {
++        type: BlogArticle
++      }
+     })
+   });
+ 
+@@ -139,7 +154,7 @@ describe(""json schema creator"", () => {
+       expect(prepared.stringify).not.toBe(JSON.stringify);
+       expect(prepared.stringify(response)).toEqual(JSON.stringify(response));
+     });
+-    test(""valid response serialization"", async () => {
++    test(""valid response serialization 2"", async () => {
+       const prepared: any = compileQuery(blogSchema, parse(query), """", {
+         customJSONSerializer: false
+       });
+",0,

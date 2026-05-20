@@ -1,0 +1,99 @@
+{
+    "id": 6920012,
+    "name": "egoist/vue-content-loader",
+    "isFork": false,
+    "commits": 277,
+    "branches": 11,
+    "releases": 6,
+    "forks": 139,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://create-content-loader.now.sh/",
+    "watchers": 27,
+    "stargazers": 3026,
+    "contributors": 11,
+    "size": 1867,
+    "createdAt": "2018-03-21T01:39:59",
+    "pushedAt": "2024-02-23T12:25:19",
+    "updatedAt": "2024-02-23T08:57:36",
+    "totalIssues": 32,
+    "openIssues": 2,
+    "totalPullRequests": 394,
+    "openPullRequests": 6,
+    "blankLines": 129,
+    "codeLines": 1054,
+    "commentLines": 5,
+    "metrics": [
+        {
+            "blankLines": 13,
+            "language": "Vuejs Component",
+            "commentLines": 0,
+            "codeLines": 110
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 90
+        },
+        {
+            "blankLines": 21,
+            "language": "TypeScript",
+            "commentLines": 0,
+            "codeLines": 227
+        },
+        {
+            "blankLines": 55,
+            "language": "JavaScript",
+            "commentLines": 4,
+            "codeLines": 491
+        },
+        {
+            "blankLines": 1,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 37
+        },
+        {
+            "blankLines": 39,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 99
+        }
+    ],
+    "lastCommit": "2023-01-15T11:13:24",
+    "lastCommitSHA": "75224c248a28afa678ea9de8244a3c9a6e481839",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 12767,
+        "TypeScript": 7277,
+        "Vue": 2422
+    },
+    "labels": [
+        ":dollar: funded on issuehunt",
+        ":gift: rewarded on issuehunt",
+        "breaking",
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "released",
+        "security",
+        "wontfix"
+    ],
+    "topics": [
+        "component",
+        "loading",
+        "placeholder",
+        "svg",
+        "vue"
+    ]
+}

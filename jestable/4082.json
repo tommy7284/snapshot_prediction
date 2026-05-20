@@ -1,0 +1,86 @@
+{
+    "id": 5502649,
+    "name": "babel/babel-upgrade",
+    "isFork": false,
+    "commits": 181,
+    "branches": 12,
+    "releases": 1,
+    "forks": 71,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": null,
+    "watchers": 27,
+    "stargazers": 1311,
+    "contributors": 21,
+    "size": 757,
+    "createdAt": "2018-02-12T10:36:46",
+    "pushedAt": "2023-06-28T08:17:50",
+    "updatedAt": "2023-06-23T06:05:14",
+    "totalIssues": 47,
+    "openIssues": 25,
+    "totalPullRequests": 98,
+    "openPullRequests": 12,
+    "blankLines": 216,
+    "codeLines": 7630,
+    "commentLines": 50,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "JSON5",
+            "commentLines": 1,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 171,
+            "language": "JavaScript",
+            "commentLines": 48,
+            "codeLines": 961
+        },
+        {
+            "blankLines": 2,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6443
+        },
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 41,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 189
+        }
+    ],
+    "lastCommit": "2023-06-28T08:17:08",
+    "lastCommitSHA": "67fbae8603601de832dee943567890cf34b710d6",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 42677
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "has pr",
+        "help wanted",
+        "invalid",
+        "question",
+        "tests",
+        "wontfix"
+    ],
+    "topics": [
+        "babel",
+        "babel-upgrade"
+    ]
+}

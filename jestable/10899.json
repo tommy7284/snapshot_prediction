@@ -1,0 +1,96 @@
+{
+    "id": 7504484,
+    "name": "juliomrqz/nuxt-optimized-images",
+    "isFork": false,
+    "commits": 293,
+    "branches": 49,
+    "releases": 12,
+    "forks": 28,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "develop",
+    "license": "MIT License",
+    "homepage": "https://marquez.co/docs/nuxt-optimized-images/",
+    "watchers": 10,
+    "stargazers": 855,
+    "contributors": 13,
+    "size": 5384,
+    "createdAt": "2019-02-28T11:52:22",
+    "pushedAt": "2023-03-05T06:34:39",
+    "updatedAt": "2023-03-22T02:44:08",
+    "totalIssues": 86,
+    "openIssues": 22,
+    "totalPullRequests": 296,
+    "openPullRequests": 50,
+    "blankLines": 958,
+    "codeLines": 3120,
+    "commentLines": 225,
+    "metrics": [
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 33
+        },
+        {
+            "blankLines": 30,
+            "language": "Vuejs Component",
+            "commentLines": 0,
+            "codeLines": 472
+        },
+        {
+            "blankLines": 743,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1462
+        },
+        {
+            "blankLines": 167,
+            "language": "JavaScript",
+            "commentLines": 219,
+            "codeLines": 936
+        },
+        {
+            "blankLines": 18,
+            "language": "YAML",
+            "commentLines": 6,
+            "codeLines": 111
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 106
+        }
+    ],
+    "lastCommit": "2022-06-12T05:54:47",
+    "lastCommitSHA": "adfd19a38c2609f0e5b3c97e7c8f1f3fdd6ebe33",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37424,
+        "Vue": 13215
+    },
+    "labels": [
+        "bug",
+        "configuration error",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "pinned",
+        "question",
+        "renovate",
+        "request-more-info",
+        "security fix",
+        "security vulnerability",
+        "todo :spiral_notepad:",
+        "weekly-digest",
+        "wontfix"
+    ],
+    "topics": []
+}

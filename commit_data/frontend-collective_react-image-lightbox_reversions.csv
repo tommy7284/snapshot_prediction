@@ -1,0 +1,15 @@
+pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
+148,743e8842032970afeecad8c725f3e0eeafc5c178,37165b81becca9bcaf1dd9ee833f4aeb6fcb0636,"#138 
+#144 
+
+edit:
+
+closes: #138 
+closes: #144 ","Update snapshot
+",,0,,1,6,1,19,15,26753
+98,1f21f1cc0e172447793b6a9e17a503467863004d,b7226d24645288738b9ae405e5af03105d0b53aa,"#82 
+
+@fritz-c Should I change the default error message to be a dom element instead of string? 
+
+Provides more customizability.","updating the test to have the imageLoadErrorMessage
+",,0,,1,1,1,9,5,101

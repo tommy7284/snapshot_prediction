@@ -1,0 +1,206 @@
+{
+    "id": 4112089,
+    "name": "effector/effector",
+    "isFork": false,
+    "commits": 7431,
+    "branches": 41,
+    "releases": 158,
+    "forks": 218,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "https://effector.dev",
+    "watchers": 48,
+    "stargazers": 4492,
+    "contributors": 116,
+    "size": 135895,
+    "createdAt": "2018-02-27T10:38:40",
+    "pushedAt": "2024-04-24T06:12:58",
+    "updatedAt": "2024-04-24T06:05:42",
+    "totalIssues": 400,
+    "openIssues": 111,
+    "totalPullRequests": 623,
+    "openPullRequests": 15,
+    "blankLines": 15013,
+    "codeLines": 122385,
+    "commentLines": 4671,
+    "metrics": [
+        {
+            "language": "Java",
+            "commentLines": 6,
+            "codeLines": 46,
+            "blankLines": 12
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 4063,
+            "codeLines": 74497,
+            "blankLines": 4896
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 6,
+            "codeLines": 5,
+            "blankLines": 4
+        },
+        {
+            "language": "YAML",
+            "commentLines": 21,
+            "codeLines": 14851,
+            "blankLines": 2007
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 140,
+            "codeLines": 18760,
+            "blankLines": 7337
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 7380,
+            "blankLines": 0
+        },
+        {
+            "language": "Dockerfile",
+            "commentLines": 2,
+            "codeLines": 9,
+            "blankLines": 0
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 74,
+            "blankLines": 24
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0,
+            "blankLines": 1
+        },
+        {
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 20,
+            "blankLines": 3
+        },
+        {
+            "language": "Properties",
+            "commentLines": 14,
+            "codeLines": 7,
+            "blankLines": 5
+        },
+        {
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 614,
+            "blankLines": 4
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 152,
+            "codeLines": 4240,
+            "blankLines": 448
+        },
+        {
+            "language": "XML",
+            "commentLines": 2,
+            "codeLines": 505,
+            "blankLines": 7
+        },
+        {
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16,
+            "blankLines": 2
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 37,
+            "codeLines": 129,
+            "blankLines": 22
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 18,
+            "codeLines": 82,
+            "blankLines": 26
+        },
+        {
+            "language": "HTML",
+            "commentLines": 40,
+            "codeLines": 85,
+            "blankLines": 12
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 113,
+            "codeLines": 117,
+            "blankLines": 21
+        },
+        {
+            "language": "CSS",
+            "commentLines": 44,
+            "codeLines": 948,
+            "blankLines": 182
+        }
+    ],
+    "lastCommit": "2024-04-24T06:10:12",
+    "lastCommitSHA": "0996d96376b90db6b8c5b74dcc522732eb726771",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 2781367,
+        "Astro": 193903,
+        "JavaScript": 112151,
+        "CSS": 27788,
+        "MDX": 6088,
+        "Shell": 563,
+        "Dockerfile": 279
+    },
+    "labels": [
+        ":dollar: funded on issuehunt",
+        ":gift: rewarded on issuehunt",
+        "breaking changes",
+        "bug",
+        "compatibility",
+        "core",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "effector-react",
+        "effector-solid",
+        "effector-vue",
+        "effector/babel-plugin",
+        "enhancement",
+        "forest",
+        "fork api",
+        "good first issue",
+        "help wanted",
+        "integration",
+        "invalid",
+        "needs more info",
+        "needs triage",
+        "nextjs",
+        "playgroung",
+        "question",
+        "rfc",
+        "seems outdated",
+        "typings",
+        "website",
+        "wontfix"
+    ],
+    "topics": [
+        "business-logic",
+        "effector",
+        "event-driven",
+        "reactive",
+        "state",
+        "state-management",
+        "state-manager"
+    ]
+}

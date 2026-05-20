@@ -1,0 +1,158 @@
+{
+    "id": 6859750,
+    "name": "webpack-contrib/sass-loader",
+    "isFork": false,
+    "commits": 737,
+    "branches": 4,
+    "releases": 89,
+    "forks": 423,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 57,
+    "stargazers": 3894,
+    "contributors": 87,
+    "size": 17906,
+    "createdAt": "2014-02-09T12:06:00",
+    "pushedAt": "2024-04-16T04:53:32",
+    "updatedAt": "2024-04-19T04:04:58",
+    "totalIssues": 689,
+    "openIssues": 5,
+    "totalPullRequests": 503,
+    "openPullRequests": 3,
+    "blankLines": 1646,
+    "codeLines": 30120,
+    "commentLines": 497,
+    "metrics": [
+        {
+            "blankLines": 47,
+            "language": "Sass",
+            "commentLines": 94,
+            "codeLines": 743
+        },
+        {
+            "blankLines": 2,
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 10
+        },
+        {
+            "blankLines": 664,
+            "language": "Markdown",
+            "commentLines": 63,
+            "codeLines": 1238
+        },
+        {
+            "blankLines": 1,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 146
+        },
+        {
+            "blankLines": 0,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 48
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 1,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 21562
+        },
+        {
+            "blankLines": 866,
+            "language": "JavaScript",
+            "commentLines": 242,
+            "codeLines": 5448
+        },
+        {
+            "blankLines": 26,
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 88
+        },
+        {
+            "blankLines": 37,
+            "language": "SCSS",
+            "commentLines": 97,
+            "codeLines": 831
+        }
+    ],
+    "lastCommit": "2024-04-16T04:53:22",
+    "lastCommitSHA": "dfcd3cc65f5470650200c27926e70da7e1570f92",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 229001,
+        "SCSS": 25970,
+        "Sass": 25732,
+        "HTML": 5488,
+        "CSS": 918,
+        "Shell": 151
+    },
+    "labels": [
+        "dependencies",
+        "flag: community help wanted",
+        "flag: has pull request",
+        "flag: needs docs",
+        "flag: needs more info",
+        "flag: needs tests",
+        "flag: performance",
+        "pr_action: blocked",
+        "pr_action: discuss",
+        "pr_action: merge ready",
+        "pr_action: rebase",
+        "pr_action: review",
+        "pr_action: rework",
+        "priority: 1 (critical)",
+        "priority: 2 (urgent)",
+        "priority: 3 (required)",
+        "priority: 4 (important)",
+        "priority: 5 (nice to have)",
+        "semver: major",
+        "semver: minor",
+        "semver: patch",
+        "severity: 1 (security)",
+        "severity: 2 (regression)",
+        "severity: 3 (broken)",
+        "severity: 4 (inconvenient)",
+        "severity: 5 (confusing)",
+        "status: approved",
+        "status: blocked",
+        "status: declined",
+        "status: needs repro",
+        "status: needs triage",
+        "status: pending",
+        "type: bug",
+        "type: build",
+        "type: chore",
+        "type: ci",
+        "type: documentation",
+        "type: enhancement",
+        "type: feature",
+        "type: perf",
+        "type: refactor",
+        "type: rfc/proposal",
+        "type: style",
+        "won't fix"
+    ],
+    "topics": [
+        "dart-sass",
+        "loader",
+        "node-sass",
+        "sass",
+        "scss",
+        "webpack",
+        "webpack-loader"
+    ]
+}

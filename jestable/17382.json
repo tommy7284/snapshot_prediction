@@ -1,0 +1,135 @@
+{
+    "id": 45063429,
+    "name": "millihq/terraform-aws-next-js",
+    "isFork": false,
+    "commits": 880,
+    "branches": 12,
+    "releases": 44,
+    "forks": 153,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "Apache License 2.0",
+    "homepage": "https://registry.terraform.io/modules/milliHQ/next-js/aws",
+    "watchers": 17,
+    "stargazers": 1411,
+    "contributors": 32,
+    "size": 6087,
+    "createdAt": "2020-06-19T06:55:43",
+    "pushedAt": "2023-12-14T07:26:52",
+    "updatedAt": "2024-01-05T10:07:27",
+    "totalIssues": 207,
+    "openIssues": 66,
+    "totalPullRequests": 180,
+    "openPullRequests": 10,
+    "blankLines": 4290,
+    "codeLines": 29156,
+    "commentLines": 3423,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 6,
+            "codeLines": 29,
+            "blankLines": 12
+        },
+        {
+            "language": "HTML",
+            "commentLines": 4,
+            "codeLines": 46,
+            "blankLines": 5
+        },
+        {
+            "language": "YAML",
+            "commentLines": 17,
+            "codeLines": 527,
+            "blankLines": 72
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1199,
+            "blankLines": 577
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 5795,
+            "blankLines": 57
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2577,
+            "codeLines": 14324,
+            "blankLines": 2245
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 126,
+            "codeLines": 5244,
+            "blankLines": 728
+        },
+        {
+            "language": "Diff",
+            "commentLines": 8,
+            "codeLines": 4,
+            "blankLines": 0
+        },
+        {
+            "language": "HCL",
+            "commentLines": 685,
+            "codeLines": 1884,
+            "blankLines": 574
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 99,
+            "blankLines": 18
+        },
+        {
+            "language": "JSX",
+            "commentLines": 0,
+            "codeLines": 5,
+            "blankLines": 2
+        }
+    ],
+    "lastCommit": "2022-08-21T04:14:37",
+    "lastCommitSHA": "f6fc50702f6a01319ac2f7adc7a80a91ebee7225",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 522185,
+        "HCL": 65478,
+        "JavaScript": 44852,
+        "HTML": 1319,
+        "Shell": 1255
+    },
+    "labels": [
+        "blocked",
+        "bug",
+        "component/cli",
+        "component/proxy",
+        "component/static-deployment",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "example",
+        "feature/aws",
+        "feature/next.js",
+        "feature/terraform",
+        "performance",
+        "question",
+        "rfc",
+        "upstream/terraform",
+        "wontfix",
+        "workaround available"
+    ],
+    "topics": [
+        "aws",
+        "nextjs",
+        "serverless",
+        "terraform-module"
+    ]
+}

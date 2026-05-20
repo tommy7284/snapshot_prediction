@@ -1,0 +1,91 @@
+{
+    "id": 6943091,
+    "name": "prettier-solidity/prettier-plugin-solidity",
+    "isFork": false,
+    "commits": 552,
+    "branches": 11,
+    "releases": 77,
+    "forks": 58,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://t.me/+kgTgkFgIwJkwMjcx",
+    "watchers": 9,
+    "stargazers": 543,
+    "contributors": 18,
+    "size": 2393,
+    "createdAt": "2018-05-15T03:12:02",
+    "pushedAt": "2022-09-22T07:08:07",
+    "updatedAt": "2022-09-20T07:36:32",
+    "totalIssues": 193,
+    "openIssues": 19,
+    "totalPullRequests": 544,
+    "openPullRequests": 4,
+    "blankLines": 1449,
+    "codeLines": 15057,
+    "commentLines": 893,
+    "metrics": [
+        {
+            "blankLines": 531,
+            "language": "JavaScript",
+            "commentLines": 299,
+            "codeLines": 3926
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 6674
+        },
+        {
+            "blankLines": 241,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 652
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 130
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 670,
+            "language": "Solidity",
+            "commentLines": 594,
+            "codeLines": 3646
+        }
+    ],
+    "lastCommit": "2022-09-14T01:22:34",
+    "lastCommitSHA": "654bdee0e81596c14c298d65660da1c217698333",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 140596,
+        "Solidity": 136539
+    },
+    "labels": [
+        "bug",
+        "comments",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "refactor",
+        "security",
+        "wip",
+        "wontfix"
+    ],
+    "topics": []
+}

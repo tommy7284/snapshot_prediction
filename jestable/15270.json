@@ -1,0 +1,119 @@
+{
+    "id": 4070909,
+    "name": "typescript-eslint/tslint-to-eslint-config",
+    "isFork": false,
+    "commits": 1445,
+    "branches": 16,
+    "releases": 54,
+    "forks": 98,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 8,
+    "stargazers": 830,
+    "contributors": 55,
+    "size": 6174,
+    "createdAt": "2019-06-24T06:13:26",
+    "pushedAt": "2024-04-18T11:22:48",
+    "updatedAt": "2024-04-19T07:27:25",
+    "totalIssues": 428,
+    "openIssues": 17,
+    "totalPullRequests": 1411,
+    "openPullRequests": 14,
+    "blankLines": 3821,
+    "codeLines": 37218,
+    "commentLines": 1194,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12339,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 1135,
+            "codeLines": 23973,
+            "blankLines": 3476
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 9,
+            "codeLines": 233,
+            "blankLines": 26
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 102,
+            "blankLines": 35
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 50,
+            "codeLines": 568,
+            "blankLines": 283
+        }
+    ],
+    "lastCommit": "2024-01-24T10:40:42",
+    "lastCommitSHA": "470d44de20beb7c7366de993edb8898d0766b8aa",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 896084,
+        "JavaScript": 9379,
+        "Shell": 60
+    },
+    "labels": [
+        "area: command line",
+        "area: comment conversions",
+        "area: editor configs",
+        "area: incorrect converter",
+        "area: incorrect merger",
+        "area: lint configurations",
+        "area: missing converter",
+        "area: missing merger",
+        "area: node api",
+        "breaking change",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "good first issue",
+        "question",
+        "status: accepting prs",
+        "status: aged away",
+        "status: blocked",
+        "status: external",
+        "status: in discussion",
+        "status: needs fix verification",
+        "status: needs investigation",
+        "status: needs more information",
+        "status: waiting for author",
+        "status: waiting for reviewer",
+        "tooling",
+        "type: bug",
+        "type: cleanup",
+        "type: enhancement",
+        "wontfix",
+        "zalgo"
+    ],
+    "topics": [
+        "config",
+        "conversion",
+        "deprecation",
+        "eslint",
+        "hacktoberfest",
+        "prettier",
+        "tslint",
+        "typescript"
+    ]
+}

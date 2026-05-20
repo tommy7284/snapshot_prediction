@@ -1,0 +1,113 @@
+{
+    "id": 6745372,
+    "name": "risingstack/react-easy-state",
+    "isFork": false,
+    "commits": 448,
+    "branches": 168,
+    "releases": 38,
+    "forks": 115,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 42,
+    "stargazers": 2537,
+    "contributors": 14,
+    "size": 18318,
+    "createdAt": "2017-05-23T03:17:43",
+    "pushedAt": "2023-01-06T09:00:43",
+    "updatedAt": "2023-01-19T07:29:51",
+    "totalIssues": 135,
+    "openIssues": 37,
+    "totalPullRequests": 283,
+    "openPullRequests": 162,
+    "blankLines": 873,
+    "codeLines": 130997,
+    "commentLines": 329,
+    "metrics": [
+        {
+            "blankLines": 275,
+            "language": "JSX",
+            "commentLines": 57,
+            "codeLines": 1725
+        },
+        {
+            "blankLines": 133,
+            "language": "CSS",
+            "commentLines": 11,
+            "codeLines": 709
+        },
+        {
+            "blankLines": 6,
+            "language": "HTML",
+            "commentLines": 40,
+            "codeLines": 43
+        },
+        {
+            "blankLines": 280,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 736
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 4,
+            "codeLines": 57
+        },
+        {
+            "blankLines": 5,
+            "language": "GraphQL",
+            "commentLines": 0,
+            "codeLines": 40
+        },
+        {
+            "blankLines": 1,
+            "language": "TypeScript",
+            "commentLines": 3,
+            "codeLines": 15
+        },
+        {
+            "blankLines": 170,
+            "language": "JavaScript",
+            "commentLines": 214,
+            "codeLines": 1403
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 126244
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 25
+        }
+    ],
+    "lastCommit": "2020-04-24T10:08:50",
+    "lastCommitSHA": "e7a1f853755fe5d53053cfdcc785430f9a85f4e4",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 65776
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "do not merge!",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "idea",
+        "invalid",
+        "question",
+        "released",
+        "released on @alpha",
+        "wontfix"
+    ],
+    "topics": []
+}

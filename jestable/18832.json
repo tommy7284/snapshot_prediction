@@ -1,0 +1,94 @@
+{
+    "id": 94504091,
+    "name": "dzhng/zod-gpt",
+    "isFork": false,
+    "commits": 72,
+    "branches": 1,
+    "releases": 0,
+    "forks": 10,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 6,
+    "stargazers": 505,
+    "contributors": 1,
+    "size": 1423,
+    "createdAt": "2023-06-26T07:11:40",
+    "pushedAt": "2024-04-26T05:27:45",
+    "updatedAt": "2024-04-26T05:27:36",
+    "totalIssues": 7,
+    "openIssues": 2,
+    "totalPullRequests": 2,
+    "openPullRequests": 0,
+    "blankLines": 1496,
+    "codeLines": 6227,
+    "commentLines": 43,
+    "metrics": [
+        {
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 3,
+            "blankLines": 1
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 162,
+            "blankLines": 63
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 36,
+            "codeLines": 609,
+            "blankLines": 68
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 7,
+            "codeLines": 19,
+            "blankLines": 2
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 5242,
+            "blankLines": 1359
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 184,
+            "blankLines": 1
+        },
+        {
+            "language": "INI",
+            "commentLines": 0,
+            "codeLines": 8,
+            "blankLines": 2
+        }
+    ],
+    "lastCommit": "2024-04-26T05:27:27",
+    "lastCommitSHA": "9be7db3375f6dd02f318547c07a6eab12b71ad80",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 21599,
+        "JavaScript": 986,
+        "Shell": 58
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

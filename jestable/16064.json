@@ -1,0 +1,158 @@
+{
+    "id": 4109722,
+    "name": "davidkpiano/xstate",
+    "isFork": false,
+    "commits": 3644,
+    "branches": 134,
+    "releases": 98,
+    "forks": 720,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://xstate.js.org/docs",
+    "watchers": 184,
+    "stargazers": 16523,
+    "contributors": 215,
+    "size": 46459,
+    "createdAt": "2015-09-14T03:04:15",
+    "pushedAt": "2021-06-29T03:51:03",
+    "updatedAt": "2021-06-30T03:06:40",
+    "totalIssues": 872,
+    "openIssues": 108,
+    "totalPullRequests": 878,
+    "openPullRequests": 53,
+    "blankLines": 17794,
+    "codeLines": 106228,
+    "commentLines": 2212,
+    "metrics": [
+        {
+            "language": "Stylus",
+            "commentLines": 1,
+            "codeLines": 84,
+            "blankLines": 16
+        },
+        {
+            "language": "YAML",
+            "commentLines": 1,
+            "codeLines": 12953,
+            "blankLines": 1968
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 4982,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2130,
+            "codeLines": 48906,
+            "blankLines": 6148
+        },
+        {
+            "language": "Svelte",
+            "commentLines": 2,
+            "codeLines": 471,
+            "blankLines": 62
+        },
+        {
+            "language": "JSX",
+            "commentLines": 5,
+            "codeLines": 497,
+            "blankLines": 42
+        },
+        {
+            "language": "Vuejs Component",
+            "commentLines": 12,
+            "codeLines": 841,
+            "blankLines": 69
+        },
+        {
+            "language": "SVG",
+            "commentLines": 1,
+            "codeLines": 83,
+            "blankLines": 0
+        },
+        {
+            "language": "XML",
+            "commentLines": 18,
+            "codeLines": 36,
+            "blankLines": 12
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 37,
+            "codeLines": 1490,
+            "blankLines": 93
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 35076,
+            "blankLines": 9303
+        },
+        {
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 549,
+            "blankLines": 76
+        },
+        {
+            "language": "HTML",
+            "commentLines": 5,
+            "codeLines": 260,
+            "blankLines": 5
+        }
+    ],
+    "lastCommit": "2021-06-29T02:59:51",
+    "lastCommitSHA": "b7e5a33e551b49e50778ba1162e7a98d29c1bfd7",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 844804,
+        "Vue": 9893,
+        "JavaScript": 8981,
+        "Svelte": 2018,
+        "HTML": 342
+    },
+    "labels": [
+        ":microscope: testing",
+        ":tada: praise :blush:",
+        "bug",
+        "can't reproduce",
+        "core",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "example",
+        "hacktoberfest",
+        "hacktoberfest-accepted",
+        "has workaround",
+        "help wanted",
+        "invalid",
+        "needs reproduction",
+        "performance",
+        "question",
+        "spam",
+        "typescript",
+        "wip",
+        "wontfix",
+        "working as designed",
+        "\u221e @xstate/immer",
+        "\u2697\ufe0f @xstate/test",
+        "\u269b\ufe0e @xstate/react",
+        "\ud83d\udc9a @xstate/vue",
+        "\ud83d\udcc9 @xstate/graph",
+        "\ud83d\udcd1 scxml",
+        "\ud83d\udcdd rfc",
+        "\ud83d\udd0e @xstate/inspect",
+        "\ud83d\udd2c visualizer",
+        "\ud83d\udd2e future tools",
+        "\ud83d\uddbc @xstate/viz",
+        "\ud83e\udd16 @xstate/fsm"
+    ],
+    "topics": []
+}

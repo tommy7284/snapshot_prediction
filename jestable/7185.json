@@ -1,0 +1,126 @@
+{
+    "id": 6597452,
+    "name": "taskrabbit/react-native-parsed-text",
+    "isFork": false,
+    "commits": 134,
+    "branches": 19,
+    "releases": 2,
+    "forks": 171,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 21,
+    "stargazers": 1146,
+    "contributors": 19,
+    "size": 1349,
+    "createdAt": "2015-11-12T05:16:33",
+    "pushedAt": "2023-06-09T06:21:16",
+    "updatedAt": "2023-06-16T02:24:03",
+    "totalIssues": 61,
+    "openIssues": 16,
+    "totalPullRequests": 63,
+    "openPullRequests": 26,
+    "blankLines": 285,
+    "codeLines": 1880,
+    "commentLines": 264,
+    "metrics": [
+        {
+            "blankLines": 20,
+            "language": "Bourne Again Shell",
+            "commentLines": 21,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 24,
+            "language": "Gradle",
+            "commentLines": 58,
+            "codeLines": 106
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 8,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 29,
+            "language": "Objective-C",
+            "commentLines": 43,
+            "codeLines": 73
+        },
+        {
+            "blankLines": 34,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 120
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 12,
+            "language": "ProGuard",
+            "commentLines": 23,
+            "codeLines": 25
+        },
+        {
+            "blankLines": 15,
+            "language": "Java",
+            "commentLines": 0,
+            "codeLines": 63
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 120
+        },
+        {
+            "blankLines": 5,
+            "language": "XML",
+            "commentLines": 3,
+            "codeLines": 251
+        },
+        {
+            "blankLines": 5,
+            "language": "TypeScript",
+            "commentLines": 14,
+            "codeLines": 26
+        },
+        {
+            "blankLines": 113,
+            "language": "JavaScript",
+            "commentLines": 92,
+            "codeLines": 905
+        }
+    ],
+    "lastCommit": "2020-06-24T07:27:58",
+    "lastCommitSHA": "fded31e2012959d1d4c3ade0e47e4d826e732fd0",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 30138,
+        "Objective-C": 4987,
+        "Java": 2281
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "parsing",
+        "react-native"
+    ]
+}

@@ -1,0 +1,84 @@
+{
+    "id": 5391642,
+    "name": "storybookjs/react-treebeard",
+    "isFork": false,
+    "commits": 225,
+    "branches": 4,
+    "releases": 18,
+    "forks": 313,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "homepage": "http://storybooks.github.io/react-treebeard",
+    "watchers": 32,
+    "stargazers": 1654,
+    "contributors": 16,
+    "size": 1020,
+    "createdAt": "2015-10-08T07:23:14",
+    "pushedAt": "2022-02-14T07:27:27",
+    "updatedAt": "2022-02-18T09:25:45",
+    "totalIssues": 167,
+    "openIssues": 64,
+    "totalPullRequests": 90,
+    "openPullRequests": 10,
+    "blankLines": 176,
+    "codeLines": 13554,
+    "commentLines": 15,
+    "metrics": [
+        {
+            "blankLines": 4,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 13
+        },
+        {
+            "blankLines": 0,
+            "language": "HTML",
+            "commentLines": 10,
+            "codeLines": 27
+        },
+        {
+            "blankLines": 119,
+            "language": "JavaScript",
+            "commentLines": 5,
+            "codeLines": 1113
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 12173
+        },
+        {
+            "blankLines": 53,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 228
+        }
+    ],
+    "lastCommit": "2019-09-16T01:00:53",
+    "lastCommitSHA": "36d72f10c35655371d0d0e396128709288bc8b4c",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37104,
+        "HTML": 1494
+    },
+    "labels": [
+        ":clock1: performance",
+        ":dancing_men: duplicate",
+        ":handshake: help wanted",
+        ":no_good_man: invalid",
+        ":page_facing_up: documentation",
+        ":question: question",
+        ":see_no_evil: wontfix",
+        ":star: good first issue",
+        ":sunglasses: enhancement",
+        "has workaround",
+        "work in progress",
+        "\ud83e\udd9f bug"
+    ],
+    "topics": []
+}

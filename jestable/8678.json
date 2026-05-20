@@ -1,0 +1,114 @@
+{
+    "id": 6767950,
+    "name": "jest-community/jest-extended",
+    "isFork": false,
+    "commits": 535,
+    "branches": 21,
+    "releases": 39,
+    "forks": 227,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://jest-extended.jestcommunity.dev/",
+    "watchers": 20,
+    "stargazers": 2280,
+    "contributors": 101,
+    "size": 3876,
+    "createdAt": "2017-10-14T10:39:21",
+    "pushedAt": "2024-02-12T11:06:56",
+    "updatedAt": "2024-02-13T04:42:05",
+    "totalIssues": 223,
+    "openIssues": 90,
+    "totalPullRequests": 443,
+    "openPullRequests": 35,
+    "blankLines": 1424,
+    "codeLines": 6850,
+    "commentLines": 670,
+    "metrics": [
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 85
+        },
+        {
+            "blankLines": 417,
+            "language": "Markdown",
+            "commentLines": 30,
+            "codeLines": 1133
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 5
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 381
+        },
+        {
+            "blankLines": 163,
+            "language": "TypeScript",
+            "commentLines": 586,
+            "codeLines": 368
+        },
+        {
+            "blankLines": 828,
+            "language": "JavaScript",
+            "commentLines": 43,
+            "codeLines": 4564
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 261
+        },
+        {
+            "blankLines": 7,
+            "language": "CSS",
+            "commentLines": 11,
+            "codeLines": 53
+        }
+    ],
+    "lastCommit": "2023-10-29T10:50:30",
+    "lastCommitSHA": "711fdcc54d68c2b2c1992c7cfbdf0d0bd6be0f4d",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 169718,
+        "MDX": 27965,
+        "TypeScript": 5431,
+        "CSS": 1623,
+        "Shell": 93
+    },
+    "labels": [
+        "beginner friendly",
+        "bug",
+        "contributions claimed",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "greenkeeper",
+        "hacktoberfest",
+        "help wanted",
+        "invalid",
+        "new matcher",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "assertions",
+        "extended",
+        "jest",
+        "matchers",
+        "tdd",
+        "testing"
+    ]
+}

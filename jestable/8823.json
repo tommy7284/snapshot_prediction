@@ -1,0 +1,96 @@
+{
+    "id": 6778202,
+    "name": "adoxography/tailwind-scrollbar",
+    "isFork": false,
+    "commits": 154,
+    "branches": 7,
+    "releases": 16,
+    "forks": 37,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 7,
+    "stargazers": 809,
+    "contributors": 4,
+    "size": 1135,
+    "createdAt": "2020-09-01T10:23:57",
+    "pushedAt": "2024-02-11T12:30:15",
+    "updatedAt": "2024-02-08T04:24:39",
+    "totalIssues": 65,
+    "openIssues": 2,
+    "totalPullRequests": 29,
+    "openPullRequests": 0,
+    "blankLines": 212,
+    "codeLines": 25389,
+    "commentLines": 214,
+    "metrics": [
+        {
+            "blankLines": 6,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 28
+        },
+        {
+            "blankLines": 3,
+            "language": "CSS",
+            "commentLines": 7,
+            "codeLines": 35
+        },
+        {
+            "blankLines": 1,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 6
+        },
+        {
+            "blankLines": 0,
+            "language": "TypeScript",
+            "commentLines": 70,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 109,
+            "language": "JavaScript",
+            "commentLines": 135,
+            "codeLines": 1147
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 23894
+        },
+        {
+            "blankLines": 93,
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 247
+        }
+    ],
+    "lastCommit": "2024-02-11T12:23:24",
+    "lastCommitSHA": "42cae713a0fe3e1aae8dd38907f9193b9441d443",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 37517,
+        "CSS": 1459,
+        "HTML": 189,
+        "Shell": 114
+    },
+    "labels": [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "status: needs information",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,123 @@
+{
+    "id": 4736047,
+    "name": "capitalone/react-native-pathjs-charts",
+    "isFork": false,
+    "commits": 128,
+    "branches": 6,
+    "releases": 16,
+    "forks": 277,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": null,
+    "watchers": 34,
+    "stargazers": 878,
+    "contributors": 23,
+    "size": 9063,
+    "createdAt": "2016-07-29T07:43:20",
+    "pushedAt": "2018-03-01T03:28:09",
+    "updatedAt": "2021-02-02T10:28:18",
+    "totalIssues": 159,
+    "openIssues": 72,
+    "totalPullRequests": 74,
+    "openPullRequests": 3,
+    "blankLines": 850,
+    "codeLines": 15663,
+    "commentLines": 691,
+    "metrics": [
+        {
+            "blankLines": 20,
+            "language": "Bourne Again Shell",
+            "commentLines": 21,
+            "codeLines": 123
+        },
+        {
+            "blankLines": 11,
+            "language": "Java",
+            "commentLines": 4,
+            "codeLines": 42
+        },
+        {
+            "blankLines": 14,
+            "language": "Gradle",
+            "commentLines": 89,
+            "codeLines": 77
+        },
+        {
+            "blankLines": 174,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 1338
+        },
+        {
+            "blankLines": 4,
+            "language": "C/C++ Header",
+            "commentLines": 8,
+            "codeLines": 4
+        },
+        {
+            "blankLines": 3,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 19
+        },
+        {
+            "blankLines": 554,
+            "language": "JavaScript",
+            "commentLines": 514,
+            "codeLines": 5319
+        },
+        {
+            "blankLines": 6,
+            "language": "XML",
+            "commentLines": 4,
+            "codeLines": 467
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 8104
+        },
+        {
+            "blankLines": 24,
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 64
+        },
+        {
+            "blankLines": 14,
+            "language": "ProGuard",
+            "commentLines": 25,
+            "codeLines": 31
+        },
+        {
+            "blankLines": 26,
+            "language": "Objective-C",
+            "commentLines": 24,
+            "codeLines": 75
+        }
+    ],
+    "lastCommit": "2018-03-01T03:28:09",
+    "lastCommitSHA": "857d4478dbb5d6b1b9f008e252d7be96e21fc390",
+    "hasWiki": true,
+    "isArchived": true,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 147519,
+        "Objective-C": 4408,
+        "Python": 1724,
+        "Java": 1379
+    },
+    "labels": [
+        "bug",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

@@ -1,0 +1,105 @@
+{
+    "id": 6726897,
+    "name": "jgudo/ecommerce-react",
+    "isFork": false,
+    "commits": 190,
+    "branches": 9,
+    "releases": 0,
+    "forks": 505,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "Apache License 2.0",
+    "homepage": "https://salinaka-ecommerce.web.app",
+    "watchers": 22,
+    "stargazers": 878,
+    "contributors": 1,
+    "size": 9030,
+    "createdAt": "2019-08-05T02:08:01",
+    "pushedAt": "2023-10-09T03:52:27",
+    "updatedAt": "2023-12-16T09:13:08",
+    "totalIssues": 57,
+    "openIssues": 20,
+    "totalPullRequests": 14,
+    "openPullRequests": 5,
+    "blankLines": 1435,
+    "codeLines": 10879,
+    "commentLines": 273,
+    "metrics": [
+        {
+            "blankLines": 2,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 29
+        },
+        {
+            "blankLines": 17,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 48
+        },
+        {
+            "blankLines": 8,
+            "language": "HTML",
+            "commentLines": 3,
+            "codeLines": 72
+        },
+        {
+            "blankLines": 36,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 370
+        },
+        {
+            "blankLines": 281,
+            "language": "JavaScript",
+            "commentLines": 57,
+            "codeLines": 1863
+        },
+        {
+            "blankLines": 597,
+            "language": "Sass",
+            "commentLines": 134,
+            "codeLines": 3030
+        },
+        {
+            "blankLines": 494,
+            "language": "JSX",
+            "commentLines": 79,
+            "codeLines": 5467
+        }
+    ],
+    "lastCommit": "2023-01-08T12:03:26",
+    "lastCommitSHA": "8d37028200dc1475d78f27d3b352a4d0384a4ab1",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 238829,
+        "SCSS": 59339,
+        "HTML": 4451
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "ecommerce",
+        "react-ecommerce",
+        "react-firebase",
+        "react-redux-firebase",
+        "react-shopping-cart",
+        "shopping-cart",
+        "shopping-cart-react",
+        "shopping-site",
+        "shoppingcart"
+    ]
+}

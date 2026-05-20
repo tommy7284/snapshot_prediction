@@ -1,0 +1,174 @@
+{
+    "id": 6316715,
+    "name": "testshallpass/react-native-dropdownalert",
+    "isFork": false,
+    "commits": 460,
+    "branches": 53,
+    "releases": 44,
+    "forks": 260,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 15,
+    "stargazers": 1808,
+    "contributors": 23,
+    "size": 36533,
+    "createdAt": "2016-06-27T03:09:07",
+    "pushedAt": "2023-12-18T04:07:24",
+    "updatedAt": "2024-01-06T04:53:36",
+    "totalIssues": 159,
+    "openIssues": 3,
+    "totalPullRequests": 153,
+    "openPullRequests": 12,
+    "blankLines": 318,
+    "codeLines": 2640,
+    "commentLines": 466,
+    "metrics": [
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 166,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 171,
+            "codeLines": 1523,
+            "blankLines": 136
+        },
+        {
+            "language": "DOS Batch",
+            "commentLines": 2,
+            "codeLines": 69,
+            "blankLines": 21
+        },
+        {
+            "language": "ProGuard",
+            "commentLines": 9,
+            "codeLines": 0,
+            "blankLines": 1
+        },
+        {
+            "language": "Kotlin",
+            "commentLines": 11,
+            "codeLines": 44,
+            "blankLines": 12
+        },
+        {
+            "language": "Java",
+            "commentLines": 37,
+            "codeLines": 135,
+            "blankLines": 20
+        },
+        {
+            "language": "Properties",
+            "commentLines": 27,
+            "codeLines": 13,
+            "blankLines": 8
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 9,
+            "codeLines": 35,
+            "blankLines": 4
+        },
+        {
+            "language": "XML",
+            "commentLines": 21,
+            "codeLines": 277,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 79,
+            "blankLines": 33
+        },
+        {
+            "language": "C/C++ Header",
+            "commentLines": 0,
+            "codeLines": 4,
+            "blankLines": 2
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 116,
+            "codeLines": 105,
+            "blankLines": 28
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 4
+        },
+        {
+            "language": "Starlark",
+            "commentLines": 1,
+            "codeLines": 16,
+            "blankLines": 2
+        },
+        {
+            "language": "Gradle",
+            "commentLines": 60,
+            "codeLines": 72,
+            "blankLines": 12
+        },
+        {
+            "language": "Objective-C",
+            "commentLines": 0,
+            "codeLines": 61,
+            "blankLines": 15
+        },
+        {
+            "language": "Objective-C++",
+            "commentLines": 2,
+            "codeLines": 22,
+            "blankLines": 7
+        }
+    ],
+    "lastCommit": "2023-12-18T04:07:22",
+    "lastCommitSHA": "3c249f2361beaf30f70cfb0e7c076b6896246a2a",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 52306,
+        "Java": 7397,
+        "Kotlin": 2608,
+        "Objective-C": 2313,
+        "Ruby": 2040,
+        "Starlark": 1922,
+        "JavaScript": 1199,
+        "Objective-C++": 818
+    },
+    "labels": [
+        "android",
+        "bug",
+        "dependencies",
+        "discussion",
+        "duplicate",
+        "enhancement",
+        "feature request",
+        "help wanted",
+        "hotfix",
+        "invalid",
+        "ios",
+        "major",
+        "minor",
+        "needs documentation",
+        "needs investigation",
+        "needs response from author",
+        "question",
+        "task",
+        "wontfix"
+    ],
+    "topics": [
+        "alert",
+        "dropdown",
+        "notification",
+        "react-native"
+    ]
+}

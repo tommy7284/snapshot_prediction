@@ -1,0 +1,82 @@
+{
+    "id": 6235167,
+    "name": "postlight/serverless-typescript-starter",
+    "isFork": false,
+    "commits": 91,
+    "branches": 343,
+    "releases": 0,
+    "forks": 59,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "master",
+    "license": null,
+    "homepage": "https://postlight.com/labs/modern-serverless-starter-kit",
+    "watchers": 47,
+    "stargazers": 706,
+    "contributors": 10,
+    "size": 5409,
+    "createdAt": "2017-01-20T10:09:47",
+    "pushedAt": "2023-01-09T11:36:23",
+    "updatedAt": "2023-01-09T05:34:34",
+    "totalIssues": 22,
+    "openIssues": 9,
+    "totalPullRequests": 113,
+    "openPullRequests": 19,
+    "blankLines": 100,
+    "codeLines": 431,
+    "commentLines": 75,
+    "metrics": [
+        {
+            "language": "YAML",
+            "commentLines": 68,
+            "codeLines": 65,
+            "blankLines": 13
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 139,
+            "blankLines": 69
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 80,
+            "blankLines": 0
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 7,
+            "codeLines": 107,
+            "blankLines": 17
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 0,
+            "codeLines": 40,
+            "blankLines": 1
+        }
+    ],
+    "lastCommit": "2021-05-11T08:30:20",
+    "lastCommitSHA": "be168382bb01802e0189cb70b0d46c41a20aa122",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 2994,
+        "JavaScript": 955
+    },
+    "labels": [
+        "bug",
+        "dependabot-paused",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "greenkeeper",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix"
+    ],
+    "topics": []
+}

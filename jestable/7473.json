@@ -1,0 +1,95 @@
+{
+    "id": 6633401,
+    "name": "chrvadala/react-svg-pan-zoom",
+    "isFork": false,
+    "commits": 700,
+    "branches": 3,
+    "releases": 6,
+    "forks": 131,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://chrvadala.github.io/react-svg-pan-zoom/",
+    "watchers": 12,
+    "stargazers": 647,
+    "contributors": 24,
+    "size": 21456,
+    "createdAt": "2016-05-19T02:23:42",
+    "pushedAt": "2023-02-12T10:26:35",
+    "updatedAt": "2023-02-20T01:47:52",
+    "totalIssues": 127,
+    "openIssues": 31,
+    "totalPullRequests": 77,
+    "openPullRequests": 3,
+    "blankLines": 776,
+    "codeLines": 70333,
+    "commentLines": 332,
+    "metrics": [
+        {
+            "blankLines": 103,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 538
+        },
+        {
+            "blankLines": 8,
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 77
+        },
+        {
+            "blankLines": 12,
+            "language": "CSS",
+            "commentLines": 0,
+            "codeLines": 66
+        },
+        {
+            "blankLines": 131,
+            "language": "JSX",
+            "commentLines": 16,
+            "codeLines": 712
+        },
+        {
+            "blankLines": 0,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 66591
+        },
+        {
+            "blankLines": 515,
+            "language": "JavaScript",
+            "commentLines": 316,
+            "codeLines": 2279
+        },
+        {
+            "blankLines": 7,
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 70
+        }
+    ],
+    "lastCommit": "2023-02-12T10:26:25",
+    "lastCommitSHA": "b40bd9d7039240fea5500238738acdd06d4c2c95",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 113257,
+        "HTML": 2418,
+        "CSS": 1185
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "duplicate",
+        "enhancement",
+        "help wanted",
+        "invalid",
+        "question",
+        "under_review",
+        "wip",
+        "wontfix"
+    ],
+    "topics": []
+}

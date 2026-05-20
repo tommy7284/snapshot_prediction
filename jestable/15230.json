@@ -1,0 +1,113 @@
+{
+    "id": 4070868,
+    "name": "formidablelabs/react-swipeable",
+    "isFork": false,
+    "commits": 417,
+    "branches": 36,
+    "releases": 24,
+    "forks": 146,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "https://commerce.nearform.com/open-source/react-swipeable",
+    "watchers": 52,
+    "stargazers": 1950,
+    "contributors": 31,
+    "size": 5766,
+    "createdAt": "2014-10-11T10:00:55",
+    "pushedAt": "2024-04-23T12:23:54",
+    "updatedAt": "2024-04-23T09:48:12",
+    "totalIssues": 153,
+    "openIssues": 18,
+    "totalPullRequests": 197,
+    "openPullRequests": 10,
+    "blankLines": 747,
+    "codeLines": 4530,
+    "commentLines": 231,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 212,
+            "codeLines": 3178,
+            "blankLines": 403
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 9,
+            "codeLines": 116,
+            "blankLines": 7
+        },
+        {
+            "language": "YAML",
+            "commentLines": 3,
+            "codeLines": 124,
+            "blankLines": 19
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 285,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 696,
+            "blankLines": 304
+        },
+        {
+            "language": "SVG",
+            "commentLines": 0,
+            "codeLines": 22,
+            "blankLines": 0
+        },
+        {
+            "language": "HTML",
+            "commentLines": 0,
+            "codeLines": 26,
+            "blankLines": 2
+        },
+        {
+            "language": "CSS",
+            "commentLines": 7,
+            "codeLines": 83,
+            "blankLines": 12
+        }
+    ],
+    "lastCommit": "2024-04-01T05:43:49",
+    "lastCommitSHA": "2cd83352c539054ac3b428dd658e99fea9a8b799",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 51691,
+        "JavaScript": 831
+    },
+    "labels": [
+        "bug \ud83d\udc1b",
+        "dependencies \ud83d\udd17",
+        "docs / examples \ud83d\udcdd",
+        "duplicate",
+        "enhancement",
+        "examples bug \ud83d\udc1b",
+        "good first issue",
+        "has example \u2705",
+        "has solution \u2705",
+        "help wanted",
+        "invalid",
+        "needs example \u270b",
+        "possible bug \ud83d\udc1b",
+        "question \u2754",
+        "wontfix"
+    ],
+    "topics": [
+        "hook",
+        "mobile",
+        "react",
+        "react-hooks",
+        "swipe",
+        "swipeable",
+        "touch"
+    ]
+}

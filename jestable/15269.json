@@ -1,0 +1,105 @@
+{
+    "id": 4070908,
+    "name": "jeremydaly/dynamodb-toolbox",
+    "isFork": false,
+    "commits": 514,
+    "branches": 30,
+    "releases": 80,
+    "forks": 159,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": "http://dynamodbtoolbox.com",
+    "watchers": 26,
+    "stargazers": 1743,
+    "contributors": 40,
+    "size": 8023,
+    "createdAt": "2019-11-24T11:16:45",
+    "pushedAt": "2024-05-07T09:35:20",
+    "updatedAt": "2024-05-09T04:18:49",
+    "totalIssues": 267,
+    "openIssues": 49,
+    "totalPullRequests": 449,
+    "openPullRequests": 10,
+    "blankLines": 2541,
+    "codeLines": 50896,
+    "commentLines": 2194,
+    "metrics": [
+        {
+            "language": "SVG",
+            "commentLines": 3,
+            "codeLines": 274,
+            "blankLines": 0
+        },
+        {
+            "language": "CSS",
+            "commentLines": 11,
+            "codeLines": 90,
+            "blankLines": 16
+        },
+        {
+            "language": "TypeScript",
+            "commentLines": 2123,
+            "codeLines": 13837,
+            "blankLines": 1993
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 42,
+            "codeLines": 360,
+            "blankLines": 29
+        },
+        {
+            "language": "YAML",
+            "commentLines": 13,
+            "codeLines": 192,
+            "blankLines": 21
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 34680,
+            "blankLines": 0
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 1463,
+            "blankLines": 482
+        }
+    ],
+    "lastCommit": "2024-05-05T03:17:21",
+    "lastCommitSHA": "5090df93b38c4d2cbbfecf5ccdf356a33e7b1d09",
+    "hasWiki": true,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 593293,
+        "JavaScript": 428
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "discussion",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "major",
+        "minor",
+        "patch",
+        "question",
+        "test",
+        "v1",
+        "wontfix"
+    ],
+    "topics": [
+        "aws",
+        "dynamodb",
+        "nosql",
+        "serverless"
+    ]
+}

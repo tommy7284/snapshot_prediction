@@ -1,0 +1,130 @@
+{
+    "id": 94609445,
+    "name": "microsoft/inshellisense",
+    "isFork": false,
+    "commits": 214,
+    "branches": 2,
+    "releases": 14,
+    "forks": 174,
+    "mainLanguage": "TypeScript",
+    "defaultBranch": "main",
+    "license": "MIT License",
+    "homepage": null,
+    "watchers": 23,
+    "stargazers": 8115,
+    "contributors": 10,
+    "size": 5242,
+    "createdAt": "2023-10-08T05:05:40",
+    "pushedAt": "2024-05-07T05:02:54",
+    "updatedAt": "2024-05-09T02:20:53",
+    "totalIssues": 107,
+    "openIssues": 7,
+    "totalPullRequests": 136,
+    "openPullRequests": 0,
+    "blankLines": 597,
+    "codeLines": 19084,
+    "commentLines": 284,
+    "metrics": [
+        {
+            "language": "TypeScript",
+            "commentLines": 125,
+            "codeLines": 2803,
+            "blankLines": 411
+        },
+        {
+            "language": "JavaScript",
+            "commentLines": 8,
+            "codeLines": 45,
+            "blankLines": 2
+        },
+        {
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 15621,
+            "blankLines": 0
+        },
+        {
+            "language": "Bourne Again Shell",
+            "commentLines": 4,
+            "codeLines": 104,
+            "blankLines": 17
+        },
+        {
+            "language": "YAML",
+            "commentLines": 0,
+            "codeLines": 54,
+            "blankLines": 15
+        },
+        {
+            "language": "Markdown",
+            "commentLines": 2,
+            "codeLines": 165,
+            "blankLines": 78
+        },
+        {
+            "language": "PowerShell",
+            "commentLines": 0,
+            "codeLines": 23,
+            "blankLines": 4
+        },
+        {
+            "language": "Bourne Shell",
+            "commentLines": 142,
+            "codeLines": 185,
+            "blankLines": 53
+        },
+        {
+            "language": "Fish Shell",
+            "commentLines": 0,
+            "codeLines": 19,
+            "blankLines": 4
+        },
+        {
+            "language": "zsh",
+            "commentLines": 3,
+            "codeLines": 65,
+            "blankLines": 13
+        }
+    ],
+    "lastCommit": "2024-05-07T05:02:54",
+    "lastCommitSHA": "1a309c8104ee92d5fff2e16f689db0372796a788",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "TypeScript": 116723,
+        "Shell": 19623,
+        "JavaScript": 2820,
+        "Nushell": 1820,
+        "Xonsh": 1339,
+        "PowerShell": 920
+    },
+    "labels": [
+        "bug",
+        "dependencies",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "feature-request",
+        "good first issue",
+        "help wanted",
+        "question",
+        "wontfix"
+    ],
+    "topics": [
+        "autocomplete",
+        "bash",
+        "cli",
+        "fish",
+        "linux",
+        "macos",
+        "nushell",
+        "powershell",
+        "pwsh",
+        "terminal",
+        "windows",
+        "xonsh",
+        "zsh"
+    ]
+}

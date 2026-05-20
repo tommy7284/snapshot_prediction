@@ -1,0 +1,111 @@
+{
+    "id": 86158090,
+    "name": "release-drafter/release-drafter",
+    "isFork": false,
+    "commits": 1328,
+    "branches": 15,
+    "releases": 50,
+    "forks": 312,
+    "mainLanguage": "JavaScript",
+    "defaultBranch": "master",
+    "license": "ISC License",
+    "homepage": "https://github.com/marketplace/actions/release-drafter",
+    "watchers": 20,
+    "stargazers": 3171,
+    "contributors": 63,
+    "size": 22380,
+    "createdAt": "2018-06-28T01:31:05",
+    "pushedAt": "2024-03-26T09:36:00",
+    "updatedAt": "2024-03-26T04:04:28",
+    "totalIssues": 360,
+    "openIssues": 117,
+    "totalPullRequests": 978,
+    "openPullRequests": 23,
+    "blankLines": 22338,
+    "codeLines": 106275,
+    "commentLines": 30753,
+    "metrics": [
+        {
+            "blankLines": 71,
+            "language": "YAML",
+            "commentLines": 27,
+            "codeLines": 752
+        },
+        {
+            "blankLines": 2,
+            "language": "Bourne Shell",
+            "commentLines": 0,
+            "codeLines": 9
+        },
+        {
+            "blankLines": 0,
+            "language": "SVG",
+            "commentLines": 3,
+            "codeLines": 32
+        },
+        {
+            "blankLines": 22116,
+            "language": "JavaScript",
+            "commentLines": 30713,
+            "codeLines": 99107
+        },
+        {
+            "blankLines": 6,
+            "language": "JSON",
+            "commentLines": 0,
+            "codeLines": 5965
+        },
+        {
+            "blankLines": 139,
+            "language": "Markdown",
+            "commentLines": 0,
+            "codeLines": 393
+        },
+        {
+            "blankLines": 4,
+            "language": "Dockerfile",
+            "commentLines": 10,
+            "codeLines": 17
+        }
+    ],
+    "lastCommit": "2024-02-02T05:42:36",
+    "lastCommitSHA": "3f0f87098bd6b5c5b9a36d49c41d998ea58f9348",
+    "hasWiki": false,
+    "isArchived": false,
+    "isDisabled": false,
+    "isLocked": false,
+    "languages": {
+        "JavaScript": 193889,
+        "Dockerfile": 1664,
+        "Shell": 92
+    },
+    "labels": [
+        "announcement",
+        "docker",
+        "duplicate",
+        "github_actions",
+        "good first issue",
+        "hacktoberfest-accepted",
+        "help wanted",
+        "invalid",
+        "question",
+        "skip-changelog",
+        "type: breaking",
+        "type: bug",
+        "type: dependencies",
+        "type: docs",
+        "type: feature",
+        "type: maintenance",
+        "type: security",
+        "waiting on release window",
+        "wontfix"
+    ],
+    "topics": [
+        "action",
+        "github-app",
+        "hacktoberfest",
+        "probot-app",
+        "release-automation",
+        "release-notes"
+    ]
+}
