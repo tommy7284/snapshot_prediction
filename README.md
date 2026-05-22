@@ -11,8 +11,7 @@ The package is organized into the following main components:
 ### 1. Dataset Construction
 These scripts are responsible for mining GitHub repositories, extracting snapshot-related pull requests, and building the datasets used for analysis.
 
-*   **`dataset_file.py`**: Extracts file-level features and builds a dataset focusing on specific file changes and their snapshot updates.
-*   **`dataset_commit.py`**: Extracts commit-level features, analyzing the sequence of commits and their relationship to snapshot reversions.
+*   **`dataset_file.py`**: Extracts both file-level and commit-level features in a single pass. Outputs per-snapshot-file data to `file_data/` and per-PR data to `commit_data/`.
 
 ### 2. Statistical Analysis & Visualization (Research Questions 1 & 2)
 These scripts process the constructed datasets to answer our first two Research Questions (RQs) and generate corresponding plots.

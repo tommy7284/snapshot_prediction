@@ -1,3 +1,0 @@
-pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
-200,f4f6d38ac20232cbd8dcd9b5866d199dd1b9630f,d4acae38e25d53171d299e8efdddcc18d1d564f4,Fixes #194.,"expectSaga - Update snapshots
-",,0,,1,9,1,22,54,2401

@@ -1,7 +1,0 @@
-pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
-1087,fcb117c27d7e04a684f5e41a71a90c85c456ebf6,3c4d718bf698d46701fcdbdcf19d9fba0c9705ab,"- Delete deprecated operator `forward`
-- Delete deprecated operator `guard`","Delete guard
-",,0,,45,7526,1,4,60,9135
-1092,b7b9409a6eb43514dfd25c6fdb2f43f9c14a2f56,b7b9409a6eb43514dfd25c6fdb2f43f9c14a2f56,"- Delete deprecated `fork(domain)` overload
-- Delete deprecated option `onlyChanges` in `fork` function","Snap
-",,0,,2,22,1,4,22,741

@@ -1,5 +1,0 @@
-pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
-14,d47f9ed869f381589c6876f07bff36fbbb906409,f97c0272fe320a2d202dcf4f25e6bea3ebb330d8,src/__tests__/__snapshots__/state.test.js.snap,src/__tests__/state.test.js,,"snap
-",,0,
-14,d47f9ed869f381589c6876f07bff36fbbb906409,f97c0272fe320a2d202dcf4f25e6bea3ebb330d8,src/__tests__/__snapshots__/state.test.js.snap,src/__tests__/state.test.js,,"snap
-",,0,

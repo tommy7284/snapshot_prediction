@@ -1,9 +1,0 @@
-pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
-3710,460189f9a6b0090799e5d446e640621574599f47,460189f9a6b0090799e5d446e640621574599f47,"supersedes https://github.com/statelyai/xstate/pull/3708
-
-This way:
-- we avoid using getter for those things
-- they are automatically memoized (since they are not recomputed with getters)
-- they become regular enumerable properties
-- we move them out of State to keep it as ""dumb"" as possible when it comes to those two (IMHO it's fine for State to call into machine to return a value for `state.can()` but other than that it should just be a simple state container, without much of its own logic)","Provide precomputed `State[""done""]` and `State[""output""]`
-",,0,,6,305,1,1,6,305

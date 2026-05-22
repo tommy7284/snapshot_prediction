@@ -9,33 +9,33 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gpus-per-task=1
 
-# Pythonの出力をバッファリングせず、リアルタイムでログファイルに書き出す
+# Disable Python output buffering to write logs in real-time
 export PYTHONUNBUFFERED=1
 
-# 1. 必要なモジュールのロード
+# 1. Load necessary modules
 module load cuda
 nvidia-smi
-# 2. Hugging Faceのキャッシュディレクトリ設定（重要！）
-# モデルやデータセットのダウンロード先を容量の大きい /work 配下に変更します
+
+# 2. Configure Hugging Face cache directory (Important!)
+# Change the download location for models and datasets to the /work directory
 export HF_HOME="/work/$USER/huggingface_cache"
 mkdir -p $HF_HOME
 
-# 3. Llama 3.1用のHugging Faceアクセストークン
-# ※事前にターミナルで `poetry run huggingface-cli login` を済ませている場合は不要です。
-# まだの場合は、以下のコメントアウトを外してご自身のトークン（Read権限）を貼り付けてください。
+# 3. Hugging Face Access Token for Llama 3.1
+# Not required if you have already run `poetry run huggingface-cli login`.
 export HF_TOKEN=""
 
-# 4. 実行ログの出力
-echo "🚀 学習ジョブを開始します: $(date)"
-echo "ホスト名: $(hostname)"
-echo "割り当てられたGPU: $CUDA_VISIBLE_DEVICES"
+# 4. Output execution logs
+echo "🚀 Starting training job: $(date)"
+echo "Hostname: $(hostname)"
+echo "Allocated GPU: $CUDA_VISIBLE_DEVICES"
 echo "Hugging Face Cache Dir: $HF_HOME"
 
-# 5. Poetryを使ってPythonの学習スクリプトを実行
+# 5. Execute the Python training script using Poetry
 poetry --version
 echo "Starting Fine-tuning script..."
 
-# 前回作成した学習スクリプト（train.py）を実行
+# Run the training script (train_llama.py)
 poetry run python -u train_llama.py
 
-echo "✅ 学習ジョブが完了しました: $(date)"
+echo "✅ Training job completed: $(date)"

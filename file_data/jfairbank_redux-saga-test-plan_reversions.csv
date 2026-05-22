@@ -1,5 +1,0 @@
-pr_number,pr_head_commit,commit_hash,snap_path,source_path,pr_description,commit_message,diff_text,reverted,revert_type
-200,f4f6d38ac20232cbd8dcd9b5866d199dd1b9630f,d4acae38e25d53171d299e8efdddcc18d1d564f4,__tests__/expectSaga/__snapshots__/promise-result.test.js.snap,__tests__/expectSaga/promise-result.test.js,Fixes #194.,"expectSaga - Update snapshots
-",,0,
-200,f4f6d38ac20232cbd8dcd9b5866d199dd1b9630f,d4acae38e25d53171d299e8efdddcc18d1d564f4,__tests__/expectSaga/__snapshots__/promise-result.test.js.snap,__tests__/expectSaga/promise-result.test.js,Fixes #194.,"expectSaga - Update snapshots
-",,0,

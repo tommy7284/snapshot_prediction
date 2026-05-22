@@ -22,7 +22,6 @@ Step 1: Dataset Construction
 Extract snapshot-related pull requests and commit histories.
 
     ```bash
-    uv run python dataset_commit.py
     uv run python dataset_file.py
 
 Step 2: Statistical Analysis & Visualization (RQ1 & RQ2)

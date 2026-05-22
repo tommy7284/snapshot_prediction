@@ -1,7 +1,0 @@
-pr_number,pr_head_commit,commit_hash,pr_description,commit_message,diff_text,reverted,revert_type,first_commit_files,first_commit_lines,first_commit_snaps,pr_total_commits,pr_final_files,pr_final_lines
-1618,bc85786167276e261f1838af66014fb2b6645ab7,bc85786167276e261f1838af66014fb2b6645ab7,"Update the `unified`, `remark-parse`, and `remark-stringify` dependencies to latest. I actually slightly refactored to directly use the parse and stringify dependencies as we don't really need the unified pipeline.
-
-The latest dependencies have a slightly larger graph actually because it uses micromark and its utilities are scattered, but I think it's fine for now as this `@changesets/release-utils` is only a utility package that isn't used by the changesets CLI.
-
-Alternatively the code could be refactored to use regexes to parse the headings and extract the raw markdown, but maybe that can be done in the future if needed.","Update markdown dependencies
-",,0,,5,631,1,1,5,631
