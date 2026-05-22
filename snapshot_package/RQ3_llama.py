@@ -1,5 +1,6 @@
 import os
 import glob
+import argparse
 import torch
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -17,6 +18,27 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 # Model ID applied for on Hugging Face
 MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 OUTPUT_DIR = "./llama-snapshot-finetuned"
+
+AVAILABLE_FEATURES = ["pr_description", "commit_message", "diff_text"]
+FEATURE_LABELS = {
+    "pr_description": "[PR Description]",
+    "commit_message": "[Commit Message]",
+    "diff_text": "[Diff]",
+}
+
+def build_text_column(df, features, max_chars=1500):
+    """Build labeled, truncated text from selected feature columns."""
+    valid = [f for f in features if f in df.columns]
+    if not valid:
+        raise ValueError(f"None of the requested features found in data: {features}")
+    parts = []
+    for f in valid:
+        label = FEATURE_LABELS.get(f, f"[{f}]")
+        parts.append("\n\n" + label + "\n" + df[f].fillna('').astype(str).str[:max_chars])
+    result = parts[0]
+    for p in parts[1:]:
+        result = result + p
+    return result
 
 def read_all_csv(dir_path):
     search_pattern = os.path.join(dir_path, '**', '*.csv')
@@ -62,18 +84,21 @@ def prepare_llama_dataset(X_data, y_data, tokenizer):
     return Dataset.from_pandas(pd.DataFrame(formatted_data))
 
 
-def main():
-    DATA_REPO = "file_data" # Path to data directory
-    
+def main(features):
+    DATA_REPO = "file_data"
+
     # ---------------------------------------------------------
     # 1. Data Loading and Preprocessing
     # ---------------------------------------------------------
     df = read_all_csv(DATA_REPO)
     if df.empty: return
     df.dropna(subset=['commit_message'], inplace=True)
-    df['commit_message'] = df['commit_message'].fillna('')
-    df['diff_text'] = df['diff_text'].fillna('')
-    df['text'] = "\n\n[commit_message]\n" + df['commit_message'].astype(str).str[:1500] + "\n\n[Diff]\n" + df['diff_text'].astype(str).str[:1500]
+    for col in AVAILABLE_FEATURES:
+        if col in df.columns:
+            df[col] = df[col].fillna('')
+
+    print(f"  Features used: {features}")
+    df['text'] = build_text_column(df, features)
     df = df[['text', 'reverted']]
 
     # ---------------------------------------------------------
@@ -218,4 +243,17 @@ def main():
     print("="*50)
     
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="RQ3 LLaMA: Snapshot Reversion Prediction (LoRA fine-tuning)")
+    parser.add_argument(
+        '--features', nargs='+',
+        choices=AVAILABLE_FEATURES,
+        default=['commit_message', 'diff_text'],
+        metavar='FEATURE',
+        help=(
+            f"Feature columns to include in the prompt. "
+            f"Available: {AVAILABLE_FEATURES}. "
+            f"Default: commit_message diff_text"
+        ),
+    )
+    args = parser.parse_args()
+    main(args.features)

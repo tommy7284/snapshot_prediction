@@ -1,6 +1,7 @@
 import os
 import sys
 import glob
+import argparse
 import warnings
 
 # --- TensorFlow version compatibility setting ---
@@ -33,6 +34,19 @@ from transformers import AutoTokenizer, TFAutoModel
 warnings.filterwarnings("ignore")
 
 DATA_DIR = "file_data"
+
+AVAILABLE_FEATURES = ["pr_description", "commit_message", "diff_text"]
+
+def build_text_column(df, features):
+    """Concatenate selected feature columns into a single text column."""
+    valid = [f for f in features if f in df.columns]
+    if not valid:
+        raise ValueError(f"None of the requested features found in data: {features}")
+    parts = [df[f].fillna('').astype(str) for f in valid]
+    result = parts[0]
+    for p in parts[1:]:
+        result = result + "\n" + p
+    return result
 
 def calculate_reversion_ratio():
     csv_files = glob.glob(os.path.join(DATA_DIR, "*.csv"))
@@ -207,7 +221,7 @@ def build_model(model_name):
         model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
         return model
 
-def training(DATA_REPO):
+def training(DATA_REPO, features):
     BATCH_SIZE = 8 * strategy.num_replicas_in_sync
     EPOCHS = 3
     output_dir = "output_RQ3"
@@ -222,9 +236,9 @@ def training(DATA_REPO):
     df['commit_message'] = df['commit_message'].fillna('')
     df['pr_description'] = df['pr_description'].fillna('')
     df['diff_text'] = df['diff_text'].fillna('')
-    
-    # Fix: Corrected syntax error (++) to proper string concatenation
-    df['text'] = df['pr_description'] + "\n" + df['diff_text']
+
+    print(f"  Features used: {features}")
+    df['text'] = build_text_column(df, features)
     df = df[['text', 'reverted']]
     
     # 1. Fetch all data
@@ -398,6 +412,20 @@ def training(DATA_REPO):
     print("\n🎉 Finish: All processes completed!")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="RQ3: Snapshot Reversion Prediction")
+    parser.add_argument(
+        '--features', nargs='+',
+        choices=AVAILABLE_FEATURES,
+        default=['pr_description', 'diff_text'],
+        metavar='FEATURE',
+        help=(
+            f"Feature columns to concatenate as training text. "
+            f"Available: {AVAILABLE_FEATURES}. "
+            f"Default: pr_description diff_text"
+        ),
+    )
+    args = parser.parse_args()
+
     print("Available GPUs: ", tf.config.list_physical_devices('GPU'))
     MODEL_NAME = 'microsoft/codebert-base'
     MAX_LEN = 256
@@ -410,6 +438,6 @@ if __name__ == "__main__":
         print('Running on TPU ', tpu.master())
     except ValueError:
         strategy = tf.distribute.get_strategy()
-        
+
     print("Start")
-    training(DATA_DIR)
+    training(DATA_DIR, args.features)
