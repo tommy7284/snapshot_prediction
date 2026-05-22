@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=finetune_llama
-#SBATCH --output=logs/llama_f_cmdiff_%j.out   
-#SBATCH --error=errors/llama_f_cmdiff_%j.err
+#SBATCH --job-name=rq3_llama
+#SBATCH --output=logs/rq3_llama_%j.out
+#SBATCH --error=errors/rq3_llama_%j.err
 #SBATCH --time=100:00:00
 #SBATCH --partition=gpu_long
 #SBATCH --ntasks=1
@@ -9,33 +9,31 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gpus-per-task=1
 
-# Disable Python output buffering to write logs in real-time
 export PYTHONUNBUFFERED=1
 
-# 1. Load necessary modules
+mkdir -p logs errors
+
+# Load CUDA (module name may differ by cluster)
 module load cuda
 nvidia-smi
 
-# 2. Configure Hugging Face cache directory (Important!)
-# Change the download location for models and datasets to the /work directory
+# Ensure uv is in PATH (installed via https://astral.sh/uv)
+export PATH="$HOME/.local/bin:$PATH"
+
+# Hugging Face cache — point to /work to avoid home quota issues
 export HF_HOME="/work/$USER/huggingface_cache"
-mkdir -p $HF_HOME
+mkdir -p "$HF_HOME"
 
-# 3. Hugging Face Access Token for Llama 3.1
-# Not required if you have already run `poetry run huggingface-cli login`.
-export HF_TOKEN=""
+# Set HF token if not already logged in via `huggingface-cli login`
+# export HF_TOKEN="your_token_here"
 
-# 4. Output execution logs
-echo "🚀 Starting training job: $(date)"
-echo "Hostname: $(hostname)"
-echo "Allocated GPU: $CUDA_VISIBLE_DEVICES"
-echo "Hugging Face Cache Dir: $HF_HOME"
+echo "🚀 Starting LLaMA fine-tuning: $(date)"
+echo "   Hostname : $(hostname)"
+echo "   GPU      : $CUDA_VISIBLE_DEVICES"
+echo "   HF_HOME  : $HF_HOME"
+uv --version
 
-# 5. Execute the Python training script using Poetry
-poetry --version
-echo "Starting Fine-tuning script..."
+# Run from project root (the directory where sbatch was submitted)
+uv run python -u snapshot_package/RQ3_llama.py
 
-# Run the training script (train_llama.py)
-poetry run python -u train_llama.py
-
-echo "✅ Training job completed: $(date)"
+echo "✅ LLaMA fine-tuning completed: $(date)"
