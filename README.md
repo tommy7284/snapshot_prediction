@@ -55,3 +55,37 @@ If you intend to run `RQ3.py` or `RQ3_llama.py`, you need to configure your Hugg
    ```bash
    uv run huggingface-cli login
 
+---
+
+## 🖥️ GPU Cluster (SLURM)
+
+`RQ3_llama.py` (Llama 3.1 8B + LoRA fine-tuning) requires a GPU with at least 24 GB VRAM and several hours of compute time.
+We ran our experiments on a SLURM-managed HPC cluster. The provided sbatch scripts assume this environment.
+
+### Requirements
+
+- SLURM workload manager
+- CUDA-capable GPU (≥ 24 GB VRAM recommended)
+- `uv` installed in `$HOME/.local/bin` (run `curl -LsSf https://astral.sh/uv/install.sh | sh` on the cluster)
+- Access to `meta-llama/Meta-Llama-3.1-8B-Instruct` on Hugging Face
+
+### Submission
+
+Submit from the **project root**:
+
+```bash
+# ML & Transformer models (CodeBERT, RoBERTa, Random Forest)
+sbatch snapshot_package/RQ3.sbatch
+
+# Llama 3.1 fine-tuning
+sbatch snapshot_package/RQ3_llama.sbatch
+```
+
+Logs are written to `logs/` and `errors/` (created automatically).
+
+### Notes
+
+- The `--partition=gpu_long` directive may need to be changed to match your cluster's partition name.
+- `module load cuda` is cluster-specific; adjust or remove if CUDA is available without module loading.
+- Hugging Face model weights are cached to `/work/$USER/huggingface_cache` to avoid home directory quota issues. Change `HF_HOME` in the sbatch script if your cluster uses a different scratch path.
+

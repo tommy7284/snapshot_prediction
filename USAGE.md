@@ -62,12 +62,17 @@ uv run python snapshot_package/RQ3.py
 
 Outputs: `output_RQ3/all_models_roc_data.csv`, `output_RQ3/prediction_analysis.csv`, ROC curve and confusion matrix plots.
 
-### Step 4b: RQ3 — LLaMA Fine-tuning (GPU required)
+### Step 4b: RQ3 — LLaMA Fine-tuning (GPU / SLURM cluster required)
+
+`RQ3_llama.py` fine-tunes Llama 3.1 8B with LoRA and requires a CUDA-capable GPU (≥ 24 GB VRAM).
+The sbatch scripts (`RQ3.sbatch`, `RQ3_llama.sbatch`) are designed for SLURM-managed HPC clusters.
+See the **GPU Cluster (SLURM)** section in `README.md` for setup details.
 
 ```bash
+# Direct execution (GPU required)
 uv run python snapshot_package/RQ3_llama.py
 
-# On a SLURM cluster:
+# On a SLURM cluster (submit from project root)
 sbatch snapshot_package/RQ3_llama.sbatch
 ```
 
