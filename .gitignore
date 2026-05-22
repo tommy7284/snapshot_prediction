@@ -11,6 +11,10 @@ commit_data/
 
 # --- Generated analysis outputs ---
 results/
+
+# --- Paper manuscript and developer guide (not part of replication package) ---
+ESEM2026.pdf
+CLAUDE.md
 violinplot_*.pdf
 rq2_*.pdf
 ss_vs_source_changes.png
