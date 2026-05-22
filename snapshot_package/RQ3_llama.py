@@ -19,9 +19,8 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 OUTPUT_DIR = "./llama-snapshot-finetuned"
 
-AVAILABLE_FEATURES = ["pr_description", "commit_message", "diff_text"]
+AVAILABLE_FEATURES = ["commit_message", "diff_text"]
 FEATURE_LABELS = {
-    "pr_description": "[PR Description]",
     "commit_message": "[Commit Message]",
     "diff_text": "[Diff]",
 }

@@ -35,7 +35,7 @@ warnings.filterwarnings("ignore")
 
 DATA_DIR = "file_data"
 
-AVAILABLE_FEATURES = ["pr_description", "commit_message", "diff_text"]
+AVAILABLE_FEATURES = ["commit_message", "diff_text"]
 
 def build_text_column(df, features):
     """Concatenate selected feature columns into a single text column."""
@@ -416,12 +416,12 @@ if __name__ == "__main__":
     parser.add_argument(
         '--features', nargs='+',
         choices=AVAILABLE_FEATURES,
-        default=['pr_description', 'diff_text'],
+        default=['commit_message', 'diff_text'],
         metavar='FEATURE',
         help=(
             f"Feature columns to concatenate as training text. "
             f"Available: {AVAILABLE_FEATURES}. "
-            f"Default: pr_description diff_text"
+            f"Default: commit_message diff_text"
         ),
     )
     args = parser.parse_args()

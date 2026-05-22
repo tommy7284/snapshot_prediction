@@ -82,26 +82,22 @@ are concatenated as the training input text.
 
 | Feature | Column in CSV | Description |
 |---|---|---|
-| `pr_description` | `pr_description` | Body text of the pull request |
 | `commit_message` | `commit_message` | Commit message of the first snapshot-touching commit |
 | `diff_text` | `diff_text` | Source-file diff from the first snapshot-touching commit |
 
 ### RQ3.py (CodeBERT / RoBERTa / Random Forest)
 
-Default: `pr_description diff_text`
+Default: `commit_message diff_text`
 
 ```bash
-# Default (pr_description + diff_text)
+# Default (commit_message + diff_text)
 uv run python snapshot_package/RQ3.py
-
-# Commit message and diff only
-uv run python snapshot_package/RQ3.py --features commit_message diff_text
-
-# All three features
-uv run python snapshot_package/RQ3.py --features pr_description commit_message diff_text
 
 # Diff only
 uv run python snapshot_package/RQ3.py --features diff_text
+
+# Commit message only
+uv run python snapshot_package/RQ3.py --features commit_message
 ```
 
 ### RQ3_llama.py (Llama 3.1 8B + LoRA)
@@ -112,11 +108,8 @@ Default: `commit_message diff_text`
 # Default (commit_message + diff_text)
 uv run python snapshot_package/RQ3_llama.py
 
-# PR description and diff
-uv run python snapshot_package/RQ3_llama.py --features pr_description diff_text
-
-# All three features
-uv run python snapshot_package/RQ3_llama.py --features pr_description commit_message diff_text
+# Diff only
+uv run python snapshot_package/RQ3_llama.py --features diff_text
 ```
 
 Features are inserted into the training prompt as labeled sections in the order specified.
